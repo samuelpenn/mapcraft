@@ -52,11 +52,12 @@ Project Plan
 *   Support GUI basic resize facility (ignores parent links).
     Support GUI rescale facility (up and down).
     Support GUI for merging siblings.
-    Make Tile class have package scope. Only TileSet should reference it directly.
+*   Make Tile class have package scope.
 *   Crop to highlighted regions (requires highlight support).
 *   Crop to named area.
 *   Crop to things.
 *   Crop to rivers and roads.
+*   All images included in the jar file (0.7).
 
 0.2.4
     Fix display issues with area editing.
@@ -106,7 +107,6 @@ Project Plan
 
 0.7 (Web support)
     Output of web image maps (hrefs to places only).
-    Wrap all resources into map bundle (jar?) for export.
     Applet viewer.
 
 0.8 (Helper)
