@@ -554,7 +554,6 @@ public class MapXML {
 
                 set = getTileSet(item);
                 if (set != null) {
-                    System.out.println("Adding tileset "+set.getName());
                     list.add(set);
                 }
             }
@@ -591,8 +590,6 @@ public class MapXML {
         NamedNodeMap    values;
         Node            value;
 
-        System.out.println("Getting Sites from XML");
-
         try {
             NodeList    list = getNodeList("/map/sites/site");
             if (list == null || list.getLength() == 0) {
@@ -613,8 +610,6 @@ public class MapXML {
 
                     name = getTextNode(node, "name");
                     description = getTextNode(node, "description");
-
-                    System.out.println("Site ["+name+"] at "+x+","+y);
 
                     tileSet.getTile(x, y).setSite(new Site(type, name, description));
                 }

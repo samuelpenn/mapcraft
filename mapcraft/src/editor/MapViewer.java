@@ -56,6 +56,9 @@ public class MapViewer extends JPanel {
     private boolean       showRivers = true;
     private boolean       showRoads = true;
 
+    protected ViewProperties    views[];
+    protected int               view = 0;
+
     protected void
     log(int level, String message) {
         System.out.println(message);
@@ -67,6 +70,105 @@ public class MapViewer extends JPanel {
     protected void error(String message) { log(1, message); }
     protected void fatal(String message) { log(0, message); }
 
+    
+    /**
+     * Inner class which holds properties of each view on the image.
+     * A view is a scaling, so generally a map will have several view
+     * scales, each with a different set of icons.
+     */
+    protected class ViewProperties {
+        private Properties  properties;
+        
+        private String  viewName;
+        private String  viewShape;
+        private String  path;
+        private int     iconHeight;
+        private int     iconWidth;
+        private int     tileHeight;
+        private int     tileWidth;
+        private int     tileOffset;
+
+        public
+        ViewProperties(String path) {
+            FileInputStream     input = null;
+            String              file = path+"/icons.properties";
+
+            this.path = path;
+            properties = new Properties();
+
+            try {
+                input = new FileInputStream(file);
+                properties.load(input);
+                System.out.println("Loaded properties");
+                
+                viewName = (String)properties.get("view.name");
+                viewShape = (String)properties.get("view.shape");
+                
+                iconHeight = (int)Integer.parseInt((String)properties.get("icon.height"));
+                iconWidth = (int)Integer.parseInt((String)properties.get("icon.width"));
+
+                tileHeight = (int)Integer.parseInt((String)properties.get("tile.height"));
+                tileWidth = (int)Integer.parseInt((String)properties.get("tile.width"));
+                tileOffset = (int)Integer.parseInt((String)properties.get("tile.offset"));
+
+                System.out.println(viewName);
+            } catch (Exception e) {
+                System.out.println("Cannot load properties from file ["+file+"]");
+                e.printStackTrace();
+            }
+        }
+        
+        public String
+        toString() {
+            return viewName + " ("+iconWidth+"x"+iconHeight+")";
+        }
+        
+        public String getPath() { return path; }
+
+        /**
+         * The name of the view, normally a descriptive name for the
+         * size of the icons, such as 'Small' or 'Medium'.
+         */
+        public String getName() { return viewName; }
+        
+        /**
+         * The shape used by the icons, either 'Square' or 'Hexagonal'.
+         */
+        public String getShape() { return viewShape; }
+        
+        /**
+         * The actual physical height of each icon, in pixels.
+         */
+        public int getIconHeight() { return iconHeight; }
+        
+        /**
+         * The actual physical width of each icon, in pixels.
+         */
+        public int getIconWidth() { return iconWidth; }
+        
+        /**
+         * The height of a tile. For square maps, this is identical to the
+         * icon height. For hexagonal maps, it may be different.
+         */
+        public int getTileHeight() { return tileHeight; }
+        
+        /**
+         * The width of a tile. For square maps, this is identical to the
+         * icon width. For hexagonal maps, it is smaller, since columns of
+         * hexagons will overlap each other.
+         */
+        public int getTileWidth() { return tileWidth; }
+        
+        /**
+         * Vertical offset of odd numbered columns. Zero for square maps,
+         * positive (downwards offset) for hexagonal maps. Normally equal
+         * to about half the height of a hexagonal tile. Note that the
+         * first column is zero, and hence even.
+         */
+        public int getTileOffset() { return tileOffset; }
+
+    }
+
 
     /**
      * Basic constructor. Creates an empty map.
@@ -76,7 +178,7 @@ public class MapViewer extends JPanel {
 
         toolkit = Toolkit.getDefaultToolkit();
     }
-    
+
     protected IconSet
     readIcons(String name, TerrainSet set) {
         IconSet     iconSet = new IconSet(name);
@@ -93,7 +195,7 @@ public class MapViewer extends JPanel {
             if (t != null) {
                 info("Defining terrain "+t.getName());
                 short   id = t.getId();
-                String  path = imagePath+"/"+tileSize+"/"+t.getImagePath();
+                String  path = views[view].getPath()+"/"+t.getImagePath();
                 Image   icon = toolkit.getImage(path);
 
                 debug("Adding icon "+path+" for terrain "+id);
@@ -101,9 +203,15 @@ public class MapViewer extends JPanel {
             }
         }
 
-        outlineIcon = toolkit.getImage(imagePath+"/"+tileSize+"/outline.png");
+        outlineIcon = toolkit.getImage(views[view].getPath()+"/outline.png");
 
         return iconSet;
+    }
+    
+    protected void
+    readAllIcons() {
+        iconSet = readIcons("terrain", map.getTerrainSet());
+        siteSet = readIcons("sites", map.getPlaceSet());
     }
 
     /**
@@ -114,44 +222,21 @@ public class MapViewer extends JPanel {
         super(true);
 
         toolkit = Toolkit.getDefaultToolkit();
-        
+
         this.imagePath = path;
+
+        views = new ViewProperties[7];
+        views[0] = new ViewProperties(path+"/small");
+        views[1] = new ViewProperties(path+"/medium");
 
         try {
             map = new Map(filename);
+            setView(0);
 
-            System.out.println("Setting up terrain icons");
-            TerrainSet  set = map.getTerrainSet();
-
-
-            iconSet = readIcons("terrain", set);
-            siteSet = readIcons("sites", map.getPlaceSet());
-
-            /*
-            riverSet = new IconSet("rivers");
-            for (short i = 0; i < 64; i++) {
-                String  name = "/rivers/"+((i<10)?"0":"")+i+".gif";
-                Image   icon = toolkit.getImage("images/"+tileSize+"/"+name);
-                riverSet.add(i, icon);
-            }
-            */
+            readAllIcons();
 
             map.setCurrentSet("root");
 
-            // Now work out how big we want to be. Can assume we'll
-            // be placed in a scrollable widget of some sort, so don't
-            // worry about screen size or anything like that.
-            int realWidth, realHeight;
-            
-            if (map.getTileShape() == Map.SQUARE) {
-                tileXSize = 40;
-                tileYSize = 40;
-            }
-
-            realWidth = tileXSize * (map.getWidth()+1);
-            realHeight = tileYSize * (map.getHeight()+1);
-
-            setPreferredSize(new Dimension(realWidth, realHeight));
         } catch (MapException e) {
             e.printStackTrace();
         }
@@ -190,6 +275,31 @@ public class MapViewer extends JPanel {
         } catch (MapException e) {
             e.printStackTrace();
         }
+    }
+
+    public void
+    setView(int view) {
+        if (views[view] == null) {
+            return;
+        }
+
+        this.view = view;
+        tileXSize = views[view].getTileWidth();
+        tileYSize = views[view].getTileHeight();
+        tileYOffset = views[view].getTileOffset();
+
+        // Now work out how big we want to be. Can assume we'll
+        // be placed in a scrollable widget of some sort, so don't
+        // worry about screen size or anything like that.
+        int realWidth, realHeight;
+
+        realWidth = tileXSize * (map.getWidth()+1);
+        realHeight = tileYSize * (map.getHeight()+1);
+
+        setPreferredSize(new Dimension(realWidth, realHeight));
+        
+        readAllIcons();
+        repaint();
     }
 
 

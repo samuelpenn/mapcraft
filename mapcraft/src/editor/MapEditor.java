@@ -304,7 +304,16 @@ public class MapEditor extends MapViewer
 
             if (command.equals("showGrid")) {
                 info("ShowGrid");
-                
+            } else if (command.equals("0")) {
+                setView(0);
+            } else if (command.equals("1")) {
+                setView(1);
+            } else if (command.equals("2")) {
+                setView(2);
+            } else if (command.equals("3")) {
+                setView(3);
+            } else if (command.equals("4")) {
+                setView(4);
             } else {
                 // Unimplemented menu option.
                 warn("ActionEvent: Unsupported MenuViewListener."+command);
@@ -491,6 +500,7 @@ public class MapEditor extends MapViewer
         JMenu               menu = new JMenu("View");
         JMenuItem	        item;
         MenuViewListener    listener = new MenuViewListener();
+        int                 i = 0;
 
         menu.setMnemonic(KeyEvent.VK_V);
         item = new JCheckBoxMenuItem("Show grid", true);
@@ -501,8 +511,19 @@ public class MapEditor extends MapViewer
                     setShowGrid(s);
                 }
             });
+
         //item.setAction(handler.getShowGridAction());
         menu.add(item);
+
+        menu.addSeparator();
+
+        for (i=0; i < views.length; i++) {
+            if (views[i] != null) {
+                menu.add(createItem(new JMenuItem(views[i].toString()), ""+i, listener));
+            }
+        }
+
+
 /*
         menu.add(createItem(new JCheckBoxMenuItem("Show grid", true),
                             "showGrid", listener), KeyEvent.VK_G);
@@ -556,13 +577,13 @@ public class MapEditor extends MapViewer
                 String name = options.getString("-create");
                 String terrain = options.getString("-terrain");
                 boolean square = options.isOption("-square");
+                boolean local = options.isOption("-local");
 
 
                 System.out.println("Creating map "+name+" "+width+"x"+height);
                 map = new Map(name, width, height, scale);
-                if (square) {
-                    map.setTileShape(Map.SQUARE);
-                }
+                if (square) map.setTileShape(Map.SQUARE);
+                if (local) map.setType(Map.LOCAL);
                 map.loadTerrainSet(terrain);
                 map.save(name+".map");
             } else if (options.isOption("-load")) {
