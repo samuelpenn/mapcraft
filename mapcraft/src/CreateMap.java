@@ -123,5 +123,65 @@ public class CreateMap extends JDialog implements ActionListener {
         return types;
     }
 
+    /**
+     * Get the name of the map, as defined in the map name textfield.
+     */
+    public String
+    getMapName() {
+        if (mapName == null) {
+            return "map";
+        }
+        return mapName.getText();
+    }
 
+    /**
+     * Return the name of the author, as defined in the author name textfield.
+     */
+    public String
+    getAuthorName() {
+        if (authorName == null) {
+            return "anonymous";
+        }
+        return authorName.getText();
+    }
+
+    /**
+     * Return the type of the map. This is the name of the default terrain
+     * file to use, which defines the graphics, as well as the shape of the
+     * tiles in the map.
+     */
+    public String
+    getMapType() {
+        if (mapType == null) {
+            return "hexagonal";
+        }
+
+        String      type = (String)mapType.getSelectedItem();
+        String      value = "";
+
+        if (type.startsWith("Outdoor")) {
+            value = "hexagonal";
+        } else if (type.startsWith("Indoor")) {
+            value = "square";
+        }
+
+        return value;
+    }
+
+    public int
+    getScale() {
+        int     scale = 1;
+        String  value = "";
+
+        if (mapScale != null) {
+            try {
+                value = mapScale.getText();
+                scale = Integer.parseInt(value);
+            } catch (NumberFormatException nfe) {
+            }
+        }
+
+        return scale;
+
+    }
 }

@@ -30,22 +30,25 @@ Project Plan
 
 0.2.1
     Support rivers as vectors, inc graphical editing.
-    Support roads as vectors, inc graphical editing.
-    Feedback in a status bar to say what editing.
 *   Decouple sites from tiles.
 *   Control over font used with sites.
 *   Resize of site labels depending on tile size.
+*   Consistency in naming. Sites = things, hills = features. Always
+    Feedback in a status bar to say what editing.
 
 0.2.2
     Support map cropping and linking to submaps.
     Support rescale facility (up and down).
+    Support roads as vectors, inc graphical editing.
     Fix display issues with area editing.
     Fix display issues with site editing.
+    Properties on sites.
 
 0.3 (Printing support)
     Link to yagsbook encyclopedia.
     Support map cropping on image print.
     Interface to pull out areas around named sites.
+    Create image from the GUI.
 
 0.3.1
     Show A3/A4 crop areas on map as grid.
