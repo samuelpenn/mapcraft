@@ -1,0 +1,18 @@
+
+<project name="MapMaker" default="all" basedir=".">
+
+<target name="all">
+    <javac srcdir="." destdir="."/>
+</target>
+
+<target name="docs">
+    <javadoc
+        classpath="."
+        sourcepath="."
+        packagenames="uk.co.demon.bifrost.rpg.xmlmap"
+        destdir="docs"
+        windowtitle="Map Maker API"
+    />
+</target>
+
+</project>

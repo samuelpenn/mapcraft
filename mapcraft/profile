@@ -1,0 +1,7 @@
+
+PATH=$PATH:/usr/share/java/ant/bin
+export PATH
+
+CLASSPATH=/usr/share/java/xalan/xalan.jar:/usr/share/java/xalan/xercesImpl.jar:.
+export CLASSPATH
+

@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<map>
+    <header>
+        <name>Terrain Set</name>
+        <author>Samuel Penn</author>
+        <cvsversion>$Revision$</cvsversion>
+    </header>
+
+    <terrainset>
+        <terrain id="0">
+            <name>null</name>
+            <description>Unchartable</description>
+            <image>hex.gif</image>
+            <solid value="false"/>
+        </terrain>
+    
+        <terrain id="1">
+            <name>sea.ocean</name>
+            <description>Ocean</description>
+            <image>sea.gif</image>
+            <solid value="false"/>
+        </terrain>
+        
+        <terrain id="2">
+            <name>sea.coastal</name>
+            <description>Coastal sea</description>
+            <image>sea.gif</image>
+            <solid value="false"/>
+        </terrain>
+        
+        <terrain id="10">
+            <name>temperate.flat</name>
+            <description>Grass plains</description>
+            <image>plains.gif</image>
+        </terrain>
+    </terrainset>
+    
+    <tileset id="root">
+        <dimensions>
+            <scale>1</scale>
+            <width>1</width>
+            <height>1</height>
+        </dimensions>
+        
+        <tiles>
+            <tile x="0" y="0" terrain="0" />
+        </tiles>
+    </tileset>
+</map>

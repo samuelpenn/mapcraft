@@ -1,0 +1,74 @@
+package uk.co.demon.bifrost.rpg.xmlmap;
+
+import java.util.*;
+
+/**
+ * Manages all the different types of terrain.
+ *
+ * @author  Samuel Penn (sam@bifrost.demon.co.uk)
+ * @version $Revision$
+ */
+public class TerrainSet {
+    protected ArrayList     terrainList;
+
+    public
+    TerrainSet() {
+        terrainList = new ArrayList();
+    }
+
+    /**
+     * Get terrain identified by its id.
+     *
+     * @param id    Unique id of the terrain to get.
+     * @return      The Terrain object.
+     */
+    public Terrain
+    getTerrain(short id) {
+        Terrain     t;
+        for (int i = 0; i < terrainList.size(); i++) {
+            t = (Terrain)terrainList.get(i);
+            if (t.getId() == id) {
+                return t;
+            }
+        }
+
+        return null;
+    }
+    
+    public Iterator
+    iterator() {
+        System.out.println("Getting TerrainSet iterator for "+
+                terrainList.size()+" items");
+        return terrainList.iterator();
+    }
+
+    /**
+     * Add the predefined terrain to the set of terrains.
+     *
+     * @param terrain   Terrain to be added.
+     */
+    public void
+    add(Terrain terrain) {
+        if (getTerrain(terrain.getId()) == null) {
+            terrainList.add(terrain);
+        }
+    }
+
+    /**
+     * Add this description of a terrain to the set of
+     * all terrains.
+     *
+     * @param id            Unique id for this terrain.
+     * @param name          Unique name of the terrain.
+     * @param description   Description of the terrain.
+     * @param imagePath     Path to the image file to use.
+     */
+    public void
+    add(short id, String name, String description, String imagePath) {
+        if (getTerrain(id) == null) {
+            add(new Terrain(id, name, description, imagePath));
+        }
+    }
+
+
+}
