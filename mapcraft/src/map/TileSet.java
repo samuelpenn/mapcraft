@@ -127,13 +127,45 @@ public class TileSet implements Cloneable {
         setThings(list);
     }
 
+    private void
+    cropAllRivers(int x, int y) {
+        Path        path = null;
+        Vector      list = new Vector();
+         // Translation coords are in tiles. Things are positioned in
+        // hundreths of a tile.
+        x *= 100;
+        y *= 100;
+
+        for (int i=0; i < rivers.size(); i++) {
+            boolean     okay = true;
+
+            path = (Path)rivers.elementAt(i);
+            path.move(0-x, 0-y);
+
+            if (okay) {
+                list.add(path);
+            }
+        }
+
+        setRivers(list);
+   }
+
     /**
      * Crop this TileSet to the given size. The width and height must both
      * be positive - if not, a MapOutOfBoundsException is thrown.
      */
     void
     crop(int x, int y, int w, int h) throws MapOutOfBoundsException {
+
+        // X-coordinate must be even. This is because of the strange
+        // effect of stuttered hexagonal tiles.
+        if (x%2 != 0) {
+            x-=1;
+            w+=1;
+        }
+
         System.out.println("Cropping "+x+","+y+","+w+","+h);
+
         // Perform sanity checks.
         checkBounds(x, y);
         checkBounds(x + w, y + h);
@@ -151,6 +183,7 @@ public class TileSet implements Cloneable {
         height = h;
 
         cropAllThings(x, y);
+        cropAllRivers(x, y);
     }
 
     private void

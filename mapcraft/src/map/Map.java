@@ -971,7 +971,7 @@ public class Map implements Cloneable {
                 Path.Element    element = (Path.Element)elements.elementAt(e);
                 int             x = element.getX();
                 int             y = element.getY();
-                int             w = element.getWidth();
+                int             w = river.getWidth();
                 int             t = element.getType();
 
                 writer.write("            ");

@@ -34,6 +34,9 @@ public class Path {
     protected int       width;
     protected boolean   highlighted;
 
+    private boolean     dirty = true;
+    private int         minX, minY, maxX, maxY;
+
     /**
      * Inner class which describes an element of a path.
      */
@@ -299,6 +302,44 @@ public class Path {
 
         return d;
     }
+
+    /**
+     * Move an entire river by the set distance.
+     */
+    public void
+    move(int x, int y) {
+        int     index = -1;
+
+        for (int i = 0; i < elements.size(); i++) {
+            Element     e = (Element)elements.elementAt(i);
+
+            e.setX(e.getX() + x);
+            e.setY(e.getY() + y);
+        }
+    }
+
+    private void
+    boundingBox() {
+        int     index = -1;
+
+        minY = minX = 10000000;
+        maxY = maxX = -1;
+        for (int i = 0; i < elements.size(); i++) {
+            Element     e = (Element)elements.elementAt(i);
+
+            if (e.getX() < minX) minX = e.getX();
+            if (e.getY() < minY) minY = e.getY();
+            if (e.getX() > maxX) maxX = e.getX();
+            if (e.getY() > maxY) maxY = e.getY();
+        }
+
+        dirty = false;
+    }
+
+    int getMinX() { boundingBox(); return minX; }
+    int getMinY() { boundingBox(); return minY; }
+    int getMaxX() { boundingBox(); return maxX; }
+    int getMaxY() { boundingBox(); return maxY; }
 
 }
 
