@@ -314,6 +314,10 @@ public class MapEditor extends MapViewer
                 setView(3);
             } else if (command.equals("4")) {
                 setView(4);
+            } else if (command.equals("5")) {
+                setView(5);
+            } else if (command.equals("6")) {
+                setView(6);
             } else {
                 // Unimplemented menu option.
                 warn("ActionEvent: Unsupported MenuViewListener."+command);
