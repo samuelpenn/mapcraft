@@ -1054,6 +1054,14 @@ public class MapViewer extends JPanel {
     }
 
     public boolean
+    cropToThing(String thing, int radius) {
+        map.cropToThing(thing, (short)radius);
+        paintComponent();
+
+        return true;
+    }
+
+    public boolean
     rescale(int newScale) {
         map.rescale(newScale);
         paintComponent();

@@ -191,9 +191,24 @@ public class MapImage extends MapViewer {
             Properties  properties = new Properties();
 
             properties.setProperty("path.run", System.getProperty("user.dir"));
-            properties.setProperty("path.images", System.getProperty("user.dir")+"/images");
+            properties.setProperty("path.images", "");
 
             map = new MapImage(properties, filename);
+
+            if (options.isOption("-thing")) {
+                String  thing = options.getString("-thing");
+                int     radius = options.getInt("-radius");
+
+                map.cropToThing(thing, radius);
+            }
+
+            if (options.isOption("-area")) {
+                String  area = options.getString("-area");
+                int     margin = options.getInt("-margin");
+
+                map.cropToArea(area, margin);
+            }
+
             map.setShowThings(true);
             map.setShowAreas(true);
             map.setShowLargeGrid(false);
