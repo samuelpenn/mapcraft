@@ -96,6 +96,8 @@ public class Map {
     }
 
     public String getName() { return name; }
+    
+    public String getFilename() { return filename; }
 
     /**
      * Get the width of the current tile set.
@@ -209,6 +211,28 @@ public class Map {
         return tileSets[set].getTerrain(x, y);
     }
 
+
+    public boolean
+    isRiver(int x, int y) throws MapOutOfBoundsException {
+        return isRiver(currentSet, x, y);
+    }
+
+    public boolean
+    isRiver(int set, int x, int y) throws MapOutOfBoundsException {
+        return tileSets[set].isRiver(x, y);
+    }
+
+    public short
+    getRiverMask(int x, int y) throws MapOutOfBoundsException {
+        return getRiverMask(currentSet, x, y);
+    }
+
+    public short
+    getRiverMask(int set, int x, int y) throws MapOutOfBoundsException {
+        return tileSets[set].getRiverMask(x, y);
+    }
+
+
     /**
      * Set the terrain of the given tile for the currently
      * selected TileSet.
@@ -261,6 +285,7 @@ public class Map {
         }
         return tiles[y][x].isWritable();
     }
+
 
     /**
      * Set the terrain of the map to be all one value.

@@ -23,6 +23,8 @@ public class Tile {
     private short   terrain;
     private short   height;
     private boolean writable;
+    private boolean river;
+    private byte    riverMask;
 
     /**
      * Construct an empty tile, of 0m height, and the default
@@ -32,8 +34,10 @@ public class Tile {
         terrain = (short)1;
         height = 0;
         writable = true;
+        river = false;
+        riverMask = 0;
     }
-    
+
     /**
      * Construct a tile from another Tile.
      *
@@ -43,6 +47,8 @@ public class Tile {
         this.terrain = tile.terrain;
         this.height = tile.height;
         this.writable = tile.writable;
+        this.river = tile.river;
+        this.riverMask = tile.riverMask;
     }
 
     /**
@@ -87,5 +93,29 @@ public class Tile {
     public boolean
     isWritable() {
         return writable;
+    }
+    
+    public boolean
+    isRiver() {
+        return river;
+    }
+    
+    public short
+    getRiverMask() {
+        return (short)riverMask;
+    }
+    
+    public void
+    setRiverMask(short mask) {
+        this.river = true;
+        this.riverMask = (byte)mask;
+    }
+    
+    public void
+    setRiver(boolean river) {
+        this.river = river;
+        if (river == false) {
+            riverMask = (byte)0;
+        }
     }
 }

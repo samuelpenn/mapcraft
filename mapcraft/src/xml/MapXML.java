@@ -368,6 +368,10 @@ public class MapXML {
         //    <tiles>
         //        <tile.../>
         //    </tiles>
+        //    <rivers>
+        //        <river x="7" y="8" mask="9"/>
+        //        <river x="7" y="9" mask="9"/>
+        //    </rivers>
         // </tileset>
 
         name = getTextNode(id, ".");
@@ -416,12 +420,34 @@ public class MapXML {
                         System.out.println("For "+y+" ("+i+") read "+part+" = "+terrain);
                         tileSet.setTile(x, y, terrain);
                     }
-
-//                    y = getIntNode(values.getNamedItem("y"));
-//                    terrain = (short) getIntNode(values.getNamedItem("terrain"));
-//
                 }
             }
+            columns = null; // Free memory;
+
+            // Now, get data on rivers. Since river data is a lot
+            // less, we don't use blobs for rivers.
+            System.out.println("Reading river data...");
+            NodeList    rivers = getNodeList(node, "rivers/river");
+            
+            if (rivers != null) {
+                for (int r=0; r < rivers.getLength(); r++) {
+                    Node            river = rivers.item(r);
+                    Node            value;
+                    NamedNodeMap    values;
+                    
+                    if (river != null) {
+                        int     x = 0, y = 0;
+                        short   mask = 0;
+                        
+                        values = river.getAttributes();
+                        x = getIntNode(values.getNamedItem("x"));
+                        y = getIntNode(values.getNamedItem("y"));
+                        mask = (short)getIntNode(values.getNamedItem("mask"));
+                        tileSet.setRiverMask(x, y, mask);
+                    }
+                }
+            }
+
         } catch (InvalidArgumentException iae) {
             throw new XMLException("Cannot create TileSet from XML");
         } catch (MapOutOfBoundsException mbe) {

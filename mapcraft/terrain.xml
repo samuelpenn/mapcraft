@@ -37,7 +37,7 @@
         <terrain id="11">
             <name>clear.wooded</name>
             <description>Mixed woods</description>
-            <image>cropland.gif</image>
+            <image>mixed.gif</image>
         </terrain>
 
         <terrain id="20">
@@ -48,36 +48,36 @@
         <terrain id="21">
             <name>wild.moor</name>
             <description>Moor</description>
-            <image>heath.gif</image>
+            <image>moor.gif</image>
         </terrain>
         <terrain id="22">
             <name>wild.marsh</name>
             <description>Marshland</description>
             <image>marsh.gif</image>
         </terrain>
-        
+
         <terrain id="30">
             <name>woods.light</name>
             <description>Light woods</description>
-            <image>woods.gif</image>
+            <image>lightwoods.gif</image>
         </terrain>
         <terrain id="31">
             <name>woods.medium</name>
             <description>Medium woods</description>
-            <image>woods.gif</image>
+            <image>mediumwoods.gif</image>
         </terrain>
         <terrain id="32">
             <name>woods.thick</name>
             <description>Thick woods</description>
-            <image>woods.gif</image>
+            <image>thickwoods.gif</image>
         </terrain>
-        
+
         <terrain id="40">
             <name>mountains.foot</name>
             <description>Foot hills</description>
             <image>hills.gif</image>
         </terrain>
-        
+
         <terrain id="41">
             <name>mountains.low</name>
             <description>Low mountains</description>

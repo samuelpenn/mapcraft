@@ -28,7 +28,9 @@ public class MapViewer extends JPanel {
     
     protected Toolkit     toolkit = null;
     protected Image[]     icons = null;
+    
     protected IconSet     iconSet = null;
+    protected IconSet     riverSet = null;
 
     /**
      * Basic constructor. Creates an empty map.
@@ -82,10 +84,17 @@ public class MapViewer extends JPanel {
                     short   id = t.getId();
                     String  path = t.getImagePath();
                     Image   icon = toolkit.getImage("images/"+tileSize+"/"+path);
-                    
+
                     System.out.println("Adding icon "+path+" for terrain "+id);
                     iconSet.add(id, icon);
                 }
+            }
+            
+            riverSet = new IconSet("rivers");
+            for (short i = 0; i < 64; i++) {
+                String  name = "/rivers/"+((i<10)?"0":"")+i+".gif";
+                Image   icon = toolkit.getImage("images/"+tileSize+"/"+name);
+                riverSet.add(i, icon);
             }
 
             map.setCurrentSet("root");
@@ -114,6 +123,12 @@ public class MapViewer extends JPanel {
                     short t = map.getTerrain(x, y);
                     Image icon = iconSet.getIcon(t);
                     g.drawImage(icon, xp, ypp, this);
+                    
+                    // Now display a river, if one is needed.
+                    if (map.isRiver(x, y)) {
+                        icon = riverSet.getIcon(map.getRiverMask(x, y));
+                        g.drawImage(icon, xp, ypp, this);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -137,6 +152,13 @@ public class MapViewer extends JPanel {
             short   t = map.getTerrain(x, y);
             Image   icon = iconSet.getIcon(t);
             g.drawImage(icon, xp, yp, this);
+
+            // Now display a river, if one is needed.
+            if (map.isRiver(x, y)) {
+                icon = riverSet.getIcon(map.getRiverMask(x, y));
+                g.drawImage(icon, xp, yp, this);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -149,7 +171,7 @@ public class MapViewer extends JPanel {
     public static void
     main(String args[]) {
         JFrame      frame = new JFrame("Map Viewer");
-        MapViewer   view = new MapViewer("kanday.map");
+        MapViewer   view = new MapViewer("harn.map");
 
         frame.getContentPane().add(view);
         frame.setSize(new Dimension(600,700));

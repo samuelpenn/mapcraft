@@ -25,87 +25,175 @@
             <image>sea.gif</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="3">
-            <name>temperate.flat</name>
+        <terrain id="10">
+            <name>clear.flat</name>
             <description>Cropland</description>
             <image>cropland.gif</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="4">
-            <name>temperate.woods</name>
-            <description>Woods</description>
-            <image>woods.gif</image>
+        <terrain id="11">
+            <name>clear.wooded</name>
+            <description>Mixed woods</description>
+            <image>mixed.gif</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="5">
-            <name>temperate.woods</name>
+        <terrain id="20">
+            <name>wild.heath</name>
             <description>Heath</description>
             <image>heath.gif</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="6">
-            <name>temperate.woods</name>
-            <description>Marsh</description>
+        <terrain id="21">
+            <name>wild.moor</name>
+            <description>Moor</description>
+            <image>moor.gif</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="22">
+            <name>wild.marsh</name>
+            <description>Marshland</description>
             <image>marsh.gif</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="30">
+            <name>woods.light</name>
+            <description>Light woods</description>
+            <image>lightwoods.gif</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="31">
+            <name>woods.medium</name>
+            <description>Medium woods</description>
+            <image>mediumwoods.gif</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="32">
+            <name>woods.thick</name>
+            <description>Thick woods</description>
+            <image>thickwoods.gif</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="40">
+            <name>mountains.foot</name>
+            <description>Foot hills</description>
+            <image>hills.gif</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="41">
+            <name>mountains.low</name>
+            <description>Low mountains</description>
+            <image>hills.gif</image>
             <solid value="false"/>
         </terrain>
     </terrainset>
     <tileset id="root">
         <dimensions>
             <scale>20</scale>
-            <width>16</width>
-            <height>16</height>
+            <width>32</width>
+            <height>24</height>
         </dimensions>
         <tiles>
         <column x="0">
-            01010101010101010101010101010101
+            010101010101010101010101010101010101010101010101
         </column>
         <column x="1">
-            01010101010101010101010101010101
+            010k01010101010101010101010101010101010101010101
         </column>
         <column x="2">
-            01010106060101010101010101010101
+            010101010101010101010101010101010101010101010101
         </column>
         <column x="3">
-            01010506060101010601010505050101
+            010101010101010101010101010101010101010101010101
         </column>
         <column x="4">
-            01010506010101060606060505050501
+            010101010101010101010101010101010101010101010101
         </column>
         <column x="5">
-            01010606010301060606030505050501
+            010101010101010101010101010101010101010101010101
         </column>
         <column x="6">
-            01010101010303030303030305050101
+            0101010101010101010101010a0101010101010101010101
         </column>
         <column x="7">
-            01010101010303030304040305050101
+            010101010101010a0a0a0a0a010a01010101010101010101
         </column>
         <column x="8">
-            01010101030304040404040303050101
+            010101010101010a0a0a0a0a0a0101010k01010101010101
         </column>
         <column x="9">
-            01010101030304040404060606060101
+            0101010101010a0a0a0b0b0a0a0a0a0a0k0k010101010101
         </column>
         <column x="10">
-            01010101010303040403030306010101
+            01010101010a0a0a0a0b0b0a0a0a0a0a0a0k0k0k01010101
         </column>
         <column x="11">
-            01010101030304040303010606010101
+            010101010a0a0a0a0a0b0b0a0a0a0a0a0a0a0k0k0k010101
         </column>
         <column x="12">
-            01010101030304030303030606010101
+            010101010a0a0a0a0b0b0b0b0b0a0b0a0a0a0a0k0k010101
         </column>
         <column x="13">
-            01010101010103010101010106060601
+            0101010a0a0a0a0a0b0b0b0b0b0b0b0b0b0b0a0k0k010101
         </column>
         <column x="14">
-            01010101010101010101010106060101
+            0101010a0a0a0a0b0b0b0b0b0b0b0a0a0b0a0a0k0k010101
         </column>
         <column x="15">
-            01010101010101010101010101010101
+            0101010a0a0a0a0b0b0b0b0b0b0b0a0a0a0a0a0a0k010101
+        </column>
+        <column x="16">
+            0101010a0a0a0a0b0a0b0b0b0b0a0b0b0b0b0a0a0k010101
+        </column>
+        <column x="17">
+            0101010a0a0a0a0b0b0b0b0b0b0a0b0b0a0b0a0a01010101
+        </column>
+        <column x="18">
+            0101010a0a0a0a0b0b0b0b0b0a0b0b0a0a0a0b0a01010101
+        </column>
+        <column x="19">
+            010101010a0a0a0a0b0b0b0b0a0b0a0a0a0a0b0a01010101
+        </column>
+        <column x="20">
+            0101010a0a0a0a0a0b0b0b0a0b0b0a0a0a0b0b0a01010101
+        </column>
+        <column x="21">
+            0101010a0a0a0a0a0b0b0b0b0a0b0a0b0b0a0a0a01010101
+        </column>
+        <column x="22">
+            010101010a0a0a0a0b0b0b0b0b0b0b0a0a0a0a0101010101
+        </column>
+        <column x="23">
+            01010101010a0a0a0a0b0a0a0a0a0a0a0a0a010101010101
+        </column>
+        <column x="24">
+            01010101010a0a0a0a0a0a0a0a010a0a0a01010101010101
+        </column>
+        <column x="25">
+            01010101010a0a0a0a0a0a0a0a010a0a0a01010101010101
+        </column>
+        <column x="26">
+            0101010101010a0a0a0a0a0a01010a0a0101010101010101
+        </column>
+        <column x="27">
+            010101010101010101010101010101010101010101010101
+        </column>
+        <column x="28">
+            010101010101010101010101010101010101010101010101
+        </column>
+        <column x="29">
+            010101010101010101010101010101010101010101010101
+        </column>
+        <column x="30">
+            010101010101010101010101010101010101010101010101
+        </column>
+        <column x="31">
+            010101010101010101010101010101010101010101010101
         </column>
         </tiles>
+        
+        <rivers>
+            <river x="16" y="12" type="river" mask="3"/>
+        </rivers>
     </tileset>
 
 </map>

@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 import uk.co.demon.bifrost.utils.Options;
 
@@ -120,7 +121,7 @@ public class MapEditor extends MapViewer implements ActionListener {
             } else if (command.equals("save")) {
                 // Save current map file.
                 try {
-                    map.save("kanday.map");
+                    map.save(map.getFilename());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -170,6 +171,8 @@ public class MapEditor extends MapViewer implements ActionListener {
         menuBar.add(createEditMenu());
         menuBar.add(createViewMenu());
         menuBar.add(createPaletteMenu());
+        menuBar.setVisible(true);
+        frame.setSize(new Dimension(1200, 900));
 
         frame.addKeyListener(new KeyEventHandler());
 
@@ -299,25 +302,18 @@ public class MapEditor extends MapViewer implements ActionListener {
         MenuPaletteListener listener = new MenuPaletteListener();
 
         menu.setMnemonic(KeyEvent.VK_P);
+        
+        TerrainSet  set = map.getTerrainSet();
+        Iterator    it = set.iterator();
+        
+        while (it.hasNext()) {
+            Terrain t = (Terrain)it.next();
+            System.out.println("Adding terrain "+t.getId()+" ("+t.getDescription()+")");
+            menu.add(item = new JMenuItem(t.getDescription()));
+            item.setActionCommand(""+t.getId());
+            item.addActionListener(listener);
 
-        menu.add(item = new JMenuItem("Ocean"));
-        item.setActionCommand("1");
-        item.addActionListener(listener);
-        menu.add(item = new JMenuItem("Sea"));
-        item.setActionCommand("2");
-        item.addActionListener(listener);
-        menu.add(item = new JMenuItem("Cropland"));
-        item.setActionCommand("3");
-        item.addActionListener(listener);
-        menu.add(item = new JMenuItem("Woods"));
-        item.setActionCommand("4");
-        item.addActionListener(listener);
-        menu.add(item = new JMenuItem("Heath"));
-        item.setActionCommand("5");
-        item.addActionListener(listener);
-        menu.add(item = new JMenuItem("Marsh"));
-        item.setActionCommand("6");
-        item.addActionListener(listener);
+        }
 
         return menu;
     }
