@@ -230,7 +230,11 @@ public class MapEditor extends MapViewer
                 applyBrushPaths(brush.getX(), brush.getY(), Path.ROAD);
                 break;
             case Brush.HIGHLIGHT:
-                map.setHighlighted(x, y, true);
+                if (brush.getMode() == Brush.INSERT) {
+                    map.setHighlighted(x, y, true);
+                } else {
+                    map.setHighlighted(x, y, false);
+                }
                 paintTile(x, y);
                 break;
             }
