@@ -52,20 +52,16 @@ public class MapImage extends MapViewer {
         super(properties, filename);
     }
 
-    /**
-     * Forces all images to be loaded into memory. If this is not done,
-     * when we generate the off-screen image, none of the images will
-     * have been loaded from disc, so we get a blank image.
-     */
     private void
-    forceImageLoad() {
-        int     i = 0;
+    clearToWhite(BufferedImage image) {
+        Graphics2D  g = image.createGraphics();
+        int         width = image.getWidth();
+        int         height = image.getHeight();
+        Rectangle   rectangle;
 
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        rectangle = new Rectangle(0, 0, width, height);
+        g.setColor(Color.WHITE);
+        g.fill(rectangle);
     }
 
     /**
@@ -80,7 +76,6 @@ public class MapImage extends MapViewer {
         int             w, h;
 
         setView(scale);
-        forceImageLoad();
         try {
             Thread.sleep(1000);
         } catch (Exception ie) {
@@ -95,6 +90,7 @@ public class MapImage extends MapViewer {
             }
             image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
             System.out.println("Painting image...");
+            clearToWhite(image);
             paintComponent(image.createGraphics());
             System.out.println("...finished painting");
 
