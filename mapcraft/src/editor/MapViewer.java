@@ -24,6 +24,9 @@ import java.io.*;
 import java.util.*;
 import java.awt.geom.Line2D;
 
+import com.sun.image.codec.jpeg.*;
+
+
 /**
  * A component which displays a Map as part of a GUI.
  * The map data is held in the Map object. Should be
@@ -483,11 +486,17 @@ public class MapViewer extends JPanel {
 
         // Clip area to rectangle.
         Rectangle   clip = g.getClipBounds();
-        startX = (int)(clip.getX()/tileXSize) -1;
-        endX = (int)((clip.getX()+clip.getWidth())/tileXSize) + 1;
+        if (clip != null) {
+            startX = (int)(clip.getX()/tileXSize) -1;
+            endX = (int)((clip.getX()+clip.getWidth())/tileXSize) + 1;
 
-        startY = (int)(clip.getY()/tileYSize) -1;
-        endY = (int)((clip.getY()+clip.getHeight())/tileYSize) + 1;
+            startY = (int)(clip.getY()/tileYSize) -1;
+            endY = (int)((clip.getY()+clip.getHeight())/tileYSize) + 1;
+        } else {
+            startX = startY = 0;
+            endX = map.getWidth();
+            endY = map.getHeight();
+        }
 
         if (startX < 0) startX = 0;
         if (startY < 0) startY = 0;
@@ -555,7 +564,7 @@ public class MapViewer extends JPanel {
             System.out.println("Failed to paint tile "+x+", "+y);
         }
     }
-    
+
     /**
      * Paint a single tile on the map. Tile is referenced by its
      * coordinate. Tile is painted to the graphics object of the
@@ -622,8 +631,58 @@ public class MapViewer extends JPanel {
     /**
      * Convert the map to an Image, ready for saving to disc.
      */
-    public Image
+    public BufferedImage
     toImage() {
+        BufferedImage   image = null;
+        Graphics2D      graphics = null;
+        int             w, h;
+
+        try {
+            w = map.getWidth() * tileXSize;
+            h = map.getHeight() * tileYSize;
+
+            image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+            System.out.println("Painting image...");
+            paintComponent(image.getGraphics());
+            System.out.println("...finished painting");
+
+        } catch (Exception e) {
+            System.out.println("toImage: "+e.getMessage());
+            e.printStackTrace();
+        }
+
+        return image;
+    }
+
+    public void
+    saveImage(String filename) {
+        OutputStream    out = null;
+        BufferedImage   image = null;
+
+        System.out.println("Saving image as ["+filename+"]");
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ee) { }
+
+        try {
+            image = toImage();
+
+            File file = new File(filename);
+
+            out = new BufferedOutputStream(new FileOutputStream(file));
+            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+
+            encoder.encode(image);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (Throwable t) {}
+        }
     }
 
     /**

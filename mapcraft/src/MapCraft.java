@@ -290,7 +290,7 @@ public class MapCraft implements ActionListener {
             map = new MapCraft(properties, mapfile);
             if (crop) {
                 MapCraft     newMap = map.crop(x, y, w, h);
-                newMap.save("cropped.map");
+                newMap.editor.saveImage("my.jpg");
             }
         }
 
