@@ -31,9 +31,34 @@
 
     <body>
         <sect1>
+            <title>Current Features</title>
+            
             <p>
-                Placeholder for feature list. Includes wishlist and other
-                things. Something like the KDE status pages. Possibly.
+                Supports hexagonal and square tiled maps.
+            </p>
+            
+            <p>
+                Supports vectors for rivers and roads.
+            </p>
+            
+            <p>
+                Supports free floating objects for towns and cities.
+            </p>
+            
+            <p>
+                Xalan plugin for auto generating images from XML.
+            </p>
+        </sect1>
+        
+        <sect1>
+            <title>Planned Features</title>
+            
+            <p>
+                Automatically generate map statistics.
+            </p>
+            
+            <p>
+                GUI interface to merging of maps.
             </p>
         </sect1>
     </body>
