@@ -16,14 +16,26 @@ import uk.co.demon.bifrost.utils.Options;
 public class MapEditor extends MapViewer
                        implements ActionListener {
 
+
     private JFrame      frame;
     private JMenuBar    menuBar;
 
-    private short       terrainSelected = 3;
-
     private Pane        terrainPane = null;
     private Pane        riverPane = null;
+    private Pane        placePane = null;
+    
+    private Brush       brush = new Brush();
 
+
+
+
+
+    /**
+     * Event handler for the terrain palette. Provides logic for
+     * when an item in the terrain palette (terrainPane) is selected.
+     * Changes the 'terrainSelected' field, and changes the painting
+     * mode to be MODE_BRUSH.
+     */
     public class
     TerrainPalette implements ListSelectionListener {
         private MapEditor editor;
@@ -48,21 +60,72 @@ public class MapEditor extends MapViewer
 
             System.out.println("TerrainPalette: "+index);
             Terrain ta[] = map.getTerrainSet().toArray();
-            terrainSelected = ta[index].getId();
-            System.out.println("Terrain selected: "+terrainSelected);
+            brush.setSelected(Brush.TERRAIN, ta[index].getId());
+            System.out.println("Terrain selected: "+brush.getSelected());
+
+            brush.setType(Brush.TERRAIN);
         }
     }
 
-    private void
-    log(int level, String message) {
-        System.out.println(message);
+    public class
+    PlacePalette implements ListSelectionListener {
+        private MapEditor editor;
+
+        public
+        PlacePalette(MapEditor editor) {
+            this.editor = editor;
+        }
+
+        public void
+        valueChanged(ListSelectionEvent e) {
+            int first, last, index;
+
+            // We get a result for both the item which was
+            // selected, and the one unselected, so we need
+            // to figure out which is which.
+            index = first = e.getFirstIndex();
+            last = e.getLastIndex();
+            if (placePane.isSelected(last)) {
+                index = last;
+            }
+
+            System.out.println("TerrainPalette: "+index);
+            Terrain ta[] = map.getPlaceSet().toArray();
+            brush.setSelected(Brush.SITES, ta[index].getId());
+            System.out.println("Terrain selected: "+brush.getSelected());
+
+            brush.setType(Brush.SITES);
+        }
     }
 
-    private void debug(String message) { log(4, message); }
-    private void trace(String message) { log(3, message); }
-    private void warn(String message)  { log(2, message); }
-    private void error(String message) { log(1, message); }
-    private void fatal(String message) { log(0, message); }
+
+    public void
+    applyBrush(int x, int y) {
+        try {
+            switch (brush.getType()) {
+            case Brush.TERRAIN:
+                info("Applying terrain brush "+brush.getSelected());
+                map.setTerrain(x, y, brush.getSelected());
+                break;
+            case Brush.SITES:
+                if (brush.getSelected() == 0) {
+                    map.getTile(x, y).setSite((Site)null);
+                } else if (!map.isSite(x, y)) {
+                    // Only set site if no site currenty present.
+                    Site    site = new Site(brush.getSelected(), "Unnamed", "Unknown");
+                    info("Applying site brush "+brush.getSelected());
+                    map.getTile(x, y).setSite(site);
+                } else {
+                    // Do nothing.
+                }
+                break;
+            }
+        } catch (MapOutOfBoundsException moobe) {
+            warn("Out of bounds!");
+        }
+
+        paintTile(x, y);
+    }
 
 
     /**
@@ -77,14 +140,7 @@ public class MapEditor extends MapViewer
             x = e.getX()/tileXSize;
             y = e.getY()/tileYSize;
 
-            try {
-                map.setTerrain(x, y, terrainSelected);
-            } catch (MapOutOfBoundsException moobe) {
-                log(0, "Out of bounds!");
-            }
-
-            repaint();
-
+            applyBrush(x, y);
         }
     }
 
@@ -97,16 +153,15 @@ public class MapEditor extends MapViewer
         mouseDragged(MouseEvent e) {
             int     x,y;
 
+            if (brush.getType() == Brush.SITES) {
+                // Don't allow drag paint for painting of sites.
+                return;
+            }
+
             x = e.getX()/tileXSize;
             y = e.getY()/tileYSize;
 
-            log(0, "Dragged ("+x+","+y+") = "+terrainSelected);
-            try {
-                map.setTerrain(x, y, terrainSelected);
-            } catch (MapOutOfBoundsException moobe) {
-                log(0, "Out of bounds!");
-            }
-            paintTile(x, y);
+            applyBrush(x, y);
         }
     }
 
@@ -127,7 +182,7 @@ public class MapEditor extends MapViewer
         actionPerformed(ActionEvent e) {
             String  command = e.getActionCommand();
 
-            trace("ActionEvent: Menu edit."+command);
+            info("ActionEvent: Menu edit."+command);
 
             if (command.equals("double")) {
                 map.rescaleMap(map.getScale()/2);
@@ -144,7 +199,7 @@ public class MapEditor extends MapViewer
         actionPerformed(ActionEvent ev) {
             String command = ev.getActionCommand();
 
-            trace("ActionEvent: Menu file."+command);
+            info("ActionEvent: Menu file."+command);
 
             if (command.equals("load")) {
                 // Load a map file.
@@ -176,9 +231,9 @@ public class MapEditor extends MapViewer
         actionPerformed(ActionEvent ev) {
             String  command = ev.getActionCommand();
 
-            trace("ActionEvent: Menu palette."+command);
+            info("ActionEvent: Menu palette."+command);
             try {
-                terrainSelected = (short) Integer.parseInt(command);
+                brush.setSelected(Brush.TERRAIN, (short) Integer.parseInt(command));
             } catch (Exception e) {
                 warn("ActionEvent: Palette option not an integer");
             }
@@ -200,10 +255,11 @@ public class MapEditor extends MapViewer
 
         frame = new JFrame("Map Editor");
         frame.getContentPane().add(scrollPane);
-        frame.setSize(new Dimension(1400,900));
+        frame.setSize(new Dimension(640,400));
         frame.setVisible(true);
 
         addMouseMotionListener(new MouseMotionHandler());
+        addMouseListener(new MouseHandler());
 
         menuBar = new JMenuBar();
         frame.setJMenuBar(menuBar);
@@ -212,13 +268,17 @@ public class MapEditor extends MapViewer
         menuBar.add(createViewMenu());
         menuBar.add(createPaletteMenu());
         menuBar.setVisible(true);
-        frame.setSize(new Dimension(1200, 900));
+        frame.setSize(new Dimension(600, 400));
 
         frame.addKeyListener(new KeyEventHandler());
         
         terrainPane = new Pane(new TerrainPalette(this), "Terrain");
         terrainPane.setPalette(map.getTerrainSet().toArray(), false);
         terrainPane.makeFrame();
+        
+        placePane = new Pane(new PlacePalette(this), "Places");
+        placePane.setPalette(map.getPlaceSet().toArray(), false);
+        placePane.makeFrame();
 
     }
 
@@ -237,19 +297,6 @@ public class MapEditor extends MapViewer
 
     public void
     processEvent(String option) {
-        if (option.equals("Ocean")) {
-            terrainSelected = 1;
-        } else if (option.equals("Sea")) {
-            terrainSelected = 2;
-        } else if (option.equals("Cropland")) {
-            terrainSelected = 3;
-        } else if (option.equals("Woods")) {
-            terrainSelected = 4;
-        } else if (option.equals("Heath")) {
-            terrainSelected = 5;
-        } else if (option.equals("Marsh")) {
-            terrainSelected = 6;
-        }
     }
 
     /**

@@ -127,7 +127,7 @@ public class Pane extends JPanel implements ListSelectionListener {
             MapXML      xml = new MapXML("terrain.xml");
             Terrain[]   terrains;
 
-            items = xml.getTerrainSet();
+            items = xml.getTerrainSet("basic");
             terrains = items.toArray();
 
             pane.setPalette(terrains, true);

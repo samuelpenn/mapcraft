@@ -36,8 +36,9 @@ import javax.xml.transform.dom.*;
  */
 public class MapXML {
     protected Document      document;
-    protected String        name, author;
-    protected String        cvsversion;
+    protected String        name, author, id, parent;
+    protected String        version, date;
+    protected String        format;
 
     /**
      * Exception class, raised when an error occurs during
@@ -71,7 +72,7 @@ public class MapXML {
         } catch (IOException ioe) {
             throw new MapException("Cannot load XML document");
         } catch (XMLException xmle) {
-            throw new MapException("Cannot parse XML data");
+            throw new MapException("Cannot parse XML data ("+xmle.getMessage()+")");
         }
     }
 
@@ -102,10 +103,14 @@ public class MapXML {
 
             name = getTextNode("/map/header/name");
             author = getTextNode("/map/header/author");
-            cvsversion = getTextNode("/map/header/cvsversion");
+            version = getTextNode("/map/header/cvs/version");
+            date = getTextNode("/map/header/cvs/date");
+            format = getTextNode("/map/header/format");
+            id = getTextNode("/map/header/id");
+            parent = getTextNode("/map/header/parent");
 
 
-            System.out.println(name);
+            System.out.println(name+","+id+","+parent+","+author);
         } catch (XMLException xe) {
             throw xe;
         } catch (IOException ioe) {
@@ -202,12 +207,12 @@ public class MapXML {
         try {
             node = XPathAPI.selectSingleNode(root, xpath);
             if (node == null) {
-                throw new XMLException("Node not found");
+                throw new XMLException("Node \""+xpath+"\" not found");
             }
             
             text = getTextNode(node);
         } catch (TransformerException te) {
-            throw new XMLException("Cannot find text node");
+            throw new XMLException("Cannot find node \""+xpath+"\"");
         }
 
         return text;
@@ -228,6 +233,8 @@ public class MapXML {
             } else {
                 throw new XMLException("Node does not have text element");
             }
+        } catch (XMLException xe) {
+            throw xe;
         } catch (Exception e) {
             throw new XMLException("Node does not have text element");
         }
@@ -287,36 +294,62 @@ public class MapXML {
      * has a $Revision$ tag in it. This property gives
      * access to the CVS revision value.
      */
-    public String getCVSVersion() { return cvsversion; }
+    public String getCVSVersion() { return version; }
+    public String getCVSDate() { return date; }
 
     /**
      * Returns the version number, stripped of any CVS tags.
      * Not currently implemented - just returns the cvsversion.
      */
     public String getVersion() {
-        return cvsversion;
+        return version;
     }
     
+    public String getDate() {
+        return date;
+    }
+    
+    public String getId() { return id; }
+    public String getFormat() { return format; }
+    public String getParent() { return parent; }
 
+    /**
+     * Return all the terrains from the named terrainset in the XML data.
+     * If no terrainset of the given name is not found, then an XMLException
+     * is raised.
+     *
+     * @param setId     Id of the terrain set to fetch.
+     * @return          The full TerrainSet that is found.
+     */
     public TerrainSet
-    getTerrainSet() throws XMLException {
-        Node        node;
-        TerrainSet  set = new TerrainSet();
-        String      name, description;
-        String      image;
-        int         i = 0;
-        
+    getTerrainSet(String setId) throws XMLException {
+        Node            node;
+        TerrainSet      set = null;
+        String          name, description;
+        String          image;
+        String          path;
+        int             i = 0;
+        NamedNodeMap    values;
+        Node            value;
+
         System.out.println("Getting TerrainSet from XML");
 
         try {
-            node = getNode("/map/terrainset");
+            node = getNode("/map/terrainset[@id='"+setId+"']");
+            if (node == null) {
+                throw new XMLException("No TerrainSet named "+setId+" was found");
+            }
+            values = node.getAttributes();
+            path = getTextNode(values.getNamedItem("path"));
+            if (path == null) {
+                path = ".";
+            }
 
+            set = new TerrainSet(setId, path);
             NodeList list = getNodeList(node, "terrain");
 
             for (i=0; i < list.getLength(); i++) {
                 Node            terrain = list.item(i);
-                NamedNodeMap    values;
-                Node            value;
                 short   id;
 
                 if (terrain != null) {
@@ -329,12 +362,14 @@ public class MapXML {
 
                     System.out.println(name);
 
-                    set.add(id, name, description, image);
+                    set.add(id, name, description, path+"/"+image);
                 }
-
             }
+            list = null;
+        } catch (XMLException xe) {
+            throw xe;
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new XMLException("Error in getting TerrainSet");
         }
 
         return set;
@@ -410,14 +445,10 @@ public class MapXML {
                     System.out.println("Reading column "+x);
 
                     String  data = getTextNode(column).replaceAll(" |\n|\t", "");
-                    System.out.println(data);
-
-                    System.out.println("Data length is "+data.length());
                     for (y=0,i=0; i < data.length(); i+=2, y++) {
                         String  part = data.substring(i, i+2);
                         terrain = Short.valueOf(part, 36).shortValue();
-                        
-                        System.out.println("For "+y+" ("+i+") read "+part+" = "+terrain);
+
                         tileSet.setTile(x, y, terrain);
                     }
                 }
@@ -502,6 +533,57 @@ public class MapXML {
         return ret;
     }
     
+    /**
+     * Return an array of all the sites in the map.
+     */
+    public void
+    getSites(TileSet tileSet) throws XMLException {
+        Site[]          sites = null;
+        String          name, description;
+        String          image;
+        String          path;
+        int             x, y, i = 0;
+        short           type;
+        NamedNodeMap    values;
+        Node            value;
+
+        System.out.println("Getting Sites from XML");
+
+        try {
+            NodeList    list = getNodeList("/map/sites/site");
+            if (list == null || list.getLength() == 0) {
+                throw new XMLException("No sites were found");
+            }
+
+            for (i=0; i < list.getLength(); i++) {
+                Node        node = list.item(i);
+                Site        site = null;
+
+
+                if (node != null) {
+                    values = node.getAttributes();
+                    type = (short)getIntNode(values.getNamedItem("type"));
+                    x = getIntNode(values.getNamedItem("x"));
+                    y = getIntNode(values.getNamedItem("y"));
+
+                    name = getTextNode(node, "name");
+                    description = getTextNode(node, "description");
+
+                    System.out.println("Site ["+name+"] at "+x+","+y);
+
+                    tileSet.getTile(x, y).setSite(new Site(type, name, description));
+                }
+            }
+            list = null;
+        } catch (XMLException xe) {
+            throw xe;
+        } catch (Exception e) {
+            throw new XMLException("Error in getting Sites");
+        }
+
+        return;
+    }
+    
 
 
 
@@ -514,7 +596,7 @@ public class MapXML {
         try {
             MapXML      xml = new MapXML("map.cart");
             xml.getTileSets();
-            xml.getTerrainSet();
+            xml.getTerrainSet("basic");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -30,12 +30,20 @@ public class Map {
     // Basic indentity fields.
     private String  filename;
     private String  name;
+    private String  version;
+    private String  date;
+    
+    private String  author;
+    private String  id;
+    private String  parent;
+    private String  format;
 
     // XML backend data.
     private MapXML  xml;
 
     // Data sets
     TerrainSet      terrainSet = null;
+    TerrainSet      placeSet = null;
     TileSet         tileSets[] = null;
     
     // State fields
@@ -51,6 +59,9 @@ public class Map {
     public
     Map(String name, int width, int height, int scale) throws MapException {
         this.name = name;
+        this.id = name+"."+System.currentTimeMillis();
+        this.parent = "none";
+        this.author = "Unknown";
         
         tileSets = new TileSet[1];
         tileSets[0] = new TileSet("root", width, height, scale);
@@ -72,8 +83,22 @@ public class Map {
             xml = new MapXML(filename);
             System.out.println("Reading tilesets");
             tileSets = xml.getTileSets();
-            terrainSet = xml.getTerrainSet();
+            terrainSet = xml.getTerrainSet("basic");
+            placeSet = xml.getTerrainSet("places");
             
+            xml.getSites(tileSets[0]);
+
+            this.filename = filename;
+            this.name = xml.getName();
+            this.format = xml.getFormat();
+            this.id = xml.getId();
+            this.parent = xml.getParent();
+            this.author = xml.getAuthor();
+            
+            System.out.println("LOADED MAP ["+name+"]");
+            System.out.println("Author     "+author);
+            System.out.println("Id         "+id+"/"+parent);
+
             setCurrentSet("root");
         } catch (MapException mape) {
             throw mape;
@@ -89,7 +114,8 @@ public class Map {
 
         try {
             xml = new MapXML(filename);
-            terrainSet = xml.getTerrainSet();
+            terrainSet = xml.getTerrainSet("basic");
+            placeSet = xml.getTerrainSet("places");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -232,6 +258,21 @@ public class Map {
         return tileSets[set].getRiverMask(x, y);
     }
 
+    
+    public boolean
+    isSite(int x, int y) throws MapOutOfBoundsException {
+        return (tileSets[0].getTile(x, y).getSite() != null);
+    }
+
+    public short
+    getSiteMask(int x, int y) throws MapOutOfBoundsException {
+        return tileSets[0].getTile(x, y).getSite().getType();
+    }
+    
+    public Site
+    getSite(int x, int y) throws MapOutOfBoundsException {
+        return tileSets[0].getTile(x, y).getSite();
+    }
 
     /**
      * Set the terrain of the given tile for the currently
@@ -274,7 +315,7 @@ public class Map {
         }
         return tiles[y][x].getHeight();
     }
-    
+
     public boolean
     isWritable(int x, int y) {
         if (x < 0 || x >= width) {
@@ -418,7 +459,9 @@ public class Map {
         writer.write("<map>\n");
         writer.write("    <header>\n");
         writer.write("        <name>"+name+"</name>\n");
-        writer.write("        <author>Unknown</author>\n");
+        writer.write("        <author>"+author+"</author>\n");
+        writer.write("        <id>"+id+"</id>\n");
+        writer.write("        <parent>"+parent+"</parent>\n");
         writer.write("        <cvsversion>$Revision$</cvsversion>\n");
         writer.write("    </header>\n");
 
@@ -474,6 +517,27 @@ public class Map {
         writer.close();
     }
     
+    private void
+    writeTerrainSet(TerrainSet set, FileWriter writer) throws IOException {
+        writer.write("    <terrainset id=\""+set.getId()+
+                     "\" path=\""+set.getPath()+"\">\n");
+
+        // Iterate over the terrain types, and save them out.
+        Iterator iter = set.iterator();
+        while (iter.hasNext()) {
+            Terrain t = (Terrain)iter.next();
+            String  path = t.getImagePath();
+            path = path.replaceAll(".*/", "");
+
+            writer.write("        <terrain id=\""+t.getId()+"\">\n");
+            writer.write("            <name>"+t.getName()+"</name>\n");
+            writer.write("            <description>"+t.getDescription()+"</description>\n");
+            writer.write("            <image>"+path+"</image>\n");
+            writer.write("            <solid value=\"false\"/>\n");
+            writer.write("        </terrain>\n");
+        }
+        writer.write("    </terrainset>\n");
+    }
 
     /**
      * Save the map as an XML file.s
@@ -488,27 +552,19 @@ public class Map {
         writer.write("<map>\n");
         writer.write("    <header>\n");
         writer.write("        <name>"+name+"</name>\n");
-        writer.write("        <author>Unknown</author>\n");
-        writer.write("        <cvsversion>$Revision$</cvsversion>\n");
-        writer.write("        <format>1.1</format>\n");
+        writer.write("        <author>"+author+"</author>\n");
+        writer.write("        <id>"+id+"</id>\n");
+        writer.write("        <parent>"+parent+"</parent>\n");
+        writer.write("        <cvs>\n");
+        writer.write("            <version>$Revision$</version>\n");
+        writer.write("            <date>$Date$</date>\n");
+        writer.write("        </cvs>\n");
+        writer.write("        <format>0.0.2</format>\n");
         writer.write("    </header>\n");
 
-        // Terrain Set
-        writer.write("    <terrainset>\n");
-
-        // Iterate over the terrain types, and save them out.
-        Iterator iter = terrainSet.iterator();
-        while (iter.hasNext()) {
-            Terrain t = (Terrain)iter.next();
-
-            writer.write("        <terrain id=\""+t.getId()+"\">\n");
-            writer.write("            <name>"+t.getName()+"</name>\n");
-            writer.write("            <description>"+t.getDescription()+"</description>\n");
-            writer.write("            <image>"+t.getImagePath()+"</image>\n");
-            writer.write("            <solid value=\"false\"/>\n");
-            writer.write("        </terrain>\n");
-        }
-        writer.write("    </terrainset>\n");
+        // Terrain Sets
+        writeTerrainSet(terrainSet, writer);
+        writeTerrainSet(placeSet, writer);
 
         // Now go through each of the tilesets in turn.
         for (i=0; i < tileSets.length; i++) {
@@ -524,7 +580,7 @@ public class Map {
             for (x=0; x < tileSets[i].getWidth(); x++) {
                 System.out.println("Writing column "+x);
 
-                writer.write("        ");
+                writer.write("            ");
                 writer.write("<column x=\""+x+"\">");
 
                 StringBuffer    terrain = new StringBuffer();
@@ -540,7 +596,7 @@ public class Map {
 
                         if ((y%32)==0) {
                             terrain.append("\n");
-                            terrain.append("            ");
+                            terrain.append("                ");
                         }
 
                         terrain.append(tmp);
@@ -549,11 +605,35 @@ public class Map {
                 }
                 writer.write(terrain.toString());
                 writer.write("\n");
-                writer.write("        ");
+                writer.write("            ");
                 writer.write("</column>\n");
-             }
+            }
             writer.write("        </tiles>\n");
             writer.write("    </tileset>\n\n");
+
+            // Find all the sites that need to be output and saved.
+            writer.write("    <sites>\n");
+            for (x=0; x < tileSets[i].getWidth(); x++) {
+                for (y=0; y < tileSets[i].getHeight(); y++) {
+                    try {
+                        if (isSite(x, y)) {
+                            Site site = getSite(x, y);
+
+                            writer.write("        <site type=\""+site.getType()+"\" "+
+                                         "x=\""+x+"\" y=\""+y+"\">\n");
+                            writer.write("            <name>"+site.getName()+"</name>\n");
+                            writer.write("            <description>");
+                            writer.write(site.getDescription());
+                            writer.write("</description>\n");
+
+                            writer.write("        </site>\n");
+                        
+                        }
+                    } catch (MapOutOfBoundsException e) {
+                    }
+                }
+            }
+            writer.write("    </sites>\n");
         }
         writer.write("</map>\n");
 
@@ -572,8 +652,12 @@ public class Map {
 
             this.filename = filename;
             this.name = xml.getName();
+            this.format = xml.getFormat();
+            this.id = xml.getId();
+            this.parent = xml.getParent();
 
-            terrainSet = xml.getTerrainSet();
+            terrainSet = xml.getTerrainSet("basic");
+            placeSet = xml.getTerrainSet("places");
             tileSets = xml.getTileSets();
         } catch (Exception e) {
             e.printStackTrace();
@@ -619,6 +703,11 @@ public class Map {
     public TerrainSet
     getTerrainSet() {
         return terrainSet;
+    }
+    
+    public TerrainSet
+    getPlaceSet() {
+        return placeSet;
     }
 
     public static void

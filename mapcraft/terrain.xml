@@ -7,83 +7,97 @@
         <cvsversion>$Revision$</cvsversion>
     </header>
 
-    <terrainset>
+    <terrainset id="basic" path=".">
         <terrain id="0">
             <name>null</name>
             <description>Unchartable</description>
-            <image>hex.gif</image>
+            <image>hex.png</image>
             <solid value="false"/>
         </terrain>
 
         <terrain id="1">
             <name>sea.ocean</name>
             <description>Ocean</description>
-            <image>sea.gif</image>
+            <image>sea.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="2">
             <name>sea.ocean</name>
             <description>Sea</description>
-            <image>sea.gif</image>
+            <image>sea.png</image>
             <solid value="false"/>
         </terrain>
 
         <terrain id="10">
             <name>clear.flat</name>
             <description>Cropland</description>
-            <image>cropland.gif</image>
+            <image>cropland.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="11">
             <name>clear.wooded</name>
             <description>Mixed woods</description>
-            <image>mixed.gif</image>
+            <image>mixed.png</image>
         </terrain>
 
         <terrain id="20">
             <name>wild.heath</name>
             <description>Heath</description>
-            <image>heath.gif</image>
+            <image>heath.png</image>
         </terrain>
         <terrain id="21">
             <name>wild.moor</name>
             <description>Moor</description>
-            <image>moor.gif</image>
+            <image>moor.png</image>
         </terrain>
         <terrain id="22">
             <name>wild.marsh</name>
             <description>Marshland</description>
-            <image>marsh.gif</image>
+            <image>marsh.png</image>
         </terrain>
 
         <terrain id="30">
             <name>woods.light</name>
             <description>Light woods</description>
-            <image>lightwoods.gif</image>
+            <image>lightwoods.png</image>
         </terrain>
         <terrain id="31">
             <name>woods.medium</name>
             <description>Medium woods</description>
-            <image>mediumwoods.gif</image>
+            <image>mediumwoods.png</image>
         </terrain>
         <terrain id="32">
             <name>woods.thick</name>
             <description>Thick woods</description>
-            <image>thickwoods.gif</image>
+            <image>thickwoods.png</image>
         </terrain>
 
         <terrain id="40">
             <name>mountains.foot</name>
             <description>Foot hills</description>
-            <image>hills.gif</image>
+            <image>hills.png</image>
         </terrain>
 
         <terrain id="41">
             <name>mountains.low</name>
             <description>Low mountains</description>
-            <image>hills.gif</image>
+            <image>hills.png</image>
         </terrain>
 
+    </terrainset>
+
+    <terrainset id="places" path="places">
+        <terrain id="1">
+            <name>town.village</name>
+            <description>Village</description>
+            <image>village.png</image>
+        </terrain>
+
+        <terrain id="2">
+            <name>town.town</name>
+            <description>Town</description>
+            <image>town.png</image>
+        </terrain>
     </terrainset>
 
     <tileset id="root">

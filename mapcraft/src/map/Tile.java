@@ -26,6 +26,8 @@ public class Tile {
     private boolean river;
     private byte    riverMask;
 
+    private Site    site;
+
     /**
      * Construct an empty tile, of 0m height, and the default
      * terrain type (normally ocean).
@@ -36,6 +38,7 @@ public class Tile {
         writable = true;
         river = false;
         riverMask = 0;
+        site = null;
     }
 
     /**
@@ -49,6 +52,7 @@ public class Tile {
         this.writable = tile.writable;
         this.river = tile.river;
         this.riverMask = tile.riverMask;
+        this.site = tile.site;
     }
 
     /**
@@ -94,28 +98,38 @@ public class Tile {
     isWritable() {
         return writable;
     }
-    
+
     public boolean
     isRiver() {
         return river;
     }
-    
+
     public short
     getRiverMask() {
         return (short)riverMask;
     }
-    
+
     public void
     setRiverMask(short mask) {
         this.river = true;
         this.riverMask = (byte)mask;
     }
-    
+
     public void
     setRiver(boolean river) {
         this.river = river;
         if (river == false) {
             riverMask = (byte)0;
         }
+    }
+
+    public void
+    setSite(Site site) {
+        this.site = site;
+    }
+
+    public Site
+    getSite() {
+        return site;
     }
 }

@@ -176,5 +176,15 @@ public class TileSet {
     setRiverMask(int x, int y, short mask) throws MapOutOfBoundsException {
         getTile(x, y).setRiverMask(mask);
     }
+    
+    public Site
+    getSite(int x, int y) throws MapOutOfBoundsException {
+        return getTile(x, y).getSite();
+    }
+
+    public void
+    setSite(int x, int y, Site site) throws MapOutOfBoundsException {
+        getTile(x, y).setSite(site);
+    }
 }
 

@@ -25,12 +25,25 @@ public class MapViewer extends JPanel {
     protected int         tileXSize = 30;
     protected int         tileYSize = 35;
     protected int         tileYOffset = 20;
-    
+
     protected Toolkit     toolkit = null;
     protected Image[]     icons = null;
-    
+
     protected IconSet     iconSet = null;
     protected IconSet     riverSet = null;
+    protected IconSet     siteSet = null;
+
+    protected void
+    log(int level, String message) {
+        System.out.println(message);
+    }
+
+    protected void debug(String message) { log(4, message); }
+    protected void info(String message) { log(3, message); }
+    protected void warn(String message)  { log(2, message); }
+    protected void error(String message) { log(1, message); }
+    protected void fatal(String message) { log(0, message); }
+
 
     /**
      * Basic constructor. Creates an empty map.
@@ -55,6 +68,33 @@ public class MapViewer extends JPanel {
             e.printStackTrace();
         }
     }
+    
+    protected IconSet
+    readIcons(String name, TerrainSet set) {
+        IconSet     iconSet = new IconSet(name);
+        Iterator    iter = set.iterator();
+
+        if (iter == null || !iter.hasNext()) {
+            warn("No iterator");
+            return null;
+        }
+
+        iconSet = new IconSet(map.getName());
+        while (iter.hasNext()) {
+            Terrain t = (Terrain)iter.next();
+            if (t != null) {
+                info("Defining terrain "+t.getName());
+                short   id = t.getId();
+                String  path = t.getImagePath();
+                Image   icon = toolkit.getImage("images/"+tileSize+"/"+path);
+
+                debug("Adding icon "+path+" for terrain "+id);
+                iconSet.add(id, icon);
+            }
+        }
+        
+        return iconSet;
+    }
 
     /**
      * Constructor to load a map from a file and display it.
@@ -69,8 +109,13 @@ public class MapViewer extends JPanel {
 
             System.out.println("Setting up terrain icons");
             TerrainSet  set = map.getTerrainSet();
-            Iterator    iter = set.iterator();
             
+            
+            
+            
+            /*
+            Iterator    iter = set.iterator();
+
             if (iter == null || !iter.hasNext()) {
                 System.out.println("No iterator");
                 return;
@@ -89,7 +134,10 @@ public class MapViewer extends JPanel {
                     iconSet.add(id, icon);
                 }
             }
-            
+            */
+            iconSet = readIcons("terrain", set);
+            siteSet = readIcons("sites", map.getPlaceSet());
+
             riverSet = new IconSet("rivers");
             for (short i = 0; i < 64; i++) {
                 String  name = "/rivers/"+((i<10)?"0":"")+i+".gif";
@@ -97,13 +145,14 @@ public class MapViewer extends JPanel {
                 riverSet.add(i, icon);
             }
 
+
             map.setCurrentSet("root");
 
             // Now work out how big we want to be. Can assume we'll
             // be placed in a scrollable widget of some sort, so don't
             // worry about screen size or anything like that.
             int realWidth, realHeight;
-            
+
             realWidth = tileXSize * (map.getWidth()+1);
             realHeight = tileYSize * (map.getHeight()+1);
 
@@ -116,7 +165,7 @@ public class MapViewer extends JPanel {
     public void
     paintComponent(Graphics g) {
         super.paintComponent(g);
-        int             x, y;
+        int             x=0, y=0;
         int             xp, yp, ypp;
 
         try {
@@ -132,16 +181,21 @@ public class MapViewer extends JPanel {
                     short t = map.getTerrain(x, y);
                     Image icon = iconSet.getIcon(t);
                     g.drawImage(icon, xp, ypp, this);
-                    
+
                     // Now display a river, if one is needed.
                     if (map.isRiver(x, y)) {
                         icon = riverSet.getIcon(map.getRiverMask(x, y));
                         g.drawImage(icon, xp, ypp, this);
                     }
+
+                    if (map.isSite(x, y)) {
+                        icon = siteSet.getIcon(map.getSiteMask(x, y));
+                        g.drawImage(icon, xp, ypp, this);
+                    }
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Failed to paint tile "+x+", "+y);
         }
     }
 
@@ -168,8 +222,12 @@ public class MapViewer extends JPanel {
                 g.drawImage(icon, xp, yp, this);
             }
 
+            if (map.isSite(x, y)) {
+                icon = siteSet.getIcon(map.getSiteMask(x, y));
+                g.drawImage(icon, xp, yp, this);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Failed to paint tile "+x+", "+y);
         }
 
     }

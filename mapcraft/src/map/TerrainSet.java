@@ -10,11 +10,18 @@ import java.util.*;
  */
 public class TerrainSet {
     protected ArrayList     terrainList;
+    protected String        id;
+    protected String        path;
 
     public
-    TerrainSet() {
+    TerrainSet(String id, String path) {
+        this.id = id;
+        this.path = path;
         terrainList = new ArrayList();
     }
+    
+    public String getId() { return id; }
+    public String getPath() { return path; }
 
     /**
      * Get terrain identified by its id.
