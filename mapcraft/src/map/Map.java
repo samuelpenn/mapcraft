@@ -261,7 +261,7 @@ public class Map extends MapBean implements Cloneable {
                 throws InvalidArgumentException {
 
         TileSet     resized = null;
-        TileSet     original = tileSets[0];
+        TileSet     original = tileSets[getCurrentSet()];
         int         dx, dy;
 
         // Get the deltas for the changing width/height.
@@ -281,8 +281,8 @@ public class Map extends MapBean implements Cloneable {
             return;
         }
 
-        resized = new TileSet(tileSets[0].getName(), newWidth,
-                                          newHeight, tileSets[0].getScale());
+        resized = new TileSet(tileSets[getCurrentSet()].getName(), newWidth,
+                         newHeight, tileSets[getCurrentSet()].getScale());
 
         int     xOffset = 0;
         int     yOffset = 0;
@@ -302,7 +302,7 @@ public class Map extends MapBean implements Cloneable {
                 }
             }
         }
-        tileSets[0] = resized;
+        tileSets[getCurrentSet()] = resized;
 
     }
 

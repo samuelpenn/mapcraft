@@ -31,7 +31,7 @@ public class ResizeDialog extends JDialog  {
     private GridBagConstraints  c;
 
     private int                 orgWidth, orgHeight;
-    private JTextField          width, height;
+    private JSpinner            width, height;
     private JCheckBox           left, top;
     private JButton             okay, cancel;
 
@@ -40,6 +40,43 @@ public class ResizeDialog extends JDialog  {
     private boolean             isOkay = false;
 
 
+    class SizeSpinner extends AbstractSpinnerModel {
+        private int     value;
+        private int     original;
+
+        SizeSpinner(int original) {
+            this.original = original;
+            this.value = original;
+        }
+
+        public void
+        setValue(Object v) {
+            try {
+                value = Integer.parseInt((String)v);
+            } catch (NumberFormatException nfe) {
+                nfe.printStackTrace();
+            }
+        }
+
+        public Object
+        getValue() {
+            return ""+value;
+        }
+
+        public Object
+        getNextValue() {
+            value++;
+            return ""+value;
+        }
+
+        public Object
+        getPreviousValue() {
+            value--;
+            if (value < 0) value = 0;
+
+            return ""+value;
+        }
+    }
 
 
     /**
@@ -83,9 +120,11 @@ public class ResizeDialog extends JDialog  {
         add(new Label(""+orgWidth), 1, 1, 1, 1);
         add(new Label(""+orgHeight), 1, 2, 1, 1);
 
-        add(width = new JTextField(""+orgWidth), 2, 1, 1, 1);
-        add(height = new JTextField(""+orgHeight), 2, 2, 1, 1);
+        add(width = new JSpinner(new SpinnerNumberModel(orgWidth, 0, 999, 1)), 2, 1, 1, 1);
+        add(height = new JSpinner(new SpinnerNumberModel(orgHeight, 0, 999, 1)), 2, 2, 1, 1);
 
+        add(left = new JCheckBox("Insert/remove columns at left edge"), 0, 3, 3, 1);
+        add(top = new JCheckBox("Insert/remove rows at top edge"), 0, 4, 3, 1);
 
         add(okay = new JButton("Resize"), 1, 5, 1, 1);
         add(cancel = new JButton("Cancel"), 2, 5, 1, 1);
@@ -105,7 +144,7 @@ public class ResizeDialog extends JDialog  {
                                     }
                                  });
 
-        setSize(new Dimension(300, 250));
+        setSize(new Dimension(300, 200));
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -132,6 +171,42 @@ public class ResizeDialog extends JDialog  {
     public boolean
     isOkay() {
         return isOkay;
+    }
+
+    /**
+     * Return true if columns should be inserted on the left of map.
+     */
+    public boolean
+    isLeftInsert() {
+        return left.isSelected();
+    }
+
+    /**
+     * Return true if rows should be inserted at the top of map.
+     */
+    public boolean
+    isTopInsert() {
+        return top.isSelected();
+    }
+
+    /**
+     * Get the new width of the map.
+     */
+    public int
+    getNewWidth() {
+        Integer  i = (Integer)width.getValue();
+
+        return i.intValue();
+    }
+
+    /**
+     * Get the new height of the map.
+     */
+    public int
+    getNewHeight() {
+        Integer i = (Integer)height.getValue();
+
+        return i.intValue();
     }
 
 }

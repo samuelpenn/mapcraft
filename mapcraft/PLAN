@@ -49,6 +49,7 @@ Project Plan
 
 0.2.3
 *   Support GUI map cropping and linking to submaps.
+*   Support GUI basic resize facility (ignores parent links).
     Support GUI rescale facility (up and down).
     Support GUI for merging siblings.
     Make Tile class have package scope. Only TileSet should reference it directly.
@@ -61,6 +62,7 @@ Project Plan
     Fix display issues with area editing.
     Fix display issues with site editing.
     Feedback in a status bar to say what editing.
+    Ability to set flags on tiles. Need to name each flag, and store in tileset.
 
 0.3 (Printing/XSLT support)
 *   XSLT plugin for calling map from Yagsbook.
@@ -81,6 +83,8 @@ Project Plan
 
 0.4.1
     GUI for Merging child maps back into parent.
+    GUI resize should modify x/y offset for parent link.
+    GUI resize should fetch extra tiles from parent, if there is one.
 
 0.4.2
     Height palette. 2D display only.

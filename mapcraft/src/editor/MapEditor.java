@@ -911,6 +911,14 @@ public class MapEditor extends MapViewer
             ResizeDialog    dialog = new ResizeDialog(map.getWidth(),
                                                       map.getHeight(), frame);
 
+            if (dialog.isOkay()) {
+                int     width = dialog.getNewWidth();
+                int     height = dialog.getNewHeight();
+                boolean left = dialog.isLeftInsert();
+                boolean top = dialog.isTopInsert();
+
+                map.resize(width, height, left, top);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
