@@ -924,15 +924,13 @@ public class MapViewer extends JPanel {
         Font        font = null;
         Graphics2D  g2 = (Graphics2D)g;
 
-        // If scale is too large, and thing not importance enough,
+        // If scale is too large, and thing not important enough,
         // then don't display it.
         switch (thing.getImportance()) {
             case Thing.LOW:
-                if (view < 3) return;
+                if (view < 2) return;
                 break;
             case Thing.NORMAL:
-                if (view < 1) return;
-                break;
             case Thing.HIGH:
                 break;
         }
