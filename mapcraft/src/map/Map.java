@@ -493,11 +493,43 @@ public class Map implements Cloneable {
      * increasing, but currently this isn't supported.
      */
     public void
-    rescaleMap(int newScale) {
-        int     h, w; // Height and width of new map.
-        int     x, y; // Iterators.
+    rescaleMap(int newScale) throws InvalidArgumentException {
+        int         h, w; // Height and width of new map.
+        int         x, y; // Iterators.
+
+        TileSet     rescaled = null;
+        TileSet     original = tileSets[0];
+
+        System.out.println("rescaleMap: "+newScale);
+        System.out.println("Old scale: "+scale+" geom "+getWidth()+"x"+getHeight());
+
+        if (newScale == scale) {
+            // Trivial.
+            return;
+        } else if (newScale > getScale()) {
+            // Every X hexes merges into a single hex.
+            w = (getWidth()*getScale())/newScale;
+            h = (getHeight()*getScale())/newScale;
+
+            rescaled = new TileSet("root", w, h, newScale);
+            for (x = 0; x < w; x++) {
+                for (y = 0; y < h; y++) {
+                    try {
+                        rescaled.setTile(x, y,
+                                original.getTile((x*newScale)/getScale(),
+                                                 (y*newScale)/getScale()));
+                    } catch (MapOutOfBoundsException oobe) {
+                    }
+                }
+            }
+        } else {
+            throw new InvalidArgumentException("Scale not supported");
+        }
 
 
+
+        tileSets[0] = rescaled;
+        setScale(newScale);
     }
     
     /**
@@ -544,7 +576,7 @@ public class Map implements Cloneable {
         if (atRight) {
             xOffset = dx;
         }
-        if (atBottom) {
+        if (!atBottom) {
             yOffset = dy;
         }
 
@@ -1051,6 +1083,19 @@ public class Map implements Cloneable {
                 map = new Map(filename);
                 map.resize(w, h, false, false);
                 map.save("resized.map");
+            } else if (options.isOption("-zoomout")) {
+                String  filename = options.getString("-zoomout");
+                map = new Map(filename);
+                map.rescaleMap(250);
+                map.save("new.map");
+            } else if (options.isOption("-euressa")) {
+                // Change a 25km map to 250km map (16x10).
+                // Change to world map, of size 176x88.
+                map = new Map("maps/Euressa.map");
+                map.rescaleMap(250);
+                map.resize(91, 28, false, false);
+                map.resize(176, 88, true, true);
+                map.save("new.map");
             }
         } catch (Exception e) {
             e.printStackTrace();
