@@ -786,7 +786,7 @@ public class MapBean implements Cloneable {
 
                     try {
                         t = MapXML.toBase64(tile.getTerrainRaw(), 2);
-                        h = MapXML.toBase64(tile.getHeight()+1000, 2);
+                        //h = MapXML.toBase64(tile.getHeight()+1000, 2);
                         h = "AA"; // HACK!
                         m = MapXML.toBase64(tile.getFeatureRaw(), 2);
                         a = MapXML.toBase64(tile.getArea(), 2);
@@ -795,6 +795,7 @@ public class MapBean implements Cloneable {
                     } catch (Exception e) {
                         System.out.println("Got exception writing tile "+x+","+y);
                         System.out.println(tile);
+                        e.printStackTrace();
                         System.exit(0);
                     }
                     c = "A";
@@ -940,6 +941,7 @@ public class MapBean implements Cloneable {
                 setCurrentSet(i);
                 writeTileSet(tileSets[i], writer);
             } catch (MapException me) {
+                me.printStackTrace();
             }
         }
 
