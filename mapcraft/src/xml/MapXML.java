@@ -725,6 +725,8 @@ public class MapXML {
                     values = node.getAttributes();
                     String name = getTextNode(values.getNamedItem("name"));
 
+                    System.out.println("Adding river ["+name+"]");
+
                     // Now get each path element in turn. First should be a <start/>
                     child = node.getFirstChild();
                     values = child.getAttributes();
@@ -752,7 +754,6 @@ public class MapXML {
                         path.add(type, getIntNode(values.getNamedItem("x")),
                                        getIntNode(values.getNamedItem("y")));
                     }
-                    System.out.println("Adding river ["+name+"]");
                     rivers.add(path);
                 }
             }

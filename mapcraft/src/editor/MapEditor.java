@@ -245,6 +245,33 @@ public class MapEditor extends MapViewer
             case Brush.AREAS:
                 map.getTile(x, y).setArea(brush.getSelected());
                 break;
+            case Brush.RIVERS:
+                info("Distance: "+map.isNextTo(2, 2, x, y));
+                if (brush.getSelected() == 0) {
+                    // Have not yet selected a river.
+                    String  name = "River "+(map.getRivers().size()+1);
+                    info("Creating new river ["+name+"] at "+x+","+y);
+                    int     id = map.addRiver(name, x, y);
+                    brush.setSelected(Brush.RIVERS, (short)id);
+                    drawRivers();
+                } else {
+                    Path    river = map.getRiver(brush.getSelected());
+                    debug("Adding to river ["+river.getName()+"]");
+                    // Add to a current river.
+                    if (map.isRiver(x, y)) {
+                        // Do nothing.
+                        debug("There is already a river here");
+                    } else {
+                        info("Adding new element to river");
+                        Path.Element    end = river.getEndPoint();
+                        if (map.isNextTo(end.getX(), end.getY(), x, y)) {
+                            debug("Next to, so adding");
+                            map.extendRiver(brush.getSelected(), x, y);
+                            drawRivers();
+                        }
+                    }
+                }
+                break;
             }
         } catch (MapOutOfBoundsException moobe) {
             warn("Out of bounds!");

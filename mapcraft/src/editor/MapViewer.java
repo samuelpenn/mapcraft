@@ -438,7 +438,10 @@ public class MapViewer extends JPanel {
         paintComponent();
     }
 
-
+    public void
+    drawRivers() {
+        drawRivers((Graphics2D)this.getGraphics());
+    }
 
     public void
     drawRivers(Graphics2D g) {
@@ -446,6 +449,7 @@ public class MapViewer extends JPanel {
 
         info("Drawing all rivers");
 
+        g.setColor(Color.BLUE);
         for (i=0; i < map.getRivers().size(); i++) {
 
             Path    path = (Path)map.getRivers().elementAt(i);

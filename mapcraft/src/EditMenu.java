@@ -54,6 +54,7 @@ public class EditMenu extends JMenu implements ActionListener {
         addItem(Actions.EDIT_HILLS);
         addItem(Actions.EDIT_FEATURES);
         addItem(Actions.EDIT_AREAS);
+        addItem(Actions.EDIT_RIVERS);
 
     }
 

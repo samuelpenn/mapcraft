@@ -717,6 +717,38 @@ public class Map implements Cloneable {
         writer.flush();
     }
 
+    public void
+    writeRivers(FileWriter writer) throws IOException {
+        int         i = 0, e = 0;
+        Path        river = null;
+        Vector      elements;
+        String[]    types = { "unknown", "start", "end", "path", "join" };
+
+        if (rivers == null || rivers.size() == 0) {
+            return;
+        }
+
+        writer.write("    <rivers>\n");
+        for (i=0; i < rivers.size(); i++) {
+            river = (Path)rivers.elementAt(i);
+            writer.write("        <river name=\""+river.getName()+"\">\n");
+            elements = river.getElements();
+            for (e=0; e < elements.size(); e++) {
+                Path.Element    element = (Path.Element)elements.elementAt(e);
+                int             x = element.getX();
+                int             y = element.getY();
+                int             w = element.getWidth();
+                int             t = element.getType();
+
+                writer.write("            ");
+                writer.write("<"+types[t]+" x=\""+x+"\" y=\""+y+"\" width=\""+w+"\"/>\n");
+            }
+            writer.write("        </river>\n\n");
+        }
+        writer.write("    </rivers>\n");
+
+    }
+
 
     /**
      * Save the map as an XML file.
@@ -776,6 +808,7 @@ public class Map implements Cloneable {
         writer.write("    </sites>\n");
 
         writeAreaSet(writer);
+        writeRivers(writer);
 
         writer.write("</map>\n");
 
@@ -867,14 +900,128 @@ public class Map implements Cloneable {
         return hills;
     }
 
+    /**
+     * Return a set of all the areas defined in the map. This does not
+     * include where the areas cover, but does say what the names of the
+     * areas are, and their ids.
+     *
+     * @return  An AreaSet listing all the areas in the map.
+     */
     public AreaSet
     getAreaSet() {
         return areaSet;
     }
-    
+
+    /**
+     * Return a Vector of Path elements, each one representing a river.
+     */
     public Vector
     getRivers() {
         return rivers;
+    }
+
+    /**
+     * Returns the river with identifier 'id'. This is the position of
+     * the river in the Vector, +1.
+     */
+    public Path
+    getRiver(int id) {
+        Path        path;
+
+        id--;
+        if (id > rivers.size()) {
+            return null;
+        }
+        path = (Path)rivers.elementAt(id);
+
+        return path;
+    }
+
+
+    /**
+     * Create and add a new river to the map.
+     */
+    public int
+    addRiver(String name, int x, int y) throws MapOutOfBoundsException {
+        Path    path = new Path(name, x, y);
+
+        tileSets[0].getTile(x, y).setRiver(true);
+        rivers.add(path);
+
+        return rivers.size();
+    }
+
+    public void
+    extendRiver(int id, int x, int y) throws MapOutOfBoundsException {
+        Path    river = getRiver(id);
+
+        tileSets[0].getTile(x, y).setRiver(true);
+        river.add(x, y);
+    }
+
+    /**
+     * Return the distance in tiles between any two tiles. The tiles are
+     * specified by their x and y coordinates.
+     */
+    public int
+    distance(int x0, int y0, int x1, int y1) {
+        int         d = 0;
+        double      dx0 = x0;
+        double      dy0 = y0;
+        double      dx1 = x1;
+        double      dy1 = y1;
+
+        double      dx, dy;
+
+        if (x0%2 == 1) dy0 += 0.5;
+        if (x1%2 == 1) dy1 += 0.5;
+
+        dx = Math.abs(dx0 - dx1);
+        dy = Math.abs(dy0 - dy1);
+
+        d = (int)Math.sqrt(dx * dx + dy * dy);
+
+        d = Math.abs(x0 - x1) + Math.abs(y0 - y1);
+
+        return d;
+    }
+
+    /**
+     * Returns true if the two tiles are either the same or next to each
+     * other, false otherwise.
+     */
+    public boolean
+    isNextTo(int x0, int y0, int x1, int y1) {
+        if (x0 == x1 && y0 == y1) {
+            return true;
+        }
+
+        // Are they in the same column?
+        if (x0 == x1) {
+            if (Math.abs(y0 - y1) <= 1) {
+                return true;
+            }
+        }
+
+        // Are they in neighbouring columns?
+        if (Math.abs(x0 - x1) == 1) {
+            if (y0 == y1) {
+                return true;
+            }
+
+            // x0 column is 'higher'
+            if (x0 %2 == 0) {
+                if (y0 == y1 + 1) {
+                    return true;
+                }
+            } else {
+                if (y0 == y1 - 1) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public static void

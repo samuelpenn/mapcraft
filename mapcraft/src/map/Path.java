@@ -56,10 +56,13 @@ public class Path {
             this.y = y;
             this.width = w;
         }
-        
+
         public int getX() { return x; }
         public int getY() { return y; }
         public int getWidth() { return width; }
+        public int getType() { return type; }
+
+        public void setType(int type) { this.type = type; }
     }
 
     public
@@ -70,19 +73,24 @@ public class Path {
         elements = new Vector();
         elements.add(e);
     }
-    
-    
+
+
     public void
     add(int x, int y) {
-        add(PATH, x, y);
+        int         pos = elements.size();
+        Element     end = (Element)elements.elementAt(pos-1);
+        if (end.getType() == END) {
+            end.setType(PATH);
+        }
+        add(END, x, y);
     }
-    
+
     public void
     add(int type, int x, int y) {
-        Element e = new Element(type, x, y);
+        Element e = new Element(type, x, y, 1);
         elements.add(e);
     }
-    
+
     /**
      * Return a Graphics2D shape representing this path.
      * This can then be used to draw directly to a Java
@@ -105,17 +113,19 @@ public class Path {
         xs = transform.getScaleX();
         ys = transform.getScaleY();
 
+        System.out.println("Scales are "+xs+","+ys);
+
         for (i=0; i < elements.size(); i++) {
             Element e = (Element)elements.elementAt(i);
             x = (float)e.getX() * xscale + (float)iconWidth/2;
-            y = (float)e.getY() * xscale + (float)iconHeight/2;
+            y = (float)e.getY() * yscale + (float)iconHeight/2;
 
             if (e.getX()%2 == 1) {
                 y += offset;
             }
 
-            x = x * (float)xs;
-            y = y * (float)ys;
+            //x = x * (float)xs;
+            //y = y * (float)ys;
 
             if (p1 == null) {
                 p1 = new Point2D.Float(x, y);
@@ -130,6 +140,56 @@ public class Path {
 
         return gp;
 
+    }
+
+    /**
+     * Return the name of this path.
+     */
+    public String
+    getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name of the path to the desired value.
+     */
+    public void
+    setName(String name) {
+        this.name = name;
+    }
+
+
+    /**
+     * Returns a Vector of all the elements in this path. The Vector
+     * contains objects of type Path.Element.
+     */
+    public Vector
+    getElements() {
+        return elements;
+    }
+
+    /**
+     * Returns the end point element in this path.
+     */
+    public Element
+    getEndPoint() {
+        if (elements.size() > 0) {
+            return (Element)elements.elementAt(elements.size()-1);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the start point element for this path.
+     */
+    public Element
+    getStartPoint() {
+        if (elements.size() > 0) {
+            return (Element)elements.elementAt(0);
+        } else {
+            return null;
+        }
     }
 
 

@@ -37,7 +37,7 @@ public class Brush {
     private int size = SMALL;
 
     private short terrain = 1;
-    private short river = 1;
+    private short river = 0;
     private short site = 0;
     private short hill = 0;
     private short height = 0;
