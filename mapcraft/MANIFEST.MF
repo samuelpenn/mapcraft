@@ -1,4 +1,3 @@
 Manifest-Version: 1.0
 Created-By: 1.3 (Sun Microsystems)
 Main-Class: uk.co.demon.bifrost.rpg.mapcraft.MapCraft
-Class-Path: /usr/share/java/xalan/xalan.jar /usr/share/java/xalan/xercesImpl.jar
