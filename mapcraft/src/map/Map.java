@@ -683,7 +683,6 @@ public class Map implements Cloneable {
         } else {
             rotation /= 60;
         }
-        System.out.println("new rotation = "+rotation);
         tileSets[currentSet].setFeatureRotation(x, y, rotation);
     }
 
@@ -696,9 +695,6 @@ public class Map implements Cloneable {
         } else {
             r *= 60;
         }
-        if (r>0) {
-            System.out.println("old rotation = "+r);
-        }
         return r;
     }
 
@@ -709,7 +705,6 @@ public class Map implements Cloneable {
         } else {
             rotation /= 60;
         }
-        System.out.println("new rotation = "+rotation);
         tileSets[currentSet].setTerrainRotation(x, y, rotation);
     }
 
@@ -721,9 +716,6 @@ public class Map implements Cloneable {
             r *= 90;
         } else {
             r *= 60;
-        }
-        if (r>0) {
-            System.out.println("old rotation = "+r);
         }
         return r;
     }
