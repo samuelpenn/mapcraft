@@ -160,6 +160,31 @@ public class MapViewer extends JPanel {
         public static final int PALETTE = 2;
         public static final int EDITICON = 3;
 
+
+        /**
+         * Get the integer value of the name view property.
+         * Return the default value if the properties aren't
+         * set up, or the named value does not exist.
+         *
+         * @param name      Name of property to retrieve.
+         * @param dflt      Default value if property not found.
+         *
+         * @return          Value of property found, or dflt.
+         */
+        private int
+        getIntProperty(String name, int dflt) {
+            int     value = dflt;
+
+            try {
+                String  s = properties.getProperty(name, ""+dflt);
+                value = Integer.parseInt(s);
+            } catch (Exception e) {
+                // Dont' care, just return default value;
+            }
+
+            return value;
+        }
+
         public
         ViewProperties(String basePath, String baseFile) throws Exception {
             FileInputStream     input = null;
@@ -175,12 +200,12 @@ public class MapViewer extends JPanel {
                 viewShape = (String)properties.get("view.shape");
                 path = basePath + "/" + (String)properties.get("icon.path");
 
-                iconHeight = (int)Integer.parseInt(properties.getProperty("icon.height"));
-                iconWidth = (int)Integer.parseInt(properties.getProperty("icon.width"));
-                fontSizeSmall = (int)Integer.parseInt(properties.getProperty("font.small.size"));
-                fontSizeMedium = (int)Integer.parseInt(properties.getProperty("font.medium.size"));
-                fontSizeLarge = (int)Integer.parseInt(properties.getProperty("font.large.size"));
-                fontSizeHuge = (int)Integer.parseInt(properties.getProperty("font.huge.size"));
+                iconHeight = getIntProperty("icon.height", 96);
+                iconWidth = getIntProperty("icon.width", 96);
+                fontSizeSmall = getIntProperty("font.small.size", 10);
+                fontSizeMedium = getIntProperty("font.medium.size", 12);
+                fontSizeLarge = getIntProperty("font.large.size", 16);
+                fontSizeHuge = getIntProperty("font.huge.size", 20);
 
                 if (viewShape.equals("Hexagonal")) {
                     tileHeight = (int)(Math.sqrt(3.0)/2.0 * iconWidth);

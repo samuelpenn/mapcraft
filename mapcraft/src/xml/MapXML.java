@@ -15,6 +15,7 @@ package uk.co.demon.bifrost.rpg.mapcraft.xml;
 import uk.co.demon.bifrost.rpg.mapcraft.map.*;
 import java.io.*;
 import java.util.*;
+import java.net.*;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.apache.xpath.XPathAPI;
@@ -142,23 +143,43 @@ public class MapXML {
         }
     }
 
-    /**
-     * Load a map document from the local filesystem. Map is
-     * parsed and inserted into DOM structure for later querying.
-     *
-     * @param filename  Filename of the file to load.
-     */
+
+    public
+    MapXML(URL url) throws MapException {
+        try {
+            load(url);
+        } catch (IOException ioe) {
+            throw new MapException("Cannot load XML document ("+ioe.getMessage()+")");
+        } catch (XMLException xmle) {
+            throw new MapException("Cannot parse XML d ata ("+xmle.getMessage()+")");
+        }
+    }
+
     private void
-    load(String filename) throws XMLException, IOException {
+    load(URL url) throws XMLException, IOException {
         try {
             InputSource             in;
-            FileInputStream         fis;
+
+            in = new InputSource(url.openStream());
+            load(in);
+        } catch (XMLException xe) {
+            throw xe;
+        } catch (IOException ioe) {
+            throw ioe;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new XMLException("Failed to load XML document "+url);
+        }
+        return;
+    }
+
+
+    private void
+    load(InputSource in) throws IOException, XMLException {
+        try {
             DocumentBuilderFactory  dbf;
             Node                    node;
             NodeList                nodeList;
-
-            fis = new FileInputStream(filename);
-            in = new InputSource(fis);
             dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
 
@@ -175,6 +196,32 @@ public class MapXML {
             type = getTextNode("/map/header/type");
             imagedir = getTextNode("/map/header/imagedir");
 
+        } catch (XMLException xe) {
+            throw xe;
+        } catch (IOException ioe) {
+            throw ioe;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new XMLException("Failed to load XML document ("+e.getMessage()+")");
+        }
+        return;
+    }
+
+    /**
+     * Load a map document from the local filesystem. Map is
+     * parsed and inserted into DOM structure for later querying.
+     *
+     * @param filename  Filename of the file to load.
+     */
+    private void
+    load(String filename) throws XMLException, IOException {
+        try {
+            InputSource             in;
+            FileInputStream         fis;
+
+            fis = new FileInputStream(filename);
+            in = new InputSource(fis);
+            load(in);
         } catch (XMLException xe) {
             throw xe;
         } catch (IOException ioe) {

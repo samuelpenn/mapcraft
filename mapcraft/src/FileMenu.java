@@ -168,7 +168,9 @@ public class FileMenu extends JMenu implements ActionListener {
         try {
             System.out.println("Creating new map of "+width+"x"+height);
             Map         newMap = new Map(name, width, height, scale);
-            newMap.loadTerrainSet("terrain/"+terrain+".xml");
+            //newMap.loadTerrainSet("terrain/"+terrain+".xml");
+            URL     url = FileMenu.class.getResource("/"+terrain+".xml");
+            newMap.loadTerrainSet(url);
             newMap.save(name+".map");
             newMap = null;
             application.load(name+".map");

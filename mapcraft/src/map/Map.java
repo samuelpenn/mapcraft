@@ -224,6 +224,20 @@ public class Map extends MapBean implements Cloneable {
     }
 
 
+    public void
+    loadTerrainSet(URL url) {
+        MapXML  xml;
+
+        try {
+            xml = new MapXML(url);
+            terrainSet = xml.getTerrainSet("basic");
+            thingSet = xml.getTerrainSet("things");
+            featureSet = xml.getTerrainSet("features");
+            setImageDir(xml.getImageDir());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     /**
