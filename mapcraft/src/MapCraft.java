@@ -310,6 +310,7 @@ public class MapCraft implements ActionListener {
         boolean     crop = false;
         boolean     area = false;
         boolean     rescale = false;
+        boolean     fork = false;
 
         int         x=0, y=0, w=0, h=0;
         String      areaName = null;
@@ -322,7 +323,7 @@ public class MapCraft implements ActionListener {
             w = options.getInt("-w");
             h = options.getInt("-h");
 
-            crop = true;
+            fork = crop = true;
         }
 
         if (options.isOption("-area")) {
@@ -331,18 +332,21 @@ public class MapCraft implements ActionListener {
                 margin = options.getInt("-margin");
             }
 
-            area = true;
+            fork = area = true;
         }
 
         if (options.isOption("-rescale")) {
             newScale = options.getInt("-rescale");
-            rescale = true;
+            fork = rescale = true;
         }
 
         if (mapfile == null) {
             map = new MapCraft(properties);
         } else {
             map = new MapCraft(properties, mapfile);
+            if (fork) {
+                map.getEditor().fork();
+            }
             if (crop) {
                 map.crop(x, y, w, h);
             }

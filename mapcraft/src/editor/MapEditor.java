@@ -742,6 +742,10 @@ public class MapEditor extends MapViewer
         return true;
     }
 
+    public void
+    fork() {
+        map.fork();
+    }
 
     public static void
     main(String args[]) {

@@ -189,6 +189,18 @@ public class Map implements Cloneable {
 
     }
 
+    /**
+     * This map becomes a child of the original.
+     */
+    public void
+    fork() {
+        for (int i=0; i < tileSets.length; i++) {
+            tileSets[i].setParent(tileSets[i].getScale(), 0, 0);
+        }
+        parent = id;
+        id = id + "." + System.currentTimeMillis();
+    }
+
     public void
     unwrapWorld() {
         int         y, x;
@@ -811,7 +823,15 @@ public class Map implements Cloneable {
         writer.write("            <scale>"+set.getScale()+"</scale>\n");
         writer.write("            <width>"+set.getWidth()+"</width>\n");
         writer.write("            <height>"+set.getHeight()+"</height>\n");
-        writer.write("        </dimensions>\n");
+        writer.write("        </dimensions>\n\n");
+
+        if (set.isChild()) {
+            writer.write("        <parent>\n");
+            writer.write("            <scale>"+set.getParentsScale()+"</scale>\n");
+            writer.write("            <x>"+set.getParentsXOffset()+"</x>\n");
+            writer.write("            <y>"+set.getParentsYOffset()+"</y>\n");
+            writer.write("        </parent>\n\n");
+        }
 
         writer.write("        <tiles>\n");
 

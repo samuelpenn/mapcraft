@@ -33,6 +33,64 @@ public class TileSet implements Cloneable {
     protected Vector    rivers = null;
     protected Vector    things = null;
 
+    private Parent      parent = null;
+
+    /**
+     * The Parent class keeps track of the parent of this tileSet. If this
+     * tileset is rescaled or cropped, then it holds details about the
+     * original parent, so that the new map can be fed back into the
+     * original at a later date.
+     */
+    private class Parent {
+        private int     scale;
+        private int     xOffset;
+        private int     yOffset;
+
+        Parent(int scale, int xOffset, int yOffset) {
+            this.scale = scale;
+            this.xOffset = xOffset;
+            this.yOffset = yOffset;
+        }
+
+        int getScale() { return scale; }
+        int getXOffset() { return xOffset; }
+        int getYOffset() { return yOffset; }
+    }
+
+    public void
+    setParent(int scale, int x, int y) {
+        parent = new Parent(scale, x, y);
+    }
+
+    public int
+    getParentsScale() {
+        if (parent == null) {
+            return scale;
+        }
+        return parent.getScale();
+    }
+
+    public int
+    getParentsXOffset() {
+        if (parent == null) {
+            return 0;
+        }
+        return parent.getXOffset();
+    }
+
+    public boolean
+    isChild() {
+        return (parent == null)?false:true;
+    }
+
+    public int
+    getParentsYOffset() {
+        if (parent == null) {
+            return 0;
+        }
+        return parent.getYOffset();
+    }
+
     public
     TileSet(String name, int width, int height, int scale)
             throws InvalidArgumentException {
@@ -166,6 +224,12 @@ public class TileSet implements Cloneable {
 
         System.out.println("Cropping "+x+","+y+","+w+","+h);
 
+        int     oldScale = scale;
+        if (isChild()) {
+            oldScale = parent.getScale();
+        }
+        parent = new Parent(oldScale, x, y);
+
         // Perform sanity checks.
         checkBounds(x, y);
         checkBounds(x + w, y + h);
@@ -228,6 +292,13 @@ public class TileSet implements Cloneable {
             // Trivial case.
             return true;
         }
+
+        int x = 0, y = 0;
+        if (isChild()) {
+            x = parent.getXOffset();
+            y = parent.getYOffset();
+        }
+        parent = new Parent(scale, x, y);
 
         scaleAllThings(factor);
         scaleAllRivers(factor);

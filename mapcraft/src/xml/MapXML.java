@@ -53,7 +53,9 @@ public class MapXML {
     protected String        imagedir;
     protected String        tileShape;
 
-    public static final String BASE64 = new String("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+    public static final String BASE64 = new String("ABCDEFGHIJKLMNOPQRSTUVWXYZ"+
+                                                   "abcdefghijklmnopqrstuvwxyz"+
+                                                   "0123456789");
 
     public static final String SQUARE = "Square";
     public static final String HEXAGONAL = "Hexagonal";
@@ -556,6 +558,17 @@ public class MapXML {
                 }
             }
             columns = null; // Free memory;
+
+            try {
+                System.out.println("Looking for tileset parent");
+                int     parentScale, parentX, parentY;
+                parentScale = getIntNode(node, "parent/scale");
+                parentX = getIntNode(node, "parent/x");
+                parentY = getIntNode(node, "parent/y");
+
+                tileSet.setParent(parentScale, parentX, parentY);
+            } catch (XMLException pxmle) {
+            }
 
             // Now, get data on rivers. Since river data is a lot
             // less, we don't use blobs for rivers.
