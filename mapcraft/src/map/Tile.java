@@ -172,11 +172,17 @@ public class Tile implements Cloneable {
         }
     }
 
+    /**
+     * Return the id of the area for this tile.
+     */
     public short
     getArea() {
         return area;
     }
 
+    /**
+     * Set the id of the area for this tile.
+     */
     public void
     setArea(short area) {
         if (writable) {

@@ -588,6 +588,47 @@ public class Map implements Cloneable {
         return getArea(currentSet, x, y);
     }
 
+    /**
+     * Get the descriptive name of the area of the given tile.
+     */
+    public String
+    getAreaName(int set, int x, int y) throws MapOutOfBoundsException {
+        int     a = tileSets[set].getArea(x, y);
+        Area    area = areaSet.getArea(a);
+        String  name = null;
+
+        if (area != null) {
+            name = area.getName();
+        }
+
+        return name;
+    }
+
+    public Area
+    getAreaParent(int set, int x, int y) throws MapOutOfBoundsException {
+        Area    area = getArea(set, x, y);
+        Area    parent = null;
+        int     pid = area.getParent();
+
+        if (pid > 0) {
+            parent = areaSet.getArea(pid);
+        }
+
+        return parent;
+    }
+
+    public String
+    getAreaParentName(int set, int x, int y) throws MapOutOfBoundsException {
+        Area    parent = getAreaParent(set, x, y);
+        String  name = null;
+
+        if (parent != null) {
+            name = parent.getName();
+        }
+
+        return name;
+    }
+
     public void
     setArea(int set, int x, int y, short area) throws MapOutOfBoundsException {
         tileSets[set].setArea(x, y, area);
@@ -1297,7 +1338,28 @@ public class Map implements Cloneable {
                         continue;
                     }
                     Tile        b = beta.getTile(x, y);
+                    Tile        a = alpha.getTile(x-dx, y-dy);
                     alpha.setTile(x-dx, y-dy, b);
+
+                    // Now work out areas - this can be complicated.
+                    String      aName = getAreaName(0, x-dx, y-dy);
+                    String      bName = merge.getAreaName(0, x, y);
+                    if (bName == null) {
+                        // Set area to be zero.
+                        alpha.setArea(x-dx, y-dy, (short)0);
+                    } else if (aName == null || !aName.equals(bName)) {
+                        if (getAreaByName(bName) != null) {
+                            short     id = (short)getAreaByName(bName).getId();
+                            alpha.setArea(x-dx, y-dy, id);
+                        } else {
+                            // Area doesn't exist in our map. Try the area's parent.
+                            String  parent = merge.getAreaParentName(0, x, y);
+                            Area    newArea = getAreaByName(parent);
+                            if (newArea != null) {
+                                alpha.setArea(x-dx, y-dy, (short)newArea.getId());
+                            }
+                        }
+                    }
                 }
             }
         } catch (MapOutOfBoundsException e) {
