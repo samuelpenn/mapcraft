@@ -1391,9 +1391,66 @@ public class Map implements Cloneable {
         return true;
     }
 
+    /**
+     * Returns statistics on the specified area, returning an XML string
+     * describing it.
+     *
+     * <area name="Foo">
+     *     <size>45</size>
+     * </area>
+     */
+    public String
+    getAreaStats(String name) {
+        StringBuffer        buffer = new StringBuffer("");
+        int                 set = 0;
+
+        try {
+            Area    area = getAreaByName(name);
+            int     id = area.getId();
+            int     tiles = 0;
+
+            for (int x=0; x < getWidth(set); x++) {
+                for (int y=0; y < getHeight(set); y++) {
+                    Area    a = getArea(set, x, y);
+                    if (a != null && (a.getId() == id || a.getParent() == id)) {
+                        tiles++;
+                    }
+                }
+            }
+
+            buffer.append("<area name=\""+name+"\"><size>"+tiles+"</size></area>");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return buffer.toString();
+    }
+
+    public String
+    getAreaStats() {
+        StringBuffer        buffer = new StringBuffer("");
+
+        try {
+            buffer.append("<areas>\n");
+
+            Iterator    iter = areaSet.iterator();
+            while (iter.hasNext()) {
+                Area    area = (Area)iter.next();
+                buffer.append(getAreaStats(area.getName())+"\n");
+            }
+            buffer.append("</areas>\n");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return buffer.toString();
+    }
+
+
     public static void
     main(String args[]) {
-        Map         map;
+        Map         map = null;
         Options     options;
 
         try {
@@ -1440,6 +1497,10 @@ public class Map implements Cloneable {
                 map.loadTerrainSet("terrain/hexagonal.xml");
                 map.setImageDir("hexagonal/standard");
                 map.save("earth.map");
+            }
+
+            if (map != null && options.isOption("-areastats")) {
+                System.out.println(map.getAreaStats());
             }
         } catch (Exception e) {
             e.printStackTrace();

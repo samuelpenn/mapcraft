@@ -22,6 +22,9 @@ public class Terrain implements Cloneable {
     private String  name;
     private String  description;
     private String  imagePath;
+    private boolean water;
+    private int     woods;
+    private int     quality;
 
     public
     Terrain(short id, String name, String description, String imagePath) {
@@ -35,6 +38,24 @@ public class Terrain implements Cloneable {
     public String getName() { return name; }
     public String getDescription() { return description; }
     public String getImagePath() { return imagePath; }
+    public boolean getWater() { return water; }
+    public int getWoods() { return woods; }
+    public int getQuality() { return quality; }
+
+    public void
+    setWater(boolean water) {
+        this.water = water;
+    }
+
+    public void
+    setWoods(int woods) {
+        this.woods = woods;
+    }
+
+    public void
+    setQuality(int quality) {
+        this.quality = quality;
+    }
 
     /**
      * Performs a deep copy of this object, returning a new object which

@@ -11,38 +11,38 @@
         </cvs>
 	<type>World</type>
         <shape>Hexagonal</shape>
-        <imagedir>.</imagedir>
-        <format>0.0.3</format>
+        <imagedir>hexagonal/standard</imagedir>
+        <format>0.0.4</format>
     </header>
     <terrainset id="basic" path=".">
         <terrain id="0">
             <name>null</name>
             <description>Unchartable</description>
-            <image>hex.png</image>
+            <image>blank.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="1">
             <name>sea.ocean</name>
             <description>Ocean</description>
-            <image>ocean.png</image>
+            <image>water.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="2">
             <name>sea.sea</name>
             <description>Sea</description>
-            <image>sea.png</image>
+            <image>water.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="5">
             <name>sea.island</name>
             <description>Island</description>
-            <image>island.png</image>
+            <image>sea.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="6">
             <name>Islands</name>
             <description>Islands</description>
-            <image>islands.png</image>
+            <image>sea.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="10">
@@ -54,7 +54,7 @@
         <terrain id="11">
             <name>clear.wooded</name>
             <description>Mixed woods</description>
-            <image>woods.png</image>
+            <image>woodland.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="20">
@@ -78,35 +78,35 @@
         <terrain id="30">
             <name>woods.light</name>
             <description>Light woods</description>
-            <image>lightwoods.png</image>
+            <image>woodland.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="31">
             <name>woods.medium</name>
             <description>Medium woods</description>
-            <image>mediumwoods.png</image>
+            <image>forest.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="32">
             <name>woods.thick</name>
             <description>Thick woods</description>
-            <image>thickwoods.png</image>
+            <image>thick-forest.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="40">
             <name>mountains.foot</name>
             <description>Foot hills</description>
-            <image>hills.png</image>
+            <image>rocks.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="41">
             <name>mountains.low</name>
             <description>Low mountains</description>
-            <image>hills.png</image>
+            <image>rocks.png</image>
             <solid value="false"/>
         </terrain>
     </terrainset>
-    <terrainset id="places" path="places">
+    <terrainset id="things" path="things">
         <terrain id="0">
             <name>null</name>
             <description>Empty</description>
@@ -150,6 +150,58 @@
             <solid value="false"/>
         </terrain>
     </terrainset>
+
+    <terrainset id="features" path="features">
+        <terrain id="0">
+            <name>clear</name>
+            <description>Clear</description>
+            <image>clear.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="1">
+            <name>lowhills</name>
+            <description>Low hills</description>
+            <image>lowhills.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="2">
+            <name>highhills</name>
+            <description>High hills</description>
+            <image>highhills.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="3">
+            <name>foothills</name>
+            <description>Foot hills</description>
+            <image>foothills.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="4">
+            <name>lowmnts</name>
+            <description>Low mountains</description>
+            <image>lowmnts.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="5">
+            <name>highmnts</name>
+            <description>High mountains</description>
+            <image>highmnts.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="6">
+            <name>marsh</name>
+            <description>Marshland</description>
+            <image>marsh.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="7">
+            <name>ice</name>
+            <description>Ice sheet</description>
+            <image>ice.png</image>
+            <solid value="false"/>
+        </terrain>
+    </terrainset>
+
     <tileset id="root">
         <dimensions>
             <scale>20</scale>
@@ -169,7 +221,7 @@
                 ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA 
             </column>
             <column x="1">
-                ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA 
+                ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA
                 ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA 
                 ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA 
                 ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA ABQ1AAAA 

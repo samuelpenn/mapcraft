@@ -267,6 +267,10 @@ public class MapCraft implements ActionListener {
         String          mapfile = null;
         Properties      properties = new Properties();
 
+        if (options.isOption("-map")) {
+            Map.main(args);
+            System.exit(0);
+        }
 
         if (options.isOption("-rundir")) {
             properties.setProperty("path.run", options.getString("-rundir"));
