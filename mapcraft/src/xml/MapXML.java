@@ -446,7 +446,7 @@ public class MapXML {
 
         height -= 100000; // Baseline
 
-        tile = new Tile(terrain, height, true);
+        tile = new Tile(terrain, height, (terrain!=0));
         tile.setHills(hills);
         tile.setArea(area);
 

@@ -87,9 +87,63 @@ public class Map implements Cloneable {
         this.id = name+"."+System.currentTimeMillis();
         this.parent = "none";
         this.author = "Unknown";
-        
+
         tileSets = new TileSet[1];
         tileSets[0] = new TileSet("root", width, height, scale);
+    }
+
+    /**
+     * Create a new map, based on a world of a given radius.
+     */
+    public
+    Map(String name, int radius, int scale) throws MapException {
+        this.name = name;
+        this.id = name+"."+System.currentTimeMillis();
+        this.parent = "none";
+        this.author = "Unknown";
+
+        int     height = (int) (radius * Math.PI) / scale;
+        int     width = (int) (radius * 2 * Math.PI) / scale;
+
+        tileSets = new TileSet[1];
+        tileSets[0] = new TileSet("root", width, height, scale);
+
+        int     y, x;
+        for (y = 0; y < height; y++) {
+            // y is travel along the surface
+            double  prop = Math.abs((height / 2.0) - y) / (height / 2.0);
+            double  angle = 90.0 * prop;
+
+            // t is the radius of the world, in 'tiles'.
+            double  t = radius / scale;
+            double  r = t * Math.sin(Math.toRadians(angle));
+            int     w = width - (int) (2.0 * r * Math.PI);
+
+            // w is the width of the world at this point.
+            int     s = (width/2) - (w/2);
+
+            System.out.println("["+y+"] angle "+(int)angle+" r "+r+" w "+w+" s "+s);
+            for (x = 0; x < width; x++) {
+                try {
+                    if (x >= s && x <= s+w) {
+                        tileSets[0].setTile(x, y, new Tile((short)1, (short)0, true));
+                    } else {
+                        tileSets[0].setTile(x, y, new Tile((short)0, (short)0, false));
+                    }
+                } catch (MapOutOfBoundsException mobe) {
+                }
+            }
+
+/*
+            int     rs = (int)(radius/scale * radius/scale);
+            double  h = Math.abs((y - (height*Math.PI)/2.0));
+            double  r = Math.sqrt(rs-(h * h));
+            int     w = (int) (2.0 * r * Math.PI);
+
+            System.out.println("["+y+"] w = "+w);
+            */
+        }
+
     }
 
 
@@ -631,6 +685,9 @@ public class Map implements Cloneable {
 
     private void
     writeAreaSet(FileWriter writer) throws IOException {
+        if (areaSet == null) {
+            return;
+        }
         writer.write("    <areas>\n");
         Iterator    iter = areaSet.iterator();
         while (iter.hasNext()) {
@@ -928,7 +985,7 @@ public class Map implements Cloneable {
         hills.add(new Terrain((short)4, "lowmnts", "Low mountains", "hills/4.png"));
         hills.add(new Terrain((short)5, "highmnts", "High mountains", "hills/5.png"));
         hills.add(new Terrain((short)6, "marsh", "Marshland", "hills/marsh.png"));
-        
+
         return hills;
     }
 
@@ -1096,6 +1153,11 @@ public class Map implements Cloneable {
                 map.resize(91, 28, false, false);
                 map.resize(176, 88, true, true);
                 map.save("new.map");
+            } else if (options.isOption("-world")) {
+                map = new Map("Earth", 6400, 200);
+                map.loadTerrainSet("terrain/hexagonal.xml");
+                map.setImageDir("hexagonal/standard");
+                map.save("earth.map");
             }
         } catch (Exception e) {
             e.printStackTrace();

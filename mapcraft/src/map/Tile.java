@@ -115,7 +115,9 @@ public class Tile implements Cloneable {
      */
     public void
     setTerrain(short t) {
-        this.terrain = t;
+        if (writable) {
+            this.terrain = t;
+        }
     }
 
     public short
@@ -125,7 +127,9 @@ public class Tile implements Cloneable {
 
     public void
     setHeight(short h) {
-        this.height = h;
+        if (writable) {
+            this.height = h;
+        }
     }
 
     public short
@@ -137,10 +141,12 @@ public class Tile implements Cloneable {
     getHills() {
         return hills;
     }
-    
+
     public void
     setHills(short hills) {
-        this.hills = hills;
+        if (writable) {
+            this.hills = hills;
+        }
     }
 
     public boolean
@@ -165,12 +171,16 @@ public class Tile implements Cloneable {
 
     public void
     setRiver(boolean river) {
-        this.river = river;
+        if (writable) {
+            this.river = river;
+        }
     }
 
     public void
     setSite(Site site) {
-        this.site = site;
+        if (writable) {
+            this.site = site;
+        }
     }
 
     public Site
@@ -185,6 +195,8 @@ public class Tile implements Cloneable {
 
     public void
     setArea(int area) {
-        this.area = area;
+        if (writable) {
+            this.area = area;
+        }
     }
 }
