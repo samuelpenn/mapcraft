@@ -202,24 +202,22 @@ Have a Path and PathSegment class possibly.
 
 Sites
 
-<site type="3" x="6" y="34">
+<thing type="3" x="64" y="334">
     <name>Underhill</name>
     <description>Some place</description>
-</site>
+    <properties>
+        <property name="population">340</property>
+    </properties>
+</thing>
 
-
-
-
-Editing Rivers
-
-
-Select 'Create River'. Give it a name, and click where to start.
-Each click in a surrounding hex places the next point there.
-Ends at another river or a sea hex.
-
-Edit River.
-
-
+<terrain id="3">
+    <name></name>
+    <description></description>
+    <image></image>
+    <properties>
+        <property name=""></property>
+    </properties>
+</terrain>
 
 
 
