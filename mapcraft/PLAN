@@ -50,75 +50,82 @@ Project Plan
 0.2.3
 *   Support GUI map cropping and linking to submaps.
 *   Support GUI basic resize facility (ignores parent links).
-    Support GUI rescale facility (up and down).
-    Support GUI for merging siblings.
 *   Make Tile class have package scope.
 *   Crop to highlighted regions (requires highlight support).
 *   Crop to named area.
 *   Crop to things.
 *   Crop to rivers and roads.
 *   All images included in the jar file (0.7).
-    Load terrain info from jar file.
 
-0.2.4
+# SOURCEFORGE MOVE
+# Change version numbering to be more Gentoo-like
+
+0.3 (Install/build support)
+    Work out exact (minimal) build dependencies.
+    Work out exact (minimal) run dependencies.
+    Load everything (including terrain info) from jar file.
+    Generic UNIX run script that doesn't assume my own environment.
+    Maybe think about MS Windows script.
+    Gentoo ebuild
+    
+0.4 (Rescale/merge support in GUI)
+    Support GUI rescale facility (up and down).
+    Support GUI for merging siblings.
+    GUI for Merging child maps back into parent.
+    Create image from the GUI.
+
+0.5 (Display issues)
     Fix display issues with area editing.
     Fix display issues with site editing.
     Feedback in a status bar to say what editing.
     Ability to set flags on tiles. Need to name each flag, and store in tileset.
-
-0.3 (Printing/XSLT support)
-*   XSLT plugin for calling map from Yagsbook.
-    Interface to pull out areas around named sites.
-*   Support map cropping on image print.
-    Create image from the GUI.
-
-0.3.1
-    Show A3/A4 crop areas on map as grid.
     Orientation and style of map labels.
+
+0.6 (Printing/XSLT support)
+    Show A3/A4 crop areas on map as grid.
     Auto-print overlapped image tiles to A3/A4 size.
 
-0.4 (Finish standard features)
+0.7 (Finish standard features)
     Edit and set river properties, including name.
     Names for rivers and roads displayed on map.
     Creating/editing areas in GUI.
     Font styles for site labels.
-
-0.4.1
-    GUI for Merging child maps back into parent.
     GUI resize should modify x/y offset for parent link.
     GUI resize should fetch extra tiles from parent, if there is one.
-
-0.4.2
+    
+0.8 (Height issues)
     Height palette. 2D display only.
     Contours.
     Fancy coastlines.
     Longitude/latitude calculation.
     Should be able to support full Harn map.
 
-0.5 (Multiple tilesets)
+0.9 (Multiple tilesets)
     Fix low level support for multiple tilesets.
     Multiple floors for indoor maps.
     Transparent overlay of floors over each other.
     Calculation of connecting stairs between floors.
 
-0.6 (UI design considerations)
+0.10 (UI design considerations)
     Map properties dialog/editor.
     Drop down palette menus from toolbar.
     Create world maps from the GUI.
 
-0.7 (Web support)
+0.11 (Web support)
     Output of web image maps (hrefs to places only).
     Applet viewer.
 
-0.8 (Helper)
+0.12 (Helper)
     Anti-aliase on rescale.
     Diff support for scaled children.
     Fill option.
 
-0.9 (Optimisation)
+0.13 (Optimisation)
     Any necessary speed enhancements.
     Any necessary memory efficiency enhancements.
 
+# Move into beta release at this point.    
+    
 1.0 (Release)
     Stability fixes.
     Run from jar file.
