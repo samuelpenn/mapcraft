@@ -349,34 +349,40 @@ public class TileSet implements Cloneable {
     scaleSmaller(int newScale) {
         if (scale%newScale != 0) {
             // Can only cope with exact multiples.
-            return false;
+            //return false;
         }
 
-        int         factor = scale / newScale;
-        int         newWidth = width * factor;
-        int         offset = factor/2;
-        int         newHeight = height * factor + offset;
+        double      factor = scale / newScale;
+        int         newWidth = (width * scale)/newScale;
+        int         newHeight = (height * scale)/newScale;
+
         Tile[][]    scaled = new Tile[newHeight][newWidth];
 
         for (int x=0;  x < newWidth; x++) {
-            boolean even = (x/factor)%2 == 0;
-            int     top = even?0:offset;
-            int     bottom = even?offset:0;
+            boolean     xIsEven = (((x * scale)/newScale)%2 == 0);
+            int         ox = (x * newScale)/scale;
 
-            for (int y=0; y < top; y++) {
-                scaled[y][x] = new Tile(tiles[0][x/factor]);
-            }
-            for (int y=newHeight-bottom; y < newHeight; y++) {
-                scaled[y][x] = new Tile(tiles[height-1][x/factor]);
-            }
+            int         top = (int)(0.5 + (0.5 * scale / newScale));
+            int         bottom = (int)(0.5 * scale / newScale);
 
-            for (int y=0; y < newHeight-offset; y++) {
-                scaled[y+top][x] = new Tile(tiles[y/factor][x/factor]);
+            if (xIsEven) {
+                for (int y = newHeight - bottom; y < newHeight; y++) {
+                    scaled[y][x] = new Tile(tiles[height-1][x]);
+                }
+            } else {
+                for (int y = 0; y < top; y++) {
+                    scaled[y][x] = new Tile(tiles[0][ox]);
+                }
+            }
+            for (int y = 0; y < newHeight; y++) {
+                int     oy = (y * newScale)/scale;
+                scaled[y][x] = new Tile(tiles[oy][ox]);
             }
         }
         width = newWidth;
         height = newHeight;
         tiles = scaled;
+        scale = newScale;
 
         return true;
     }

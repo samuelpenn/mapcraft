@@ -58,6 +58,7 @@ Project Plan
 *   Crop to things.
 *   Crop to rivers and roads.
 *   All images included in the jar file (0.7).
+    Load terrain info from jar file.
 
 0.2.4
     Fix display issues with area editing.

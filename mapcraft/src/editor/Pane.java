@@ -51,14 +51,18 @@ public class Pane extends JPanel implements ListSelectionListener {
         getListCellRendererComponent(JList list, Object value,
                                     int index, boolean isSelected,
                                     boolean cellHasFocus) {
-                                    
+            Image       image = null;
+            ImageIcon   icon = null;
 
             Terrain t = (Terrain)value;
-            URL         url = Pane.class.getResource(imagePath+"/"+t.getImagePath());
-            Image       image = toolkit.getImage(url);
-            image = image.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-            ImageIcon icon = new ImageIcon(image);
-            setIcon(icon);
+
+            if (t.getImagePath() != null) {
+                URL         url = Pane.class.getResource(imagePath+"/"+t.getImagePath());
+                image = toolkit.getImage(url);
+                image = image.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+                icon = new ImageIcon(image);
+                setIcon(icon);
+            }
             setText(t.getDescription());
 
             setEnabled(list.isEnabled());
