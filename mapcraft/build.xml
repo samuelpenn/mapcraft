@@ -12,6 +12,8 @@
         <delete dir="${tests.dir}" quiet="true"/>
         <delete dir="${docs.dir}" quiet="true"/>
         <delete file="${jar.file}" quiet="true"/>
+        <delete file="mapcraft" quiet="true"/>
+        <delete file="mapcraft.bat" quiet="true"/>
     </target>
 
     <target name="build">
@@ -47,6 +49,12 @@
                 <include name="*.xml"/>
             </fileset>
         </jar>
+    </target>
+    
+    <target name="scripts">
+        <copy file="scripts/mapcraft.sh" tofile="mapcraft"/>
+        <copy file="scripts/mapcraft.bat" tofile="mapcraft.bat"/>
+        <chmod file="mapcraft" perm="755"/>
     </target>
     
     <target name="xjar" depends="build">
@@ -109,4 +117,7 @@
         </junitreport>
     </target>
 
+    <target name="release" depends="clean, jar, scripts">
+        <delete dir="${build.dir}"/>
+    </target>
 </project>
