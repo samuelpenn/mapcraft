@@ -107,6 +107,11 @@ public class MapCraft implements ActionListener {
     }
 
 
+    /**
+     * Load a map into the application and display it.
+     *
+     * @param map   Filename of map to load and display.
+     */
     public void
     load(String map) {
         editor = new MapEditor(properties, map);
@@ -116,15 +121,41 @@ public class MapCraft implements ActionListener {
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         window.getContentPane().add(scrollpane, BorderLayout.CENTER);
+        scrollpane.setVisible(true);
     }
     
+    /**
+     * Save the currently displayed map back to its original filename.
+     */
+    public void
+    save() {
+        try {
+            editor.save();
+        } catch (IOException ioe) {
+            new JOptionPane("Cannot save file", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Save the currently displau map to the specified file. This is the
+     * equivalent of a 'Save as' operation.
+     */
+    public void
+    save(String filename) {
+        try {
+            editor.save(filename);
+        } catch (IOException ioe) {
+            new JOptionPane("Cannot save file", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private JButton
     createToolbarButton(String action) {
         JButton         button = new JButton();
 
         button.setAction(actions.get(action));
         button.setText("");
-        
+
         return button;
     }
 

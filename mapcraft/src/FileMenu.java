@@ -101,9 +101,13 @@ public class FileMenu extends JMenu implements ActionListener {
         if (cmd.equals(Actions.FILE_NEW)) {
         } else if (cmd.equals(Actions.FILE_OPEN)) {
             open();
+        } else if (cmd.equals(Actions.FILE_SAVE)) {
+            application.save();
+        } else if (cmd.equals(Actions.FILE_SAVEAS)) {
+            saveas();
         }
     }
-    
+
     /**
      * Opens an existing map file.
      */
@@ -119,7 +123,20 @@ public class FileMenu extends JMenu implements ActionListener {
             System.out.println("Opening file ["+filename+"]");
             application.load(filename);
         }
+    }
 
+    private void
+    saveas() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new MapFileFilter());
+
+        int returnVal = chooser.showSaveDialog(this);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            String filename = chooser.getSelectedFile().getName();
+
+            System.out.println("Save file as ["+filename+"]");
+            application.save(filename);
+        }
     }
 
 }

@@ -291,6 +291,16 @@ public class MapEditor extends MapViewer
             }
         }
     }
+    
+    public void
+    save(String filename) throws IOException {
+        map.save(filename);
+    }
+    
+    public void
+    save() throws IOException {
+        save(map.getFilename());
+    }
 
     /**
      * Class to listen for events from the File menu.
@@ -393,6 +403,26 @@ public class MapEditor extends MapViewer
     public
     MapEditor(int width, int height, int scale) {
     }
+    
+    public void
+    showTerrainPalette() {
+        terrainPane = new Pane(new TerrainPalette(this), "Terrain");
+        terrainPane.setImagePath(properties.getProperty("path.images")+"/"+map.getImageDir()+"/medium");
+        terrainPane.setPalette(map.getTerrainSet().toArray(), false);
+        terrainPane.makeFrame();
+    }
+
+    public void
+    showFeaturePalette() {
+        if (map.getType() == Map.LOCAL) {
+            placePane = new Pane(new PlacePalette(this), "Features");
+        } else {
+            placePane = new Pane(new PlacePalette(this), "Places");
+        }
+        placePane.setImagePath(properties.getProperty("path.images")+"/"+map.getImageDir()+"/medium");
+        placePane.setPalette(map.getPlaceSet().toArray(), false);
+        placePane.makeFrame();
+    }
 
     public void
     actionPerformed(ActionEvent e) {
@@ -407,51 +437,6 @@ public class MapEditor extends MapViewer
     processEvent(String option) {
     }
 
-    /**
-     * Create the 'File' menu for the frame.
-     * All these options actually access the database, not files,
-     * but it keeps things consistant with other applications.
-     *
-     * @return	A fully defined menu.
-     *
-    JMenu
-    createFileMenu() {
-        JMenu       menu = new JMenu("File");
-        JMenuItem   item;
-        MenuFileListener    fileListener = new MenuFileListener();
-
-        menu.setMnemonic(KeyEvent.VK_F);
-
-        item = new JMenuItem("New...", KeyEvent.VK_N);
-        item.setActionCommand("new");
-        item.addActionListener(fileListener);
-        menu.add(item);
-
-        item = new JMenuItem("Load...", KeyEvent.VK_R);
-        item.setActionCommand("load");
-        item.addActionListener(fileListener);
-        menu.add(item);
-
-        item = new JMenuItem("Save", KeyEvent.VK_S);
-        item.setActionCommand("save");
-        item.addActionListener(fileListener);
-        menu.add(item);
-
-        item = new JMenuItem("Save as...", KeyEvent.VK_A);
-        menu.add(item);
-
-        menu.addSeparator();
-
-        item = new JMenuItem("Properties...", KeyEvent.VK_P);
-        menu.add(item);
-
-        menu.addSeparator();
-
-        item = new JMenuItem("Exit", KeyEvent.VK_X);
-        menu.add(item);
-
-        return menu;
-    }*/
 
     /**
      * Create the 'Edit' menu for the frame.

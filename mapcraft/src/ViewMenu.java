@@ -106,7 +106,12 @@ public class ViewMenu extends JMenu implements ActionListener {
         } else if (cmd.equals(Actions.VIEW_ZOOMOUT)) {
             application.getEditor().zoomOut();
         } else if (cmd.equals(Actions.VIEW_GRID)) {
+            // Toggle grid display.
             application.getEditor().setShowGrid(!application.getEditor().isShowGrid());
+        } else if (cmd.equals(Actions.VIEW_SHOWTERRAIN)) {
+            application.getEditor().showTerrainPalette();
+        } else if (cmd.equals(Actions.VIEW_SHOWFEATURES)) {
+            application.getEditor().showFeaturePalette();
         }
     }
 

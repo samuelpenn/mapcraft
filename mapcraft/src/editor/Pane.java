@@ -95,6 +95,7 @@ public class Pane extends JPanel implements ListSelectionListener {
     
     public void
     setImagePath(String path) {
+        System.out.println("Pane path: "+path);
         this.imagePath = path;
     }
 
