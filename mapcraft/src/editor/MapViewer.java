@@ -293,25 +293,22 @@ public class MapViewer extends JPanel {
 
         // Clip area to rectangle.
         Rectangle   clip = g.getClipBounds();
-        System.out.println("Clipping coords: "+clip.getX()+", "+clip.getY());
         startX = (int)(clip.getX()/tileXSize) -1;
         endX = (int)((clip.getX()+clip.getWidth())/tileXSize) + 1;
 
         startY = (int)(clip.getY()/tileYSize) -1;
         endY = (int)((clip.getY()+clip.getHeight())/tileYSize) + 1;
-        
+
         if (startX < 0) startX = 0;
         if (startY < 0) startY = 0;
 
         if (endX > map.getWidth()) {
             endX = map.getWidth();
         }
-        
+
         if (endY > map.getHeight()) {
             endY = map.getHeight();
         }
-        
-        System.out.println("Draw "+startX+" - "+endX+", "+startY+" - "+endY);
 
         try {
             for (y = startY; y < endY; y++) {
@@ -351,16 +348,18 @@ public class MapViewer extends JPanel {
                     }
                 }
             }
-            // Now draw labels. Need to draw these last so
-            // that they don't get overwritten by tiles.
-            for (y = startY; y < endY; y++) {
-                yp = y * tileYSize;
-                for (x = startX; x < endX; x++) {
-                    if (map.isSite(x, y)) {
-                        // Show name, should be configurable.
-                        xp = x * tileXSize;
-                        ypp = yp + ((x%2 == 0)?0:tileYOffset);
-                        g.drawString(map.getSite(x, y).getName(), xp, ypp);
+            // Now draw labels. Need to draw these last so that they don't
+            // get overwritten by tiles. No labels are drawn for LOCAL maps.
+            if (map.getType() == Map.WORLD) {
+                for (y = startY; y < endY; y++) {
+                    yp = y * tileYSize;
+                    for (x = startX; x < endX; x++) {
+                        if (map.isSite(x, y)) {
+                            // Show name, should be configurable.
+                            xp = x * tileXSize;
+                            ypp = yp + ((x%2 == 0)?0:tileYOffset);
+                            g.drawString(map.getSite(x, y).getName(), xp, ypp);
+                        }
                     }
                 }
             }
@@ -401,7 +400,9 @@ public class MapViewer extends JPanel {
                 icon = siteSet.getIcon(map.getSiteMask(x, y));
                 g.drawImage(icon, xp, yp, this);
                 // Show name, should be configurable.
-                g.drawString(map.getSite(x, y).getName(), xp, yp);
+                if (map.getType() != Map.LOCAL) {
+                    g.drawString(map.getSite(x, y).getName(), xp, yp);
+                }
             }
         } catch (Exception e) {
             System.out.println("Failed to paint tile "+x+", "+y);

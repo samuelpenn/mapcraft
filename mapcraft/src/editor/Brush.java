@@ -26,6 +26,7 @@ class Brush {
     public static final int RIVERS = 3;
     public static final int HILLS = 4;
     public static final int HEIGHT = 5;
+    public static final int FEATURES = 6;
 
     private int brush = TERRAIN;
 
@@ -48,7 +49,9 @@ class Brush {
     getSelected() {
         switch (brush) {
         case TERRAIN: return terrain;
-        case SITES:   return site;
+        case SITES:
+        case FEATURES:
+            return site;
         case RIVERS:  return river;
         case HILLS:   return hill;
         case HEIGHT:  return height;
@@ -68,6 +71,7 @@ class Brush {
         case TERRAIN:
             terrain = selected;
             break;
+        case FEATURES:
         case SITES:
             site = selected;
             break;

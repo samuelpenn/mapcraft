@@ -49,13 +49,16 @@ public class MapXML {
     protected Document      document;
     protected String        name, author, id, parent;
     protected String        version, date;
-    protected String        format;
+    protected String        format, type;
     protected String        tileShape;
     
     public static final String BASE64 = new String("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
 
     public static final String SQUARE = "Square";
     public static final String HEXAGONAL = "Hexagonal";
+    
+    public static final String LOCAL = "Local";
+    public static final String WORLD = "World";
     
     /**
      * Convert an integer into its Base64 representation as a string
@@ -150,7 +153,7 @@ public class MapXML {
             id = getTextNode("/map/header/id");
             parent = getTextNode("/map/header/parent");
             tileShape = getTextNode("/map/header/shape");
-
+            type = getTextNode("/map/header/type");
 
             System.out.println(name+","+id+","+parent+","+author);
         } catch (XMLException xe) {
@@ -355,6 +358,7 @@ public class MapXML {
     public String getFormat() { return format; }
     public String getParent() { return parent; }
     public String getTileShape() { return tileShape; }
+    public String getType() { return type; }
 
     /**
      * Return all the terrains from the named terrainset in the XML data.

@@ -56,7 +56,8 @@ public class Map {
     TerrainSet      terrainSet = null;
     TerrainSet      placeSet = null;
     TileSet         tileSets[] = null;
-    private int     tileShape = 2;
+    private int     tileShape = HEXAGONAL;
+    private int     type = WORLD;
 
     // State fields
     private String  currentSetName = null;
@@ -71,6 +72,9 @@ public class Map {
     // Constants
     public static final int SQUARE = 1;
     public static final int HEXAGONAL = 2;
+
+    public static final int WORLD = 1;
+    public static final int LOCAL = 2;
 
 
     public
@@ -112,6 +116,7 @@ public class Map {
             this.parent = xml.getParent();
             this.author = xml.getAuthor();
             setTileShape(xml.getTileShape());
+            setType(xml.getType());
 
             System.out.println("LOADED MAP ["+name+"]");
             System.out.println("Author     "+author);
@@ -144,12 +149,23 @@ public class Map {
     
     public String getFilename() { return filename; }
     
+    /**
+     * Get the shape of the tiles - either SQUARE or HEXAGONAL.
+     */
     public int getTileShape() { return tileShape; }
 
+    /**
+     * Set the shape of the tiles to use for the map, either
+     * SQUARE or HEXAGONAL.
+     */
     public void setTileShape(int shape) {
         this.tileShape = shape;
     }
-    
+
+    /**
+     * Set the shape of the tiles, using the name of the
+     * shape rather than the integral value.
+     */
     public void
     setTileShape(String shape) {
         if (shape.equals(MapXML.SQUARE)) {
@@ -158,6 +174,22 @@ public class Map {
             this.tileShape = HEXAGONAL;
         }
     }
+    
+    public void
+    setType(String typeName) {
+        if (typeName.equals(MapXML.LOCAL)) {
+            this.type = LOCAL;
+        } else {
+            this.type = WORLD;
+        }
+    }
+
+    public void
+    setType(int type) {
+        this.type = type;
+    }
+
+    public int getType() { return type; }
 
     /**
      * Get the width of the current tile set.
@@ -476,6 +508,11 @@ public class Map {
         writer.write("            <version>$Revision$</version>\n");
         writer.write("            <date>$Date$</date>\n");
         writer.write("        </cvs>\n");
+        if (getType() == LOCAL) {
+            writer.write("        <type>Local</type>\n");
+        } else {
+            writer.write("        <type>World</type>\n");
+        }
         if (getTileShape() == SQUARE) {
             writer.write("        <shape>Square</shape>\n");
         } else {

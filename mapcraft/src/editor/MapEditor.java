@@ -89,6 +89,11 @@ public class MapEditor extends MapViewer
         public void
         valueChanged(ListSelectionEvent e) {
             int first, last, index;
+            int type = Brush.SITES;
+            
+            if (map.getType() == Map.LOCAL) {
+                type = Brush.FEATURES;
+            }
 
             // We get a result for both the item which was
             // selected, and the one unselected, so we need
@@ -101,10 +106,10 @@ public class MapEditor extends MapViewer
 
             System.out.println("TerrainPalette: "+index);
             Terrain ta[] = map.getPlaceSet().toArray();
-            brush.setSelected(Brush.SITES, ta[index].getId());
+            brush.setSelected(type, ta[index].getId());
             System.out.println("Terrain selected: "+brush.getSelected());
 
-            brush.setType(Brush.SITES);
+            brush.setType(type);
         }
     }
 
@@ -117,11 +122,20 @@ public class MapEditor extends MapViewer
                 info("Applying terrain brush "+brush.getSelected());
                 map.setTerrain(x, y, brush.getSelected());
                 break;
+            case Brush.FEATURES:
+                info("Applying feature brush");
+                if (brush.getSelected() == 0) {
+                    map.getTile(x, y).setSite((Site)null);
+                } else {
+                    Site site = new Site(brush.getSelected(), "Unnamed", "Unnamed");
+                    map.getTile(x, y).setSite(site);
+                }
+                break;
             case Brush.SITES:
                 if (brush.getSelected() == 0) {
                     map.getTile(x, y).setSite((Site)null);
                 } else if (!map.isSite(x, y)) {
-                    // Only set site if no site currenty present.
+                    // Only set site if no site currently present.
                     Site    site = new Site(brush.getSelected(), "Unnamed", "Unknown");
                     info("Applying site brush "+brush.getSelected());
                     map.getTile(x, y).setSite(site);
@@ -362,7 +376,11 @@ public class MapEditor extends MapViewer
         terrainPane.setPalette(map.getTerrainSet().toArray(), false);
         terrainPane.makeFrame();
 
-        placePane = new Pane(new PlacePalette(this), "Places");
+        if (map.getType() == Map.LOCAL) {
+            placePane = new Pane(new PlacePalette(this), "Features");
+        } else {
+            placePane = new Pane(new PlacePalette(this), "Places");
+        }
         placePane.setImagePath(imagePath+"/medium");
         placePane.setPalette(map.getPlaceSet().toArray(), false);
         placePane.makeFrame();

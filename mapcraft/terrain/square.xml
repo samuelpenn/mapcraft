@@ -10,57 +10,142 @@
             <version>$Revision$</version>
             <date>$Date$</date>
         </cvs>
-        <format>0.0.2</format>
+        <type>Local</type>
         <shape>Square</shape>
+        <format>0.0.2</format>
     </header>
 
-    <terrainset id="basic" path="">
-        <terrain id="0">
+    <terrainset id="basic" path=".">
+       <terrain id="0">
             <name>null</name>
             <description>Unchartable</description>
             <image>null.png</image>
             <solid value="false"/>
         </terrain>
-
         <terrain id="1">
             <name>clear.clear</name>
             <description>Clear</description>
             <image>clear.png</image>
             <solid value="false"/>
         </terrain>
-        
         <terrain id="2">
             <name>water.water</name>
             <description>Water</description>
             <image>water.png</image>
             <solid value="false"/>
         </terrain>
-
-
         <terrain id="3">
             <name>clear.grass</name>
             <description>Grass</description>
             <image>grass.png</image>
             <solid value="false"/>
         </terrain>
-
         <terrain id="4">
             <name>clear.sand</name>
             <description>Sand</description>
             <image>sand.png</image>
             <solid value="false"/>
         </terrain>
-
         <terrain id="5">
             <name>solid.stone</name>
+            <description>Rock wall</description>
+            <image>rockwall.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="6">
+            <name>clear.stone</name>
             <description>Stone</description>
             <image>stone.png</image>
-            <solid value="true"/>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="7">
+            <name>clear.dirt</name>
+            <description>Dirt</description>
+            <image>dirt.png</image>
+            <solid value="false"/>
         </terrain>
 
     </terrainset>
 
-    <terrainset id="places" path="places">
+    <terrainset id="places" path="features">
+        <terrain id="0">
+            <name>blank</name>
+            <description>Nothing</description>
+            <image>blank.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="1">
+            <name>bars.horizontal</name>
+            <description>Horizontal Bars</description>
+            <image>horiz-bars.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="2">
+            <name>bars.vertical</name>
+            <description>Vertical Bars</description>
+            <image>vert-bars.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="10">
+            <name>column.small</name>
+            <description>Small column</description>
+            <image>column-small.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="11">
+            <name>column.medium</name>
+            <description>Medium column</description>
+            <image>column-medium.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="12">
+            <name>column.large</name>
+            <description>Large column</description>
+            <image>column-large.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="20">
+            <name>door.north</name>
+            <description>Door north</description>
+            <image>door-north.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="21">
+            <name>door.east</name>
+            <description>Door east</description>
+            <image>door-east.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="22">
+            <name>door.south</name>
+            <description>Door south</description>
+            <image>door-south.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="23">
+            <name>door.west</name>
+            <description>Door west</description>
+            <image>door-west.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="30">
+            <name>furniture.barrel</name>
+            <description>Wooden barrel</description>
+            <image>barrel.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="31">
+            <name>furniture.table</name>
+            <description>Table</description>
+            <image>table-ns.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="32">
+            <name>furniture.table</name>
+            <description>Table</description>
+            <image>table-ew.png</image>
+            <solid value="false"/>
+        </terrain>
     </terrainset>
 
     <tileset id="root">
