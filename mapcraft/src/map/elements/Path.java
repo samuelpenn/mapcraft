@@ -10,7 +10,7 @@
  * $Date$
  */
 
-package net.sourceforge.mapcraft.map;
+package net.sourceforge.mapcraft.map.elements;
 
 import java.util.*;
 
@@ -212,9 +212,6 @@ public class Path {
             Element e = (Element)elements.elementAt(i);
             x = (float)e.getX() * (float)(xscale/100.0);
             y = (float)e.getY() * (float)(yscale/100.0);
-
-            //x = x * (float)xs;
-            //y = y * (float)ys;
 
             if (p1 == null) {
                 p1 = new Point2D.Float(x, y);
@@ -448,10 +445,10 @@ public class Path {
         dirty = false;
     }
 
-    int getMinX() { boundingBox(); return minX; }
-    int getMinY() { boundingBox(); return minY; }
-    int getMaxX() { boundingBox(); return maxX; }
-    int getMaxY() { boundingBox(); return maxY; }
+    public int getMinX() { boundingBox(); return minX; }
+    public int getMinY() { boundingBox(); return minY; }
+    public int getMaxX() { boundingBox(); return maxX; }
+    public int getMaxY() { boundingBox(); return maxY; }
 
 }
 

@@ -9,7 +9,7 @@
  * $Revision$
  * $Date$
  */
-package net.sourceforge.mapcraft.map;
+package net.sourceforge.mapcraft.map.elements;
 
 import java.util.Properties;
 
