@@ -1,0 +1,196 @@
+<?xml version="1.0" ?>
+<?xml-stylesheet 
+	href="/usr/share/sgml/docbook/xsl-stylesheets-1.62.4/html/docbook.xsl" 
+	type="text/xsl"?>
+
+<book lang="en">
+    <bookinfo>
+        <title>Mapcraft</title>
+
+        <authorgroup>
+            <author>Samuel Penn</author>
+        </authorgroup>
+
+        <copyright>
+            <year>2004</year>
+            <holder>Samuel Penn</holder>
+        </copyright>
+
+        <legalnotice>GNU FDL</legalnotice>
+
+        <date>2004-05-15</date>
+        <releaseinfo>1.1</releaseinfo>
+
+        <abstract>
+            <para>
+                User manual for Mapcraft.
+            </para>
+        </abstract>
+    </bookinfo>
+
+    <chapter id="introduction">
+		<title>Introduction</title>
+
+		<para>
+			An introduction to using Mapcraft, including a description of
+			its terminology and broad functionality.
+		</para>
+
+		<sect1>
+			<title>What is Mapcraft?</title>
+
+			<para>
+				Mapcraft is a Java application for editing tile based maps.
+				By tile based it means that the map consists of tiles,
+				either <emphasis>square</emphasis> or <emphasis>hexagonal
+				</emphasis>, arranged in a two dimensional grid like pixels
+				in an image.
+			</para>
+
+			<para>
+				An alternative way of describing a map is to use vectors and
+				objects (lines, curves and filled regions). Mapcraft does
+				make use of some of these - roads and rivers overlay on top
+				of the tiles as lines, and are not restricted to fitting
+				onto the grid. Towns, cities and other <emphasis>things
+				</emphasis> are also free floating, and don't need to fit
+				to the grid.
+			</para>
+
+			<para>
+				The basic map however is tile based.
+			</para>
+
+			<sect2>
+				<title>Map Types and Tile Shapes</title>
+
+				<para>
+					The way maps are treated in <productname>Mapcraft
+					</productname> depends on how the map has been
+					defined. A map of a temple has quite different
+					properties to the map of a whole world.
+				</para>
+
+				<para>
+					There are two basic kinds of map - World maps and
+					Local maps. World maps assume a scale where each tile
+					is many kilometres across. Local maps assume a scale
+					which a tile is only a few metres across.
+				</para>
+
+				<para>
+					Since a map can be any scale, it is possible to have
+					local area maps with a scale of several hundred metres
+					per tile. Often though, maps are most useful if they
+					are towards one of the extremes.
+				</para>
+
+				<para>
+					A second option when defining a map is the shape of the
+					tiles used. Tiles can be either square or hexagonal. It
+					is suggested that local maps use square tiles (this is
+					especially true where the map consists of building
+					interiors) and world maps use hexagonal tiles. Again
+					though, this is not enforced. Hexagonal tiles give a
+					more <emphasis>natural</emphasis> look to a map.
+				</para>
+			</sect2>
+
+			<sect2>
+				<title>Terrain and Features</title>
+
+				<para>
+					Each map tile has a terrain type associated with it,
+					which determines whether it is forest, grassland,
+					desert or sea. There are normally several dozen terrain
+					types in a map, so the options are quite flexible.
+				</para>
+
+				<para>
+					Each tile may also have a feature - something that is
+					additional to, and modifies, the basic terrain. Common
+					examples are hills and mountains.
+				</para>
+
+				<para>
+					Each tile will have exactly one terrain type and at most
+					one feature.
+				</para>
+			</sect2>
+
+			<sect2>
+				<title>Things</title>
+
+				<para>
+					<emphasis>Things</emphasis> are objects which may be
+					placed anywhere on the map. They may represent towns,
+					cities, caves, houses, beds and chairs to give a few
+					examples. A thing does not have to fit to the map grid.
+					Things have a name associated with them (which may be
+					displayed as a label, depending on the type of map),
+					as well as zero or more properties which can be used
+					to store any amount of information on the object.
+				</para>
+
+				<sect3>
+					<title>Properties</title>
+
+					<para>
+						Properties are user defined items of textual
+						information which can be attached to objects on
+						the map. Some properties are defined or assumed
+						to have a particular meaning (for instance, if a
+						city has a property called 'population', then it
+						is assumed to be the population of the city.
+					</para>
+
+					<para>
+						Properties may be accessed programatically, but
+						can just be used to store information on the map
+						for the user's own use.
+					</para>
+				</sect3>
+			</sect2>
+
+			<sect2>
+				<title>Paths</title>
+
+				<para>
+					Paths are vector lines which are not restricted to
+					the tiles on the map. They are used to implement
+					roads and rivers. As for <emphasis>things</emphasis>,
+					a path may have any number of properties associated
+					with it.
+				</para>
+			</sect2>
+
+
+			<sect2>
+				<title>Areas</title>
+
+				<para>
+					An <emphasis>area</emphasis> is a named region on the
+					map. Each tile may belong to an area. If two
+					neighbouring tiles belong to different areas, then a
+					border will be drawn between them. This allows
+					territory of kingdoms and empires to be marked out
+					on the map, with borders being automatically
+					calculated.
+				</para>
+			</sect2>
+
+			<sect2>
+				<title>Terrain Sets</title>
+
+				<para>
+					A terrain set is a predefined collection of terrains,
+					features and icons for use in a map. There are a number
+					of basic terrain sets which can be selected from when
+					a map is first created.
+				</para>
+			</sect2>
+		</sect1>
+    </chapter>
+
+
+</book>
