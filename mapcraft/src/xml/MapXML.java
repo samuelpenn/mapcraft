@@ -598,6 +598,7 @@ public class MapXML {
     getSites() throws XMLException {
         Vector          sites = new Vector();
         String          name, description;
+        int             fontSize, importance;
         String          image;
         String          path;
         int             x, y, i = 0;
@@ -626,7 +627,11 @@ public class MapXML {
 
                     name = getTextNode(node, "name");
                     description = getTextNode(node, "description");
+                    fontSize = getIntNode(node, "font");
+                    importance = getIntNode(node, "importance");
                     site = new Site(type, name, description, x, y);
+                    site.setFontSize(fontSize);
+                    site.setImportance(importance);
                     sites.add(site);
                 }
             }

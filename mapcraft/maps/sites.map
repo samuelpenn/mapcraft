@@ -103,10 +103,40 @@
             <image>town.png</image>
             <solid value="false"/>
         </terrain>
+        <terrain id="3">
+            <name>castle.keep</name>
+            <description>Keep</description>
+            <image>keep.png</image>
+            <solid value="false"/>
+        </terrain>
         <terrain id="4">
             <name>castle.castle</name>
             <description>Castle</description>
             <image>castle.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="5">
+            <name>misc.ruins</name>
+            <description>Ruins</description>
+            <image>ruins.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="6">
+            <name>misc.mines</name>
+            <description>Mines</description>
+            <image>mine.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="7">
+            <name>misc.label</name>
+            <description>Label</description>
+            <image>label.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="8">
+            <name>misc.peak</name>
+            <description>Peak</description>
+            <image>peak.png</image>
             <solid value="false"/>
         </terrain>
     </terrainset>
@@ -3316,26 +3346,38 @@
         <site type="2" x="2379" y="3489">
             <name>Erlwood</name>
             <description>Shire capital</description>
+            <font>2</font>
+            <importance>2</importance>
         </site>
         <site type="4" x="2961" y="4420">
             <name>Stowell</name>
             <description>Royal Castle</description>
+            <font>3</font>
+            <importance>3</importance>
         </site>
         <site type="4" x="3187" y="3639">
             <name>Mirkford</name>
             <description>Unknown</description>
+            <font>2</font>
+            <importance>2</importance>
         </site>
         <site type="2" x="3383" y="3628">
             <name>Stanminster</name>
             <description>Unknown</description>
+            <font>2</font>
+            <importance>2</importance>
         </site>
         <site type="2" x="4037" y="3635">
             <name>Northgate</name>
             <description>Unknown</description>
+            <font>1</font>
+            <importance>1</importance>
         </site>
         <site type="2" x="3950" y="3739">
             <name>Chenfeld</name>
             <description>Unknown</description>
+            <font>1</font>
+            <importance>1</importance>
         </site>
     </sites>
     <areas>

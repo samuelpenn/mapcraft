@@ -32,14 +32,15 @@ Project Plan
     Support rivers as vectors, inc graphical editing.
     Support roads as vectors, inc graphical editing.
     Feedback in a status bar to say what editing.
+*   Decouple sites from tiles.
+*   Control over font used with sites.
+*   Resize of site labels depending on tile size.
 
 0.2.2
     Support map cropping and linking to submaps.
     Support rescale facility (up and down).
-    Editing subhex placement of sites.
-    Multiple sites per hex.
-    Resize of site labels depending on tile size.
     Fix display issues with area editing.
+    Fix display issues with site editing.
 
 0.3 (Printing support)
     Link to yagsbook encyclopedia.

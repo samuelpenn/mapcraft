@@ -752,17 +752,84 @@ public class MapViewer extends JPanel {
         }
     }
 
+    private double
+    getFontScale() {
+        double fontScale = 1.0;
+
+        switch (view) {
+            case 0: // usmall
+                fontScale = 0.2;
+                break;
+            case 1: // xxsmall
+                fontScale = 0.4;
+                break;
+            case 2: // xsmall
+                fontScale = 0.6;
+                break;
+            case 3: // small
+                fontScale = 0.8;
+                break;
+            case 4: // medium
+                fontScale = 1.0;
+                break;
+            case 5: // large
+                fontScale = 1.3;
+                break;
+            case 6: // xlarge
+                fontScale = 1.6;
+                break;
+            case 7: // xxlarge
+                fontScale = 2.0;
+                break;
+        }
+
+        return fontScale;
+    }
+
     public void
     paintSite(Site site, Graphics g) {
         int     x=0, y=0;
+        int     fontSize = 10;
         Image   icon = siteSet.getIcon(site.getType());
 
         debug("paintSite: ["+site.getName()+"]");
+
+        // If scale is too large, and site not importance enough,
+        // then don't display it.
+        switch (site.getImportance()) {
+            case Site.LOW:
+                if (view < 4) return;
+                break;
+            case Site.NORMAL:
+                if (view < 2) return;
+                break;
+            case  Site.HIGH:
+                break;
+        }
 
         x = site.getX() * tileXSize / 100 - tileXSize/2;
         y = site.getY() * tileYSize / 100 - tileYSize/2;
 
         g.drawImage(icon, x, y, this);
+        g.setColor(Color.BLACK);
+
+        switch (site.getFontSize())  {
+        case Site.SMALL:
+            fontSize = 8;
+            break;
+        case Site.MEDIUM:
+            fontSize = 10;
+            break;
+        case Site.LARGE:
+            fontSize = 14;
+            break;
+        case Site.HUGE:
+            fontSize = 18;
+            break;
+        }
+        fontSize = (int) (getFontScale() * fontSize);
+        Font    font = new Font("Helvetica", Font.PLAIN, fontSize);
+        g.setFont(font);
         // Show name, should be configurable.
         if (map.getType() != Map.LOCAL) {
             g.drawString(site.getName(), x, y);

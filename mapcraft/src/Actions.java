@@ -56,7 +56,6 @@ public class Actions {
     public final static String  VIEW_GRID           = "view.grid";
     public final static String  VIEW_LARGEGRID      = "view.largegrid";
 
-    public final static String  EDIT_SELECT         = "edit.select";
     public final static String  EDIT_TERRAIN        = "edit.terrain";
     public final static String  EDIT_FEATURES       = "edit.features";
     public final static String  EDIT_HILLS          = "edit.hills";
@@ -65,6 +64,12 @@ public class Actions {
     public final static String  EDIT_SMALL          = "edit.small";
     public final static String  EDIT_MEDIUM         = "edit.medium";
     public final static String  EDIT_LARGE          = "edit.large";
+
+    public final static String  EDIT_SELECT         = "edit.select";
+    public final static String  EDIT_NEW            = "edit.new";
+    public final static String  EDIT_EDIT           = "edit.edit";
+    public final static String  EDIT_DELETE         = "edit.delete";
+    public final static String  EDIT_INSERT         = "edit.insert";
 
     public class Actor extends AbstractAction {
         private ActionListener  listener;
@@ -136,7 +141,6 @@ public class Actions {
             add(VIEW_XXLARGE, "XX-Large");
 
             // Palettes
-            addLocal(EDIT_SELECT, "Select", "select");
             addLocal(EDIT_TERRAIN, "Terrain Brush", "terrain");
             addLocal(EDIT_FEATURES, "Features Brush", "features");
             addLocal(EDIT_AREAS, "Area Brush", "terrain");
@@ -147,6 +151,13 @@ public class Actions {
             addLocal(EDIT_SMALL,"Small brush", "small-brush");
             addLocal(EDIT_MEDIUM, "Medium brush", "medium-brush");
             addLocal(EDIT_LARGE, "Large brush", "large-brush");
+
+            // Edit modes
+            addLocal(EDIT_SELECT, "Select", "select");
+            addLocal(EDIT_NEW, "New", "new");
+            addLocal(EDIT_INSERT, "Insert", "insert");
+            addLocal(EDIT_EDIT, "Edit", "edit");
+            addLocal(EDIT_DELETE, "Delete", "delete");
 
         }
     }

@@ -56,6 +56,12 @@ public class EditMenu extends JMenu implements ActionListener {
         addItem(Actions.EDIT_AREAS);
         addItem(Actions.EDIT_RIVERS);
 
+        addItem(Actions.EDIT_SELECT);
+        addItem(Actions.EDIT_NEW);
+        addItem(Actions.EDIT_EDIT);
+        addItem(Actions.EDIT_INSERT);
+        addItem(Actions.EDIT_DELETE);
+
     }
 
 
@@ -86,15 +92,60 @@ public class EditMenu extends JMenu implements ActionListener {
         } else if (cmd.equals(Actions.EDIT_LARGE)) {
             application.getEditor().setBrushSize(Brush.LARGE);
         } else if (cmd.equals(Actions.EDIT_RIVERS)) {
+            // Rivers brush.
             application.getEditor().setBrushType(Brush.RIVERS);
+            actions.get(Actions.EDIT_SELECT).setEnabled(true);
+            actions.get(Actions.EDIT_EDIT).setEnabled(true);
+            actions.get(Actions.EDIT_INSERT).setEnabled(true);
+            actions.get(Actions.EDIT_DELETE).setEnabled(true);
+            actions.get(Actions.EDIT_NEW).setEnabled(true);
+            actions.get(Actions.EDIT_SMALL).setEnabled(false);
+            actions.get(Actions.EDIT_MEDIUM).setEnabled(false);
+            actions.get(Actions.EDIT_LARGE).setEnabled(false);
         } else if (cmd.equals(Actions.EDIT_TERRAIN)) {
+            // Terrain brush.
             application.getEditor().setBrushType(Brush.TERRAIN);
+            actions.get(Actions.EDIT_SELECT).setEnabled(false);
+            actions.get(Actions.EDIT_EDIT).setEnabled(false);
+            actions.get(Actions.EDIT_INSERT).setEnabled(false);
+            actions.get(Actions.EDIT_DELETE).setEnabled(false);
+            actions.get(Actions.EDIT_NEW).setEnabled(false);
+            actions.get(Actions.EDIT_SMALL).setEnabled(true);
+            actions.get(Actions.EDIT_MEDIUM).setEnabled(true);
+            actions.get(Actions.EDIT_LARGE).setEnabled(true);
         } else if (cmd.equals(Actions.EDIT_FEATURES)) {
+            // Site brush.
             application.getEditor().setBrushType(Brush.SITES);
+            actions.get(Actions.EDIT_SELECT).setEnabled(true);
+            actions.get(Actions.EDIT_EDIT).setEnabled(true);
+            actions.get(Actions.EDIT_INSERT).setEnabled(false);
+            actions.get(Actions.EDIT_DELETE).setEnabled(false);
+            actions.get(Actions.EDIT_NEW).setEnabled(true);
+            actions.get(Actions.EDIT_SMALL).setEnabled(false);
+            actions.get(Actions.EDIT_MEDIUM).setEnabled(false);
+            actions.get(Actions.EDIT_LARGE).setEnabled(false);
         } else if (cmd.equals(Actions.EDIT_HILLS)) {
+            // Site brush.
             application.getEditor().setBrushType(Brush.HILLS);
+            actions.get(Actions.EDIT_SELECT).setEnabled(false);
+            actions.get(Actions.EDIT_EDIT).setEnabled(false);
+            actions.get(Actions.EDIT_INSERT).setEnabled(false);
+            actions.get(Actions.EDIT_DELETE).setEnabled(false);
+            actions.get(Actions.EDIT_NEW).setEnabled(false);
+            actions.get(Actions.EDIT_SMALL).setEnabled(false);
+            actions.get(Actions.EDIT_MEDIUM).setEnabled(false);
+            actions.get(Actions.EDIT_LARGE).setEnabled(false);
         } else if (cmd.equals(Actions.EDIT_AREAS)) {
+            // Areas brush.
             application.getEditor().setBrushType(Brush.AREAS);
+            actions.get(Actions.EDIT_SELECT).setEnabled(false);
+            actions.get(Actions.EDIT_EDIT).setEnabled(false);
+            actions.get(Actions.EDIT_INSERT).setEnabled(false);
+            actions.get(Actions.EDIT_DELETE).setEnabled(false);
+            actions.get(Actions.EDIT_NEW).setEnabled(false);
+            actions.get(Actions.EDIT_SMALL).setEnabled(false);
+            actions.get(Actions.EDIT_MEDIUM).setEnabled(false);
+            actions.get(Actions.EDIT_LARGE).setEnabled(false);
         }
     }
 

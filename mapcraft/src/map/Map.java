@@ -930,6 +930,8 @@ public class Map implements Cloneable {
                 writer.write("            <description>");
                 writer.write(site.getDescription());
                 writer.write("</description>\n");
+                writer.write("            <font>"+site.getFontSize()+"</font>\n");
+                writer.write("            <importance>"+site.getImportance()+"</importance>\n");
 
                 writer.write("        </site>\n");
             }

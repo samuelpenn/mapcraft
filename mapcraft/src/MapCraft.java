@@ -194,7 +194,6 @@ public class MapCraft implements ActionListener {
 
         toolbar.addSeparator();
 
-        toolbar.add(createToolbarButton(Actions.EDIT_SELECT));
         toolbar.add(createToolbarButton(Actions.EDIT_TERRAIN));
         toolbar.add(createToolbarButton(Actions.EDIT_FEATURES));
         toolbar.add(createToolbarButton(Actions.EDIT_RIVERS));
@@ -205,6 +204,15 @@ public class MapCraft implements ActionListener {
         toolbar.add(createToolbarButton(Actions.EDIT_SMALL));
         toolbar.add(createToolbarButton(Actions.EDIT_MEDIUM));
         toolbar.add(createToolbarButton(Actions.EDIT_LARGE));
+
+        toolbar.addSeparator();
+
+        toolbar.add(createToolbarButton(Actions.EDIT_SELECT));
+        toolbar.add(createToolbarButton(Actions.EDIT_NEW));
+        toolbar.add(createToolbarButton(Actions.EDIT_EDIT));
+        toolbar.add(createToolbarButton(Actions.EDIT_INSERT));
+        toolbar.add(createToolbarButton(Actions.EDIT_DELETE));
+
 
         return this.toolbar;
     }
