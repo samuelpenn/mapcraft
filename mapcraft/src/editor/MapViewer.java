@@ -356,7 +356,6 @@ public class MapViewer extends JPanel {
         for (int i = 0; i < icons.length; i++) {
             String      name = icons[i]+".png";
             String      path = views[view].getPath()+"/effects/"+name;
-            debug(path);
             Image       icon = toolkit.getImage(path);
             Image       scaled = null;
             int     x = -1, y = -1;
@@ -381,7 +380,6 @@ public class MapViewer extends JPanel {
         }
 
         iconSet.prepareImages(this);
-
         return iconSet;
     }
 
@@ -410,9 +408,6 @@ public class MapViewer extends JPanel {
         super(true);
 
         toolkit = Toolkit.getDefaultToolkit();
-
-        debug("Image path = "+properties.getProperty("path.images"));
-
         this.properties = properties;
 
         String path = properties.getProperty("path.images", "images");
@@ -430,9 +425,7 @@ public class MapViewer extends JPanel {
             setView(2);
 
             readAllIcons();
-
             map.setCurrentSet("root");
-
         } catch (MapException e) {
             e.printStackTrace();
         }

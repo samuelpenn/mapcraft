@@ -357,7 +357,18 @@ public class Map extends MapBean implements Cloneable {
         }
 
         return true;
-     }
+    }
+
+    public boolean
+    cropToPath(String name, short margin) {
+        try {
+            tileSets[getCurrentSet()].cropToPath(name, margin);
+        } catch (MapException e) {
+            return false;
+        }
+
+        return true;
+    }
 
 
     /**

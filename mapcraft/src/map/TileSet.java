@@ -702,7 +702,17 @@ public class TileSet implements Cloneable {
             throw new MapException("Cannot find path ["+name+"] to crop to");
         }
 
-        
+        int     minX = path.getMinX()/100 - margin;
+        int     minY = path.getMinY()/100 - margin;
+        int     maxX = path.getMaxX()/100 + margin;
+        int     maxY = path.getMaxY()/100 + margin;
+
+        if (minX < 0) minX = 0;
+        if (minY < 0) minY = 0;
+        if (maxX >= width) maxX = width - 1;
+        if (maxY >= height) maxY = height - 1;
+
+        crop(minX, minY, maxX-minX + 1, maxY-minY + 1);
     }
 
     /**

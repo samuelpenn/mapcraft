@@ -887,6 +887,11 @@ public class MapEditor extends MapViewer
                     String  name = dialog.getSelection();
 
                     map.cropToThing(name, radius);
+                } else if (dialog.isRiver() || dialog.isRoad()) {
+                    short   margin = dialog.getMargin();
+                    String  name = dialog.getSelection();
+
+                    map.cropToPath(name, margin);
                 }
             }
 
