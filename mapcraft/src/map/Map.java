@@ -1249,7 +1249,59 @@ public class Map implements Cloneable {
      */
     public boolean
     merge(Map merge) {
+        System.out.println("Merging maps");
+
         if (!getParent().equals(merge.getParent())) {
+            System.out.println("Maps do not have the same parent");
+            return false;
+        }
+
+        // Alpha is our map, Beta is the map that is being merged from.
+        TileSet     alpha = tileSets[0];
+        TileSet     beta = merge.tileSets[0];
+
+        if (alpha.getScale() != beta.getScale()) {
+            System.out.println("Maps are not the same scale");
+            return false;
+        }
+
+        // X offset, Y offset, width and height for alpha and beta maps.
+        int         ax, ay, aw, ah;
+        int         bx, by, bw, bh;
+
+        ax = alpha.getParentsXOffset();
+        ay = alpha.getParentsYOffset();
+        aw = alpha.getWidth();
+        ah = alpha.getHeight();
+
+        bx = beta.getParentsXOffset();
+        by = beta.getParentsYOffset();
+        bw = beta.getWidth();
+        bh = beta.getHeight();
+
+        int         dx = ax - bx;
+        int         dy = ay - by;
+
+        // Since both have the same parent, scale should be the same.
+        dx = dx * alpha.getParentsScale()/alpha.getScale();
+        dy = dy * alpha.getParentsScale()/alpha.getScale();
+
+        System.out.println("merge: dx "+dx+" dy "+dy);
+        try {
+            for (int y=0; y < bh; y++) {
+                if (y - dy < 0 || y - dy >= ah) {
+                    continue;
+                }
+                for (int x=0; x < bw; x++) {
+                    if (x - dx < 0 || x - dx >= aw) {
+                        continue;
+                    }
+                    Tile        b = beta.getTile(x, y);
+                    alpha.setTile(x-dx, y-dy, b);
+                }
+            }
+        } catch (MapOutOfBoundsException e) {
+            e.printStackTrace();
             return false;
         }
 

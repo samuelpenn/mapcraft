@@ -717,6 +717,17 @@ public class MapEditor extends MapViewer
         map.fork();
     }
 
+    public void
+    merge(String mergePath) {
+        try {
+            Map     merge = new Map(mergePath);
+
+            map.merge(merge);
+        } catch (MapException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void
     main(String args[]) {
         Options options = new Options(args);

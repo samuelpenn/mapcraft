@@ -186,6 +186,11 @@ public class MapCraft implements ActionListener {
         editor.rescale(scale);
     }
 
+    public void
+    merge(String map) {
+        editor.merge(map);
+    }
+
     private JButton
     createToolbarButton(String action) {
         JButton         button = new JButton();
@@ -317,6 +322,8 @@ public class MapCraft implements ActionListener {
         int         margin = 0;
         int         newScale = 1;
 
+        String      mergeMap = null;
+
         if (options.isOption("-crop")) {
             x = options.getInt("-x");
             y = options.getInt("-y");
@@ -340,6 +347,10 @@ public class MapCraft implements ActionListener {
             fork = rescale = true;
         }
 
+        if (options.isOption("-merge")) {
+            mergeMap = options.getString("-merge");
+        }
+
         if (mapfile == null) {
             map = new MapCraft(properties);
         } else {
@@ -355,6 +366,9 @@ public class MapCraft implements ActionListener {
             }
             if (rescale) {
                 map.rescale(newScale);
+            }
+            if (mergeMap != null) {
+                map.merge(mergeMap);
             }
 
         }
