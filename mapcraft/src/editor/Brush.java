@@ -76,6 +76,7 @@ public class Brush {
     void
     setType(int type) {
         this.brush = type;
+        river = 0;
     }
     
     void

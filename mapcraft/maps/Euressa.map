@@ -3315,4 +3315,76 @@
         <area id="6" name="Danuch"/>
         <area id="7" name="Cadwold"/>
     </areas>
+    <rivers>
+        <river name="River 1">
+            <start x="20" y="38" width="1"/>
+            <path x="21" y="37" width="1"/>
+            <path x="22" y="37" width="1"/>
+            <path x="23" y="37" width="1"/>
+            <path x="24" y="37" width="1"/>
+            <path x="25" y="36" width="1"/>
+            <path x="25" y="35" width="1"/>
+            <path x="26" y="35" width="1"/>
+            <path x="27" y="34" width="1"/>
+            <path x="28" y="34" width="1"/>
+            <path x="29" y="34" width="1"/>
+            <path x="30" y="34" width="1"/>
+            <path x="30" y="33" width="1"/>
+            <path x="31" y="32" width="1"/>
+            <path x="31" y="31" width="1"/>
+            <end x="31" y="30" width="1"/>
+        </river>
+
+        <river name="River 2">
+            <start x="33" y="49" width="1"/>
+            <path x="33" y="48" width="1"/>
+            <path x="34" y="48" width="1"/>
+            <path x="35" y="47" width="1"/>
+            <path x="36" y="47" width="1"/>
+            <path x="36" y="46" width="1"/>
+            <path x="36" y="45" width="1"/>
+            <path x="37" y="44" width="1"/>
+            <path x="38" y="45" width="1"/>
+            <path x="39" y="44" width="1"/>
+            <path x="40" y="44" width="1"/>
+            <path x="41" y="43" width="1"/>
+            <path x="41" y="42" width="1"/>
+            <path x="41" y="41" width="1"/>
+            <path x="42" y="41" width="1"/>
+            <path x="43" y="40" width="1"/>
+            <path x="43" y="39" width="1"/>
+            <path x="44" y="39" width="1"/>
+            <path x="45" y="38" width="1"/>
+            <path x="45" y="37" width="1"/>
+            <path x="46" y="37" width="1"/>
+            <path x="47" y="36" width="1"/>
+            <path x="47" y="35" width="1"/>
+            <path x="48" y="35" width="1"/>
+            <path x="49" y="34" width="1"/>
+            <path x="50" y="35" width="1"/>
+            <end x="51" y="34" width="1"/>
+        </river>
+
+        <river name="River 3">
+            <start x="20" y="33" width="1"/>
+            <path x="21" y="33" width="1"/>
+            <path x="22" y="33" width="1"/>
+            <path x="22" y="32" width="1"/>
+            <path x="23" y="31" width="1"/>
+            <path x="24" y="31" width="1"/>
+            <path x="25" y="30" width="1"/>
+            <end x="26" y="31" width="1"/>
+        </river>
+
+        <river name="River 4">
+            <start x="15" y="28" width="1"/>
+            <path x="16" y="29" width="1"/>
+            <path x="17" y="28" width="1"/>
+            <path x="18" y="29" width="1"/>
+            <path x="19" y="28" width="1"/>
+            <path x="20" y="28" width="1"/>
+            <end x="21" y="28" width="1"/>
+        </river>
+
+    </rivers>
 </map>
