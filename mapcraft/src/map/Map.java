@@ -230,7 +230,6 @@ public class Map implements Cloneable {
                 }
             }
             // w now holds number of 'real' tiles in this row.
-            System.out.println("["+y+"] width ["+w+"] start ["+start+"]");
             for (x=0; x < width; x++) {
                 int     i = (int)(x * (1.0 * w / width));
                 try {

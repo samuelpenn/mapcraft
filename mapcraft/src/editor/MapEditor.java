@@ -711,36 +711,6 @@ public class MapEditor extends MapViewer
         return menu;
     }
 
-    public boolean
-    crop(int x, int y, int w, int h) {
-        map.crop(map.getCurrentSet(), x, y, w, h);
-        paintComponent();
-
-        return true;
-    }
-
-    public boolean
-    cropToArea(String area, int margin) {
-        short       a = (short)map.getAreaByName(area).getId();
-
-        return cropToArea(a, margin);
-    }
-
-    public boolean
-    cropToArea(short area, int margin) {
-        map.cropToArea(map.getCurrentSet(), area, margin);
-        paintComponent();
-
-        return true;
-    }
-
-    public boolean
-    rescale(int newScale) {
-        map.rescale(map.getCurrentSet(), newScale);
-        paintComponent();
-        
-        return true;
-    }
 
     public void
     fork() {

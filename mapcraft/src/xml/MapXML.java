@@ -418,8 +418,6 @@ public class MapXML {
         NamedNodeMap    values;
         Node            value;
 
-        System.out.println("Getting TerrainSet from XML");
-
         try {
             node = getNode("/map/terrainset[@id='"+setId+"']");
             if (node == null) {
@@ -445,8 +443,6 @@ public class MapXML {
                     name = getTextNode(terrain, "name");
                     description = getTextNode(terrain, "description");
                     image = getTextNode(terrain, "image");
-
-                    System.out.println(name);
 
                     set.add(id, name, description, path+"/"+image);
                 }
@@ -675,8 +671,6 @@ public class MapXML {
                 Thing       thing = null;
 
                 if (node != null) {
-                    System.out.println("Loading thing "+i);
-
                     values = node.getAttributes();
                     type = (short)getIntNode(values.getNamedItem("type"));
                     x = getIntNode(values.getNamedItem("x"));
@@ -684,7 +678,6 @@ public class MapXML {
 
                     name = getTextNode(node, "name");
                     description = getTextNode(node, "description");
-                    System.out.println("Thing ["+name+"] ["+description+"]");
                     fontSize = getIntNode(node, "font", Thing.MEDIUM);
                     importance = getIntNode(node, "importance", Thing.NORMAL);
                     thing = new Thing(type, name, description, x, y);
