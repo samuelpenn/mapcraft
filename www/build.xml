@@ -22,6 +22,12 @@
               <param name="ant-target-dir" expression="${target.dir}"/>
               <param name="ant-tmp-dir" expression="${tmp.dir}"/>
         </xslt>
+        
+        <copy todir="${target.dir}">
+            <fileset dir="src">
+                <include name="**/*.jpg"/>
+            </fileset>
+        </copy>
     </target>
     
     <target name="icons">

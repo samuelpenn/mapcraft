@@ -19,20 +19,97 @@
     </links>
 
     <sidebar>
-        <title>Project</title>
+        <title>Maps</title>
 
         <p>
-            Mapcraft is a Java based tool for creating and managing maps
-            for use in pen and paper roleplaying games. Maps are tile
-            based, and make use of properties and meta data to keep track
-            of objects and manage relationships between different maps.
+            The maps being shown are ones used in my Habisfern fantasy
+            campaign. Some are embedded into HTML pages using the XSLT
+            plugin for Mapcraft.
+            <link href="http://www.bifrost.demon.co.uk/games/habisfern/encyclopedia/entries/b/bryteland.html" name="Example"/>
         </p>
     </sidebar>
+    
+    <sidebar>
+        <title>Environment</title>
+        
+        <p>
+            All the screenshots are from the application running in KDE
+            on Linux.
+        </p>
+    </sidebar>
+    
     <body>
         <sect1>
             <p>
-                Placeholder for screenshots.
+                All screenshots are from the current CVS version
+                of the software, 0.3-pre. The following images show country
+                scale maps, using hexagonal tiles. The scale is either
+                1 hex = 5km or 1 hex = 25km.
             </p>
+            
+            <p>
+                <link href="screenshots/screen001.jpg"
+                      icon="screenshots/thumbs/screen001.jpg"
+                      width="128" height="128"
+                      alt="Basic map with roads and rivers"/>
+                      
+                <link href="screenshots/screen002.jpg"
+                      icon="screenshots/thumbs/screen002.jpg"
+                      width="128" height="128"
+                      alt="You can zoom into a map"/>
+                      
+                <link href="screenshots/screen003.jpg"
+                      icon="screenshots/thumbs/screen003.jpg"
+                      width="128" height="128"
+                      alt="And you can zoom out from a map"/>
+                      
+                <link href="screenshots/screen004.jpg"
+                      icon="screenshots/thumbs/screen004.jpg"
+                      width="128" height="128"
+                      alt="Map of part of a continent"/>
+            </p>
+            
+            <p>
+                There are tilesets avaiable for indoor maps, this one
+                showing the interior of a castle. Tiles are square, which
+                is more suited to maps of buildings.
+            </p>
+            
+            <p>
+                <link href="screenshots/screen005.jpg"
+                      icon="screenshots/thumbs/screen005.jpg"
+                      width="128" height="128"
+                      alt="Screen shot one"/>
+            </p>
+            
+            <p>
+                The next map shows a small village, using the village
+                tileset. This tileset is only available in CVS.
+            </p>
+            
+            <p>      
+                <link href="screenshots/screen006.jpg"
+                      icon="screenshots/thumbs/screen006.jpg"
+                      width="128" height="128"
+                      alt="Screen shot one"/>
+            </p>
+            
+            <p>
+                The following map shows a world map, with a scale of
+                1 hex = 125km. Since the map is of a spherical world, parts
+                of it are non-editable. Facilities exist to generate an
+                image from such a map that can be wrapped around a 3D globe.
+                The homepage shows the same map as a 3D projection.
+            </p>
+            
+            <p>
+                     
+                <link href="screenshots/screen007.jpg"
+                      icon="screenshots/thumbs/screen007.jpg"
+                      width="128" height="128"
+                      alt="Screen shot one"/>
+            </p>
+        
         </sect1>
     </body>
 </page>
