@@ -141,9 +141,15 @@ public class MapEditor extends MapViewer
         public void
         mousePressed(MouseEvent e) {
             int     x,y;
+            int     yp;
 
             x = e.getX()/tileXSize;
-            y = e.getY()/tileYSize;
+            yp = e.getY();
+
+            if (x%2 != 0) {
+                yp -= tileYOffset;
+            }
+            y = yp/tileYSize;
 
             applyBrush(x, y);
         }
@@ -157,6 +163,7 @@ public class MapEditor extends MapViewer
         public void
         mouseDragged(MouseEvent e) {
             int     x,y;
+            int     yp;
 
             if (brush.getType() == Brush.SITES) {
                 // Don't allow drag paint for painting of sites.
@@ -164,7 +171,12 @@ public class MapEditor extends MapViewer
             }
 
             x = e.getX()/tileXSize;
-            y = e.getY()/tileYSize;
+            yp = e.getY();
+
+            if (x%2 != 0) {
+                yp -= tileYOffset;
+            }
+            y = yp/tileYSize;
 
             applyBrush(x, y);
         }

@@ -2,8 +2,8 @@
 Project Plan
 
 0.1 (Basics)
-    Decide on file format. SAX/DOM decision.
-    File format versioning support.
+*   Decide on file format. SAX/DOM decision. DOM!
+?   File format versioning support.
 *   Support scrolling map.
 *   Support terrain palette.
 *   Support named places.
@@ -11,7 +11,7 @@ Project Plan
     Edit place info.
 *   Try and use PNG format graphics.
     Move source files into package directories.
-    Fix bugs in cursor position.
+*   Fix bugs in cursor position.
 *   Produce correct headers/id for new/saved maps.
 
 0.2 (Basics extra)
@@ -30,8 +30,8 @@ Project Plan
 0.4 (Finish standard features)
     Height palette.
     Support of named areas.
-    Hills layer.
     Random village names? Based on dictionary.
+    Hills layer.
 
 0.5 (Support for worlds)
     Full world maps.

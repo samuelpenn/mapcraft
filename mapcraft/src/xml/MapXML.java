@@ -39,6 +39,50 @@ public class MapXML {
     protected String        name, author, id, parent;
     protected String        version, date;
     protected String        format;
+    
+    public static final String BASE64 = new String("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+
+    
+    /**
+     * Convert an integer into its Base64 representation as a string
+     * of the specified width. If the resulting string is too short,
+     * then it is padded with 'A' (0).
+     */
+    public static String
+    toBase64(int value, int width) {
+        String  result = "";
+
+        while (value > 0) {
+            int     digit = value % 64;
+            value /= 64; // Integer division.
+
+            result = BASE64.substring(digit, digit+1) + result;
+        }
+
+        while (result.length() < width) {
+            result = "A"+result;
+        }
+
+        return result;
+    }
+    
+    /**
+     * Convert a Base64 string into an integer.
+     */
+    public static int
+    fromBase64(String base64) {
+        int         value = 0;
+        int         i = 0;
+        int         c = 0;
+
+        for (i = 0; i < base64.length(); i++) {
+            c = BASE64.indexOf(base64.substring(i, i+1));
+            value += c * (int)Math.pow(64, base64.length() - i -1);
+        }
+
+        return value;
+    }
+
 
     /**
      * Exception class, raised when an error occurs during
@@ -375,6 +419,21 @@ public class MapXML {
         return set;
     }
 
+    protected Tile
+    getTileFromBlob(String data) {
+        Tile    tile = null;
+        short   terrain;
+        short   height;
+        short   hills;
+        
+        terrain = (short)fromBase64(data.substring(0, 2));
+        height = (short)fromBase64(data.substring(2, 5));
+        hills = (short)fromBase64(data.substring(5, 6));
+
+        tile = new Tile(terrain, height, true);
+
+        return tile;
+    }
 
     protected TileSet
     getTileSet(Node node) throws XMLException {
@@ -391,23 +450,6 @@ public class MapXML {
 
         int             scale, width, height;
         String          name = null;
-
-        // The 'node' is pointing at the <tileset> element of the
-        // XML map file. It should look something like this:
-        // <tileset id="root">
-        //    <dimensions>
-        //        <scale>64</scale>
-        //        <width>72</width>
-        //        <height>56</height>
-        //    </dimension>
-        //    <tiles>
-        //        <tile.../>
-        //    </tiles>
-        //    <rivers>
-        //        <river x="7" y="8" mask="9"/>
-        //        <river x="7" y="9" mask="9"/>
-        //    </rivers>
-        // </tileset>
 
         name = getTextNode(id, ".");
         scale = getIntNode(node, "dimensions/scale");
@@ -442,14 +484,13 @@ public class MapXML {
                     // don't exagerate when they say it's slow.
                     values = column.getAttributes();
                     x = getIntNode(values.getNamedItem("x"));
-                    System.out.println("Reading column "+x);
 
                     String  data = getTextNode(column).replaceAll(" |\n|\t", "");
-                    for (y=0,i=0; i < data.length(); i+=2, y++) {
-                        String  part = data.substring(i, i+2);
-                        terrain = Short.valueOf(part, 36).shortValue();
+                    for (y=0,i=0; i < data.length(); i+=8, y++) {
+                        String  part = data.substring(i, i+8);
+                        //terrain = Short.valueOf(part, 36).shortValue();
 
-                        tileSet.setTile(x, y, terrain);
+                        tileSet.setTile(x, y, getTileFromBlob(part));
                     }
                 }
             }
@@ -584,8 +625,14 @@ public class MapXML {
 
         return;
     }
-    
 
+
+    public static void
+    testEncoding(int v, int w) {
+        String e = MapXML.toBase64(v, w);
+        
+        System.out.println("("+v+","+w+") = "+e+" = "+fromBase64(e));
+    }
 
 
     /**
@@ -594,6 +641,15 @@ public class MapXML {
     public static void
     main(String args[]) {
         System.out.println("Start");
+        String b;
+
+        testEncoding(1, 1);
+        testEncoding(10, 2);
+        testEncoding(100, 3);
+        testEncoding(1000, 4);
+        testEncoding(10000, 4);
+
+        /*
         try {
             MapXML      xml = new MapXML("map.cart");
             xml.getTileSets();
@@ -601,5 +657,6 @@ public class MapXML {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
     }
 }

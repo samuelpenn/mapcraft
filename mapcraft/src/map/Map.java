@@ -389,39 +389,7 @@ public class Map {
         int     h, w; // Height and width of new map.
         int     x, y; // Iterators.
 
-        /*
-        if (newScale == this.scale) {
-            // Do nothing.
-            return;
-        } else if (newScale > this.scale) {
-            // Loosing information.
-        } else {
-            // Adding information.
-            // newScale < scale. This means the map is getting
-            // bigger (e.g. it was 1:64km, now it's 1:32km).
-            int     sf = (scale / newScale); // Scale factor.
-            int     nx, ny;
 
-            h = height * sf;
-            w = width * sf;
-
-            Tile    newMap[][] = new Tile[h][w];
-
-            for (y = 0; y < h; y++) {
-                for (x=0; x < w; x++) {
-                    Tile    tile = getTile(x/sf, y/sf);
-                    newMap[y][x] = new Tile(tile);
-                }
-            }
-            this.tiles = newMap;
-            this.width = w;
-            this.height = h;
-        }
-
-        System.out.println("Finished rescaling map");
-
-        this.scale = newScale;
-        */
     }
 
     /**
@@ -433,90 +401,11 @@ public class Map {
     submap(String newName, int xoff, int yoff, int w, int h) throws MapException {
         Map     submap = new Map(newName, w, h, this.scale);
         int     x, y;
-        /*
-        for (y = yoff; y < yoff + h; y++) {
-            for (x = xoff; x < xoff + w; x++) {
-                Tile    tile = new Tile(getTerrain(x,y), getHeight(x,y),
-                                        isWritable(x,y));
-                submap.setTile(tile, x, y);
-            }
-        }
-        */
 
         return submap;
     }
 
-    /**
-     * Save the map as an XML file.
-     */
-    public void
-    saveLongFormat(String filename) throws IOException {
-        FileWriter      writer = new FileWriter(filename);
-        int             x, y;
-        int             i;
 
-        writer.write("<?xml version=\"1.0\"?>\n");
-        writer.write("<map>\n");
-        writer.write("    <header>\n");
-        writer.write("        <name>"+name+"</name>\n");
-        writer.write("        <author>"+author+"</author>\n");
-        writer.write("        <id>"+id+"</id>\n");
-        writer.write("        <parent>"+parent+"</parent>\n");
-        writer.write("        <cvsversion>$Revision$</cvsversion>\n");
-        writer.write("    </header>\n");
-
-        // Terrain Set
-        writer.write("    <terrainset>\n");
-
-        // Iterate over the terrain types, and save them out.
-        Iterator iter = terrainSet.iterator();
-        while (iter.hasNext()) {
-            Terrain t = (Terrain)iter.next();
-
-            writer.write("        <terrain id=\""+t.getId()+"\">\n");
-            writer.write("            <name>"+t.getName()+"</name>\n");
-            writer.write("            <description>"+t.getDescription()+"</description>\n");
-            writer.write("            <image>"+t.getImagePath()+"</image>\n");
-            writer.write("            <solid value=\"false\"/>\n");
-            writer.write("        </terrain>\n");
-        }
-        writer.write("    </terrainset>\n");
-
-        // Now go through each of the tilesets in turn.
-        for (i=0; i < tileSets.length; i++) {
-            writer.write("    <tileset id=\""+tileSets[i].getName()+"\">\n");
-            writer.write("        <dimensions>\n");
-            writer.write("            <scale>"+tileSets[i].getScale()+"</scale>\n");
-            writer.write("            <width>"+tileSets[i].getWidth()+"</width>\n");
-            writer.write("            <height>"+tileSets[i].getHeight()+"</height>\n");
-            writer.write("        </dimensions>\n");
-
-            writer.write("        <tiles>\n");
-            for (y = 0; y < tileSets[i].getHeight(); y++) {
-                for (x = 0; x < tileSets[i].getWidth(); x++) {
-                    Tile tile = null;
-                    try {
-                        tile = tileSets[i].getTile(x, y);
-                    } catch (MapOutOfBoundsException e) {
-                    }
-
-                    if (tile != null) {
-                        writer.write("        ");
-                        writer.write("<tile ");
-                        writer.write("x=\""+x+"\" y=\""+y+"\" ");
-                        writer.write("terrain=\""+tile.getTerrain()+"\" ");
-                        writer.write("/>\n");
-                    }
-                }
-            }
-            writer.write("        </tiles>\n");
-            writer.write("    </tileset>\n\n");
-        }
-        writer.write("</map>\n");
-
-        writer.close();
-    }
-    
     private void
     writeTerrainSet(TerrainSet set, FileWriter writer) throws IOException {
         writer.write("    <terrainset id=\""+set.getId()+
@@ -540,16 +429,10 @@ public class Map {
     }
 
     /**
-     * Save the map as an XML file.s
+     * Write out the header of the map file.
      */
-    public void
-    save(String filename) throws IOException {
-        FileWriter      writer = new FileWriter(filename);
-        int             x, y;
-        int             i;
-
-        writer.write("<?xml version=\"1.0\"?>\n");
-        writer.write("<map>\n");
+    private void
+    writeHeader(FileWriter writer) throws IOException {
         writer.write("    <header>\n");
         writer.write("        <name>"+name+"</name>\n");
         writer.write("        <author>"+author+"</author>\n");
@@ -559,8 +442,94 @@ public class Map {
         writer.write("            <version>$Revision$</version>\n");
         writer.write("            <date>$Date$</date>\n");
         writer.write("        </cvs>\n");
-        writer.write("        <format>0.0.2</format>\n");
+        writer.write("        <format>0.0.3</format>\n");
         writer.write("    </header>\n");
+    }
+
+    /**
+     * Write out tileset data as XML. The data is written on a per
+     * column basis, with each column written as a 'blob' of base64
+     * data. Whitespace is ignored in the blob, so is used to make it
+     * more readable. Each Tile is represented by 8 characters of
+     * information, and there are eight tiles per row (64 character
+     * wide lines).
+     *
+     * Data is stored as follows: tthhhmcf
+     *      tt = terrain type
+     *      hhh = height (m), 0= -100km
+     *      m = mountains/hills
+     *      c = coastline flags
+     *      f = flags
+     *
+     * Base64 encoding is as follows:
+     * ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/
+     */
+    private void
+    writeTileSet(TileSet set, FileWriter writer) throws IOException {
+        int         x,y;
+
+        writer.write("    <tileset id=\""+set.getName()+"\">\n");
+        writer.write("        <dimensions>\n");
+        writer.write("            <scale>"+set.getScale()+"</scale>\n");
+        writer.write("            <width>"+set.getWidth()+"</width>\n");
+        writer.write("            <height>"+set.getHeight()+"</height>\n");
+        writer.write("        </dimensions>\n");
+
+        writer.write("        <tiles>\n");
+
+        for (x=0; x < set.getWidth(); x++) {
+            writer.write("            ");
+            writer.write("<column x=\""+x+"\">");
+
+            StringBuffer    terrain = new StringBuffer();
+            String          tmp;
+
+            for (y=0; y < set.getHeight(); y++) {
+                try {
+                    Tile    tile = set.getTile(x, y);
+                    String  t, h, m, c, f;
+
+                    t = MapXML.toBase64(tile.getTerrain(), 2);
+                    h = MapXML.toBase64(tile.getHeight()+100000, 3);
+                    m = MapXML.toBase64(tile.getHills(), 1);
+                    c = "A";
+                    f = "A";
+
+                    tmp = t + h + m + c + f + " ";
+
+                    if ((y%6)==0) {
+                        terrain.append("\n");
+                        terrain.append("                ");
+                    }
+                    terrain.append(tmp);
+                } catch (MapOutOfBoundsException e) {
+                }
+            }
+            writer.write(terrain.toString());
+            writer.write("\n");
+            writer.write("            ");
+            writer.write("</column>\n");
+        }
+        writer.write("        </tiles>\n");
+        writer.write("    </tileset>\n\n");
+        writer.flush();
+    }
+
+
+    /**
+     * Save the map as an XML file.
+     */
+    public void
+    save(String filename) throws IOException {
+        FileWriter      writer = new FileWriter(filename);
+        int             x, y;
+        int             i;
+
+        writer.write("<?xml version=\"1.0\"?>\n");
+        writer.write("<map>\n");
+
+        // Header.
+        writeHeader(writer);
 
         // Terrain Sets
         writeTerrainSet(terrainSet, writer);
@@ -568,48 +537,7 @@ public class Map {
 
         // Now go through each of the tilesets in turn.
         for (i=0; i < tileSets.length; i++) {
-            writer.write("    <tileset id=\""+tileSets[i].getName()+"\">\n");
-            writer.write("        <dimensions>\n");
-            writer.write("            <scale>"+tileSets[i].getScale()+"</scale>\n");
-            writer.write("            <width>"+tileSets[i].getWidth()+"</width>\n");
-            writer.write("            <height>"+tileSets[i].getHeight()+"</height>\n");
-            writer.write("        </dimensions>\n");
-
-            writer.write("        <tiles>\n");
-
-            for (x=0; x < tileSets[i].getWidth(); x++) {
-                System.out.println("Writing column "+x);
-
-                writer.write("            ");
-                writer.write("<column x=\""+x+"\">");
-
-                StringBuffer    terrain = new StringBuffer();
-                String          tmp;
-
-                for (y=0; y < tileSets[i].getHeight(); y++) {
-                    try {
-                        Tile    tile = tileSets[i].getTile(x, y);
-                        tmp = Integer.toString(tile.getTerrain(), 36);
-                        if (tmp.length() < 2) {
-                            tmp = "0"+tmp;
-                        }
-
-                        if ((y%32)==0) {
-                            terrain.append("\n");
-                            terrain.append("                ");
-                        }
-
-                        terrain.append(tmp);
-                    } catch (MapOutOfBoundsException e) {
-                    }
-                }
-                writer.write(terrain.toString());
-                writer.write("\n");
-                writer.write("            ");
-                writer.write("</column>\n");
-            }
-            writer.write("        </tiles>\n");
-            writer.write("    </tileset>\n\n");
+            writeTileSet(tileSets[i], writer);
 
             // Find all the sites that need to be output and saved.
             writer.write("    <sites>\n");
@@ -620,21 +548,22 @@ public class Map {
                             Site site = getSite(x, y);
 
                             writer.write("        <site type=\""+site.getType()+"\" "+
-                                         "x=\""+x+"\" y=\""+y+"\">\n");
+                                        "x=\""+x+"\" y=\""+y+"\">\n");
                             writer.write("            <name>"+site.getName()+"</name>\n");
                             writer.write("            <description>");
                             writer.write(site.getDescription());
                             writer.write("</description>\n");
 
                             writer.write("        </site>\n");
-                        
+
                         }
                     } catch (MapOutOfBoundsException e) {
                     }
                 }
             }
-            writer.write("    </sites>\n");
         }
+        writer.write("    </sites>\n");
+        
         writer.write("</map>\n");
 
         writer.close();
@@ -731,6 +660,9 @@ public class Map {
                 map.save(name+".map");
             } else if (options.isOption("-load")) {
                 map = new Map(options.getString("-load"));
+            } else if (options.isOption("-rewrite")) {
+                map = new Map(options.getString("-rewrite"));
+                map.save("new.map");
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -93,6 +93,11 @@ public class Tile {
     getHeight() {
         return height;
     }
+    
+    public short
+    getHills() {
+        return 0;
+    }
 
     public boolean
     isWritable() {

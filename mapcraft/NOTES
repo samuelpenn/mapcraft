@@ -19,6 +19,35 @@ Maybe use xplanet to render 3D images? Need high resolution map for this.
 SAX support tricky since we keep stuff in memory in MapXML object.
 
 
+Blob Data (0.0.3)
+
+Each column of tiles is represented as a blob of data. Each
+character is a 6bit value, 0-63. Each tile is represented as
+follows:
+    tthhhmcf
+
+    tt = Terrain type. 0-4095
+    hhh = Height (m). 0-262143 (0 = -100km below sea level)
+    m = mountains. 0..63
+    c = coastline. 0..63
+    f = flags. 6 flags. Undefined.
+
+
+
+Hills
+
+    0   No hills
+    1   Low hills
+    2   High hills
+    3   Low mountains
+    4   Medium mountains
+    5   High mountains
+
+
+
+
+
+
 Places:
     <place name="" x="" y="">
         <type></type>
@@ -46,88 +75,12 @@ Different types of painting tools:
 
 
 
-0.1 (Basics)
-    Decide on file format. SAX/DOM decision.
-    File format versioning support.
-*    Support scrolling map.
-*    Support terrain palette.
-    Support named places.
-    Display labels for places.
-    Edit place info.
-*    Try and use PNG format graphics.
-    Move source files into package directories.
-    Fix bugs in cursor position.
-    Produce correct headers/id for new/saved maps.
-
-0.2 (Basics extra)
-    Support rivers as vectors.
-    Support roads as vectors.
-    Support map cropping and linking to submaps.
-    Support rescale facility (up and down).
-    Resize boundaries of a map.
-    Names for rivers and roads.
-    
-0.3 (Printing support)
-    Support for multiple display resolutions.
-    Support printing to image file.
-    Hex overlay of map.
-
-0.4 (Finish standard features)
-    Height palette.
-    Support of named areas.
-    Hills layer.
-    Random village names? Based on dictionary.
-
-0.5 (Support for worlds)
-    Full world maps.
-    Output to xplanet texture format.
-
-0.6 (UI design considerations)
-    Map creation dialogs.
-    File load/save inferface.
-    Toolbar for common features.
-    Map properties dialog/editor.
-    Wrapper class to provide GUI framework.
-    
-0.7 (Web support)
-    Output of web image maps (hrefs to places only).
-    Wrap all resources into map bundle (jar?) for export.
-    Applet viewer.
-
-0.8 (Helper)
-    Anti-aliase on rescale.
-    Diff support for scaled children.
-    Fill option.
-    Brush options.
-
-0.9 (Optimisation)
-    Any necessary speed enhancements.
-    Any necessary memory efficiency enhancements.
-
-1.0 (Release)
-    Stability fixes.
-    Run from jar file.
-    Preferences file etc.
-    Schema for file format.
-    Documentation.
-
-1.x (Wish list)
-    href linking to documents on areas/places.
-    3D display of terrain areas (isometric).
-    3D display of terrain areas (perspective).
-    Autogeneration of small area maps (villages etc).
-    Undo support.
-    Auto river generation.
-    Editing terrain/place types.
-    Variable coast masks for nicer display.
-    Links into yagsbook for inline display of maps.
-    Output SVG
 
 Map Identification
 
 Each map has a unique identifier string - millisecond time of creation and map name, e.g.:
     "harn.105578476346"
-    
+
 <map>
     <header>
         <name>Harn</name>
@@ -140,7 +93,7 @@ Each map has a unique identifier string - millisecond time of creation and map n
         </cvs>
         <format>0.0.2</format>
     </header>
-    
+
 </map>
 
 

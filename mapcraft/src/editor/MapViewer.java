@@ -28,10 +28,13 @@ public class MapViewer extends JPanel {
 
     protected Toolkit     toolkit = null;
     protected Image[]     icons = null;
+    protected Image       outlineIcon = null;
 
     protected IconSet     iconSet = null;
     protected IconSet     riverSet = null;
     protected IconSet     siteSet = null;
+    
+    protected boolean     showGrid = true;
 
     protected void
     log(int level, String message) {
@@ -92,6 +95,8 @@ public class MapViewer extends JPanel {
                 iconSet.add(id, icon);
             }
         }
+        
+        outlineIcon = toolkit.getImage("images/"+tileSize+"/outline.png");
         
         return iconSet;
     }
@@ -163,6 +168,11 @@ public class MapViewer extends JPanel {
         }
     }
 
+    /**
+     * Paint the entire map component. No attempt at cropping is performed,
+     * the entire map is redrawn each time even if not all of it can be
+     * seen. At some point this needs to be fixed.
+     */
     public void
     paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -187,6 +197,11 @@ public class MapViewer extends JPanel {
                     if (map.isRiver(x, y)) {
                         icon = riverSet.getIcon(map.getRiverMask(x, y));
                         g.drawImage(icon, xp, ypp, this);
+                    }
+                    
+                    // Display grid if asked for.
+                    if (showGrid) {
+                        g.drawImage(outlineIcon, xp, ypp, this);
                     }
 
                     // If tile has a site associated with it,
