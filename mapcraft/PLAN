@@ -61,12 +61,11 @@ Project Plan
 # Change version numbering to be more Gentoo-like
 
 0.3 (Install/build support)
-    Work out exact (minimal) build dependencies.
+*   Work out exact (minimal) build dependencies.
 *   Work out exact (minimal) run dependencies.
 *   Load everything (including terrain info) from jar file.
-    Generic UNIX run script that doesn't assume my own environment.
+*   Generic UNIX run script that doesn't assume my own environment.
 *   Maybe think about MS Windows script.
-    Gentoo ebuild
 *   Change packages to be net.sourceforge rather than uk.co.demon.bifrost
     
 0.4 (Rescale/merge support in GUI)

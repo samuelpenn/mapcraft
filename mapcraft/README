@@ -1,5 +1,5 @@
 
-MAPCRAFT, Version 0.2 Alpha
+MAPCRAFT, Version 0.3pre1 (Alpha Software)
 
 Copyright (C) 2002-2004 Samuel Penn, sam@bifrost.demon.co.uk
 
@@ -17,26 +17,24 @@ Latest source and everything else can be obtained there.
 INSTALL AND RUN
 ---------------
 
-Use the scripts to run the Java application. The scripts set up any needed
-CLASSPATH before calling the program. At the very least, the XALAN_HOME
-variable needs to be set to point to the directory containing xalan.jar
-and xercesImpl.jar.
+Scripts have been included for both UNIX and MS Windows, though the
+latter have not been tested. If you have downloaded the tarball,
+then the software can be run using either of the two scripts
+(mapcraft for UNIX, mapcraft.bat for MS Windows).
 
-These files can be obtained from http://xml.apache.org if you do not have
-them on your system.
-
-On UNIX, to run and test the application, use:
+To see a sample map, try (on UNIX):
 ./mapcraft -load maps/island.map
 
-Under MS Windows, it should be something similar with mapcraft.bat, but
-this hasn't been tested.
+Requirements
+------------
 
+You will need at least Java 1.4 - it has been tested on 1.4.2, but
+may work on previous versions of 1.4. Ensure that java is in your
+PATH before running the scripts.
 
-
-DEPENDENCIES
-
-ant 1.6
-
+To compile the sources, you will also need Ant 1.6. Earlier versions
+of Ant do not have all the required libraries bundled with them, so
+extra libraries will also be required.
 
 WHAT IS IT?
 
