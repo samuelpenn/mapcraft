@@ -401,6 +401,10 @@ public class MapEditor extends MapViewer
         mousePressed(MouseEvent e) {
             int     x,y;
             int     yp;
+            
+            if (map == null) {
+                return;
+            }
 
             requestFocus();
             // Record actual X/Y coordinate of mouse click.
@@ -439,6 +443,10 @@ public class MapEditor extends MapViewer
                 // Don't allow drag paint for painting of sites.
                 return;
             }
+            
+            if (map == null) {
+                return;
+            }
 
             if (map.getTileShape() == Map.SQUARE) {
                 x = e.getX()/tileXSize;
@@ -460,6 +468,10 @@ public class MapEditor extends MapViewer
         mouseMoved(MouseEvent e) {
             int     x, y, yp;
             brush.setLastMousePosition(e.getX(), e.getY());
+            
+            if (map == null) {
+                return;
+            }
             
             if (map.getTileShape() == Map.SQUARE) {
                 x = e.getX()/tileXSize;
@@ -499,6 +511,10 @@ public class MapEditor extends MapViewer
             char    ch = e.getKeyChar();
             int     x, y, angle;
             Thing   thing = null;
+            
+            if (map == null) {
+                return;
+            }
 
             if (map.getTileShape() == Map.SQUARE) {
                 x = brush.getLastMouseX()/tileXSize;

@@ -11,17 +11,14 @@
  */
 package uk.co.demon.bifrost.rpg.mapcraft.xml;
 
-import java.io.IOException;
-import java.io.StringBufferInputStream;
+import java.io.*;
 
 import org.apache.xpath.XPathAPI;
-
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.*;
-import javax.xml.transform.*;
+
 /**
  * Class to check for the existence of XML libraries.
  * 
@@ -29,34 +26,66 @@ import javax.xml.transform.*;
  */
 public class SanityCheck {
 
-    public static boolean
-    isSane() {
-        Document                document;
-        DocumentBuilderFactory  dbf;
-        Node                    node;
-        NodeList                nodeList;
-        dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        
-        StringBufferInputStream       in = null;
+    private String
+    getDocument() {
+		StringBuffer    buffer = new StringBuffer();
 
+		buffer.append("<?xml version=\"1.0\"?>");
+		buffer.append("<root>");
+		buffer.append("<text title=\"greeting\">");
+		buffer.append("Hello world");
+		buffer.append("</text>");
+		buffer.append("</root>");
+
+		return buffer.toString();
+    }
+    
+    public boolean
+    isSane() {
+        boolean     result = true;
+        
         try {
+            InputSource             in;
+            DocumentBuilderFactory  dbf;
+            Node                    node;
+            NodeList                nodeList;
+            String                  content = getDocument();
+            Document                document;
+
+            in = new InputSource(new StringReader(content));
+            dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+
             document = dbf.newDocumentBuilder().parse(in);
-        } catch (SAXException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            
+            node = XPathAPI.selectSingleNode(document, "/root/text");
+            String  value = node.getFirstChild().getNodeValue();
+            if (value == null || !value.equals("Hello world")) {
+                throw new Exception("Failed to find string");
+            }
+
+            node = XPathAPI.selectSingleNode(document, "/root/text");
+            NamedNodeMap    attrs = node.getAttributes();
+            Node            a = attrs.getNamedItem("title");
+
+            if (a == null) {
+                throw new Exception("Failed to find attribute");
+            }
+            
+            value = a.getFirstChild().getNodeValue();
+            if (value == null || !value.equals("greeting")) {
+                throw new Exception("Failed to get attribute");
+            }
+        } catch (Exception e) {
+            result = false;
         }
         
-        return false;
+        return result;
     }
 
     public static void
     main(String[] args) {
+       SanityCheck  sc = new SanityCheck();
+       System.out.println(sc.isSane());
     }
 }

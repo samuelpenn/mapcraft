@@ -22,6 +22,7 @@ import java.io.*;
 import java.util.*;
 
 import uk.co.demon.bifrost.rpg.mapcraft.utils.Options;
+import uk.co.demon.bifrost.rpg.mapcraft.xml.SanityCheck;
 
 /**
  * The top level object for the application. This handles command line
@@ -148,10 +149,28 @@ public class MapCraft implements ActionListener {
     shutdown() {
         System.exit(0);
     }
+    
+    private void
+    error(String message) {
+        System.err.println("*** "+message);
+    }
+    
+    private void
+    check() {
+        SanityCheck     sc = new SanityCheck();
+        if (!sc.isSane()) {
+            error("Cannot parse XML documents.");
+            error("It is most likely that xalan.jar and xercesImpl.jar "+
+                  "are missing from your CLASSPATH.");
+            error("Have you set XALAN_HOME in the start script?");
+            System.exit(1);
+        }
+    }
 
 
     public
     MapCraft(Properties properties, String map) {
+        check();
         this.properties = properties;
 
         setupWindows();
@@ -160,6 +179,7 @@ public class MapCraft implements ActionListener {
 
     public
     MapCraft(Properties properties) {
+        check();
         this.properties = properties;
 
         setupWindows();

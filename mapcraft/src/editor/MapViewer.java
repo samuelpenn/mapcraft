@@ -720,6 +720,11 @@ public class MapViewer extends JPanel {
         super.paintComponent(g);
         int             x=0, y=0;
         int             xp, yp, ypp;
+        
+        if (map == null) {
+            // Nothing to do.
+            return;
+        }
 
         // Boundary rectangle which needs to be drawn.
         int             startX = 0;
