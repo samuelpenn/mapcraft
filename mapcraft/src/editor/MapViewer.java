@@ -1038,7 +1038,7 @@ public class MapViewer extends JPanel {
 
     public boolean
     crop(int x, int y, int w, int h) {
-        map.crop(map.getCurrentSet(), x, y, w, h);
+        map.crop(x, y, w, h);
         paintComponent();
 
         return true;
@@ -1053,7 +1053,7 @@ public class MapViewer extends JPanel {
 
     public boolean
     cropToArea(short area, int margin) {
-        map.cropToArea(map.getCurrentSet(), area, margin);
+        map.cropToArea(area, margin);
         paintComponent();
 
         return true;
