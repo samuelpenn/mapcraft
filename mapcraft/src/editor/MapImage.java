@@ -82,7 +82,7 @@ public class MapImage extends MapViewer {
         }
 
         try {
-            w = map.getWidth() * tileXSize;
+            w = map.getWidth() * tileXSize + (iconWidth - tileXSize);
             h = map.getHeight() * tileYSize + tileYOffset;
 
             if (unwrap) {
