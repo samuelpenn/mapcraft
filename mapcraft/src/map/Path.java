@@ -284,6 +284,16 @@ public class Path {
         this.highlighted = highlighted;
     }
 
+    public boolean
+    isRiver() {
+        return type == RIVER;
+    }
+
+    public boolean
+    isRoad() {
+        return type == ROAD;
+    }
+
     /**
      * Returns a Vector of all the elements in this path. The Vector
      * contains objects of type Path.Element.

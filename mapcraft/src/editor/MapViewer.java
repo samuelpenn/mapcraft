@@ -53,7 +53,6 @@ public class MapViewer extends JPanel {
     protected String      imagePath = "images";
 
     protected IconSet     iconSet = null;
-    protected IconSet     riverSet = null;
     protected IconSet     thingSet = null;
     protected IconSet     featureSet = null;
 
@@ -575,14 +574,35 @@ public class MapViewer extends JPanel {
 
         for (i=0; i < map.getPaths().size(); i++) {
             Path    path = (Path)map.getPaths().elementAt(i);
+
+            if (path.isRoad() && !showRoads) {
+                continue;
+            } else if (path.isRiver() && !showRivers) {
+                continue;
+            }
+
             Shape   shape = path.getGraphicsShape(g, tileXSize, tileYSize, tileYOffset,
                                                   iconWidth, iconHeight);
 
             g.setStroke(new BasicStroke(path.getWidth()));
             if (path.isHighlighted()) {
-                g.setColor(new Color(60, 60, 255));
+                switch (path.getType())  {
+                case Path.RIVER:
+                    g.setColor(new Color(60, 60, 255));
+                    break;
+                case Path.ROAD:
+                    g.setColor(new Color(50, 50, 50));
+                    break;
+                }
             } else {
-                g.setColor(new Color(184, 253, 253));
+                switch (path.getType()) {
+                case Path.RIVER:
+                    g.setColor(new Color(184, 253, 253));
+                    break;
+                case Path.ROAD:
+                    g.setColor(new Color(150, 150, 150));
+                    break;
+                }
             }
             g.draw(shape);
         }
@@ -651,7 +671,7 @@ public class MapViewer extends JPanel {
                 }
             }
 
-            if (showRivers) {
+            if (showRivers || showRoads) {
                 drawPaths((Graphics2D)g);
             }
 

@@ -36,7 +36,6 @@ public class MapEditor extends MapViewer
     private ScrollPane  scrollpane;
 
     private Pane        terrainPane = null;
-    private Pane        riverPane = null;
     private Pane        thingPane = null;
     private Pane        featurePane = null;
     private Pane        areaPane = null;
@@ -225,7 +224,10 @@ public class MapEditor extends MapViewer
                 paintTile(x, y);
                 break;
             case Brush.RIVERS:
-                applyBrushPaths(brush.getX(), brush.getY());
+                applyBrushPaths(brush.getX(), brush.getY(), Path.RIVER);
+                break;
+            case Brush.ROADS:
+                applyBrushPaths(brush.getX(), brush.getY(), Path.ROAD);
                 break;
             }
         } catch (MapOutOfBoundsException moobe) {
@@ -250,8 +252,8 @@ public class MapEditor extends MapViewer
                                         brush.getX(), brush.getY());
                 map.addThing(thing);
                 if (map.getType() == Map.WORLD) {
-                    dialog = new ThingDialog(thing, frame,
-                                    map.getThingSet(), views[ViewProperties.EDITICON].getPath());
+                    dialog = new ThingDialog(thing, frame, map.getThingSet(),
+                                  views[ViewProperties.EDITICON].getPath());
                     dialog.getThing();
                 } else {
                     thing.setImportance(Thing.HIGH);
@@ -281,7 +283,7 @@ public class MapEditor extends MapViewer
     }
 
     private void
-    applyBrushPaths(int x, int y) throws MapOutOfBoundsException {
+    applyBrushPaths(int x, int y, int type) throws MapOutOfBoundsException {
         switch (brush.getMode()) {
         case Brush.SELECT:
             info("Selecting river");
