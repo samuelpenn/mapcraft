@@ -140,6 +140,8 @@ public class Map extends MapBean implements Cloneable {
         int         y, x;
         int         width, height;
         TileSet     unwrapped = null;
+        
+        System.out.println("Unwrapping");
 
         width = tileSets[0].getWidth();
         height = tileSets[0].getHeight();
@@ -147,6 +149,7 @@ public class Map extends MapBean implements Cloneable {
         try {
             unwrapped = new TileSet("root", width, height, tileSets[0].getScale());
         } catch (InvalidArgumentException ie) {
+            ie.printStackTrace();
         }
 
         for (y=0; y < height; y++) {
@@ -161,6 +164,7 @@ public class Map extends MapBean implements Cloneable {
                         }
                     }
                 } catch (MapOutOfBoundsException me) {
+                    me.printStackTrace();
                 }
             }
             // w now holds number of 'real' tiles in this row.
@@ -169,6 +173,7 @@ public class Map extends MapBean implements Cloneable {
                 try {
                     unwrapped.setTile(x, y, tileSets[0].getTile(start + i, y));
                 } catch (MapOutOfBoundsException moobe) {
+                    moobe.printStackTrace();
                 }
             }
         }

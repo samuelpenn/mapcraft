@@ -59,7 +59,8 @@ public class MapImage extends MapViewer {
     /**
      * Convert the map to an Image, ready for saving to disc.
      *
-     * @param scale     Scale to display at, from 0 (xx-small), 3 (medium), 6 (xxlarge)
+     * @param scale     Scale to display at, from 0 (xsmall), 
+     *                  2 (medium), 4 (xlarge)
      */
     public BufferedImage
     toImage(int scale, boolean unwrap) {
@@ -95,36 +96,22 @@ public class MapImage extends MapViewer {
     }
     // This method returns a buffered image with the contents of an image
     private BufferedImage
-    getBufferedImage(Image image) {
+    getBufferedImage(Image image, int crop) {
         // Create a buffered image with a format that's compatible with the screen
         BufferedImage bimage = null;
-        /*
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        try {
-            // Determine the type of transparency of the new buffered image
-            int transparency = Transparency.OPAQUE;
-
-            // Create the buffered image
-            GraphicsDevice gs = ge.getDefaultScreenDevice();
-            GraphicsConfiguration gc = gs.getDefaultConfiguration();
-            bimage = gc.createCompatibleImage(
-                image.getWidth(null), image.getHeight(null), transparency);
-        } catch (HeadlessException e) {
-            // The system does not have a screen
-        }
-        */
 
         if (bimage == null) {
             // Create a buffered image using the default color model
             int type = BufferedImage.TYPE_INT_RGB;
-            bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), type);
+            bimage = new BufferedImage(image.getWidth(null)-crop*2,
+                    image.getHeight(null)-crop*2, type);
         }
     
         // Copy image to buffered image
         Graphics g = bimage.createGraphics();
     
         // Paint the image onto the buffered image
-        g.drawImage(image, 0, 0, null);
+        g.drawImage(image, 0-crop, 0-crop, null);
         g.dispose();
     
         return bimage;
@@ -137,6 +124,43 @@ public class MapImage extends MapViewer {
         OutputStream  out = new BufferedOutputStream(new FileOutputStream(file));
         JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
         encoder.encode(image);
+    }
+    
+    public void
+    saveCelestia(String filename, int scale, boolean unwrap) {
+        OutputStream    out = null;
+        BufferedImage   image = null;
+        Image           texture = null;
+        int             crop = 16;
+
+        System.out.println("Saving image as ["+filename+"]");
+
+        try {
+            image = toImage(scale, unwrap);
+            System.out.println("Original image is "+image.getWidth()+
+                               "x"+image.getHeight());
+            
+            int     w = 2048 + crop * 2;
+            int     h = 1024 + crop * 2;
+            texture = image.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+
+            // Need to crop the image, to remove 'half hexes'.
+            image = getBufferedImage(texture, crop);
+            texture = null; // Free up some memory.
+            System.out.println("Final image is "+image.getWidth()+
+                    "x"+image.getHeight());
+            saveAsJPEG(image, filename);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (Throwable t) {}
+        }
+        
     }
 
     public void
@@ -154,7 +178,7 @@ public class MapImage extends MapViewer {
                 Image   thumb = image.getScaledInstance(thumbnail, -1,
                                                 Image.SCALE_SMOOTH);
                 String  thumbFile = filename.replaceAll("\\.jpg", "-t.jpg");
-                saveAsJPEG(getBufferedImage(thumb), thumbFile);
+                saveAsJPEG(getBufferedImage(thumb, 0), thumbFile);
             }
 
         } catch (IOException e) {
@@ -200,11 +224,21 @@ public class MapImage extends MapViewer {
 
                 map.cropToArea(area, margin);
             }
+            boolean unwrap = options.isOption("-unwrap");
+            boolean celestia = options.isOption("-celestia");
+            int scale = 2;
+            if (options.isOption("-scale")) {
+                scale = options.getInt("-scale");
+            }
 
             map.setShowThings(true);
             map.setShowAreas(true);
             map.setShowLargeGrid(false);
-            map.saveImage(outfile, 2, false);
+            if (celestia) {
+                map.saveCelestia(outfile, scale, unwrap);
+            } else {
+                map.saveImage(outfile, scale, unwrap);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

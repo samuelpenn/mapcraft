@@ -97,6 +97,30 @@
             <image>house3.png</image>
             <solid value="false"/>
         </terrain>
+        <terrain id="4">
+            <name>house.4</name>
+            <description>House 4</description>
+            <image>house4.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="5">
+            <name>house.5</name>
+            <description>House 5</description>
+            <image>house5.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="6">
+            <name>hut.1</name>
+            <description>Hut 1</description>
+            <image>hut1.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="7">
+            <name>stone-house</name>
+            <description>Stone house</description>
+            <image>stone-house.png</image>
+            <solid value="false"/>
+        </terrain>
     </terrainset>
     <!-- Features -->
     <terrainset id="features" path="features">
@@ -1921,19 +1945,19 @@
                 <font>2</font>
                 <importance>3</importance>
             </thing>
-            <thing type="1" x="5212" y="3062" rotation="0">
+            <thing type="1" x="5152" y="3072" rotation="0">
                 <name>Unnamed</name>
                 <description>Unknown</description>
                 <font>2</font>
                 <importance>3</importance>
             </thing>
-            <thing type="1" x="5350" y="3059" rotation="0">
+            <thing type="1" x="5247" y="3077" rotation="0">
                 <name>Unnamed</name>
                 <description>Unknown</description>
                 <font>2</font>
                 <importance>3</importance>
             </thing>
-            <thing type="1" x="4931" y="3053" rotation="0">
+            <thing type="1" x="4981" y="3050" rotation="30">
                 <name>Unnamed</name>
                 <description>Unknown</description>
                 <font>2</font>
@@ -2006,6 +2030,702 @@
                 <importance>3</importance>
             </thing>
             <thing type="3" x="4118" y="2890" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="5" x="5390" y="3734" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="4" x="5377" y="3462" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="3" x="5422" y="3504" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5472" y="3587" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5464" y="3650" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5312" y="3520" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5310" y="3647" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5308" y="3722" rotation="60">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5014" y="3739" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4927" y="3735" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5100" y="3739" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5083" y="3658" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4968" y="3647" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4945" y="3460" rotation="30">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5050" y="3477" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5152" y="3454" rotation="330">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5222" y="3383" rotation="300">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5162" y="3318" rotation="210">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5056" y="3304" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4975" y="3377" rotation="120">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4685" y="3237" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4683" y="3327" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4750" y="3216" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4754" y="3325" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4737" y="3408" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5004" y="2981" rotation="120">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5112" y="2804" rotation="120">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5195" y="2795" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5291" y="2793" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5395" y="2791" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5397" y="2875" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5395" y="2972" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5345" y="3058" rotation="330">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5089" y="2997" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5191" y="3008" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5304" y="2993" rotation="150">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5268" y="2879" rotation="120">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5181" y="2885" rotation="120">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5083" y="2879" rotation="210">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5311" y="3583" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5429" y="3196" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5429" y="3255" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5461" y="3317" rotation="330">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5516" y="3356" rotation="300">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5587" y="3364" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5486" y="3197" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5561" y="3240" rotation="150">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5590" y="3305" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="7" x="5523" y="3083" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="3" x="5616" y="2936" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5614" y="2855" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5607" y="2781" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5707" y="2953" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5795" y="2947" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5859" y="2951" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5930" y="2946" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5718" y="2793" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5830" y="2790" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5911" y="2792" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5933" y="2863" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5562" y="2656" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5554" y="2571" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5569" y="2514" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5632" y="2513" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5617" y="2577" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5627" y="2645" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5393" y="2679" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5308" y="2679" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5235" y="2678" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5141" y="2677" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5151" y="2612" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5216" y="2625" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5276" y="2619" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5348" y="2619" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5420" y="2622" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5420" y="2506" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5427" y="2444" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5426" y="2379" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5425" y="2310" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5363" y="2502" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5360" y="2406" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5364" y="2312" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5595" y="2445" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="5" x="4894" y="3182" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="4907" y="2666" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="4894" y="2721" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="4885" y="2772" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="4875" y="2831" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="4857" y="2887" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="4837" y="2935" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="4807" y="2998" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="4792" y="2664" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="4787" y="2720" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="4764" y="2780" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4757" y="2863" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4720" y="2957" rotation="120">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4723" y="3056" rotation="30">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4812" y="3066" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4776" y="2602" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4866" y="2603" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="4953" y="2600" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5078" y="2614" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5066" y="2680" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5116" y="3173" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5171" y="3175" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5231" y="3180" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5233" y="3236" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5298" y="3236" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5293" y="3180" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="6" x="5087" y="2513" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5168" y="2510" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5242" y="2503" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5245" y="2413" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5096" y="2438" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5111" y="2367" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="5185" y="2394" rotation="270">
                 <name>Unnamed</name>
                 <description>Unknown</description>
                 <font>2</font>

@@ -485,6 +485,12 @@ public class MapBean implements Cloneable {
     setTerrain(int set, int x, int y, short t) throws MapOutOfBoundsException {
         tileSets[set].setTerrain(x, y, t);
     }
+    
+    public void
+    setHeight(int x, int y, short h) throws MapOutOfBoundsException {
+        tileSets[currentSet].setHeight(x, y, h);
+    }
+    
 
     public Area
     getArea(int set, int x, int y) throws MapOutOfBoundsException {

@@ -211,6 +211,7 @@ public class MapXML {
      */
     private void
     load(String filename) throws XMLException, IOException {
+        System.out.println("Loading ["+filename+"]");
         try {
             InputSource             in;
             FileInputStream         fis;
