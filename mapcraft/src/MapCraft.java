@@ -158,6 +158,7 @@ public class MapCraft implements ActionListener {
     public void
     save(String filename) {
         try {
+            editor.setFilename(filename);
             editor.save(filename);
         } catch (IOException ioe) {
             new JOptionPane("Cannot save file", JOptionPane.ERROR_MESSAGE);

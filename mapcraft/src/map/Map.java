@@ -329,7 +329,6 @@ public class Map extends MapBean implements Cloneable {
     public boolean
     cropToArea(short area, int margin) {
         try {
-            System.out.println("Cropping to area "+area+" with margin "+margin);
             tileSets[getCurrentSet()].cropToArea(area, margin);
         } catch (MapOutOfBoundsException moobe) {
             return false;
@@ -349,7 +348,16 @@ public class Map extends MapBean implements Cloneable {
         return true;
     }
 
+    public boolean
+    cropToThing(String name, short radius) {
+        try {
+            tileSets[getCurrentSet()].cropToThing(name, radius);
+        } catch (MapException e) {
+            return false;
+        }
 
+        return true;
+     }
 
 
     /**

@@ -140,6 +140,10 @@ public class FileMenu extends JMenu implements ActionListener {
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             String filename = chooser.getSelectedFile().getAbsolutePath();
 
+            if (!filename.endsWith(".map")) {
+                filename = filename + ".map";
+            }
+
             System.out.println("Save file as ["+filename+"]");
             application.save(filename);
         }

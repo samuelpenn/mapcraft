@@ -598,12 +598,21 @@ public class MapEditor extends MapViewer
             }
         }
     }
-    
+
+    /**
+     * Set the filename of the map to be the new file.
+     * Should be used after a SaveAs operation.
+     */
+    public void
+    setFilename(String filename) {
+        map.setFilename(filename);
+    }
+
     public void
     save(String filename) throws IOException {
         map.save(filename);
     }
-    
+
     public void
     save() throws IOException {
         save(map.getFilename());
@@ -873,6 +882,11 @@ public class MapEditor extends MapViewer
                     short    margin = dialog.getMargin();
                     short    area = (short)map.getAreaByName(dialog.getSelection()).getId();
                     map.cropToArea(area, margin);
+                } else if (dialog.isThing()) {
+                    short   radius = dialog.getRadius();
+                    String  name = dialog.getSelection();
+
+                    map.cropToThing(name, radius);
                 }
             }
 

@@ -567,6 +567,7 @@ public class TileSet implements Cloneable {
     setFeature(int x, int y, short feature) throws MapOutOfBoundsException {
         getTile(x, y).setFeature(feature);
     }
+
     /**
      * Crop the tiles to the given area. The map is searched for all tiles
      * which match the area, and a rectangle is formed which encloses all
@@ -668,6 +669,42 @@ public class TileSet implements Cloneable {
         }
     }
 
+    public void
+    cropToThing(String name, short radius) throws MapException {
+        Thing   thing = getThing(name);
+
+        if (thing == null) {
+            throw new MapException("Cannot find thing ["+name+"] to crop to");
+        }
+
+        int     xp = thing.getX() / 100;
+        int     yp = thing.getY() / 100;
+        int     minX, minY, maxX, maxY;
+
+        minX = xp - radius;
+        minY = yp - radius;
+        maxX = xp + radius;
+        maxY = yp + radius;
+
+        if (minX < 0) minX = 0;
+        if (minY < 0) minY = 0;
+        if (maxX >= width) maxX = width - 1;
+        if (maxY >= height) maxY = height - 1;
+
+        crop(minX, minY, maxX-minX + 1, maxY-minY + 1);
+    }
+
+    public void
+    cropToPath(String name, short margin) throws MapException {
+        Path    path = getPath(name);
+
+        if (path == null) {
+            throw new MapException("Cannot find path ["+name+"] to crop to");
+        }
+
+        
+    }
+
     /**
      * Replace all the rivers with the new set of rivers.
      */
@@ -712,6 +749,21 @@ public class TileSet implements Cloneable {
         }
 
         return names;
+    }
+
+    public Thing
+    getThing(String name) {
+        Thing       thing = null;
+
+        for (int i=0; i < things.size(); i++) {
+            thing = (Thing)things.elementAt(i);
+
+            if (thing.getName().equals(name)) {
+                return thing;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -760,6 +812,21 @@ public class TileSet implements Cloneable {
         path = (Path)rivers.elementAt(id);
 
         return path;
+    }
+
+    Path
+    getPath(String name) {
+        Path        path;
+
+        for (int i = 0; i < rivers.size(); i++) {
+            path = (Path)rivers.elementAt(i);
+
+            if (path.getName().equals(name)) {
+                return path;
+            }
+        }
+
+        return null;
     }
 
     /**
