@@ -205,6 +205,7 @@ public class MapViewer extends JPanel {
             if (t != null) {
                 short   id = t.getId();
                 String  path = views[view].getPath()+"/"+t.getImagePath();
+                debug("Loading icon ["+path+"]");
                 Image   icon = toolkit.getImage(path);
                 toolkit.prepareImage(icon, -1, -1, this);
                 iconSet.add(id, icon);

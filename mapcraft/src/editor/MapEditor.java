@@ -187,7 +187,6 @@ public class MapEditor extends MapViewer
         try {
             switch (brush.getType()) {
             case Brush.TERRAIN:
-                info("Applying terrain brush "+brush.getSelected());
                 switch (brush.getSize()) {
                 case Brush.MEDIUM:
                     // A medium sized brush is 3 tiles across.
@@ -214,12 +213,10 @@ public class MapEditor extends MapViewer
                 }
                 break;
             case Brush.HILLS:
-                info("Applying hill brush");
                 map.getTile(x, y).setHills(brush.getSelected());
                 paintTile(x, y);
                 break;
             case Brush.FEATURES:
-                info("Applying feature brush");
                 if (brush.getSelected() == 0) {
                     map.getTile(x, y).setSite((Site)null);
                 } else {
@@ -240,12 +237,9 @@ public class MapEditor extends MapViewer
                         // Only set site if no site currently present.
                         Site    site = new Site(brush.getSelected(), "Unnamed", "Unknown",
                                                 brush.getX(), brush.getY());
-                        info("Applying site brush "+brush.getSelected());
                         map.addSite(site);
-                        info("Opening dialog");
                         SiteDialog dialog = new SiteDialog(site, frame,
                                         map.getPlaceSet(), views[5].getPath());
-                        info("Finished dialog");
                         dialog.getSite();
                     }
                     break;

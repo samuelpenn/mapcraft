@@ -562,7 +562,7 @@ public class Map implements Cloneable {
             }
         }
     }
-    
+
     public void
     setRandom() {
         int x, y;
@@ -919,7 +919,7 @@ public class Map implements Cloneable {
             writeTileSet(tileSets[i], writer);
         }
 
-        if (sites.size() > 0) {
+        if (sites != null && sites.size() > 0) {
             writer.write("    <sites>\n");
             for (i=0; i < sites.size(); i++) {
                 Site    site = (Site)sites.elementAt(i);

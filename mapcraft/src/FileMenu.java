@@ -125,6 +125,9 @@ public class FileMenu extends JMenu implements ActionListener {
         }
     }
 
+    /**
+     * Save map in a new place.
+     */
     private void
     saveas() {
         JFileChooser chooser = new JFileChooser();
@@ -132,11 +135,18 @@ public class FileMenu extends JMenu implements ActionListener {
 
         int returnVal = chooser.showSaveDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
-            String filename = chooser.getSelectedFile().getName();
+            String filename = chooser.getSelectedFile().getAbsolutePath();
 
             System.out.println("Save file as ["+filename+"]");
             application.save(filename);
         }
+    }
+
+    /**
+     * Create a new map.
+     */
+    private void
+    create() {
     }
 
 }

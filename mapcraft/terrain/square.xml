@@ -12,6 +12,7 @@
         </cvs>
         <type>Local</type>
         <shape>Square</shape>
+        <imagedir>square</imagedir>
         <format>0.0.2</format>
     </header>
 
