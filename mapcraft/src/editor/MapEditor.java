@@ -168,7 +168,8 @@ public class MapEditor extends MapViewer
             }
 
             System.out.println("AreaPalette: "+index);
-            brush.setSelected(type, (short)index);
+            Area a[] = map.getAreaSet().toArray();
+            brush.setSelected(type, (short)a[index-1].getId());
             System.out.println("Area selected: "+brush.getSelected());
 
             brush.setType(type);
@@ -457,7 +458,36 @@ public class MapEditor extends MapViewer
 
         public void
         mouseMoved(MouseEvent e) {
+            int     x, y, yp;
             brush.setLastMousePosition(e.getX(), e.getY());
+            
+            if (map.getTileShape() == Map.SQUARE) {
+                x = e.getX()/tileXSize;
+                y = e.getY()/tileYSize;
+            } else {
+                x = e.getX()/tileXSize;
+                yp = e.getY();
+
+                if (x%2 != 0) {
+                    yp -= tileYOffset;
+                }
+                y = yp/tileYSize;
+            }
+            try {
+                String  area = map.getAreaName(map.getCurrentSet(), x, y);
+                String  terrain, feature;
+                String  message = null;
+                
+                int     t = map.getTerrain(map.getCurrentSet(), x, y);
+                int     f = map.getFeature(x, y);
+                
+                terrain = map.getTerrainSet().getTerrain((short)t).getName();
+                feature = map.getFeatureSet().getTerrain((short)f).getName();
+                
+                message = "("+x+","+y+") "+terrain+"/"+feature+" ["+area+"]";
+                application.setMessage(message);
+            } catch (MapOutOfBoundsException moobe) {
+            }
         }
     }
 

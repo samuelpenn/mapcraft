@@ -37,6 +37,7 @@ public class MapCraft implements ActionListener {
     private JFrame      window;
     private MapEditor   editor;
     private JScrollPane scrollpane;
+    private JLabel      statusBar;
 
     // Tools and stuff.
     private Actions     actions = new Actions(this);
@@ -191,6 +192,10 @@ public class MapCraft implements ActionListener {
                 }
             });
         window.getContentPane().setLayout(new BorderLayout());
+        
+        window.getContentPane().add(statusBar = new JLabel("No map"),
+                                    BorderLayout.SOUTH);
+        
         window.getContentPane().add(createToolbar(), BorderLayout.NORTH);
 
         menubar = new JMenuBar();
@@ -222,7 +227,7 @@ public class MapCraft implements ActionListener {
     public void
     load(String map) {
         editor = new MapEditor(properties, map);
-
+        editor.setApplication(this);
         scrollpane = new JScrollPane(editor,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -265,6 +270,12 @@ public class MapCraft implements ActionListener {
             new JOptionPane("Cannot save file", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    public void
+    setMessage(String message) {
+        statusBar.setText(message);
+    }
+
 
     public void
     create() {

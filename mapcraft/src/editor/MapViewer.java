@@ -13,6 +13,7 @@ package uk.co.demon.bifrost.rpg.mapcraft.editor;
 
 import uk.co.demon.bifrost.rpg.mapcraft.map.*;
 import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
+import uk.co.demon.bifrost.rpg.mapcraft.MapCraft;
 
 import javax.swing.*;
 import java.awt.*;
@@ -69,6 +70,7 @@ public class MapViewer extends JPanel {
     protected Properties        properties;
     protected ViewProperties    views[];
     protected int               view = 0;
+    protected MapCraft          application;
 
     protected void
     log(int level, String message) {
@@ -296,6 +298,11 @@ public class MapViewer extends JPanel {
         super(true);
 
         toolkit = Toolkit.getDefaultToolkit();
+    }
+    
+    public void
+    setApplication(MapCraft mapcraft) {
+        application = mapcraft;
     }
 
     private void
