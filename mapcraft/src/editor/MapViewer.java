@@ -478,6 +478,8 @@ public class MapViewer extends JPanel {
 
         try {
             map = new Map(filename);
+            map.setCurrentSet("root");
+            currentSet = map.getTileSet(0);
             path = path + "/"+map.getImageDir();
 
             views = new ViewProperties[7];
@@ -490,8 +492,6 @@ public class MapViewer extends JPanel {
 
             System.out.println("MapViewer: readAllIcons");
             readAllIcons();
-            map.setCurrentSet("root");
-            currentSet = map.getTileSet(0);
         } catch (MapException e) {
             e.printStackTrace();
         }
@@ -973,7 +973,10 @@ public class MapViewer extends JPanel {
             // map, and are only drawn on three sides (the neighbours will
             // draw their own border for the other three sides).
             if (showAreas && map.getTileShape() == Map.HEXAGONAL) {
-                int         area = currentSet.getArea(x, y).getId();
+                int         area = 0;
+                if (currentSet.getArea(x, y) != null) {
+                    area = currentSet.getArea(x, y).getId();
+                }
                 int         parent;
                 int         x1, y1, x2, y2;
                 Area        pa = map.getAreaParent(x, y);
@@ -991,7 +994,9 @@ public class MapViewer extends JPanel {
 
                 // Top neighbour (only if not top row).
                 if (y > 0) {
-                    int n = currentSet.getArea(x, y-1).getId();
+                    Area    aa = currentSet.getArea(x, y-1);
+                    int     n = 0;
+                    if (aa != null) n = aa.getId();
                     if (area != n) {
                         if (parent == n || parent == map.getAreaParentId(n)) {
                             debug("Parent area match!");
@@ -1018,9 +1023,11 @@ public class MapViewer extends JPanel {
                     int     n = 0;
 
                     if (x%2 == 0) {
-                        n = currentSet.getArea(x-1, y-1).getId();
+                        Area    aa = currentSet.getArea(x-1, y-1);
+                        if (aa != null) n = aa.getId();
                     } else {
-                        n = currentSet.getArea(x-1, y).getId();
+                        Area    aa = currentSet.getArea(x-1, y);
+                        if (aa != null) n = aa.getId();
                     }
                     if (area != n) {
                         Point   p = getPosition(x, y);
@@ -1042,9 +1049,11 @@ public class MapViewer extends JPanel {
                     int     n = 0;
 
                     if (x%2 == 0) {
-                        n = currentSet.getArea(x-1, y).getId();
+                        Area    aa = currentSet.getArea(x-1, y);
+                        if (aa != null) n = aa.getId();
                     } else if (y+1 < currentSet.getMapHeight()) {
-                        n = currentSet.getArea(x-1, y+1).getId();
+                        Area    aa = currentSet.getArea(x-1, y+1);
+                        if (aa != null) n = aa.getId();
                     } else {
                         // We don't want to display border along edge of map.
                         n = area;

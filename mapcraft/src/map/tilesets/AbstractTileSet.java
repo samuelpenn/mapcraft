@@ -31,6 +31,7 @@ public abstract class AbstractTileSet implements ITileSet {
     
     protected TerrainSet  terrainSet = null;
     protected TerrainSet  featureSet = null;
+    protected TerrainSet  thingSet = null;
     protected AreaSet     areaSet = null;
 
     /**
@@ -154,6 +155,10 @@ public abstract class AbstractTileSet implements ITileSet {
     public void setTerrain(int x, int y, Terrain terrain) 
                 throws MapOutOfBoundsException {
         checkBounds(x, y);
+        if (tiles == null) {
+            System.out.println("setTerrain: tiles are not set!");
+            System.exit(0);
+        }
         tiles.setTerrain(x, y, terrain);
     }
     

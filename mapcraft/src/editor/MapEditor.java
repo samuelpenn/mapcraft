@@ -481,7 +481,10 @@ public class MapEditor extends MapViewer
                 y = yp/tileYSize;
             }
             try {
-                String  area = currentSet.getArea(x, y).getName();
+                String  area = null;
+                if (currentSet.getArea(x, y) != null) {
+                    area = currentSet.getArea(x, y).getName();
+                }
                 String  terrain, feature;
                 String  message = null;
                 

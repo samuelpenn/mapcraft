@@ -166,4 +166,7 @@ public class TerrainSet implements Cloneable {
         return (Object)ts;
     }
 
+    public String toString() {
+        return id;
+    }
 }

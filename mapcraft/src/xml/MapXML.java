@@ -66,6 +66,11 @@ public class MapXML {
 
     public static final String LOCAL = "Local";
     public static final String WORLD = "World";
+    
+    private TerrainSet  terrainSet = null;
+    private TerrainSet  featureSet = null;
+    private TerrainSet  thingSet = null;
+    private AreaSet     areaSet = null;
 
     private void
     debug(String message) {
@@ -265,6 +270,10 @@ public class MapXML {
             type = getTextNode("/map/header/type");
             imagedir = getTextNode("/map/header/imagedir");
 
+            terrainSet = getTerrainSet("basic");
+            featureSet = getTerrainSet("features");
+            thingSet = getTerrainSet("things");
+            areaSet = getAreas();
         } catch (XMLException xe) {
             throw xe;
         } catch (IOException ioe) {
@@ -628,7 +637,9 @@ public class MapXML {
         try {
             // First, create an empty tileset.
             tileSet = new TileSet(name, width, height, scale);
+            tileSet.setCollections(terrainSet, featureSet, areaSet);
             System.out.println("getTileSet: Created tileset");
+            tileSet.dumpSets();
             // Next, populate the tiles with data from the XML.
             NodeList    columns = getNodeList(node, "tiles/column");
             if (columns == null) {
@@ -676,7 +687,7 @@ public class MapXML {
         } catch (InvalidArgumentException iae) {
             throw new XMLException("Cannot create TileSet from XML");
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
         System.out.println("getTileSet: Finished");
 

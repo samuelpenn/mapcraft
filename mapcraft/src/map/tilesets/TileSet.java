@@ -27,7 +27,7 @@ import net.sourceforge.mapcraft.map.interfaces.ITileSet;
  */
 public class TileSet extends AbstractTileSet implements Cloneable {
     
-    BasicTiles          tiles = null;
+    //BasicTiles          tiles = null;
     
     protected ArrayList paths = null;
     protected ArrayList things = null;
@@ -65,8 +65,12 @@ public class TileSet extends AbstractTileSet implements Cloneable {
 
         paths = new ArrayList();
         things = new ArrayList();
-        
-        tiles = new BasicTiles(mapWidth, mapHeight);
+        System.out.println("Setting tiles");
+        this.tiles = new BasicTiles(mapWidth, mapHeight);
+        if (tiles == null) {
+            System.out.println("Failed to set tiles");
+            System.exit(0);
+        }
     }
 
     /**
@@ -80,7 +84,8 @@ public class TileSet extends AbstractTileSet implements Cloneable {
         try {
             ts = new TileSet(mapName, mapWidth, mapHeight, mapScale);
 
-            ts.tiles = (BasicTiles)tiles.clone();
+            // TODO: Get clone working
+            //ts.tiles = (BasicTiles)tiles.clone();
             
         } catch (InvalidArgumentException e) {
             // Something gone wrong really here, how could the original
@@ -784,5 +789,40 @@ public class TileSet extends AbstractTileSet implements Cloneable {
     }
     
 
+    public void dumpSets() {
+        System.out.println("dumpSets:");
+        
+        if (terrainSet != null) {
+            System.out.println(">> TERRAIN");
+            Terrain[] terrain = terrainSet.toArray();
+            for (int i=0; terrain != null && i < terrain.length; i++) {
+                System.out.println("   "+i+": "+terrain[i].getName()+" ("+terrain[i].getId()+")");
+            }
+        }
+        
+        if (featureSet != null) {
+            System.out.println(">> FEATURES");
+            Terrain[] features = featureSet.toArray();
+            for (int i=0; features != null && i < features.length; i++) {
+                System.out.println("   "+i+": "+features[i].getName()+" ("+features[i].getId()+")");
+            }
+        }
+        
+        if (thingSet != null) {
+            System.out.println(">> THINGS");
+            Terrain[] things = thingSet.toArray();
+            for (int i=0; things != null && i < things.length; i++) {
+                System.out.println("   "+i+": "+things[i].getName()+" ("+things[i].getId()+")");
+            }
+        }
+     
+        if (areaSet != null) {
+            System.out.println(">> AREAS");
+            Area[] areas = areaSet.toArray();
+            for (int i=0; areas != null && i < areas.length; i++) {
+                System.out.println("   "+i+": "+areas[i].getName()+" ("+areas[i].getId()+")");
+            }
+        }
+    }
 }
 
