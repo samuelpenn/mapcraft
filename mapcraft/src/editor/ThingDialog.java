@@ -19,8 +19,8 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 
-public class SiteDialog extends JDialog implements ItemListener {
-    private Site        site;
+public class ThingDialog extends JDialog implements ItemListener {
+    private Thing       thing;
     private JTextField  name;
     private JTextField  description;
     private JButton     okay;
@@ -67,7 +67,7 @@ public class SiteDialog extends JDialog implements ItemListener {
     }
 
     /**
-     * Get the selected terrain type for this site.
+     * Get the selected terrain type for this thing.
      */
     public short
     getType() {
@@ -76,21 +76,21 @@ public class SiteDialog extends JDialog implements ItemListener {
     }
 
     /**
-     * Get the selected font size for this site.
+     * Get the selected font size for this thing.
      */
     public int
     getFontSize() {
         String  s = (String)fontSize.getSelectedItem();
-        int     size = Site.MEDIUM;
+        int     size = Thing.MEDIUM;
 
         if (s.equals("Small")) {
-            size = Site.SMALL;
+            size = Thing.SMALL;
         } else if (s.equals("Medium")) {
-            size = Site.MEDIUM;
+            size = Thing.MEDIUM;
         } else if (s.equals("Large")) {
-            size = Site.LARGE;
+            size = Thing.LARGE;
         } else if (s.equals("Huge")) {
-            size = Site.HUGE;
+            size = Thing.HUGE;
         }
 
         return size;
@@ -99,28 +99,28 @@ public class SiteDialog extends JDialog implements ItemListener {
     public int
     getImportance() {
         String  s = (String)fontSize.getSelectedItem();
-        int     importance = Site.NORMAL;
+        int     importance = Thing.NORMAL;
 
         if (s.equals("Low")) {
-            importance = Site.LOW;
+            importance = Thing.LOW;
         } else if (s.equals("Normal")) {
-            importance = Site.NORMAL;
+            importance = Thing.NORMAL;
         } else if (s.equals("High")) {
-            importance = Site.HIGH;
+            importance = Thing.HIGH;
         }
 
         return importance;
     }
 
-    public Site
-    getSite() {
-        site.setType(getType());
-        site.setName(getName());
-        site.setDescription(getDescription());
-        site.setFontSize(getFontSize());
-        site.setImportance(getImportance());
+    public Thing
+    getThing() {
+        thing.setType(getType());
+        thing.setName(getName());
+        thing.setDescription(getDescription());
+        thing.setFontSize(getFontSize());
+        thing.setImportance(getImportance());
 
-        return site;
+        return thing;
     }
 
     private JComboBox
@@ -146,24 +146,24 @@ public class SiteDialog extends JDialog implements ItemListener {
     createTypeCombo() {
         JComboBox   box = new JComboBox(icons.toArray());
         box.addItemListener(this);
-        box.setSelectedItem(icons.getTerrain(site.getType()));
+        box.setSelectedItem(icons.getTerrain(thing.getType()));
 
         return box;
     }
 
     /**
-     * Create a modal site editor dialog. When constructor returns, all
-     * the data has been set up for the site.
+     * Create a modal thing editor dialog. When constructor returns, all
+     * the data has been set up for the thing.
      *
-     * @param site      Site to be edited.
-     * @param frame     Frame site is attached to.
-     * @param icons     Terrain set for site icons.
-     * @param basePath  Base path to site icons to use in dialog.
+     * @param thing     Thing to be edited.
+     * @param frame     Frame thing is attached to.
+     * @param icons     Terrain set for thing icons.
+     * @param basePath  Base path to thing icons to use in dialog.
      */
     public
-    SiteDialog(Site site, JFrame frame, TerrainSet icons, String basePath) {
-        super(frame, "Edit site", true);
-        this.site = site;
+    ThingDialog(Thing thing, JFrame frame, TerrainSet icons, String basePath) {
+        super(frame, "Edit thing", true);
+        this.thing = thing;
         this.icons = icons;
         this.basePath = basePath;
 
@@ -186,13 +186,13 @@ public class SiteDialog extends JDialog implements ItemListener {
         c.weightx = 1.0;
         c.weighty = 0.0;
 
-        name = new JTextField(site.getName(), 20);
-        description = new JTextField(site.getDescription(), 30);
+        name = new JTextField(thing.getName(), 20);
+        description = new JTextField(thing.getDescription(), 30);
         String path = basePath;
-        path = path + "/" + icons.getTerrain(site.getType()).getImagePath();
+        path = path + "/" + icons.getTerrain(thing.getType()).getImagePath();
         icon = new ImageIcon(path);
 
-        picture = new JLabel(icons.getTerrain(site.getType()).getDescription(),
+        picture = new JLabel(icons.getTerrain(thing.getType()).getDescription(),
                              icon, SwingConstants.LEFT);
 
 
@@ -230,7 +230,7 @@ public class SiteDialog extends JDialog implements ItemListener {
 
     public static void
     main(String args[]) {
-        Site        site = new Site((short)1, "London", "Large city");
-        //SiteDialog  dialog = new SiteDialog(site);
+        Thing        thing = new Thing((short)1, "London", "Large city");
+        //ThingDialog  dialog = new ThingDialog(thing);
     }
 }

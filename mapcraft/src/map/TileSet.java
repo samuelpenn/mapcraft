@@ -210,25 +210,25 @@ public class TileSet implements Cloneable {
     setRiverMask(int x, int y, short mask) throws MapOutOfBoundsException {
         getTile(x, y).setRiverMask(mask);
     }
-    
-    public Site
-    getSite(int x, int y) throws MapOutOfBoundsException {
-        return getTile(x, y).getSite();
-    }
 
-    public void
-    setSite(int x, int y, Site site) throws MapOutOfBoundsException {
-        getTile(x, y).setSite(site);
-    }
-
-    public int
+    public short
     getArea(int x, int y) throws MapOutOfBoundsException {
         return getTile(x, y).getArea();
     }
 
     public void
-    setArea(int x, int y, int area) throws MapOutOfBoundsException {
+    setArea(int x, int y, short area) throws MapOutOfBoundsException {
         getTile(x, y).setArea(area);
+    }
+
+    public short
+    getFeature(int x, int y) throws MapOutOfBoundsException {
+        return getTile(x, y).getFeature();
+    }
+
+    public void
+    setFeature(int x, int y, short feature) throws MapOutOfBoundsException {
+        getTile(x, y).setFeature(feature);
     }
 }
 

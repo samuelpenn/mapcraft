@@ -51,7 +51,7 @@ public class EditMenu extends JMenu implements ActionListener {
         addItem(Actions.EDIT_LARGE);
 
         addItem(Actions.EDIT_TERRAIN);
-        addItem(Actions.EDIT_HILLS);
+        addItem(Actions.EDIT_THINGS);
         addItem(Actions.EDIT_FEATURES);
         addItem(Actions.EDIT_AREAS);
         addItem(Actions.EDIT_RIVERS);
@@ -113,9 +113,9 @@ public class EditMenu extends JMenu implements ActionListener {
             actions.get(Actions.EDIT_SMALL).setEnabled(true);
             actions.get(Actions.EDIT_MEDIUM).setEnabled(true);
             actions.get(Actions.EDIT_LARGE).setEnabled(true);
-        } else if (cmd.equals(Actions.EDIT_FEATURES)) {
+        } else if (cmd.equals(Actions.EDIT_THINGS)) {
             // Site brush.
-            application.getEditor().setBrushType(Brush.SITES);
+            application.getEditor().setBrushType(Brush.THINGS);
             actions.get(Actions.EDIT_SELECT).setEnabled(true);
             actions.get(Actions.EDIT_EDIT).setEnabled(true);
             actions.get(Actions.EDIT_INSERT).setEnabled(false);
@@ -124,9 +124,9 @@ public class EditMenu extends JMenu implements ActionListener {
             actions.get(Actions.EDIT_SMALL).setEnabled(false);
             actions.get(Actions.EDIT_MEDIUM).setEnabled(false);
             actions.get(Actions.EDIT_LARGE).setEnabled(false);
-        } else if (cmd.equals(Actions.EDIT_HILLS)) {
+        } else if (cmd.equals(Actions.EDIT_FEATURES)) {
             // Site brush.
-            application.getEditor().setBrushType(Brush.HILLS);
+            application.getEditor().setBrushType(Brush.FEATURES);
             actions.get(Actions.EDIT_SELECT).setEnabled(false);
             actions.get(Actions.EDIT_EDIT).setEnabled(false);
             actions.get(Actions.EDIT_INSERT).setEnabled(false);

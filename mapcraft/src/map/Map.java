@@ -55,11 +55,12 @@ public class Map implements Cloneable {
 
     // Data sets
     TerrainSet      terrainSet = null;
-    TerrainSet      placeSet = null;
+    TerrainSet      thingSet = null;
+    TerrainSet      featureSet = null;
     TileSet         tileSets[] = null;
     AreaSet         areaSet = null;
     Vector          rivers = null;
-    Vector          sites = null;
+    Vector          things = null;
 
     private int     tileShape = HEXAGONAL;
     private int     type = WORLD;
@@ -199,10 +200,11 @@ public class Map implements Cloneable {
             xml = new MapXML(filename);
             tileSets = xml.getTileSets();
             terrainSet = xml.getTerrainSet("basic");
-            placeSet = xml.getTerrainSet("places");
+            thingSet = xml.getTerrainSet("things");
+            featureSet = xml.getTerrainSet("features");
             areaSet = xml.getAreas();
 
-            sites = xml.getSites();
+            things = xml.getThings();
             rivers = xml.getRivers();
 
             this.filename = filename;
@@ -249,7 +251,8 @@ public class Map implements Cloneable {
         try {
             xml = new MapXML(filename);
             terrainSet = xml.getTerrainSet("basic");
-            placeSet = xml.getTerrainSet("places");
+            thingSet = xml.getTerrainSet("things");
+            featureSet = xml.getTerrainSet("features");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -442,39 +445,23 @@ public class Map implements Cloneable {
     }
 
     public short
-    getHills(int x, int y) throws MapOutOfBoundsException {
-        return tileSets[0].getTile(x, y).getHills();
-    }
-
-
-    public boolean
-    isSite(int x, int y) throws MapOutOfBoundsException {
-        return (tileSets[0].getTile(x, y).getSite() != null);
-    }
-
-    public short
-    getSiteMask(int x, int y) throws MapOutOfBoundsException {
-        return tileSets[0].getTile(x, y).getSite().getType();
-    }
-
-    public Site
-    getSite(int x, int y) throws MapOutOfBoundsException {
-        return tileSets[0].getTile(x, y).getSite();
+    getFeature(int x, int y) throws MapOutOfBoundsException {
+        return tileSets[0].getTile(x, y).getFeature();
     }
 
     public  Vector
-    getSites() {
-        return sites;
+    getThings() {
+        return things;
     }
 
     public void
-    removeSite(int s) {
-        sites.remove(s);
+    removeThing(int s) {
+        things.remove(s);
     }
 
     public void
-    addSite(Site s) {
-        sites.add(s);
+    addThing(Thing s) {
+        things.add(s);
     }
 
     /**
@@ -515,7 +502,7 @@ public class Map implements Cloneable {
     }
 
     public void
-    setArea(int x, int y, int area) throws MapOutOfBoundsException {
+    setArea(int x, int y, short area) throws MapOutOfBoundsException {
         tileSets[currentSet].setArea(x, y, area);
     }
 
@@ -552,7 +539,7 @@ public class Map implements Cloneable {
     public void
     setBackground(short t) {
         int x, y;
-        
+
         for (y = 0; y < height; y++) {
             for (x = 0; x < width; x++) {
                 if (tiles[y][x] == null) {
@@ -566,7 +553,7 @@ public class Map implements Cloneable {
     public void
     setRandom() {
         int x, y;
-        
+
         for (y = 0; y < height; y++) {
             for (x = 0; x < width; x++) {
                 if (tiles[y][x] == null) {
@@ -576,8 +563,8 @@ public class Map implements Cloneable {
             }
         }
     }
-    
-    
+
+
     /**
      * Sets the scale of the map, in km per tile object.
      * The scale should be a power of two.
@@ -676,7 +663,7 @@ public class Map implements Cloneable {
 
         resized = new TileSet(tileSets[0].getName(), newWidth,
                                           newHeight, tileSets[0].getScale());
-        
+
         int     xOffset = 0;
         int     yOffset = 0;
         if (atRight) {
@@ -775,7 +762,7 @@ public class Map implements Cloneable {
             writer.write("        <shape>Hexagonal</shape>\n");
         }
         writer.write("        <imagedir>"+imagedir+"</imagedir>\n");
-        writer.write("        <format>0.0.5</format>\n");
+        writer.write("        <format>0.1.0</format>\n");
         writer.write("    </header>\n");
     }
 
@@ -820,17 +807,16 @@ public class Map implements Cloneable {
             for (y=0; y < set.getHeight(); y++) {
                 try {
                     Tile    tile = set.getTile(x, y);
-                    String  t="AA", h="AAA", m="A", c="A", f="A", a="A";
+                    String  t="AA", h="AA", m="AA", c="A", f="A", a="AA";
 
                     try {
                         t = MapXML.toBase64(tile.getTerrain(), 2);
-                        h = MapXML.toBase64(tile.getHeight()+100000, 3);
-                        h = "AAA"; // HACK!
-                        m = MapXML.toBase64(tile.getHills(), 1);
-                        if (tile.getArea() != 0) {
-                            System.out.println("Non-zero area");
-                        }
-                        a = MapXML.toBase64(tile.getArea(), 1);
+                        h = MapXML.toBase64(tile.getHeight()+1000, 2);
+                        h = "AA"; // HACK!
+                        m = MapXML.toBase64(tile.getFeature(), 2);
+                        a = MapXML.toBase64(tile.getArea(), 2);
+                        c = "A";
+                        f = "A";
                     } catch (Exception e) {
                         System.out.println("Got exception writing tile "+x+","+y);
                         System.out.println(tile);
@@ -838,9 +824,9 @@ public class Map implements Cloneable {
                     }
                     c = "A";
 
-                    tmp = t + h + m + c + a + " ";
+                    tmp = t + h + m + a + c + f + " ";
 
-                    if ((y%6)==0) {
+                    if ((y%5)==0) {
                         terrain.append("\n");
                         terrain.append("                ");
                     }
@@ -911,31 +897,39 @@ public class Map implements Cloneable {
         // Terrain Sets
         writer.write("    <!-- Standard terrain set -->\n");
         writeTerrainSet(terrainSet, writer);
+        writer.write("    <!-- Things -->\n");
+        writeTerrainSet(thingSet, writer);
         writer.write("    <!-- Features -->\n");
-        writeTerrainSet(placeSet, writer);
+        writeTerrainSet(featureSet, writer);
 
+        writer.write("    <!-- TileSets contain blob data for the tiles -->\n");
+        writer.write("    <!-- Format is: \"tthhffaacu\" for each tile. -->\n");
+        writer.write("    <!--     tt = Terrain type    hh = height     -->\n");
+        writer.write("    <!--     ff = Feature         aa = area       -->\n");
+        writer.write("    <!--     c  = coast mask      u  = unused     -->\n");
+        writer.write("    <!-- Each blob is Base 64 encoded.            -->\n");
         // Now go through each of the tilesets in turn.
         for (i=0; i < tileSets.length; i++) {
             writeTileSet(tileSets[i], writer);
         }
 
-        if (sites != null && sites.size() > 0) {
-            writer.write("    <sites>\n");
-            for (i=0; i < sites.size(); i++) {
-                Site    site = (Site)sites.elementAt(i);
-                writer.write("        <site type=\""+site.getType()+"\" "+
-                                        "x=\""+site.getX()+
-                                        "\" y=\""+site.getY()+"\">\n");
-                writer.write("            <name>"+site.getName()+"</name>\n");
+        if (things != null && things.size() > 0) {
+            writer.write("    <things>\n");
+            for (i=0; i < things.size(); i++) {
+                Thing    thing = (Thing)things.elementAt(i);
+                writer.write("        <thing type=\""+thing.getType()+"\" "+
+                                        "x=\""+thing.getX()+
+                                        "\" y=\""+thing.getY()+"\">\n");
+                writer.write("            <name>"+thing.getName()+"</name>\n");
                 writer.write("            <description>");
-                writer.write(site.getDescription());
+                writer.write(thing.getDescription());
                 writer.write("</description>\n");
-                writer.write("            <font>"+site.getFontSize()+"</font>\n");
-                writer.write("            <importance>"+site.getImportance()+"</importance>\n");
+                writer.write("            <font>"+thing.getFontSize()+"</font>\n");
+                writer.write("            <importance>"+thing.getImportance()+"</importance>\n");
 
-                writer.write("        </site>\n");
+                writer.write("        </thing>\n");
             }
-            writer.write("    </sites>\n");
+            writer.write("    </things>\n");
         }
 
         writeAreaSet(writer);
@@ -963,7 +957,8 @@ public class Map implements Cloneable {
             this.parent = xml.getParent();
 
             terrainSet = xml.getTerrainSet("basic");
-            placeSet = xml.getTerrainSet("places");
+            thingSet = xml.getTerrainSet("things");
+            featureSet = xml.getTerrainSet("features");
             tileSets = xml.getTileSets();
         } catch (Exception e) {
             e.printStackTrace();
@@ -1001,7 +996,7 @@ public class Map implements Cloneable {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Get the terrain set used by this map. This describes
      * all the possible terrains.
@@ -1012,24 +1007,28 @@ public class Map implements Cloneable {
     }
 
     public TerrainSet
-    getPlaceSet() {
-        return placeSet;
+    getThingSet() {
+        return thingSet;
     }
-    
+
     public TerrainSet
-    getHillSet() {
-        TerrainSet      hills = new TerrainSet("hills", "images/hexagonal/standard/medium");
+    getFeatureSet() {
+        return featureSet;
+        /*
+        TerrainSet      features = new TerrainSet("features", "images/hexagonal/standard/medium");
 
-        hills.add(new Terrain((short)0, "clear", "Clear", "hills/0.png"));
-        hills.add(new Terrain((short)1, "lowhills", "Low hills", "hills/1.png"));
-        hills.add(new Terrain((short)2, "highhills", "High hills", "hills/2.png"));
-        hills.add(new Terrain((short)3, "foothills", "Foot hills", "hills/3.png"));
-        hills.add(new Terrain((short)4, "lowmnts", "Low mountains", "hills/4.png"));
-        hills.add(new Terrain((short)5, "highmnts", "High mountains", "hills/5.png"));
-        hills.add(new Terrain((short)6, "marsh", "Marshland", "hills/marsh.png"));
-        hills.add(new Terrain((short)7, "ice", "Ice sheet", "hills/ice.png"));
+        features.add(new Terrain((short)0, "clear", "Clear", "hills/0.png"));
+        features.add(new Terrain((short)1, "lowhills", "Low hills", "hills/1.png"));
+        features.add(new Terrain((short)2, "highhills", "High hills", "hills/2.png"));
+        features.add(new Terrain((short)3, "foothills", "Foot hills", "hills/3.png"));
+        features.add(new Terrain((short)4, "lowmnts", "Low mountains", "hills/4.png"));
+        features.add(new Terrain((short)5, "highmnts", "High mountains", "hills/5.png"));
+        features.add(new Terrain((short)6, "marsh", "Marshland", "hills/marsh.png"));
+        features.add(new Terrain((short)7, "ice", "Ice sheet", "hills/ice.png"));
 
-        return hills;
+        featureSet = features;
+        return features;
+        */
     }
 
     /**
@@ -1148,30 +1147,30 @@ public class Map implements Cloneable {
     }
 
     /**
-     * Return the (zero based) index for the nearest site to the given
-     * x/y coordinate. If 'max' is non-zero, then any sites more than
+     * Return the (zero based) index for the nearest Thing to the given
+     * x/y coordinate. If 'max' is non-zero, then any Things more than
      * 'max' away are ignored.
      */
     public int
-    getNearestSiteIndex(int x, int y, int max) {
-        Site    site = null;
+    getNearestThingIndex(int x, int y, int max) {
+        Thing   thing = null;
         int     index = -1;
         int     sx=0, sy=0;
         int     min = -1;
         int     d = 0;
 
-        System.out.println("getNearestSiteIndex: "+x+","+y+" ("+max+")");
+        System.out.println("getNearestThingIndex: "+x+","+y+" ("+max+")");
 
         max = max * max;
 
-        for (int i = 0; i < sites.size(); i++) {
-            site = (Site)sites.elementAt(i);
-            sx = x - site.getX();
-            sy = y - site.getY();
+        for (int i = 0; i < things.size(); i++) {
+            thing = (Thing)things.elementAt(i);
+            sx = x - thing.getX();
+            sy = y - thing.getY();
             // We're only looking for the smallest distance, so no need
             // to bother getting the square root.
             d = sx * sx + sy * sy;
-            System.out.println("site: "+sx+", "+sy+" "+d);
+            System.out.println("thing: "+sx+", "+sy+" "+d);
             if ((min == -1 || d < min) && (max == 0 || d < max)) {
                 min = d;
                 index = i;
@@ -1183,19 +1182,19 @@ public class Map implements Cloneable {
     }
 
     /**
-     * Return nearest site for the given coordinates.
-     * @see getNearestSiteIndex
+     * Return nearest Thing for the given coordinates.
+     * @see getNearestThingIndex
      */
-    public Site
-    getNearestSite(int x, int y, int max) {
-        Site    site = null;
-        int     index = getNearestSiteIndex(x, y, max);
+    public Thing
+    getNearestThing(int x, int y, int max) {
+        Thing   thing = null;
+        int     index = getNearestThingIndex(x, y, max);
 
         if (index >= 0) {
-            site = (Site)sites.elementAt(index);
+            thing = (Thing)things.elementAt(index);
         }
 
-        return site;
+        return thing;
     }
 
     public static void

@@ -13,14 +13,14 @@ package uk.co.demon.bifrost.rpg.mapcraft.map;
 
 
 /**
- * A Site is a place of interest on a map, often a town or castle. For
- * local area maps, sites are 'features', such as a door or a table.
- * A Site supports sub-tile placement, so that multiple sites can be
+ * A Thing is a place of interest on a map, often a town or castle. For
+ * local area maps, things are 'features', such as a door or a table.
+ * A Thing supports sub-tile placement, so that multiple things can be
  * placed on a single tile. The image can also be rotated - this latter
  * is of more use for 'features' in local area maps than it is for towns
  * in world area maps.
  */
-public class Site implements Cloneable {
+public class Thing implements Cloneable {
     private short       type;
     private String      name;
     private String      description;
@@ -52,11 +52,11 @@ public class Site implements Cloneable {
     }
 
     /**
-     * Constructor for a Site, giving its type, a name and a long
+     * Constructor for a Thing, giving its type, a name and a long
      * description for the place.
      */
     public
-    Site(short type, String name, String description) {
+    Thing(short type, String name, String description) {
         this.type = type;
         this.name = name;
         this.description = description;
@@ -65,11 +65,11 @@ public class Site implements Cloneable {
     }
 
     /**
-     * Constructor designed for local area maps, where a Site doesn't
+     * Constructor designed for local area maps, where a Thing doesn't
      * have a name or description.
      */
     public
-    Site(short type, short rotation) {
+    Thing(short type, short rotation) {
         this.type = type;
         this.name = "";
         this.description = "";
@@ -78,10 +78,10 @@ public class Site implements Cloneable {
     }
 
     /**
-     * Full constructor for a Site, allowing all components to be specified.
+     * Full constructor for a Thing, allowing all components to be specified.
      */
     public
-    Site(short type, String name, String description, int x, int y) {
+    Thing(short type, String name, String description, int x, int y) {
         this.type = type;
         this.name = name;
         this.description = description;
@@ -91,7 +91,7 @@ public class Site implements Cloneable {
 
     public Object
     clone() throws CloneNotSupportedException {
-        Site    s = new Site(type, name, description);
+        Thing    s = new Thing(type, name, description);
 
         s.x = x;
         s.y = y;
@@ -155,7 +155,7 @@ public class Site implements Cloneable {
     }
 
     /**
-     * Set the importance of this site. Sites of LOW importance are not
+     * Set the importance of this Thing. Things of LOW importance are not
      * displayed when the map is zoomed out. HIGH importance sites are
      * always displayed, regardless of zoom factor. NORMAL importance
      * falls somewhere inbetween.

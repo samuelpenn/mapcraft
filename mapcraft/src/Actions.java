@@ -32,7 +32,7 @@ public class Actions {
     private static Hashtable    actions;
     private String              path="icons/toolbar/";
     private ActionListener      globalListener;
-    
+
     public final static String  FILE_NEW            = "file.new";
     public final static String  FILE_OPEN           = "file.open";
     public final static String  FILE_SAVE           = "file.save";
@@ -42,6 +42,7 @@ public class Actions {
 
     public final static String  VIEW_ZOOMIN         = "view.zoomin";
     public final static String  VIEW_ZOOMOUT        = "view.zoomout";
+    public final static String  VIEW_USMALL         = "view.usmall";
     public final static String  VIEW_XXSMALL        = "view.xxsmall";
     public final static String  VIEW_XSMALL         = "view.xsmall";
     public final static String  VIEW_SMALL          = "view.small";
@@ -51,14 +52,14 @@ public class Actions {
     public final static String  VIEW_XXLARGE        = "view.xxlarges";
     public final static String  VIEW_SHOWTERRAIN    = "view.showterrain";
     public final static String  VIEW_SHOWFEATURES   = "view.showfeatures";
-    public final static String  VIEW_SHOWHILLS      = "view.hills";
+    public final static String  VIEW_SHOWTHINGS     = "view.things";
     public final static String  VIEW_SHOWAREAS      = "view.areas";
     public final static String  VIEW_GRID           = "view.grid";
     public final static String  VIEW_LARGEGRID      = "view.largegrid";
 
     public final static String  EDIT_TERRAIN        = "edit.terrain";
     public final static String  EDIT_FEATURES       = "edit.features";
-    public final static String  EDIT_HILLS          = "edit.hills";
+    public final static String  EDIT_THINGS         = "edit.things";
     public final static String  EDIT_RIVERS         = "edit.rivers";
     public final static String  EDIT_AREAS          = "edit.areas";
     public final static String  EDIT_SMALL          = "edit.small";
@@ -126,12 +127,13 @@ public class Actions {
             add(VIEW_ZOOMIN, "Zoom in", "general/ZoomIn");
             add(VIEW_ZOOMOUT, "Zoom out", "general/ZoomOut");
             addLocal(VIEW_SHOWTERRAIN, "Terrain palette", "terrain");
-            addLocal(VIEW_SHOWFEATURES, "Feature palette", "features");
-            addLocal(VIEW_SHOWHILLS, "Hills palette", "hills");
+            addLocal(VIEW_SHOWTHINGS, "Thing palette", "things");
+            addLocal(VIEW_SHOWFEATURES, "Features palette", "features");
             addLocal(VIEW_SHOWAREAS, "Areas palette", "terrain");
             addLocal(VIEW_GRID, "Toggle grid", "grid");
             addLocal(VIEW_LARGEGRID, "Toggle rulers", "biggrid");
 
+            add(VIEW_USMALL, "u-Small");
             add(VIEW_XXSMALL, "XX-Small");
             add(VIEW_XSMALL, "X-Small");
             add(VIEW_SMALL, "Small");
@@ -145,7 +147,7 @@ public class Actions {
             addLocal(EDIT_FEATURES, "Features Brush", "features");
             addLocal(EDIT_AREAS, "Area Brush", "terrain");
             addLocal(EDIT_RIVERS, "Rivers Brush", "rivers");
-            addLocal(EDIT_HILLS, "Hills brush", "hills");
+            addLocal(EDIT_THINGS, "Things brush", "things");
 
             // Brushes
             addLocal(EDIT_SMALL,"Small brush", "small-brush");

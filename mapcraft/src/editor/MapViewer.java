@@ -54,13 +54,13 @@ public class MapViewer extends JPanel {
 
     protected IconSet     iconSet = null;
     protected IconSet     riverSet = null;
-    protected IconSet     siteSet = null;
-    protected IconSet     hillSet = null;
+    protected IconSet     thingSet = null;
+    protected IconSet     featureSet = null;
 
     private boolean       showGrid = true;
     private boolean       showLargeGrid = true;
-    private boolean       showSites = true;
-    private boolean       showHills = true;
+    private boolean       showThings = true;
+    private boolean       showFeatures = true;
     private boolean       showCoasts = true;
     private boolean       showRivers = true;
     private boolean       showRoads = true;
@@ -220,8 +220,8 @@ public class MapViewer extends JPanel {
     protected void
     readAllIcons() {
         iconSet = readIcons("terrain", map.getTerrainSet());
-        siteSet = readIcons("sites", map.getPlaceSet());
-        hillSet = readIcons("hills", map.getHillSet());
+        thingSet = readIcons("things", map.getThingSet());
+        featureSet = readIcons("features", map.getFeatureSet());
     }
 
     private ViewProperties
@@ -287,7 +287,7 @@ public class MapViewer extends JPanel {
 
 
             iconSet = readIcons("terrain", set);
-            siteSet = readIcons("sites", map.getPlaceSet());
+            thingSet = readIcons("things", map.getThingSet());
 
             map.setCurrentSet("root");
 
@@ -381,18 +381,18 @@ public class MapViewer extends JPanel {
 
 
     /**
-     * Is the map currently displaying sites?
+     * Is the map currently displaying things?
      */
     public boolean
-    isShowSites() { return showSites; }
+    isShowThings() { return showThings; }
 
     /**
-     * Set whether the map should show sites.
+     * Set whether the map should show things.
      * Force a redraw of the map to update the display.
      */
     public void
-    setShowSites(boolean show) {
-        showSites = show;
+    setShowThings(boolean show) {
+        showThings = show;
         paintComponent();
     }
 
@@ -417,15 +417,15 @@ public class MapViewer extends JPanel {
      * Is the map currently displaying hills?
      */
     public boolean
-    isShowHills() { return showHills; }
+    isShowFeatures() { return showFeatures; }
 
     /**
      * Set whether the map should show hills.
      * Force a redraw of the map to update the display.
      */
     public void
-    setShowHills(boolean show) {
-        showHills = show;
+    setShowFeatures(boolean show) {
+        showFeatures = show;
         paintComponent();
     }
 
@@ -545,30 +545,18 @@ public class MapViewer extends JPanel {
 
             // Now draw labels. Need to draw these last so that they don't
             // get overwritten by tiles. No labels are drawn for LOCAL maps.
-            if (map.getType() == Map.WORLD && showSites) {
-                Vector   sites = map.getSites();
-                for (int i=0; i < sites.size(); i++) {
-                    Site    site = (Site)sites.elementAt(i);
-                    if (site.getX() < (100 * startX) || site.getX() > (100 * endX)) {
+            if (showThings) {
+                Vector   things = map.getThings();
+                for (int i=0; i < things.size(); i++) {
+                    Thing    thing = (Thing)things.elementAt(i);
+                    if (thing.getX() < (100 * startX) || thing.getX() > (100 * endX)) {
                         continue;
                     }
-                    if (site.getY() < (100 * startY) || site.getY() > (100 * endY)) {
+                    if (thing.getY() < (100 * startY) || thing.getY() > (100 * endY)) {
                         continue;
                     }
-                    paintSite(site, g);
+                    paintThing(thing, g);
 
-                }
-
-                for (y = startY; y < endY; y++) {
-                    yp = y * tileYSize;
-                    for (x = startX; x < endX; x++) {
-                        if (map.isSite(x, y)) {
-                            // Show name, should be configurable.
-                            xp = x * tileXSize;
-                            ypp = yp + ((x%2 == 0)?0:tileYOffset);
-                            g.drawString(map.getSite(x, y).getName(), xp, ypp);
-                        }
-                    }
                 }
             }
 
@@ -661,8 +649,8 @@ public class MapViewer extends JPanel {
             Image   icon = iconSet.getIcon(t);
             g.drawImage(icon, xp, yp, this);
 
-            if (map.getHills(x, y) > 0) {
-                icon = hillSet.getIcon(map.getHills(x, y));
+            if (map.getFeature(x, y) > 0) {
+                icon = featureSet.getIcon(map.getFeature(x, y));
                 g.drawImage(icon, xp, yp, this);
             }
 
@@ -783,43 +771,43 @@ public class MapViewer extends JPanel {
     }
 
     public void
-    paintSite(Site site, Graphics g) {
+    paintThing(Thing thing, Graphics g) {
         int     x=0, y=0;
         int     fontSize = 10;
-        Image   icon = siteSet.getIcon(site.getType());
+        Image   icon = thingSet.getIcon(thing.getType());
 
-        debug("paintSite: ["+site.getName()+"]");
+        debug("paintThing: ["+thing.getName()+"]");
 
-        // If scale is too large, and site not importance enough,
+        // If scale is too large, and thing not importance enough,
         // then don't display it.
-        switch (site.getImportance()) {
-            case Site.LOW:
+        switch (thing.getImportance()) {
+            case Thing.LOW:
                 if (view < 4) return;
                 break;
-            case Site.NORMAL:
+            case Thing.NORMAL:
                 if (view < 2) return;
                 break;
-            case  Site.HIGH:
+            case Thing.HIGH:
                 break;
         }
 
-        x = site.getX() * tileXSize / 100 - tileXSize/2;
-        y = site.getY() * tileYSize / 100 - tileYSize/2;
+        x = thing.getX() * tileXSize / 100 - tileXSize/2;
+        y = thing.getY() * tileYSize / 100 - tileYSize/2;
 
         g.drawImage(icon, x, y, this);
         g.setColor(Color.BLACK);
 
-        switch (site.getFontSize())  {
-        case Site.SMALL:
+        switch (thing.getFontSize())  {
+        case Thing.SMALL:
             fontSize = 8;
             break;
-        case Site.MEDIUM:
+        case Thing.MEDIUM:
             fontSize = 10;
             break;
-        case Site.LARGE:
+        case Thing.LARGE:
             fontSize = 14;
             break;
-        case Site.HUGE:
+        case Thing.HUGE:
             fontSize = 18;
             break;
         }
@@ -828,7 +816,7 @@ public class MapViewer extends JPanel {
         g.setFont(font);
         // Show name, should be configurable.
         if (map.getType() != Map.LOCAL) {
-            g.drawString(site.getName(), x, y);
+            g.drawString(thing.getName(), x, y);
         }
     }
 

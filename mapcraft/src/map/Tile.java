@@ -33,23 +33,18 @@ package uk.co.demon.bifrost.rpg.mapcraft.map;
 public class Tile implements Cloneable {
     private short   terrain;
     private short   height;
-    private short   hills;
+    private short   feature;
     private boolean writable;
     private boolean river;
-    private int     area;
-
-    private Site    site;
+    private short   area;
 
     public String
     toString() {
         String      string = null;
 
-        string = "Terrain ("+terrain+") Height ("+height+") Hills ("+hills+") ";
+        string = "Terrain ("+terrain+") Height ("+height+") Feature ("+feature+") ";
         if (river) {
             string += "(river) ";
-        }
-        if (site != null) {
-            string += "Site ["+site+"]";
         }
 
         return string;
@@ -61,11 +56,11 @@ public class Tile implements Cloneable {
      */
     public Tile() {
         terrain = (short)1;
-        height = 0;
-        hills = 0;
+        height = (short)0;
+        feature = (short)0;
+        area = (short)0;
         writable = true;
         river = false;
-        site = null;
     }
 
     /**
@@ -78,8 +73,8 @@ public class Tile implements Cloneable {
         this.height = tile.height;
         this.writable = tile.writable;
         this.river = tile.river;
-        this.site = tile.site;
-        this.hills = tile.hills;
+        this.feature = tile.feature;
+        this.area = tile.area;
     }
 
     public Object
@@ -89,7 +84,8 @@ public class Tile implements Cloneable {
         t.height = height;
         t.writable = writable;
         t.river = river;
-        t.site = (Site) site.clone();;
+        t.feature = feature;
+        t.area = area;
 
         return (Object)t;
     }
@@ -138,14 +134,14 @@ public class Tile implements Cloneable {
     }
 
     public short
-    getHills() {
-        return hills;
+    getFeature() {
+        return feature;
     }
 
     public void
-    setHills(short hills) {
+    setFeature(short feature) {
         if (writable) {
-            this.hills = hills;
+            this.feature = feature;
         }
     }
 
@@ -176,25 +172,13 @@ public class Tile implements Cloneable {
         }
     }
 
-    public void
-    setSite(Site site) {
-        if (writable) {
-            this.site = site;
-        }
-    }
-
-    public Site
-    getSite() {
-        return site;
-    }
-
-    public int
+    public short
     getArea() {
         return area;
     }
 
     public void
-    setArea(int area) {
+    setArea(short area) {
         if (writable) {
             this.area = area;
         }

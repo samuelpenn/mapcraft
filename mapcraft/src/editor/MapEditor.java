@@ -37,8 +37,8 @@ public class MapEditor extends MapViewer
 
     private Pane        terrainPane = null;
     private Pane        riverPane = null;
-    private Pane        placePane = null;
-    private Pane        hillPane = null;
+    private Pane        thingPane = null;
+    private Pane        featurePane = null;
     private Pane        areaPane = null;
 
     private Brush       brush = new Brush();
@@ -81,67 +81,63 @@ public class MapEditor extends MapViewer
     }
 
     public class
-    PlacePalette implements ListSelectionListener {
+    ThingPalette implements ListSelectionListener {
         private MapEditor editor;
 
         public
-        PlacePalette(MapEditor editor) {
+        ThingPalette(MapEditor editor) {
             this.editor = editor;
         }
 
         public void
         valueChanged(ListSelectionEvent e) {
             int first, last, index;
-            int type = Brush.SITES;
-
-            if (map.getType() == Map.LOCAL) {
-                type = Brush.FEATURES;
-            }
+            int type = Brush.THINGS;
 
             // We get a result for both the item which was
             // selected, and the one unselected, so we need
             // to figure out which is which.
             index = first = e.getFirstIndex();
             last = e.getLastIndex();
-            if (placePane.isSelected(last)) {
+            if (thingPane.isSelected(last)) {
                 index = last;
             }
 
-            System.out.println("PlacePalette: "+index);
-            Terrain ta[] = map.getPlaceSet().toArray();
+            System.out.println("ThingPalette: "+index);
+            Terrain ta[] = map.getThingSet().toArray();
             brush.setSelected(type, ta[index].getId());
-            System.out.println("Place selected: "+brush.getSelected());
+            System.out.println("Thing selected: "+brush.getSelected());
 
             brush.setType(type);
         }
     }
 
     public class
-    HillPalette implements ListSelectionListener {
+    FeaturePalette implements ListSelectionListener {
         private MapEditor editor;
 
         public
-        HillPalette(MapEditor editor) {
+        FeaturePalette(MapEditor editor) {
             this.editor = editor;
         }
 
         public void
         valueChanged(ListSelectionEvent e) {
             int first, last, index;
-            int type = Brush.HILLS;
+            int type = Brush.FEATURES;
 
             // We get a result for both the item which was
             // selected, and the one unselected, so we need
             // to figure out which is which.
             index = first = e.getFirstIndex();
             last = e.getLastIndex();
-            if (hillPane.isSelected(last)) {
+            if (featurePane.isSelected(last)) {
                 index = last;
             }
 
-            System.out.println("HillPalette: "+index);
+            System.out.println("FeaturePalette: "+index);
             brush.setSelected(type, (short)index);
-            System.out.println("Hill selected: "+brush.getSelected());
+            System.out.println("Feature selected: "+brush.getSelected());
 
             brush.setType(type);
         }
@@ -212,49 +208,40 @@ public class MapEditor extends MapViewer
                     break;
                 }
                 break;
-            case Brush.HILLS:
-                map.getTile(x, y).setHills(brush.getSelected());
-                paintTile(x, y);
-                break;
             case Brush.FEATURES:
-                if (brush.getSelected() == 0) {
-                    map.getTile(x, y).setSite((Site)null);
-                } else {
-                    Site site = new Site(brush.getSelected(), "Unnamed", "Unnamed");
-                    map.getTile(x, y).setSite(site);
-                }
+                map.getTile(x, y).setFeature(brush.getSelected());
                 paintTile(x, y);
                 break;
-            case Brush.SITES:
+            case Brush.THINGS:
                 switch (brush.getButton()) {
                 case MouseEvent.BUTTON1:
                     if (brush.getSelected() == 0) {
-                        int     s = map.getNearestSiteIndex(brush.getX(), brush.getY(), 100);
+                        int     s = map.getNearestThingIndex(brush.getX(), brush.getY(), 100);
                         if (s >= 0) {
-                            map.removeSite(s);
+                            map.removeThing(s);
                         }
                     } else {
-                        // Only set site if no site currently present.
-                        Site    site = new Site(brush.getSelected(), "Unnamed", "Unknown",
+                        // Only set Thing if no Thing currently present.
+                        Thing   thing = new Thing(brush.getSelected(), "Unnamed", "Unknown",
                                                 brush.getX(), brush.getY());
-                        map.addSite(site);
-                        SiteDialog dialog = new SiteDialog(site, frame,
-                                        map.getPlaceSet(), views[5].getPath());
-                        dialog.getSite();
+                        map.addThing(thing);
+                        ThingDialog dialog = new ThingDialog(thing, frame,
+                                        map.getThingSet(), views[5].getPath());
+                        dialog.getThing();
                     }
                     break;
                 case MouseEvent.BUTTON2:
-                    info("Moving site");
-                    Site    site = map.getNearestSite(brush.getX(), brush.getY(), 100);
-                    if (site != null) {
-                        site.setPosition(brush.getX(), brush.getY());
+                    info("Moving thing");
+                    Thing    thing = map.getNearestThing(brush.getX(), brush.getY(), 100);
+                    if (thing != null) {
+                        thing.setPosition(brush.getX(), brush.getY());
                     }
                     break;
                 }
                 paintComponent();
                 break;
             case Brush.AREAS:
-                map.getTile(x, y).setArea(brush.getSelected());
+                map.getTile(x, y).setArea((short)brush.getSelected());
                 paintTile(x, y);
                 break;
             case Brush.RIVERS:
@@ -344,11 +331,12 @@ public class MapEditor extends MapViewer
             if (e.getButton() == e.BUTTON3) {
                 // Right mouse button
                 debug("Right mouse");
+                /*
                 try {
                     if (map.isSite(x, y)) {
                         Site        site = map.getSite(x, y);
                         SiteDialog  dialog = new SiteDialog(site, frame,
-                                                    map.getPlaceSet(), views[5].getPath());
+                                                    map.getThingSet(), views[5].getPath());
 
                         site.setName(dialog.getName());
                         site.setDescription(dialog.getDescription());
@@ -357,6 +345,7 @@ public class MapEditor extends MapViewer
                 } catch (MapOutOfBoundsException oobe) {
                     warn("Mouse click out of bounds");
                 }
+                */
             } else {
                 applyBrush(x, y);
             }
@@ -373,7 +362,7 @@ public class MapEditor extends MapViewer
             int     x,y;
             int     yp;
 
-            if (brush.getType() == Brush.SITES) {
+            if (brush.getType() == Brush.THINGS) {
                 // Don't allow drag paint for painting of sites.
                 return;
             }
@@ -549,26 +538,22 @@ public class MapEditor extends MapViewer
     }
 
     public void
-    showFeaturePalette() {
-        if (map.getType() == Map.LOCAL) {
-            placePane = new Pane(new PlacePalette(this), "Features");
-        } else {
-            placePane = new Pane(new PlacePalette(this), "Places");
-        }
-        placePane.setImagePath(properties.getProperty("path.images")+
+    showThingPalette() {
+        thingPane = new Pane(new ThingPalette(this), "Things");
+        thingPane.setImagePath(properties.getProperty("path.images")+
                 "/"+map.getImageDir()+"/medium");
-        placePane.setPalette(map.getPlaceSet().toArray(), false);
-        placePane.makeFrame();
+        thingPane.setPalette(map.getThingSet().toArray(), false);
+        thingPane.makeFrame();
     }
 
     public void
-    showHillPalette() {
-        hillPane = new Pane(new HillPalette(this), "Hills");
-        hillPane.setImagePath(properties.getProperty("path.images")+
+    showFeaturePalette() {
+        featurePane = new Pane(new FeaturePalette(this), "Hills");
+        featurePane.setImagePath(properties.getProperty("path.images")+
                 "/"+map.getImageDir()+"/medium");
 
-        hillPane.setPalette(map.getHillSet().toArray(), false);
-        hillPane.makeFrame();
+        featurePane.setPalette(map.getFeatureSet().toArray(), false);
+        featurePane.makeFrame();
     }
 
     public void

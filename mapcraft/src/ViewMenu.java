@@ -46,14 +46,15 @@ public class ViewMenu extends JMenu implements ActionListener {
         this.application = application;
 
         addItem(Actions.VIEW_SHOWTERRAIN);
+        addItem(Actions.VIEW_SHOWTHINGS);
         addItem(Actions.VIEW_SHOWFEATURES);
-        addItem(Actions.VIEW_SHOWHILLS);
         addItem(Actions.VIEW_SHOWAREAS);
         addSeparator();
         addItem(Actions.VIEW_ZOOMIN);
         addItem(Actions.VIEW_ZOOMOUT);
 
         zoom = new JMenu("Zoom");
+        addItem(zoom, Actions.VIEW_USMALL);
         addItem(zoom, Actions.VIEW_XXSMALL);
         addItem(zoom, Actions.VIEW_XSMALL);
         addItem(zoom, Actions.VIEW_SMALL);
@@ -62,9 +63,9 @@ public class ViewMenu extends JMenu implements ActionListener {
         addItem(zoom, Actions.VIEW_XLARGE);
         addItem(zoom, Actions.VIEW_XXLARGE);
         add(zoom);
-        
+
         addSeparator();
-        
+
         addItem(Actions.VIEW_GRID);
         addItem(Actions.VIEW_LARGEGRID);
     }
@@ -90,20 +91,22 @@ public class ViewMenu extends JMenu implements ActionListener {
 
         System.out.println("VIEWMENU ["+cmd+"]");
 
-        if (cmd.equals(Actions.VIEW_XXSMALL)) {
+        if (cmd.equals(Actions.VIEW_USMALL)) {
             application.getEditor().setView(0);
-        } else if (cmd.equals(Actions.VIEW_XSMALL)) {
+        } else if (cmd.equals(Actions.VIEW_XXSMALL)) {
             application.getEditor().setView(1);
-        } else if (cmd.equals(Actions.VIEW_SMALL)) {
+        } else if (cmd.equals(Actions.VIEW_XSMALL)) {
             application.getEditor().setView(2);
-        } else if (cmd.equals(Actions.VIEW_MEDIUM)) {
+        } else if (cmd.equals(Actions.VIEW_SMALL)) {
             application.getEditor().setView(3);
-        } else if (cmd.equals(Actions.VIEW_LARGE)) {
+        } else if (cmd.equals(Actions.VIEW_MEDIUM)) {
             application.getEditor().setView(4);
-        } else if (cmd.equals(Actions.VIEW_XLARGE)) {
+        } else if (cmd.equals(Actions.VIEW_LARGE)) {
             application.getEditor().setView(5);
-        } else if (cmd.equals(Actions.VIEW_XXLARGE)) {
+        } else if (cmd.equals(Actions.VIEW_XLARGE)) {
             application.getEditor().setView(6);
+        } else if (cmd.equals(Actions.VIEW_XXLARGE)) {
+            application.getEditor().setView(7);
         } else if (cmd.equals(Actions.VIEW_ZOOMIN)) {
             application.getEditor().zoomIn();
         } else if (cmd.equals(Actions.VIEW_ZOOMOUT)) {
@@ -116,10 +119,10 @@ public class ViewMenu extends JMenu implements ActionListener {
             application.getEditor().setShowLargeGrid(!application.getEditor().isShowLargeGrid());
         } else if (cmd.equals(Actions.VIEW_SHOWTERRAIN)) {
             application.getEditor().showTerrainPalette();
+        } else if (cmd.equals(Actions.VIEW_SHOWTHINGS)) {
+            application.getEditor().showThingPalette();
         } else if (cmd.equals(Actions.VIEW_SHOWFEATURES)) {
             application.getEditor().showFeaturePalette();
-        } else if (cmd.equals(Actions.VIEW_SHOWHILLS)) {
-            application.getEditor().showHillPalette();
         } else if (cmd.equals(Actions.VIEW_SHOWAREAS)) {
             application.getEditor().showAreaPalette();
         }

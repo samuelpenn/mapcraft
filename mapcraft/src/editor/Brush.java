@@ -20,31 +20,31 @@ package uk.co.demon.bifrost.rpg.mapcraft.editor;
  * painted.
  */
 public class Brush {
-    public static final int SELECT = 0;
     public static final int TERRAIN = 1;
-    public static final int SITES = 2;
+    public static final int THINGS = 2;
     public static final int RIVERS = 3;
-    public static final int HILLS = 4;
+    public static final int FEATURES = 4;
     public static final int HEIGHT = 5;
-    public static final int FEATURES = 6;
-    public static final int AREAS = 7;
-    
+    public static final int AREAS = 6;
+
     public static final int SMALL = 1;
     public static final int MEDIUM = 2;
     public static final int LARGE = 4;
 
-    public static final int NEW = 1;
-    public static final int MOVE = 2;
+    public static final int SELECT = 1;
+    public static final int NEW = 2;
     public static final int EDIT = 3;
+    public static final int INSERT = 4;
+    public static final int DELETE = 5;
 
     private int brush = TERRAIN;
     private int size = SMALL;
-    private int mode = NEW;
+    private int mode = SELECT;
 
     private short terrain = 1;
     private short river = 0;
-    private short site = 1;
-    private short hill = 0;
+    private short thing = 1;
+    private short feature = 0;
     private short height = 0;
     private short area = 0;
 
@@ -54,6 +54,8 @@ public class Brush {
 
     Brush() {
         brush = TERRAIN;
+        size = SMALL;
+        mode = SELECT;
     }
 
     int
@@ -64,6 +66,11 @@ public class Brush {
     int
     getSize() {
         return size;
+    }
+
+    int
+    getMode() {
+        return mode;
     }
 
     int getX() { return rawX; }
@@ -77,14 +84,12 @@ public class Brush {
     short
     getSelected() {
         switch (brush) {
-        case TERRAIN: return terrain;
-        case SITES:
-        case FEATURES:
-            return site;
-        case RIVERS:  return river;
-        case HILLS:   return hill;
-        case HEIGHT:  return height;
-        case AREAS:   return area;
+        case TERRAIN:   return terrain;
+        case THINGS:    return thing;
+        case FEATURES:  return feature;
+        case RIVERS:    return river;
+        case HEIGHT:    return height;
+        case AREAS:     return area;
         default:
             return 0;
         }
@@ -95,7 +100,7 @@ public class Brush {
         this.brush = type;
         river = 0;
     }
-    
+
     void
     setSize(int size) {
         if (size == SMALL || size == MEDIUM || size == LARGE) {
@@ -109,15 +114,14 @@ public class Brush {
         case TERRAIN:
             terrain = selected;
             break;
-        case FEATURES:
-        case SITES:
-            site = selected;
+        case THINGS:
+            thing = selected;
             break;
         case RIVERS:
             river = selected;
             break;
-        case HILLS:
-            hill = selected;
+        case FEATURES:
+            feature = selected;
             break;
         case HEIGHT:
             height = selected;

@@ -139,7 +139,7 @@ public class MapImage extends MapViewer {
             properties.setProperty("path.images", System.getProperty("user.dir")+"/images");
 
             map = new MapImage(properties, filename);
-            map.setShowSites(false);
+            map.setShowThings(false);
             map.setShowAreas(false);
             map.setShowLargeGrid(false);
             map.saveImage("xplanet.jpg", 0, true);

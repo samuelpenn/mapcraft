@@ -467,16 +467,25 @@ public class MapXML {
         short   hills;
         int     area;
 
-        terrain = (short)fromBase64(data.substring(0, 2));
-        height = (short)fromBase64(data.substring(2, 5));
-        hills = (short)fromBase64(data.substring(5, 6));
-        area = fromBase64(data.substring(7, 8));
+        if (format.startsWith("0.0.")) {
+            // Old 0.0.X format file, 8 chars per blob.
+            terrain = (short)fromBase64(data.substring(0, 2));
+            height = (short)fromBase64(data.substring(2, 5));
+            hills = (short)fromBase64(data.substring(5, 6));
+            area = fromBase64(data.substring(7, 8));
+        } else {
+            // New format, 12 chars per blob.
+            terrain = (short)fromBase64(data.substring(0, 2));
+            height = (short)fromBase64(data.substring(2, 4));
+            hills = (short)fromBase64(data.substring(4, 6));
+            area = fromBase64(data.substring(6, 8));
+        }
 
         height -= 100000; // Baseline
 
         tile = new Tile(terrain, height, (terrain!=0));
-        tile.setHills(hills);
-        tile.setArea(area);
+        tile.setFeature(hills);
+        tile.setArea((short)area);
 
         return tile;
     }
@@ -496,6 +505,12 @@ public class MapXML {
 
         int             scale, width, height;
         String          name = null;
+        int             blobSize = 10;
+
+        if (format.startsWith("0.0.")) {
+            System.out.println("WARNING: Old format file, converting");
+            blobSize = 8;
+        }
 
         name = getTextNode(id, ".");
         scale = getIntNode(node, "dimensions/scale");
@@ -532,8 +547,8 @@ public class MapXML {
                     x = getIntNode(values.getNamedItem("x"));
 
                     String  data = getTextNode(column).replaceAll(" |\n|\t", "");
-                    for (y=0,i=0; i < data.length(); i+=8, y++) {
-                        String  part = data.substring(i, i+8);
+                    for (y=0,i=0; i < data.length(); i+=blobSize, y++) {
+                        String  part = data.substring(i, i+blobSize);
                         //terrain = Short.valueOf(part, 36).shortValue();
 
                         tileSet.setTile(x, y, getTileFromBlob(part));
@@ -620,11 +635,11 @@ public class MapXML {
     }
 
     /**
-     * Return an array of all the sites in the map.
+     * Return an array of all the things in the map.
      */
     public Vector
-    getSites() throws XMLException {
-        Vector          sites = new Vector();
+    getThings() throws XMLException {
+        Vector          things = new Vector();
         String          name, description;
         int             fontSize, importance;
         String          image;
@@ -635,19 +650,19 @@ public class MapXML {
         Node            value;
 
         try {
-            NodeList    list = getNodeList("/map/sites/site");
+            NodeList    list = getNodeList("/map/things/thing");
             if (list == null || list.getLength() == 0) {
-                // No sites found. This is perfectly valid.
-                return sites;
+                // No things found. This is perfectly valid.
+                return things;
             }
-            System.out.println("Found "+list.getLength()+" sites to load");
+            System.out.println("Found "+list.getLength()+" things to load");
 
             for (i=0; i < list.getLength(); i++) {
                 Node        node = list.item(i);
-                Site        site = null;
+                Thing       thing = null;
 
                 if (node != null) {
-                    System.out.println("Loading site "+i);
+                    System.out.println("Loading thing "+i);
 
                     values = node.getAttributes();
                     type = (short)getIntNode(values.getNamedItem("type"));
@@ -656,23 +671,23 @@ public class MapXML {
 
                     name = getTextNode(node, "name");
                     description = getTextNode(node, "description");
-                    System.out.println("Site ["+name+"] ["+description+"]");
-                    fontSize = getIntNode(node, "font", Site.MEDIUM);
-                    importance = getIntNode(node, "importance", Site.NORMAL);
-                    site = new Site(type, name, description, x, y);
-                    site.setFontSize(fontSize);
-                    site.setImportance(importance);
-                    sites.add(site);
+                    System.out.println("Thing ["+name+"] ["+description+"]");
+                    fontSize = getIntNode(node, "font", Thing.MEDIUM);
+                    importance = getIntNode(node, "importance", Thing.NORMAL);
+                    thing = new Thing(type, name, description, x, y);
+                    thing.setFontSize(fontSize);
+                    thing.setImportance(importance);
+                    things.add(thing);
                 }
             }
             list = null;
         } catch (XMLException xe) {
             throw xe;
         } catch (Exception e) {
-            throw new XMLException("Error in getting Sites");
+            throw new XMLException("Error in getting Things");
         }
 
-        return sites;
+        return things;
     }
 
     /**

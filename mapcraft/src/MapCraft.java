@@ -195,9 +195,9 @@ public class MapCraft implements ActionListener {
         toolbar.addSeparator();
 
         toolbar.add(createToolbarButton(Actions.EDIT_TERRAIN));
+        toolbar.add(createToolbarButton(Actions.EDIT_THINGS));
         toolbar.add(createToolbarButton(Actions.EDIT_FEATURES));
         toolbar.add(createToolbarButton(Actions.EDIT_RIVERS));
-        toolbar.add(createToolbarButton(Actions.EDIT_HILLS));
 
         toolbar.addSeparator();
 
