@@ -234,6 +234,7 @@ public class MapImage extends MapViewer {
             map.setShowThings(true);
             map.setShowAreas(true);
             map.setShowLargeGrid(false);
+            map.setShowFeatures(true);
             if (celestia) {
                 map.saveCelestia(outfile, scale, unwrap);
             } else {

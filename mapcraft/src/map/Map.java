@@ -101,7 +101,7 @@ public class Map extends MapBean implements Cloneable {
 
             int     s = (int) Math.round((width/2.0) - (w/2.0));
 
-            System.out.println("["+y+"] angle "+(int)angle+" r "+r+" w "+w+" s "+s);
+            //System.out.println("["+y+"] angle "+(int)angle+" r "+r+" w "+w+" s "+s);
             for (x = 0; x < width; x++) {
                 try {
                     if (x >= s && x <= s+w) {

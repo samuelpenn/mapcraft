@@ -80,6 +80,48 @@ public abstract class WorldGenerator {
     }
     
     /**
+     * Get the left (western) edge of the map at this row.
+     * 
+     * @param y     Row of the map to find the left edge for.
+     * @return      X coordinate of left edge.
+     */
+    protected int
+    getLeft(int y) {
+        int     left = -1;
+        
+        for (int x=0; x < map.getWidth(); x++) {
+            if (isValid(x, y)) {
+                left = x;
+                break;
+            }
+        }
+        
+        return left;
+    }
+    
+    /**
+     * Get the right (eastern) edge of the map for this y.
+     * @param y     Row of the map to find the right edge for.
+     * @return      X coordinate of right edge.
+     */
+    protected int
+    getRight(int y) {
+        int     left = -1, right = -1;
+        
+        for (int x=0; x < map.getWidth(); x++) {
+            if (isValid(x, y) && left == -1) {
+                left = x;
+            }
+            if (left > -1 && !isValid(x, y)) {
+                right = x-1;
+                break;
+            }
+        }
+        
+        return right;
+    }
+    
+    /**
      * Randomise all terrain between the values given. The
      * algorithm used is totally random, so will give a
      * speckled map with no structure.
@@ -144,7 +186,7 @@ public abstract class WorldGenerator {
         
     }
     
-    private boolean
+    protected boolean
     isValid(int x, int y) {
         try {
             if (map.getTerrain(0, x, y) == 0) {
@@ -233,47 +275,27 @@ public abstract class WorldGenerator {
      * is truly without structure, and not realistic.
      */
     protected void
-    randomHeight() {
-        int     height = 1000;
+    randomHeight(int height, int variance) {
         try {
             for (int x=0; x < map.getWidth(); x++) {
                 for (int y=0; y < map.getHeight(); y++) {
                     if (isValid(x, y)) {
                         double h = Math.random() - Math.random();
-                        h *= 100;
+                        h *= variance;
                         map.setHeight(x, y, (short)(height + h));
                     }
                 }
-            }
-            
-            // Random fills impacts.
-            for (int a=0; a < 100; a++) {
-                int     x = (int)(Math.random() * map.getWidth());
-                int     y = (int)(Math.random() * map.getHeight());
-                int     r = (int)(Math.random() * 30) + 15;
-                int     h = (int)(Math.random() * 100) + 50;
-                
-                //fill(x, y, map.getHeight(x, y), 20);
-                System.out.println("Filled "+fill(x, y,
-                                map.getHeight(x, y), 120));
-                unsetMap();
-                //raise(x, y, r+10, h/3);
-                //raise(x, y, r, -h);
-            }
-            // Random asteroid impacts.
-            for (int a=0; a < 100; a++) {
-                int     x = (int)(Math.random() * map.getWidth());
-                int     y = (int)(Math.random() * map.getHeight());
-                int     r = (int)(Math.random() * 30) + 5;
-                int     h = (int)(Math.random() * 30) + 10;
-                
-                crater(x, y, r, h);
             }
         } catch (MapOutOfBoundsException e) {
             e.printStackTrace();
         }
     }
     
+    /**
+     * Must be called after a fill operation. Unsets any
+     * highlight flags on the tiles, these are used to cope
+     * with the recursive nature of the fill algorithm.
+     */
     protected void
     unsetMap() {
         for (int x = 0; x < map.getWidth(); x++) {
@@ -287,6 +309,22 @@ public abstract class WorldGenerator {
         }
     }
     
+    /**
+     * Fill part of the map, setting to a given height. The fill
+     * continues until a height difference greater than threshold
+     * is found. The current height of the tile is averaged with
+     * the specified height. The method is recursive, and the
+     * threshold is reduced on each recursive step.
+     * 
+     * unsetMap() should be called after a call to this method.
+     * 
+     * @param x             X coordinate to start at.
+     * @param y             Y coordinate to start at.
+     * @param height        Height to set to.
+     * @param threshold     Maximum difference in height.
+     * 
+     * @return              Count of number of tiles changed.
+     */
     protected int
     fill(int x, int y, int height, int threshold) {
         int     count = 0;
@@ -308,9 +346,18 @@ public abstract class WorldGenerator {
                 count += fill(x-1, y+a, height, threshold-1);
                 count += fill(x+1, y+a, height, threshold-1);
                 count += 1;
+            } else if (!map.isHighlighted(x, y)) {
+                int     left = getLeft(y);
+                int     right = getRight(y);
+                map.setHighlighted(x, y, true);
+                if (x < left) {
+                    count += fill(right, y, height, threshold);
+                } else if (x > right) {
+                    count += fill(left, y, height, threshold);
+                }
             }
         } catch (MapOutOfBoundsException e) {
-            e.printStackTrace();
+            // Ignore.
         }
         return count;
     }
@@ -384,12 +431,16 @@ public abstract class WorldGenerator {
     
     
     public void
-    crater(int ox, int oy, int r, int depth) {
+    crater(int ox, int oy, int r, int depth) throws MapOutOfBoundsException {
+        int     height =  map.getHeight(ox, oy) - depth;
+        System.out.println("Crater at "+ox+","+oy+" depth "+height);
         for (int y=0; y < map.getHeight(); y++) {
             for (int x=0; x < map.getWidth(); x++) {
                 if (isValid(x, y)) {
                     if (sphericalDistance(ox, oy, x, y) < r) {
+                        //map.setHeight(x, y, (short)height);
                         raise(x, y, -depth);
+                        map.setFeature(x, y, (short)2);
                     }
                 }
             }
@@ -433,7 +484,7 @@ public abstract class WorldGenerator {
     public static void
     main(String[] args) throws Exception {
         WorldGenerator  generator = null;
-        WorldUtils      utils = new WorldUtils(314, 157, 50);
+        WorldUtils      utils = new WorldUtils(314, 157, 75);
   /*      
         System.out.println(utils.declination(50));
         System.out.println(utils.declination(78));
@@ -446,7 +497,9 @@ public abstract class WorldGenerator {
 */        
 
         generator = new TerrestrialWorld("foo", 2500);
-        generator.setWorldType(HERMIAN);
+        //generator.setWorldType(SELENIAN);
+        //generator.setWorldType(HERMIAN);
+        generator.setWorldType(AREAN);
         generator.generate();
         
         //generator.randomHeight();

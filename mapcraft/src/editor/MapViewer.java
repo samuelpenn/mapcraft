@@ -126,7 +126,7 @@ public class MapViewer extends JPanel {
                 dy = (h*2) - y;
             }
 
-            int  a = (int)(SQRTHREE*dx);
+            int  a = (int)(SQRTHREE*dx + 0.5);
             if ((h-dy) > a) {
                 rgb = 0;
             }
