@@ -356,7 +356,7 @@ public class TileSet implements Cloneable {
         double      factor = scale / newScale;
         int         newWidth = (width * scale)/newScale;
         int         newHeight = (height * scale)/newScale;
-        
+
         System.out.println("New width x height = "+newWidth+"x"+newHeight);
 
         Tile[][]    scaled = new Tile[newHeight][newWidth];
@@ -369,7 +369,7 @@ public class TileSet implements Cloneable {
 
             int         top = (int)(0.5 + (0.5 * scale / newScale));
             int         bottom = (int)(0.5 * scale / newScale);
-            
+
             if (xIsEven) {
                 for (int y = newHeight - bottom; y < newHeight; y++) {
                     scaled[y][x] = new Tile(tiles[height-1][ox]);
@@ -392,6 +392,13 @@ public class TileSet implements Cloneable {
         return true;
     }
 
+    /**
+     * Throw an exception if the provided coordinates are outside of the
+     * map boundary.
+     *
+     * @param x    X coordinate of point to check.
+     * @param y    Y coordinate of point to check.
+     */
     private void
     checkBounds(int x, int y) throws MapOutOfBoundsException {
         if (x >= width || x < 0) {
@@ -435,6 +442,24 @@ public class TileSet implements Cloneable {
         }
     }
 
+    /**
+     * Set a given tile according to information in a blob.
+     * Tiles are stored in the XML file as a Base64 encoded blob of data,
+     * 10 characters long (8 characters for older formats). The data is
+     * unencoded, and attributes on the tile are set from this data.
+     * <br/>
+     * A blob consists of the following format: tthhmmaacf
+     * <br/>
+     * tt - Terrain<br/>
+     * hh - Height (not yet supported)<br/>
+     * mm - Mountains/features<br/>
+     * aa - Area<br/>
+     * c  - Coastline flags (not yet supported)<br/>
+     * f  - Misc flags (not yet supported)<br/>
+     *
+     * @param x    X coordinate of tile to set.
+     * @param y    Y coordinate of tile to set.
+     */
     public void
     setTileFromBlob(int x, int y, String blob) throws MapOutOfBoundsException {
         Tile    tile = null;
@@ -450,7 +475,7 @@ public class TileSet implements Cloneable {
             hills = (short)fromBase64(blob.substring(5, 6));
             area = fromBase64(blob.substring(7, 8));
         } else {
-            // New format, 12 chars per blob.
+            // New format, 10 chars per blob.
             terrain = (short)fromBase64(blob.substring(0, 2));
             height = (short)fromBase64(blob.substring(2, 4));
             hills = (short)fromBase64(blob.substring(4, 6));
@@ -502,14 +527,14 @@ public class TileSet implements Cloneable {
     public void
     setTerrain(int x, int y, short t) throws MapOutOfBoundsException {
         checkBounds(x, y);
-        
+
         tiles[y][x].setTerrain(t);
     }
-    
+
     public void
     setHeight(int x, int y, short h) throws MapOutOfBoundsException {
         checkBounds(x, y);
-        
+
         tiles[y][x].setHeight(h);
     }
 
@@ -517,7 +542,7 @@ public class TileSet implements Cloneable {
     public int getHeight() { return height; }
     public int getWidth() { return width; }
     public int getScale() { return scale; }
-    
+
     /**
      * Set the scale for the TileSet. The scale change does
      * not perform any resizing of the TileSet.

@@ -23,6 +23,8 @@ package uk.co.demon.bifrost.rpg.mapcraft.map;
  * Tiles also lack knowledge of what terrain means - again
  * mappings between terrain values and 'real-world' meanings
  * is performed by the Map itself.
+ * <br/>
+ * Terrain and features can be displayed rotated.
  *
  * @see TileSet
  * @see Map
@@ -146,6 +148,10 @@ class Tile implements Cloneable {
         return height;
     }
 
+    /**
+     * Return the id of the feature on this tile, or zero if none.
+     * Information on how the feature is rotated is not returned.
+     */
     short
     getFeature() {
         return (short)(feature%MAXTYPES);
@@ -158,6 +164,10 @@ class Tile implements Cloneable {
         }
     }
 
+    /**
+     * Return the raw feature data for this tile. This includes the
+     * id and also the rotation flag.
+     */
     short
     getFeatureRaw() {
         return feature;

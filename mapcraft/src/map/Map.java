@@ -605,6 +605,9 @@ public class Map extends MapBean implements Cloneable {
      * parent, and must be the same scale. It is assumed that they are both
      * from different regions on the parent map, but that they overlap to
      * some extent. Differences in the supplied map overwrite this map.
+     * The supplied map is always left unchanged.
+     *
+     * @param merge    The map to merge from.
      */
     public boolean
     merge(Map merge) throws MapException {
@@ -616,7 +619,7 @@ public class Map extends MapBean implements Cloneable {
 
         if (!getParent().equals(merge.getParent())) {
             System.out.println("Maps do not have the same parent");
-            return false;
+            throw new MapException("Maps can only be merged if they have the same parent");
         }
 
         // Alpha is our map, Beta is the map that is being merged from.
@@ -625,7 +628,7 @@ public class Map extends MapBean implements Cloneable {
 
         if (alpha.getScale() != beta.getScale()) {
             System.out.println("Maps are not the same scale");
-            return false;
+            throw new MapException("Maps can only be merged if they are the same scale");
         }
 
         // X offset, Y offset, width and height for alpha and beta maps.
