@@ -20,7 +20,7 @@ package uk.co.demon.bifrost.rpg.mapcraft.editor;
  * painted.
  */
 public class Brush {
-    public static final int NULL = 0;
+    public static final int SELECT = 0;
     public static final int TERRAIN = 1;
     public static final int SITES = 2;
     public static final int RIVERS = 3;

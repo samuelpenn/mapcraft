@@ -55,6 +55,7 @@ public class Actions {
     public final static String  VIEW_GRID           = "view.grid";
     public final static String  VIEW_LARGEGRID      = "view.largegrid";
 
+    public final static String  EDIT_SELECT         = "edit.select";
     public final static String  EDIT_TERRAIN        = "edit.terrain";
     public final static String  EDIT_FEATURES       = "edit.features";
     public final static String  EDIT_HILLS          = "edit.hills";
@@ -132,11 +133,12 @@ public class Actions {
             add(VIEW_XXLARGE, "XX-Large");
 
             // Palettes
+            addLocal(EDIT_SELECT, "Select", "select");
             addLocal(EDIT_TERRAIN, "Terrain Brush", "terrain");
             addLocal(EDIT_FEATURES, "Features Brush", "features");
             addLocal(EDIT_RIVERS, "Rivers Brush", "rivers");
             addLocal(EDIT_HILLS, "Hills brush", "hills");
-            
+
             // Brushes
             addLocal(EDIT_SMALL,"Small brush", "small-brush");
             addLocal(EDIT_MEDIUM, "Medium brush", "medium-brush");
@@ -144,7 +146,7 @@ public class Actions {
 
         }
     }
-    
+
     private void
     add(String name, String label) {
         Action      action = new Actor(name, label);
