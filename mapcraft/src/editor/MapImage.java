@@ -80,10 +80,14 @@ public class MapImage extends MapViewer {
 
         setView(scale);
         forceImageLoad();
+        try {
+            Thread.sleep(1000);
+        } catch (Exception ie) {
+        }
 
         try {
             w = map.getWidth() * tileXSize;
-            h = map.getHeight() * tileYSize;
+            h = map.getHeight() * tileYSize + tileYOffset;
 
             if (unwrap) {
                 map.unwrapWorld();

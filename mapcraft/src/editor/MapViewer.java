@@ -749,16 +749,16 @@ public class MapViewer extends JPanel {
 
         switch (view) {
             case 0: // usmall
-                fontScale = 0.2;
-                break;
-            case 1: // xxsmall
-                fontScale = 0.4;
-                break;
-            case 2: // xsmall
                 fontScale = 0.6;
                 break;
+            case 1: // xxsmall
+                fontScale = 0.75;
+                break;
+            case 2: // xsmall
+                fontScale = 0.85;
+                break;
             case 3: // small
-                fontScale = 0.8;
+                fontScale = 1.0;
                 break;
             case 4: // medium
                 fontScale = 1.0;
