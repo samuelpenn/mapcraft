@@ -49,21 +49,67 @@
         <sect1>
             <title>Current Features</title>
             
-            <p>
-                Supports hexagonal and square tiled maps.
-            </p>
+            <sect2>
+                <title>Graphics Support</title>
+
+                <sect3>
+                    <title>Hexagonal and Square maps</title>
+
+                    <p>
+                        Mapcraft uses tiled maps rather than vectors,
+                        mostly for simplicity, but it also avoids the
+                        problem vector maps have that they get
+                        significantly slower the more detailed they
+                        become.
+                    </p>
+
+                    <p>
+                        Maps can be specified to use either square tiles
+                        or hexagons, depending on the style preferred
+                        by the user. Square tiles are better suited to
+                        indoor maps, whilst hexagons tend to be used
+                        for large scale world maps.
+                    </p>
+
+                    <p>
+                        A well designed vector map will generally look
+                        better than a well designed tiled map, but few
+                        maps are well designed, and a small tile size
+                        can alleviate most of the problems.
+                    </p>
+                </sect3>
             
-            <p>
-                Supports vectors for rivers and roads.
-            </p>
+                <sect3>
+                    <title>Vectors for Rivers and Roads</title>
+
+                    <p>
+                        Rivers and roads are represented as vectors on
+                        the map, so they are not constrained to the
+                        tile grid. All paths can have a name associated
+                        with it, and can be given a specified width,
+                        colour and style.
+                    </p>
+                </sect3>
+
+                <sect3>
+                    <title>Town Objects</title>
             
-            <p>
-                Supports free floating objects for towns and cities.
-            </p>
+                    <p>
+                        Sites (called 'things' in Mapcraft) such as
+                        towns, cities, mines etc are shown as free
+                        floating objects which aren't restricted to the
+                        tile grid.
+                    </p>
+                </sect3>
             
-            <p>
-                Xalan plugin for auto generating images from XML.
-            </p>
+                <sect3>
+                    <title>Xalan Plugin</title>
+                    
+                    <p>
+                        Xalan plugin for auto generating images from XML.
+                    </p>
+                </sect3>
+            </sect2>
         </sect1>
         
         <sect1>

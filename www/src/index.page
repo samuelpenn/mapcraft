@@ -41,7 +41,8 @@
         <title>License</title>
 
         <p>
-            The software is released under the GNU Public License.
+            The software is released under the GNU Public License, as is
+            all the documentation on this site.
         </p>
     </sidebar>
     
@@ -103,8 +104,23 @@
                 This is different from the normal aim of just trying to
                 create maps which look pretty. The idea is to have
                 pretty maps as well, though this is secondary. Consistency
-                is held to be more important.
+                and good support for meta data is held to be more important.
             </p>
+
+            <sect2>
+                <title>Supported Platforms</title>
+
+                <p>
+                    Mapcraft is written in Java 1.4, and requires JRE 1.4
+                    in order to run. It has been developed on Linux, but
+                    has also been tested on MS Windows. It should run on
+                    any operating system that supports Java, and which
+                    has a graphical display (due to the way some things
+                    have been implemented, some of the backend functions
+                    also require a graphical environment, though this is
+                    on the list of things to fix).
+                </p>
+            </sect2>
         </sect1>
         
     </body>
