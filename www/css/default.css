@@ -129,7 +129,7 @@ img.inline {
  * Used for documenting XML formats.
  */
 div.xml {
-    color: red;
+    color: black;
     border: 1pt solid black;
     padding: 2mm;
     font-size: small;
@@ -145,13 +145,52 @@ div.xmlindent {
  
 span.node {
     color: darkblue;
+    font-weight: bold;
 }
 
 span.text {
     color: black;
+    font-weight: normal;
 }
 
 span.inline {
     font-size: 80%;
     color: red;
+}
+
+span.attribute {
+    color: blue;
+}
+
+span.attribute-value {
+    color: red;
+}
+
+span.comment {
+    color: green;
+    font-style: italic;
+}
+
+span.fixed {
+    font-family: Courier;
+}
+
+span.menu {
+    border: 1pt solid black;
+    padding-left: 3pt;
+    padding-right: 3pt;
+    background-color: #eeeeee;
+    font-size: small;
+}
+
+div.script {
+    color: black;
+    border: 1pt solid black;
+    padding: 2mm;
+    font-family: Courier;
+    font-size: small;
+}
+
+dt {
+    font-weight: bold;
 }
