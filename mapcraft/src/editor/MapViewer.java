@@ -40,6 +40,8 @@ public class MapViewer extends JPanel {
     protected int         tileXSize = 30;
     protected int         tileYSize = 35;
     protected int         tileYOffset = 20;
+    protected int         iconWidth = 30;
+    protected int         iconHeight = 35;
 
     protected Toolkit     toolkit = null;
     protected Image[]     icons = null;
@@ -71,7 +73,7 @@ public class MapViewer extends JPanel {
     protected void error(String message) { log(1, message); }
     protected void fatal(String message) { log(0, message); }
 
-    
+
     /**
      * Inner class which holds properties of each view on the image.
      * A view is a scaling, so generally a map will have several view
@@ -297,6 +299,8 @@ public class MapViewer extends JPanel {
         tileXSize = views[view].getTileWidth();
         tileYSize = views[view].getTileHeight();
         tileYOffset = views[view].getTileOffset();
+        iconWidth = views[view].getIconWidth();
+        iconHeight = views[view].getIconHeight();
 
         // Now work out how big we want to be. Can assume we'll
         // be placed in a scrollable widget of some sort, so don't
@@ -387,19 +391,20 @@ public class MapViewer extends JPanel {
         showRoads = show;
         paintComponent();
     }
-    
-    
-    
+
+
+
     public void
     drawRivers(Graphics2D g) {
         int     i = 0, e = 0;
-        
+
         info("Drawing all rivers");
 
         for (i=0; i < map.getRivers().size(); i++) {
 
             Path    path = (Path)map.getRivers().elementAt(i);
-            Shape   shape = path.getGraphicsShape(tileXSize, tileYSize, tileYOffset);
+            Shape   shape = path.getGraphicsShape(g, tileXSize, tileYSize, tileYOffset,
+                                                  iconWidth, iconHeight);
 
             info("Drawing shape for river");
             g.draw(shape);
@@ -423,7 +428,7 @@ public class MapViewer extends JPanel {
         super.paintComponent(g);
         int             x=0, y=0;
         int             xp, yp, ypp;
-        
+
         // Boundary rectangle which needs to be drawn.
         int             startX = 0;
         int             startY = 0;
@@ -468,12 +473,6 @@ public class MapViewer extends JPanel {
                     Image icon = iconSet.getIcon(t);
                     g.drawImage(icon, xp, ypp, this);
 
-                    // Now display a river, if one is needed.
-                    if (map.isRiver(x, y)) {
-                        icon = riverSet.getIcon(map.getRiverMask(x, y));
-                        g.drawImage(icon, xp, ypp, this);
-                    }
-                    
                     // Display grid if asked for.
                     if (showGrid) {
                         g.drawImage(outlineIcon, xp, ypp, this);
@@ -487,7 +486,7 @@ public class MapViewer extends JPanel {
                     }
                 }
             }
-            
+
             drawRivers((Graphics2D)g);
 
             // Now draw labels. Need to draw these last so that they don't
