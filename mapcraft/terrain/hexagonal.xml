@@ -12,7 +12,7 @@
         <type>World</type>
         <shape>Hexagonal</shape>
         <imagedir>hexagonal/standard</imagedir>
-        <format>0.1.0</format>
+        <format>0.2.1</format>
     </header>
     
 
@@ -226,11 +226,6 @@
     </terrainset>
 
 
-
-
-
-
-
     <tileset id="root">
         <dimensions>
             <scale>0</scale>
@@ -238,5 +233,6 @@
             <height>0</height>
         </dimensions>
         <tiles/>
+        <things/>
     </tileset>
 </map>

@@ -36,19 +36,10 @@ public class MapTest extends TestCase {
     testCreate() {
         try {
             map = new Map(name, width, height, scale);
+            map.setTileShape(Map.HEXAGONAL);
             map.loadTerrainSet(terrain);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-        Assert.assertTrue(true);
-    }
-
-    public void
-    testSave() {
-        try {
             map.save(filename);
-            map = null;
-        } catch (Exception e)  {
+        } catch (Exception e) {
             fail(e.getMessage());
         }
         Assert.assertTrue(true);
