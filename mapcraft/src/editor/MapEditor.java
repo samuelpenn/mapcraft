@@ -311,8 +311,8 @@ public class MapEditor extends MapViewer
      * Main constructor.
      */
     public
-    MapEditor(String filename) {
-        super(filename);
+    MapEditor(String filename, String imagePath) {
+        super(filename, imagePath);
 
 
         this.setSize(new Dimension(2000, 1200));
@@ -348,10 +348,12 @@ public class MapEditor extends MapViewer
         frame.addKeyListener(new KeyEventHandler());
         
         terrainPane = new Pane(new TerrainPalette(this), "Terrain");
+        terrainPane.setImagePath(imagePath+"/medium");
         terrainPane.setPalette(map.getTerrainSet().toArray(), false);
         terrainPane.makeFrame();
-        
+
         placePane = new Pane(new PlacePalette(this), "Places");
+        placePane.setImagePath(imagePath+"/medium");
         placePane.setPalette(map.getPlaceSet().toArray(), false);
         placePane.makeFrame();
 
@@ -536,7 +538,12 @@ public class MapEditor extends MapViewer
                 map.loadTerrainSet(terrain);
                 map.save(name+".map");
             } else if (options.isOption("-load")) {
-                editor = new MapEditor(options.getString("-load"));
+                String  images = "images";
+                
+                if (options.isOption("-images")) {
+                    images = options.getString("-images");
+                }
+                editor = new MapEditor(options.getString("-load"), images);
             } else if (options.isOption("-rewrite")) {
                 map = new Map(options.getString("-rewrite"));
                 map.save("new.map");

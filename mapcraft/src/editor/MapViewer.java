@@ -43,17 +43,18 @@ public class MapViewer extends JPanel {
     protected Toolkit     toolkit = null;
     protected Image[]     icons = null;
     protected Image       outlineIcon = null;
+    protected String      imagePath = "images";
 
     protected IconSet     iconSet = null;
     protected IconSet     riverSet = null;
     protected IconSet     siteSet = null;
     
-    private boolean     showGrid = true;
-    private boolean     showSites = true;
-    private boolean     showHills = true;
-    private boolean     showCoasts = true;
-    private boolean     showRivers = true;
-    private boolean     showRoads = true;
+    private boolean       showGrid = true;
+    private boolean       showSites = true;
+    private boolean       showHills = true;
+    private boolean       showCoasts = true;
+    private boolean       showRivers = true;
+    private boolean       showRoads = true;
 
     protected void
     log(int level, String message) {
@@ -74,20 +75,6 @@ public class MapViewer extends JPanel {
         super(true);
 
         toolkit = Toolkit.getDefaultToolkit();
-
-        icons = new Image[32];
-        icons[0] = toolkit.getImage("images/"+tileSize+"/black.gif");
-        icons[1] = toolkit.getImage("images/"+tileSize+"/deepsea.gif");
-        icons[2] = toolkit.getImage("images/"+tileSize+"/sea.gif");
-        icons[3] = toolkit.getImage("images/"+tileSize+"/plains.gif");
-        icons[4] = toolkit.getImage("images/"+tileSize+"/woods.gif");
-
-        try {
-            map = new Map("Map", 64, 48, 64);
-            map.setBackground((short)1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
     
     protected IconSet
@@ -106,16 +93,16 @@ public class MapViewer extends JPanel {
             if (t != null) {
                 info("Defining terrain "+t.getName());
                 short   id = t.getId();
-                String  path = t.getImagePath();
-                Image   icon = toolkit.getImage("images/"+tileSize+"/"+path);
+                String  path = imagePath+"/"+tileSize+"/"+t.getImagePath();
+                Image   icon = toolkit.getImage(path);
 
                 debug("Adding icon "+path+" for terrain "+id);
                 iconSet.add(id, icon);
             }
         }
-        
-        outlineIcon = toolkit.getImage("images/"+tileSize+"/outline.png");
-        
+
+        outlineIcon = toolkit.getImage(imagePath+"/"+tileSize+"/outline.png");
+
         return iconSet;
     }
 
@@ -123,27 +110,70 @@ public class MapViewer extends JPanel {
      * Constructor to load a map from a file and display it.
      */
     public
-    MapViewer(String filename) {
+    MapViewer(String filename, String path) {
         super(true);
 
         toolkit = Toolkit.getDefaultToolkit();
+        
+        this.imagePath = path;
 
         try {
             map = new Map(filename);
 
             System.out.println("Setting up terrain icons");
             TerrainSet  set = map.getTerrainSet();
-            
+
 
             iconSet = readIcons("terrain", set);
             siteSet = readIcons("sites", map.getPlaceSet());
 
+            /*
             riverSet = new IconSet("rivers");
             for (short i = 0; i < 64; i++) {
                 String  name = "/rivers/"+((i<10)?"0":"")+i+".gif";
                 Image   icon = toolkit.getImage("images/"+tileSize+"/"+name);
                 riverSet.add(i, icon);
             }
+            */
+
+            map.setCurrentSet("root");
+
+            // Now work out how big we want to be. Can assume we'll
+            // be placed in a scrollable widget of some sort, so don't
+            // worry about screen size or anything like that.
+            int realWidth, realHeight;
+            
+            if (map.getTileShape() == Map.SQUARE) {
+                tileXSize = 40;
+                tileYSize = 40;
+            }
+
+            realWidth = tileXSize * (map.getWidth()+1);
+            realHeight = tileYSize * (map.getHeight()+1);
+
+            setPreferredSize(new Dimension(realWidth, realHeight));
+        } catch (MapException e) {
+            e.printStackTrace();
+        }
+    }
+
+        
+    public void
+    setImagePath(String path) {
+        this.imagePath = path;
+    }
+
+    public void
+    loadMap(String filename) {
+        try {
+            map = new Map(filename);
+
+            System.out.println("Setting up terrain icons");
+            TerrainSet  set = map.getTerrainSet();
+
+
+            iconSet = readIcons("terrain", set);
+            siteSet = readIcons("sites", map.getPlaceSet());
 
 
             map.setCurrentSet("root");
@@ -162,12 +192,13 @@ public class MapViewer extends JPanel {
         }
     }
 
+
     /**
      * Is the map currently displaying the tile grid?
      */
     public boolean
     isShowGrid() { return showGrid; }
-    
+
     /**
      * Set whether the map should show the tile grid.
      * Force a redraw of the map to update the display.
@@ -260,8 +291,13 @@ public class MapViewer extends JPanel {
 
                 for (x = 0; x < map.getWidth(); x++) {
 
-                    xp = x * tileXSize;
-                    ypp = yp + ((x%2 == 0)?0:tileYOffset);
+                    if (map.getTileShape() == Map.SQUARE) {
+                        xp = x * tileXSize;
+                        ypp = yp;
+                    } else {
+                        xp = x * tileXSize;
+                        ypp = yp + ((x%2 == 0)?0:tileYOffset);
+                    }
 
 
                     short t = map.getTerrain(x, y);
@@ -314,8 +350,13 @@ public class MapViewer extends JPanel {
         Graphics    g = this.getGraphics();
         int         xp, yp;
 
-        xp = x * tileXSize;
-        yp = y * tileYSize + ((x%2 == 0)?0:tileYOffset);
+        if (map.getTileShape() == Map.SQUARE) {
+            xp = x * tileXSize;
+            yp = y * tileYSize;
+        } else {
+            xp = x * tileXSize;
+            yp = y * tileYSize + ((x%2 == 0)?0:tileYOffset);
+        }
 
         try {
             short   t = map.getTerrain(x, y);
@@ -346,7 +387,7 @@ public class MapViewer extends JPanel {
     public static void
     main(String args[]) {
         JFrame      frame = new JFrame("Map Viewer");
-        MapViewer   view = new MapViewer("harn.map");
+        MapViewer   view = new MapViewer("maps/harn.map", "images");
 
         frame.getContentPane().add(view);
         frame.setSize(new Dimension(600,700));

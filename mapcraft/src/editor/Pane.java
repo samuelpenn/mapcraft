@@ -34,8 +34,9 @@ public class Pane extends JPanel implements ListSelectionListener {
     private String      title;
     private JList       list;
     private JScrollPane scrollPane;
-    
-    
+    private String      imagePath = "images/medium";
+
+
     /**
      * Class which implements cell rendering for an IconSet.
      * Used in the JList component.
@@ -53,10 +54,11 @@ public class Pane extends JPanel implements ListSelectionListener {
                                     
 
             Terrain t = (Terrain)value;
-            ImageIcon icon = new ImageIcon("images/medium/"+t.getImagePath());
+            System.out.println(imagePath+"/"+t.getImagePath());
+            ImageIcon icon = new ImageIcon(imagePath+"/"+t.getImagePath());
             setIcon(icon);
             setText(t.getDescription());
-            
+
             setEnabled(list.isEnabled());
             setOpaque(true);
             if (isSelected) {
@@ -90,6 +92,11 @@ public class Pane extends JPanel implements ListSelectionListener {
 
         toolkit = Toolkit.getDefaultToolkit();
 
+    }
+    
+    public void
+    setImagePath(String path) {
+        this.imagePath = path;
     }
 
     public boolean
