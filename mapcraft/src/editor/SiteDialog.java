@@ -35,6 +35,14 @@ public class SiteDialog extends JDialog {
         super(frame, "Edit site", true);
         this.site = site;
         
+        if (frame != null) {
+            // This is very crude positioning.
+            // TODO: Centre in parent frame.
+            Point   p = frame.getLocation();
+            p.translate(80, 40);
+            setLocation(p);
+        }
+
         GridBagLayout       gridbag = new GridBagLayout();
         GridBagConstraints  c = new GridBagConstraints();
         JLabel              label = null;
