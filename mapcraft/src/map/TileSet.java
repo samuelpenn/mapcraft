@@ -83,6 +83,28 @@ public class TileSet implements Cloneable {
         return (Object)t;
     }
 
+    /**
+     * Crop this TileSet to the given size. The width and height must both
+     * be positive - if not, a MapOutOfBoundsException is thrown.
+     */
+    void
+    crop(int x, int y, int w, int h) throws MapOutOfBoundsException {
+
+        // Perform sanity checks.
+        checkBounds(x, y);
+        checkBounds(x + w, y + h);
+        if (w < 1 || h < 1) {
+            throw new MapOutOfBoundsException("Crop size must be positive");
+        }
+        Tile[][]    cropped = new Tile[h][w];
+        for (int ix=0; ix < w; ix++) {
+            for (int iy=0; iy < h; iy++) {
+                cropped[iy][ix] = tiles[y+iy][x+ix];
+            }
+        }
+        tiles = cropped;
+    }
+
     private void
     checkBounds(int x, int y) throws MapOutOfBoundsException {
         if (x >= width || x < 0) {

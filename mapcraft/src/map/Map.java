@@ -82,6 +82,12 @@ public class Map implements Cloneable {
     public static final int WORLD = 1;
     public static final int LOCAL = 2;
 
+    /**
+     * Create a new Map object from an old one.
+     */
+    public
+    Map(Map map) {
+    }
 
     /**
      * Create a brand new map, of the given size and scale. Details such
@@ -247,6 +253,14 @@ public class Map implements Cloneable {
         }
     }
 
+    /**
+     * Create a new map object based on the provided one, but cropped to
+     * the given size.
+     */
+    public
+    Map(Map map, int x, int y, int width, int height) {
+    }
+
 
     public Object
     clone() throws CloneNotSupportedException {
@@ -255,6 +269,11 @@ public class Map implements Cloneable {
         try {
             m = new Map(name, width, height, scale);
             m.filename = "/tmp/clone.map";
+            //m.tiles = (TileSet)tiles.clone();
+            m.terrainSet = (TerrainSet)terrainSet.clone();
+            m.thingSet = (TerrainSet)thingSet.clone();
+            m.featureSet = (TerrainSet)featureSet.clone();
+            m.areaSet = (AreaSet)areaSet.clone();
         } catch (MapException e) {
         }
 
@@ -442,21 +461,33 @@ public class Map implements Cloneable {
     }
 
 
+    /**
+     * @deprecated
+     */
     public boolean
     isRiver(int x, int y) throws MapOutOfBoundsException {
         return isRiver(currentSet, x, y);
     }
 
+    /**
+     * @deprecated
+     */
     public boolean
     isRiver(int set, int x, int y) throws MapOutOfBoundsException {
         return tileSets[set].isRiver(x, y);
     }
 
+    /**
+     * @deprecated
+     */
     public short
     getRiverMask(int x, int y) throws MapOutOfBoundsException {
         return getRiverMask(currentSet, x, y);
     }
 
+    /**
+     * @deprecated
+     */
     public short
     getRiverMask(int set, int x, int y) throws MapOutOfBoundsException {
         return tileSets[set].getRiverMask(x, y);
@@ -464,7 +495,7 @@ public class Map implements Cloneable {
 
     public short
     getFeature(int x, int y) throws MapOutOfBoundsException {
-        return tileSets[0].getTile(x, y).getFeature();
+        return tileSets[currentSet].getTile(x, y).getFeature();
     }
 
     public  Vector
@@ -704,8 +735,8 @@ public class Map implements Cloneable {
 
     }
 
-    public Map
-    getAreaMap(short area) {
+    public void
+    cropToArea(short area) {
         Map     map = null;
         int     minX, minY, maxX, maxY;
         int     x, y;
@@ -734,12 +765,6 @@ public class Map implements Cloneable {
                 }
             }
         }
-
-        return getCroppedMap(minX, minY, maxX, maxY);
-    }
-
-    public Map
-    getCroppedMap(int minX, int minY, int maxX, int maxY) {
     }
 
     /**
