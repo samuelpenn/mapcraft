@@ -965,17 +965,14 @@ public class Map implements Cloneable {
      *
      * This does not yet work.
      */
-    public int
+    public static int
     distance(int x0, int y0, int x1, int y1) {
         int         d = 0;
-        int         x = x0 - x1;
-        int         y = y0 - y1;
+        int         x = Math.abs(x0 - x1);
+        int         y = Math.abs(y0 - y1);
 
-        d = Math.abs(x) + Math.abs(x - y)+ Math.abs(y);
-        if ((x0 <= x1) && (y0<=y1)) {
-            d +=-1;
-        }
-        d = d /2;
+        d = x + Math.abs(x - y) + y;
+        d = (d+1) /2;
 
         return d;
     }
@@ -984,7 +981,7 @@ public class Map implements Cloneable {
      * Returns true if the two tiles are either the same or next to each
      * other, false otherwise.
      */
-    public boolean
+    public static boolean
     isNextTo(int x0, int y0, int x1, int y1) {
         if (x0 == x1 && y0 == y1) {
             return true;

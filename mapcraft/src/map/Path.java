@@ -78,9 +78,17 @@ public class Path {
     public void
     add(int x, int y) {
         int         pos = elements.size();
-        Element     end = (Element)elements.elementAt(pos-1);
-        if (end.getType() == END) {
-            end.setType(PATH);
+        Element     end = (Element)elements.lastElement();
+
+        if (isAtEnd(x, y) || elements.size()<2) {
+            if (end.getType() == END) {
+                end.setType(PATH);
+            }
+            add(END, x, y);
+        } else if (isAtStart(x, y)) {
+            Element     start = (Element)elements.elementAt(0);
+            start.setType(PATH);
+            elements.insertElementAt(new Element(START, x, y, 1), 0);
         }
     }
 
@@ -191,6 +199,25 @@ public class Path {
         }
     }
 
+    public boolean
+    isAtEnd(int x, int y) {
+        Element     e = (Element)elements.lastElement();
+        if (Map.isNextTo(x, y, e.getX(), e.getY())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean
+    isAtStart(int x, int y) {
+        Element     e = (Element)elements.elementAt(0);
+        if (Map.isNextTo(x, y, e.getX(), e.getY())) {
+            return true;
+        }
+
+        return false;
+    }
 
 }
 

@@ -251,7 +251,7 @@ public class MapEditor extends MapViewer
                 paintTile(x, y);
                 break;
             case Brush.RIVERS:
-                info("Distance: "+map.distance(2, 2, x, y));
+                info("Distance: "+Map.distance(2, 2, x, y));
                 if (brush.getSelected() == 0) {
                     // Have not yet selected a river.
                     String  name = "River "+(map.getRivers().size()+1);
