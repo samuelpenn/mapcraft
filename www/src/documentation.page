@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<page>
+    <header>
+        <title>Documentation</title>
+
+        <summary>Documentation for Mapcraft</summary>
+
+        <cvsinfo>
+            <version>$Revision$</version>
+            <date>$Date$</date>
+        </cvsinfo>
+        
+        <style>default</style>
+    </header>
+
+    <links>
+        <link uri="index">home</link>
+        <link uri="user">user</link>
+        <link uri="api">api</link>
+        <link uri="junit">junit</link>
+    </links>
+
+    <sidebar>
+        <title>Javadocs</title>
+
+        <p>
+            API documentation is generated using Javadocs. It is
+            automatically generated as part of the nightly build
+            process.
+        </p>
+    </sidebar>
+
+    <sidebar>
+        <title>JUnit</title>
+
+        <p>
+            The JUnit documentation provides the results of unit
+            tests run automatically each night.
+        </p>
+    </sidebar>
+    
+    <body>
+        <sect1>
+            <p>
+                Place holder for documentation.
+            </p>
+        </sect1>
+    </body>
+</page>

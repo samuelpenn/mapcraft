@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<page>
+    <header>
+        <title>Features</title>
+
+        <summary>Features of Mapcraft</summary>
+
+        <cvsinfo>
+            <version>$Revision$</version>
+            <date>$Date$</date>
+        </cvsinfo>
+
+        <style>default</style>
+    </header>
+
+    <links>
+        <link uri="index">home</link>
+    </links>
+
+    <sidebar>
+        <title>Project</title>
+
+        <p>
+            Mapcraft is a Java based tool for creating and managing maps
+            for use in pen and paper roleplaying games. Maps are tile
+            based, and make use of properties and meta data to keep track
+            of objects and manage relationships between different maps.
+        </p>
+    </sidebar>
+
+    <body>
+        <sect1>
+            <p>
+                Placeholder for feature list. Includes wishlist and other
+                things. Something like the KDE status pages. Possibly.
+            </p>
+        </sect1>
+    </body>
+</page>

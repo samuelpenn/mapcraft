@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <page>
     <header>
         <title>Mapcraft</title>
@@ -10,18 +9,17 @@
             <version>$Revision$</version>
             <date>$Date$</date>
         </cvsinfo>
-
+        
         <style>default</style>
     </header>
 
     <links>
         <link href="http://www.bifrost.demon.co.uk/index.html">bifrost</link>
         <link href="http://sourceforge.org/projects/mapcraft">sourceforge</link>
-        <link uri="/comp/index">screenshots</link>
-        <link uri="/links">features</link>
-        <link uri="/documentation">documentation</link>
+        <link uri="screenshots">screenshots</link>
+        <link uri="features">features</link>
+        <link uri="documentation">documentation</link>
         <link href="http://cvs.sourceforge.net/viewcvs.py/mapcraft/">webcvs</link>
-        <link uri="/rss.xml">xml</link>
     </links>
 
     <sidebar>
@@ -87,7 +85,12 @@
             <title>Introduction</title>
             
             <p>
-                Mapcraft stores all its maps as XML files.
+                There are two main interfaces to Mapcraft. The first is a
+                Java Swing based GUI for creating and editing the maps.
+                The second consists of Xerces plugins for XSLT which enable
+                a stylesheet to fetch a map, create a JPEG image of the
+                requested portion, and display it inline within an HTML
+                page.
             </p>
         </sect1>
     </body>
