@@ -1,45 +1,65 @@
 
-<project name="MapCraft" default="all" basedir=".">
+<project name="MapCraft" default="jar" basedir=".">
 
-    <target name="all">
+    <property name="build.dir" value="build"/>
+    <property name="src.dir" value="src"/>
+    <property name="jar.file" value="mapcraft.jar"/>
+    <property name="tests.dir" value="tests"/>
+    <property name="reports.dir" value="tests/reports"/>
+    <property name="docs.dir" value="docs/api"/>
+
+    <target name="clean">
+        <delete dir="${build.dir}" quiet="true"/>
+        <delete dir="${reports.dir}" quiet="true"/>
+        <delete dir="${tests.dir}" quiet="true"/>
+        <delete dir="${docs.dir}" quiet="true"/>
+        <delete file="${jar.file}" quiet="true"/>
+    </target>
+
+    <target name="build">
         <copy todir="build">
             <fileset dir="src"/>
         </copy>
-        <javac srcdir="build" destdir="build" debug="on"/>
-        <jar basedir="build" jarfile="mapcraft.jar"
+        <javac srcdir="${src.dir}" destdir="${build.dir}" debug="on"/>
+    </target>
+
+    <target name="jar" depends="build">
+        <jar basedir="${build.dir}" jarfile="${jar.file}"
              manifest="MANIFEST.MF"
              excludes="**/*.java"
         />
     </target>
 
     <target name="docs">
+        <mkdir dir="${docs.dir}"/>
         <javadoc
             classpath="."
-            sourcepath="src"
+            sourcepath="${src.dir}"
             packagenames="uk.co.demon.bifrost.rpg.mapcraft.*"
-            destdir="docs/api"
+            destdir="${docs.dir}"
             windowtitle="Map Maker API"
         />
     </target>
 
-    <target name="test">
+    <target name="test" depends="clean, jar">
 
-        <mkdir dir="tests/reports"/>
+        <mkdir dir="${tests.dir}"/>
+        <mkdir dir="${reports.dir}"/>
         <junit>
             <formatter type="xml"/>
             <classpath>
-                <pathelement location="build"/>
+                <pathelement location="${build.dir}"/>
                 <pathelement path="${java.class.path}"/>
             </classpath>
             <test name="uk.co.demon.bifrost.rpg.mapcraft.map.MapTest"
-                  todir="tests"/>
+                  todir="${tests.dir}"/>
         </junit>
 
-        <junitreport todir="tests/reports">
-            <fileset dir="tests">
+        <junitreport todir="${reports.dir}">
+            <fileset dir="${tests.dir}">
                 <include name="TEST-*.xml"/>
             </fileset>
-            <report format="frames" todir="tests/reports/html"/>
+            <report format="frames" todir="${reports.dir}/html"/>
         </junitreport>
     </target>
 
