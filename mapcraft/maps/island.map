@@ -500,8 +500,9 @@
     </tileset>
 
     <areas>
-        <area id="1" name="Fooland"/>
+        <area id="1" name="Fooland" parent="2"/>
         <area id="2" name="Elsewhere"/>
         <area id="3" name="Entland"/>
+        <area id="4" name="Bar flats" parent="3"/>
     </areas>
 </map>

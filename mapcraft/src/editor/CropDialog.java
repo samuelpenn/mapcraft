@@ -86,14 +86,15 @@ public class CropDialog extends JDialog implements ItemListener {
         String[]    labels = { HIGHLIGHT, AREA, THING, RIVER, ROAD };
         JComboBox   box = new JComboBox(labels);
         box.setSelectedItem(HIGHLIGHT);
-        box.addItemListener(new ItemListener() {
-                                public void
-                                itemStateChanged(ItemEvent e) {
-                                    if (e.getStateChange() == ItemEvent.SELECTED) {
-                                        selectedType();
-                                    }
-                                }
-                            });
+        box.addItemListener(
+        	new ItemListener() {
+                public void
+                itemStateChanged(ItemEvent e) {
+                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                        selectedType();
+                    }
+                }
+            });
 
         return box;
     }

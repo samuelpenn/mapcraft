@@ -12,9 +12,12 @@
 
 package uk.co.demon.bifrost.rpg.mapcraft.editor;
 
+import uk.co.demon.bifrost.rpg.mapcraft.map.*;
 import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
+import uk.co.demon.bifrost.rpg.mapcraft.utils.MapFileFilter;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -22,6 +25,10 @@ import java.awt.event.*;
  * Implements a GUI dialog for controlling merging of two maps.
  */
 public class MergeDialog extends JDialog  {
+    private JPanel              topPanel;
+    private JPanel              centrePanel;
+    private JPanel              bottomPanel;
+    
     private GridBagLayout       gridbag;
     private GridBagConstraints  c;
 
@@ -35,10 +42,12 @@ public class MergeDialog extends JDialog  {
     private JLabel              width, height;
     private JSpinner            scale;
     private JCheckBox           left, top;
-    private JButton             okay, cancel;
+    private JButton             okay, cancel, load;
+    private JList				ourAreas, otherAreas;
 
 
     private Map                 map;
+    private Map					otherMap;
 
     private boolean             isOkay = false;
 
@@ -54,7 +63,7 @@ public class MergeDialog extends JDialog  {
      */
     public
     MergeDialog(Map map, JFrame frame) {
-        super(frame, "Resize map", true);
+        super(frame, "Merge maps", true);
 
         if (frame != null) {
             // This is very crude positioning.
@@ -63,29 +72,48 @@ public class MergeDialog extends JDialog  {
             p.translate(80, 40);
             setLocation(p);
         }
+        
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add(topPanel = new JPanel(), BorderLayout.NORTH);
+        getContentPane().add(centrePanel = new JPanel(), BorderLayout.CENTER);
+        getContentPane().add(bottomPanel = new JPanel(), BorderLayout.SOUTH);
 
         gridbag = new GridBagLayout();
         c = new GridBagConstraints();
-        getContentPane().setLayout(gridbag);
+        centrePanel.setLayout(gridbag);
+        
+        // First, add the top panel components. These consist of the map
+        // loader buttons and label.
+        topPanel.add(new JLabel("Merge from"));
+        topPanel.add(mergeMap = new JTextField("", 15));
+        topPanel.add(load = new JButton("..."));
+        mergeMap.setEditable(false);
 
+        // Second, add the bottom panel components.
+        bottomPanel.add(okay = new JButton("Merge"));
+        bottomPanel.add(cancel = new JButton("Cancel"), BorderLayout.LINE_END);
+
+        // Lastly, add the main central components. This uses a GridBagLayout.
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 1.0;
         c.weighty = 0.0;
 
         int     y = 0;
-        add(new JLabel("Merge from map"), 0, y, 2, 1);
-        add(mergeMap = new JTextField(""), 2, y, 3, 1);
-        y++;
-
         add(new JCheckBox("Only merge known areas"), 0, y, 3, 1); y++;
         add(new JCheckBox("Merge things"), 0, y, 3, 1); y++;
         add(new JCheckBox("Merge terrain and features"), 0, y, 3, 1); y++;
         add(new JCheckBox("Merge areas"), 0, y, 3, 1); y++;
 
+        if (map != null) {
+            ourAreas = new JList(map.getAreaSet().toNameArray());
+        } else {
+            ourAreas = new JList(new String[] { "Foo", "Bar", "Baz", 
+                                                "Boing", "Ching"});
+        }
+        add(new JScrollPane(ourAreas), 0, y, 2, 4);
 
-        add(okay = new JButton("Rescale"), 2, y, 1, 1);
-        add(cancel = new JButton("Cancel"), 3, y, 1, 1);
 
+        // Set up action listeners for the buttons.
         okay.addActionListener(new ActionListener() {
                                     public void
                                     actionPerformed(ActionEvent e) {
@@ -101,10 +129,52 @@ public class MergeDialog extends JDialog  {
                                     }
                                  });
 
+		load.addActionListener(new ActionListener() {
+									public void
+									actionPerformed(ActionEvent e) {
+										browseForMap();
+									}
+								 });
 
-        setSize(new Dimension(300, 200));
+        setSize(new Dimension(300, 350));
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+    
+    /**
+     * Load the map that is going to be merged from.
+     */
+    private void
+    browseForMap() {
+    	String[]		areas = null;
+		JFileChooser 	chooser = new JFileChooser();
+		chooser.setFileFilter(new MapFileFilter());
+		if (MapFileFilter.getLastLocation() != null) {
+			chooser.setCurrentDirectory(MapFileFilter.getLastLocation());
+		}
+
+		int returnVal = chooser.showOpenDialog(this);
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			String filename = chooser.getSelectedFile().getAbsolutePath();
+
+			System.out.println("Opening file ["+filename+"]");
+			MapFileFilter.setLastLocation(chooser.getSelectedFile());
+			try {
+				otherMap = new Map(filename);
+				mergeMap.setText(filename);
+				
+				areas = otherMap.getAreaSet().toNameArray();
+				otherAreas = new JList(areas);
+				add(new JScrollPane(otherAreas), 3, 5, 2, 4);
+				
+			} catch (MapException e) {
+				JOptionPane.showMessageDialog(null, e.getMessage(),
+						"Error loading map",
+						JOptionPane.ERROR_MESSAGE); 
+				e.printStackTrace();
+			}
+		}
+    	
     }
 
 
@@ -115,7 +185,7 @@ public class MergeDialog extends JDialog  {
         c.gridwidth = w;
         c.gridheight = h;
         gridbag.setConstraints(cmp, c);
-        getContentPane().add(cmp);
+        centrePanel.add(cmp);
     }
 
     public void
@@ -132,5 +202,15 @@ public class MergeDialog extends JDialog  {
         return isOkay;
     }
 
+    public static void
+    main(String[] args) {
+        try {
+            MergeDialog     dialog;
+            
+            dialog = new MergeDialog(null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

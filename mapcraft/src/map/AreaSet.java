@@ -15,47 +15,109 @@ package uk.co.demon.bifrost.rpg.mapcraft.map;
 import java.util.*;
 
 /**
- * A set of areas for a map.
+ * A set of areas for a map. An area is a named region on the map. Each
+ * tile can belong to zero or one regions. Borders between regions are
+ * displayed on the map as red lines.
+ * <br/>
+ * A map will have exactly one AreaSet. All TileSets within a map share
+ * the same AreaSet.
  */
  public class AreaSet implements Cloneable {
 
     protected ArrayList    list;
 
+	/**
+	 * Create a new, empty, AreaSet.
+	 */
     public
     AreaSet() {
         list = new ArrayList();
     }
 
+	/**
+	 * Create a clone of this AreaSet.
+	 */
     public Object
     clone() throws CloneNotSupportedException {
         AreaSet    a = new AreaSet();
+        a.list = (ArrayList)list.clone();
         return (Object)a;
     }
 
+	/**
+	 * The number of defined areas.
+	 * @return	Size of the area set.
+	 */
     public int
     size() {
         return list.size();
     }
 
+	/**
+	 * Obtain an iterator over all the areas in the AreaSet.
+	 * 
+	 * @return	Return an iterator over Area objects.
+	 */
     public Iterator
     iterator() {
         return list.iterator();
     }
+    
+    /**
+     * Get the next unused id for a new area. Start at 1, and search until
+     * an id is found which does not exist.
+     * 
+     * @return  Next available id to be used.
+     */
+    private int
+    getNextId() {
+        int     id = 0;
+        
+        for (id = 1; id < 64; id++) {
+            Area    a = getArea(id);
+            if (a == null) {
+                break;
+            }
+        }
+        
+        return id;
+    }
 
+	/**
+	 * Add a new Area to the AreaSet. The Area will be appended to the end
+	 * of the list. If the id of the new area is zero or less, then a new
+     * (unique) id will be automatically assigned. If the id matches an
+     * existing area, then the old area is replaced with the new one.
+     * 
+	 * @param area		Area to be added.
+	 */
     public void
     add(Area area) {
-        list.add(area);
+        int     id = area.getId();
+        Area    a = getArea(id);
+        
+        if (id < 1) {
+            id = getNextId();
+            area.setId(id);
+            list.add(area);
+        } else if (a != null) {
+            a.setName(area.getName());
+            a.setUri(area.getUri());
+            a.setParent(area.getParent());
+        } else {
+            list.add(area);
+        }
     }
 
     public void
-    add(int id, String name) {
-        Area    a = new Area(id, name);
+    add(int id, String name, String uri) {
+        Area    a = new Area(id, name, uri);
         list.add(a);
     }
 
     public void
-    add(int id, String name, int parent) {
-        Area    a = new Area(id, name, parent);
+    add(int id, String name, String uri, int parent) {
+        Area    a = new Area(id, name, uri, parent);
         list.add(a);
     }
 
@@ -100,7 +162,7 @@ import java.util.*;
 
         return a;
     }
-
+    
     public Area[]
     toArray() {
         Area[]      array = new Area[list.size()];
@@ -143,7 +205,8 @@ import java.util.*;
 
         while (iter.hasNext()) {
             Area    a = (Area)iter.next();
-            array[i++] = new Terrain((short)a.getId(), a.getName(), a.getName(), null);
+            array[i++] = new Terrain((short)a.getId(), a.getName(),
+            						 a.getName(), null);
         }
 
         return array;

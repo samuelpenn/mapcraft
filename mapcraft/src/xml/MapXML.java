@@ -727,7 +727,7 @@ public class MapXML {
      */
     public AreaSet
     getAreas() throws XMLException {
-        String          name, description;
+        String          name, description, uri;
         String          image;
         String          path;
         int             id, x, y, i = 0;
@@ -756,7 +756,12 @@ public class MapXML {
                     } else {
                         parent = 0;
                     }
-                    areas.add(id, name, parent);
+                    if (values.getNamedItem("uri") != null) {
+                        uri = getTextNode(values.getNamedItem("uri"));
+                    } else {
+                        uri = name.toLowerCase().replaceAll(" ", "-");
+                    }
+                    areas.add(id, name, uri, parent);
                 }
             }
             list = null;

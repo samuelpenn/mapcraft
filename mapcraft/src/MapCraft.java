@@ -23,8 +23,17 @@ import java.util.*;
 
 import uk.co.demon.bifrost.rpg.mapcraft.utils.Options;
 
-
+/**
+ * The top level object for the application. This handles command line
+ * arguments when the application is started, opens necessary windows and
+ * loads any requested maps.
+ *   
+ * @author Samuel Penn.
+ */
 public class MapCraft implements ActionListener {
+	// Location of global properties file.
+	private static String	PROPERTY_FILE = ".mapcraftrc";
+	
     private JFrame      window;
     private MapEditor   editor;
     private JScrollPane scrollpane;
@@ -36,6 +45,102 @@ public class MapCraft implements ActionListener {
 
     // Global vars
     private Properties  properties;
+
+	/**
+	 * Get a reference to the file which holds the application properties.
+	 * This is normally in the user's home directory, and stores various
+	 * preferences for the user.
+	 * 
+	 * @return	Reference to the old properties file, or a new empty file
+	 * 			if one didn't exist.
+	 */
+	private static File
+	getPropertyFile() {
+		String 	path = System.getProperty("user.home") + "/"+PROPERTY_FILE;
+		File	file = new File(path);
+		
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+				file = new File(path);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return file;
+	}
+	
+	/**
+	 * Load the application properties file.
+	 * 
+	 * @return	Properties for the application.
+	 */
+	public static Properties
+	loadProperties() {
+		File		file = getPropertyFile();
+		Properties 	properties = new Properties();
+		
+		try {
+			properties.load(new FileInputStream(file));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return properties;
+	}
+
+	/**
+	 * Store the application properties in a file. The application's current
+	 * property settings are saved in a file in the user's home directory.
+	 * 
+	 * @param properties
+	 */
+	public static void
+	storeProperties(Properties properties) {
+		File		file = getPropertyFile();
+		
+		try {
+			properties.store(new FileOutputStream(file), "Mapcraft properties");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Get the named application property. The property is loaded from the
+	 * user's application property file. The file is loaded each time, so
+	 * obtaining such a property is not guaranteed to be efficient.
+	 * 
+	 * @param property		Name of property to fetch.
+	 * @param defaultValue	Default value of property.
+	 * 
+	 * @return				Value of the named property, or the default if
+	 * 						no such property was located.
+	 */
+	public static String
+	getProperty(String property, String defaultValue) {
+		Properties	properties = loadProperties();
+		
+		return properties.getProperty(property, defaultValue);
+	}
+	
+	/**
+	 * Set an application property. The property value will be stored along
+	 * with all the other properties whenever one is set. The properties file
+	 * is first loaded, the property set, then all properties are saved back
+	 * to the file.
+	 * 
+	 * @param property		Name of property to set.
+	 * @param value			The value to set the property to.
+	 */
+	public static void
+	setProperty(String property, String value) {
+		Properties	properties = loadProperties();
+		properties.setProperty(property, value);
+		
+		storeProperties(properties);
+	}
 
 
     protected void

@@ -74,6 +74,7 @@ public class Actions {
     public final static String  TOOL_RESCALE        = "tool.rescale";
     public final static String  TOOL_RESIZE         = "tool.resize";
     public final static String  TOOL_MERGE          = "tool.merge";
+    public final static String  TOOL_EDITAREAS      = "tool.editareas";
 
     public class Actor extends AbstractAction {
         private ActionListener  listener;
@@ -175,6 +176,7 @@ public class Actions {
             addLocal(TOOL_RESCALE, "Rescale...", "rescale");
             addLocal(TOOL_RESIZE, "Resize...", "resize");
             addLocal(TOOL_MERGE, "Merge maps...", "merge");
+            addLocal(TOOL_EDITAREAS, "Edit areas...", "editareas");
 
         }
     }

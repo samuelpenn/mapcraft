@@ -16,55 +16,13 @@ package uk.co.demon.bifrost.rpg.mapcraft;
 import javax.swing.*;
 import java.awt.event.*;
 import java.net.*;
-import java.io.*;
-
-import javax.swing.filechooser.FileFilter;
 
 import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
+import uk.co.demon.bifrost.rpg.mapcraft.utils.MapFileFilter;
 
 public class FileMenu extends JMenu implements ActionListener {
     Actions     actions = new Actions(null);
     MapCraft    application = null;
-
-
-    private class MapFileFilter extends FileFilter {
-        private String MAP_EXTENSION = ".map";
-
-        public
-        MapFileFilter() {
-        }
-
-        public String
-        getDescription() {
-            return "Mapcraft map files";
-        }
-
-        public String
-        getExtension(File f) {
-            if(f != null) {
-                String filename = f.getName();
-                int i = filename.lastIndexOf('.');
-                if(i>0 && i<filename.length()-1) {
-                    return filename.substring(i+1).toLowerCase();
-                };
-            }
-            return null;
-        }
-
-        public boolean
-        accept(File f) {
-            if(f != null) {
-                if(f.isDirectory()) {
-                    return true;
-                }
-                String extension = getExtension(f);
-                if(extension != null && extension.equals("map")) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
 
     public
     FileMenu(MapCraft application) {
@@ -114,12 +72,16 @@ public class FileMenu extends JMenu implements ActionListener {
     open() {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new MapFileFilter());
+        if (MapFileFilter.getLastLocation() != null) {
+	        chooser.setCurrentDirectory(MapFileFilter.getLastLocation());
+        }
 
         int returnVal = chooser.showOpenDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             String filename = chooser.getSelectedFile().getAbsolutePath();
 
             System.out.println("Opening file ["+filename+"]");
+            MapFileFilter.setLastLocation(chooser.getSelectedFile());
             application.load(filename);
         }
     }

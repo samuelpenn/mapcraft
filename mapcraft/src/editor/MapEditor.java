@@ -12,6 +12,7 @@
 
 package uk.co.demon.bifrost.rpg.mapcraft.editor;
 
+import uk.co.demon.bifrost.rpg.mapcraft.editor.dialogs.AreaSetDialog;
 import uk.co.demon.bifrost.rpg.mapcraft.map.*;
 import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
 
@@ -944,6 +945,14 @@ public class MapEditor extends MapViewer
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    
+    public void
+    editAreas() {
+        try {
+            AreaSetDialog   dialog = new AreaSetDialog(map, frame);
+        } catch (Exception e) {
         }
     }
 

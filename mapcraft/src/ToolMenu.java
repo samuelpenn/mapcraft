@@ -42,6 +42,7 @@ public class ToolMenu extends JMenu implements ActionListener {
         addItem(Actions.TOOL_RESIZE);
         addItem(Actions.TOOL_RESCALE);
         addItem(Actions.TOOL_MERGE);
+        addItem(Actions.TOOL_EDITAREAS);
     }
 
 
@@ -73,6 +74,8 @@ public class ToolMenu extends JMenu implements ActionListener {
             application.getEditor().rescale();
         } else if (cmd.equals(Actions.TOOL_MERGE)) {
             application.getEditor().merge();
+        } else if (cmd.equals(Actions.TOOL_EDITAREAS)) {
+            application.getEditor().editAreas();
         }
     }
 
