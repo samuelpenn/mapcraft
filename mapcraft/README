@@ -68,7 +68,12 @@ example maps in the 'maps' directory.
 
 RELEASE HISTORY
 
-Current (0.2.1)
+Current (0.3)
+    Removed dependencies on Xalan. Uses XML classes in Java 1.4.
+    Various other improvements to GUI.
+    Now part of Sourceforge.
+
+Version 0.2.1
     Full world maps, with xplanet output (command line only)
     Towns/cities no longer fixed to a tile.
     Much improved GUI.
