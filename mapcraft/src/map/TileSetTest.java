@@ -11,6 +11,8 @@
  */
 package net.sourceforge.mapcraft.map;
 
+import net.sourceforge.mapcraft.map.elements.Path;
+import net.sourceforge.mapcraft.map.tilesets.TileSet;
 import junit.framework.*;
 
 public class TileSetTest extends TestCase {

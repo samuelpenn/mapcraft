@@ -13,6 +13,11 @@
 package net.sourceforge.mapcraft.xml;
 
 import net.sourceforge.mapcraft.map.*;
+import net.sourceforge.mapcraft.map.elements.Area;
+import net.sourceforge.mapcraft.map.elements.Path;
+import net.sourceforge.mapcraft.map.elements.Thing;
+import net.sourceforge.mapcraft.map.tilesets.TileSet;
+
 import java.io.*;
 import java.util.*;
 import java.net.*;

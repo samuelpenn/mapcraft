@@ -14,6 +14,9 @@ package net.sourceforge.mapcraft.map;
 
 import java.util.*;
 
+import net.sourceforge.mapcraft.map.elements.Area;
+import net.sourceforge.mapcraft.map.elements.Terrain;
+
 /**
  * A set of areas for a map. An area is a named region on the map. Each
  * tile can belong to zero or one regions. Borders between regions are

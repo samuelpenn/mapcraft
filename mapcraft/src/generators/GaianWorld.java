@@ -15,8 +15,8 @@ import java.io.*;
 import java.util.Properties;
 
 import net.sourceforge.mapcraft.map.MapOutOfBoundsException;
-import net.sourceforge.mapcraft.map.Terrain;
 import net.sourceforge.mapcraft.map.TerrainSet;
+import net.sourceforge.mapcraft.map.elements.Terrain;
 
 /**
  * @author Samuel Penn

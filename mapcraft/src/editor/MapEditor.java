@@ -15,6 +15,10 @@ package net.sourceforge.mapcraft.editor;
 import net.sourceforge.mapcraft.editor.dialogs.AreaSetDialog;
 import net.sourceforge.mapcraft.map.*;
 import net.sourceforge.mapcraft.map.Map;
+import net.sourceforge.mapcraft.map.elements.Area;
+import net.sourceforge.mapcraft.map.elements.Path;
+import net.sourceforge.mapcraft.map.elements.Terrain;
+import net.sourceforge.mapcraft.map.elements.Thing;
 
 import javax.swing.*;
 import javax.swing.event.*;

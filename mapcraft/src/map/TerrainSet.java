@@ -13,6 +13,8 @@ package net.sourceforge.mapcraft.map;
 
 import java.util.*;
 
+import net.sourceforge.mapcraft.map.elements.Terrain;
+
 /**
  * Manages all the different types of terrain.
  *

@@ -13,6 +13,8 @@
 package net.sourceforge.mapcraft.editor;
 
 import net.sourceforge.mapcraft.map.*;
+import net.sourceforge.mapcraft.map.elements.Terrain;
+import net.sourceforge.mapcraft.map.elements.Thing;
 
 import javax.swing.*;
 import javax.swing.table.*;

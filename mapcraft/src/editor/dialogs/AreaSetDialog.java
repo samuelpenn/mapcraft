@@ -18,6 +18,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import net.sourceforge.mapcraft.map.*;
+import net.sourceforge.mapcraft.map.elements.Area;
 
 /**
  * Displays a list of all the areas in the map's AreaSet. Allows the user

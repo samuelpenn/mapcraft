@@ -17,6 +17,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 import net.sourceforge.mapcraft.map.*;
+import net.sourceforge.mapcraft.map.elements.Area;
 
 /**
  * Dialog for creating or editing a named area.

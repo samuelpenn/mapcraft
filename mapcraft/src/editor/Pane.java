@@ -13,6 +13,7 @@
 package net.sourceforge.mapcraft.editor;
 
 import net.sourceforge.mapcraft.map.*;
+import net.sourceforge.mapcraft.map.elements.Terrain;
 import net.sourceforge.mapcraft.utils.ImageUtils;
 import net.sourceforge.mapcraft.xml.*;
 
