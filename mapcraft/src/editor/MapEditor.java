@@ -518,16 +518,21 @@ public class MapEditor extends MapViewer
 
         try {
             options = new Options(args);
-            System.out.println("Hello");
+
             if (options.isOption("-create")) {
                 int width = options.getInt("-width");
                 int height = options.getInt("-height");
                 int scale = options.getInt("-scale");
                 String name = options.getString("-create");
                 String terrain = options.getString("-terrain");
+                boolean square = options.isOption("-square");
+
 
                 System.out.println("Creating map "+name+" "+width+"x"+height);
                 map = new Map(name, width, height, scale);
+                if (square) {
+                    map.setTileShape(Map.SQUARE);
+                }
                 map.loadTerrainSet(terrain);
                 map.save(name+".map");
             } else if (options.isOption("-load")) {

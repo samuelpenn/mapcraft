@@ -10,6 +10,7 @@
             <date>$Date$</date>
         </cvs>
         <format>0.0.3</format>
+        <shape>Hexagonal</shape>
     </header>
     <terrainset id="basic" path=".">
         <terrain id="0">

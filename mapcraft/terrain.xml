@@ -11,6 +11,7 @@
             <date>$Date$</date>
         </cvs>
         <format>0.0.2</format>
+        <shape>Hexagonal</shape>
     </header>
 
     <terrainset id="basic" path=".">

@@ -50,9 +50,12 @@ public class MapXML {
     protected String        name, author, id, parent;
     protected String        version, date;
     protected String        format;
+    protected String        tileShape;
     
     public static final String BASE64 = new String("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
 
+    public static final String SQUARE = "Square";
+    public static final String HEXAGONAL = "Hexagonal";
     
     /**
      * Convert an integer into its Base64 representation as a string
@@ -146,6 +149,7 @@ public class MapXML {
             format = getTextNode("/map/header/format");
             id = getTextNode("/map/header/id");
             parent = getTextNode("/map/header/parent");
+            tileShape = getTextNode("/map/header/shape");
 
 
             System.out.println(name+","+id+","+parent+","+author);
@@ -350,6 +354,7 @@ public class MapXML {
     public String getId() { return id; }
     public String getFormat() { return format; }
     public String getParent() { return parent; }
+    public String getTileShape() { return tileShape; }
 
     /**
      * Return all the terrains from the named terrainset in the XML data.
@@ -619,6 +624,14 @@ public class MapXML {
 
         return;
     }
+    
+    /**
+     * Return all the rivers in the map.
+     *
+    public Rivers
+    getRivers() throws XMLException {
+    }
+    */
 
 
     public static void

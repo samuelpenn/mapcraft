@@ -56,7 +56,8 @@ public class Map {
     TerrainSet      terrainSet = null;
     TerrainSet      placeSet = null;
     TileSet         tileSets[] = null;
-    
+    private int     tileShape = 2;
+
     // State fields
     private String  currentSetName = null;
     private int     currentSet = 0;
@@ -66,6 +67,11 @@ public class Map {
     private int     width = 0;
     private int     height = 0;
     private int     scale = 0;
+
+    // Constants
+    public static final int SQUARE = 1;
+    public static final int HEXAGONAL = 2;
+
 
     public
     Map(String name, int width, int height, int scale) throws MapException {
@@ -105,10 +111,12 @@ public class Map {
             this.id = xml.getId();
             this.parent = xml.getParent();
             this.author = xml.getAuthor();
-            
+            setTileShape(xml.getTileShape());
+
             System.out.println("LOADED MAP ["+name+"]");
             System.out.println("Author     "+author);
             System.out.println("Id         "+id+"/"+parent);
+            System.out.println("Shape      "+((tileShape == SQUARE)?"Square":"Hexagonal"));
 
             setCurrentSet("root");
         } catch (MapException mape) {
@@ -135,6 +143,21 @@ public class Map {
     public String getName() { return name; }
     
     public String getFilename() { return filename; }
+    
+    public int getTileShape() { return tileShape; }
+
+    public void setTileShape(int shape) {
+        this.tileShape = shape;
+    }
+    
+    public void
+    setTileShape(String shape) {
+        if (shape.equals(MapXML.SQUARE)) {
+            this.tileShape = SQUARE;
+        } else {
+            this.tileShape = HEXAGONAL;
+        }
+    }
 
     /**
      * Get the width of the current tile set.
@@ -453,6 +476,11 @@ public class Map {
         writer.write("            <version>$Revision$</version>\n");
         writer.write("            <date>$Date$</date>\n");
         writer.write("        </cvs>\n");
+        if (getTileShape() == SQUARE) {
+            writer.write("        <shape>Square</shape>\n");
+        } else {
+            writer.write("        <shape>Hexagonal</shape>\n");
+        }
         writer.write("        <format>0.0.3</format>\n");
         writer.write("    </header>\n");
     }
@@ -535,6 +563,8 @@ public class Map {
         FileWriter      writer = new FileWriter(filename);
         int             x, y;
         int             i;
+        
+        System.out.println("Saving map");
 
         writer.write("<?xml version=\"1.0\"?>\n");
         writer.write("<map>\n");
@@ -664,9 +694,13 @@ public class Map {
                 int scale = options.getInt("-scale");
                 String name = options.getString("-create");
                 String terrain = options.getString("-terrain");
+                boolean square = options.isOption("-square");
 
                 System.out.println("Creating map "+name+" "+width+"x"+height);
                 map = new Map(name, width, height, scale);
+                if (square) {
+                    map.setTileShape(Map.SQUARE);
+                }
                 map.loadTerrainSet(terrain);
                 map.save(name+".map");
             } else if (options.isOption("-load")) {
