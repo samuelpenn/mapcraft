@@ -307,14 +307,12 @@ public class MapViewer extends JPanel {
             path = path + "/"+map.getImageDir();
 
             views = new ViewProperties[7];
-            views[0] = getNewViewProperties(path, "xxsmall");
-            views[1] = getNewViewProperties(path, "xsmall");
-            views[2] = getNewViewProperties(path, "small");
-            views[3] = getNewViewProperties(path, "medium");
-            views[4] = getNewViewProperties(path, "large");
-            views[5] = getNewViewProperties(path, "xlarge");
-            views[6] = getNewViewProperties(path, "xxlarge");
-            setView(3);
+            views[0] = getNewViewProperties(path, "xsmall");
+            views[1] = getNewViewProperties(path, "small");
+            views[2] = getNewViewProperties(path, "medium");
+            views[3] = getNewViewProperties(path, "large");
+            views[4] = getNewViewProperties(path, "xlarge");
+            setView(2);
 
             readAllIcons();
 

@@ -196,16 +196,16 @@ public class ThingDialog extends JDialog implements ItemListener {
                              icon, SwingConstants.LEFT);
 
 
-        add(picture, 0, 0, 1, 1);
-        add(type = createTypeCombo(), 0, 1, 1, 1);
-        add(new JLabel("Name"), 1, 0, 1, 1);
-        add(name, 1, 1, 1, 1);
+        add(picture, 0, 0, 1, 2);
+        add(type = createTypeCombo(), 0, 2, 1, 1);
+        add(new JLabel("Name"), 1, 1, 1, 1);
+        add(name, 1, 2, 1, 1);
 
-        add(new JLabel("Description"), 0, 2, 1, 1);
-        add(description, 0, 3, 2, 3);
+        add(new JLabel("Description"), 0, 3, 1, 1);
+        add(description, 0, 4, 2, 3);
 
-        add(fontSize = createFontCombo(), 0, 6, 1, 1);
-        add(importance = createImportanceCombo(), 1, 6, 1, 1);
+        add(fontSize = createFontCombo(), 0, 7, 1, 1);
+        add(importance = createImportanceCombo(), 1, 7, 1, 1);
         /*
         c.gridy = 2;
         c.gridx = 1;
@@ -214,7 +214,7 @@ public class ThingDialog extends JDialog implements ItemListener {
         gridbag.setConstraints(okay, c);
         getContentPane().add(okay);
         */
-        setSize(new Dimension(300,150));
+        setSize(new Dimension(300,200));
         setVisible(true);
     }
 

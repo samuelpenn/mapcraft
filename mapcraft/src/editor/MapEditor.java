@@ -226,7 +226,7 @@ public class MapEditor extends MapViewer
                                                 brush.getX(), brush.getY());
                         map.addThing(thing);
                         ThingDialog dialog = new ThingDialog(thing, frame,
-                                        map.getThingSet(), views[5].getPath());
+                                        map.getThingSet(), views[4].getPath());
                         dialog.getThing();
                     }
                     break;
@@ -566,7 +566,7 @@ public class MapEditor extends MapViewer
     showTerrainPalette() {
         terrainPane = new Pane(new TerrainPalette(this), "Terrain");
         terrainPane.setImagePath(properties.getProperty("path.images")+
-                "/"+map.getImageDir()+"/medium");
+                "/"+map.getImageDir()+"/96x96");
         terrainPane.setPalette(map.getTerrainSet().toArray(), false);
         terrainPane.makeFrame();
     }
@@ -575,7 +575,7 @@ public class MapEditor extends MapViewer
     showThingPalette() {
         thingPane = new Pane(new ThingPalette(this), "Things");
         thingPane.setImagePath(properties.getProperty("path.images")+
-                "/"+map.getImageDir()+"/medium");
+                "/"+map.getImageDir()+"/96x96");
         thingPane.setPalette(map.getThingSet().toArray(), false);
         thingPane.makeFrame();
     }
@@ -584,7 +584,7 @@ public class MapEditor extends MapViewer
     showFeaturePalette() {
         featurePane = new Pane(new FeaturePalette(this), "Hills");
         featurePane.setImagePath(properties.getProperty("path.images")+
-                "/"+map.getImageDir()+"/medium");
+                "/"+map.getImageDir()+"/96x96");
 
         featurePane.setPalette(map.getFeatureSet().toArray(), false);
         featurePane.makeFrame();
