@@ -28,6 +28,10 @@ public abstract class AbstractTileSet implements ITileSet {
     protected String      mapName = null;
     
     protected ITiles      tiles = null;
+    
+    protected TerrainSet  terrainSet = null;
+    protected TerrainSet  featureSet = null;
+    protected AreaSet     areaSet = null;
 
     /**
      * The Parent class keeps track of the parent of this tileSet. If this
@@ -241,31 +245,18 @@ public abstract class AbstractTileSet implements ITileSet {
     }
 
     
-
-    protected void
-    cropAllThings(int x, int y) {
-        return;
-    }
-    
-    protected void
-    cropAllPaths(int x, int y) {
-        return;
-    }
-    
-    
-    
     /**
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#crop(int, int, int, int)
+     * Crop the Tiles of this map to fit into the new set of Tiles which is
+     * passed in. Only tiles are cropped, not things and paths.
      */
     protected void 
-    crop(ITiles cropped, int x, int y, int width, int height)
+    cropTiles(ITiles cropped, int x, int y, int width, int height)
             throws MapOutOfBoundsException {
 
         // X-coordinate must be even. This is because of the strange
         // effect of stuttered hexagonal tiles.
         if (x%2 != 0) {
-            x-=1;
-            width+=1;
+            throw new MapOutOfBoundsException("Left hand edge must be even");
         }
 
         int     oldScale = mapScale;
@@ -285,64 +276,61 @@ public abstract class AbstractTileSet implements ITileSet {
                 cropped.copyFrom(tiles, x+ix, y+iy, ix, iy);
             }
         }
-        tiles = cropped;
         mapWidth = width;
         mapHeight = height;
-
-        cropAllThings(x, y);
-        cropAllPaths(x, y);
-    }
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#rescale(int)
-     */
-    public void rescale(int newScale) throws IllegalArgumentException {
-        // TODO Auto-generated method stub
-
     }
 
 
 
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#cropToArea(short, int)
+    /**
+     * Find all occurrences of a given area on a map, and change them to be
+     * the new area. Often used when an area is deleted, and it is to be set
+     * to the parent area (or zero, if it has no parent).
+     * 
+     * @param oldArea       Area to be found and changed.
+     * @param newArea       Area to set to, or zero to delete.
      */
-    public void cropToArea(short area, int margin)
-            throws MapOutOfBoundsException {
-        // TODO Auto-generated method stub
-
+    public int
+    changeArea(Area oldArea, Area newArea) {
+        int     count = 0;
+        
+        System.out.println("changeArea: "+oldArea+" -> "+newArea);
+        if (oldArea == null) {
+            // Do nothing.
+            return 0;
+        }
+        for (int x=0; x < mapWidth; x++) {
+            for (int y=0; y < mapHeight; y++) {
+                try {
+                    if (getArea(x, y).equals(oldArea)) {
+                        setArea(x, y, newArea);
+                        count++;
+                    }
+                } catch (MapOutOfBoundsException e) {
+                }
+            }
+        }
+        
+        return count;
     }
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#cropToHighlighted()
-     */
-    public void cropToHighlighted() throws MapOutOfBoundsException {
-        // TODO Auto-generated method stub
-
+    
+    public void setCollections(TerrainSet terrain, TerrainSet features,
+                               AreaSet areas) {
+        this.terrainSet = terrain;
+        this.featureSet = features;
+        this.areaSet = areas;
     }
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#cropToThing(java.lang.String, short)
-     */
-    public void cropToThing(String name, short radius) throws MapException {
-        // TODO Auto-generated method stub
-
+    
+    public TerrainSet getTerrainSet() {
+        return terrainSet;
     }
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#cropToPath(java.lang.String, short)
-     */
-    public void cropToPath(String name, short margin) throws MapException {
-        // TODO Auto-generated method stub
-
+    
+    public TerrainSet getFeatureSet() {
+        return featureSet;
     }
-
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#changeArea(net.sourceforge.mapcraft.map.elements.Area, net.sourceforge.mapcraft.map.elements.Area)
-     */
-    public int changeArea(Area oldArea, Area newArea) {
-        // TODO Auto-generated method stub
-        return 0;
+    
+    public AreaSet getAreaSet() {
+        return areaSet;
     }
 
 }
