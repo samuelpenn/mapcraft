@@ -161,9 +161,15 @@ public class MapViewer extends JPanel {
                 iconHeight = (int)Integer.parseInt((String)properties.get("icon.height"));
                 iconWidth = (int)Integer.parseInt((String)properties.get("icon.width"));
 
-                tileHeight = (int)(Math.sqrt(3.0)/2.0 * iconWidth);
-                tileWidth = (int)(iconWidth * 3.0/4.0);
-                tileOffset = (int)(tileHeight/2.0);
+                if (viewShape.equals("Hexagonal")) {
+                    tileHeight = (int)(Math.sqrt(3.0)/2.0 * iconWidth);
+                    tileWidth = (int)(iconWidth * 3.0/4.0);
+                    tileOffset = (int)(tileHeight/2.0);
+                } else {
+                    tileHeight = iconHeight;
+                    tileWidth = iconWidth;
+                    tileOffset = 0;
+                }
 
                 System.out.println("ViewProperties["+baseFile+"] "+iconWidth+"x"+iconHeight+
                                    " "+tileWidth+"x"+tileHeight+", +"+tileOffset);
@@ -191,6 +197,16 @@ public class MapViewer extends JPanel {
          * The shape used by the icons, either 'Square' or 'Hexagonal'.
          */
         public String getShape() { return viewShape; }
+
+        public boolean
+        isHexagonal() {
+            return viewShape.equals("Hexagonal");
+        }
+
+        public boolean
+        isSquare() {
+            return viewShape.equals("Square");
+        }
 
         /**
          * The actual physical height of each icon, in pixels.
@@ -261,8 +277,12 @@ public class MapViewer extends JPanel {
                                                       views[view].getIconHeight(),
                                                       Image.SCALE_SMOOTH);
 
-                icon = createImage(new FilteredImageSource(scaled.getSource(), filter));
-                iconSet.add(id, icon);
+                if (views[view].isHexagonal()) {
+                    icon = createImage(new FilteredImageSource(scaled.getSource(), filter));
+                    iconSet.add(id, icon);
+                } else {
+                    iconSet.add(id, scaled);
+                }
             }
         }
 
