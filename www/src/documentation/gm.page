@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<page>
+    <header>
+        <title>GM Notes</title>
+
+        <summary>Notes for use by GMs using Mapcraft</summary>
+
+        <cvsinfo>
+            <version>$Revision$</version>
+            <date>$Date$</date>
+        </cvsinfo>
+        
+        <style>default</style>
+        <footer href="../footer.inc"/>
+    </header>
+
+    <links>
+        <link uri="index">home</link>
+        <link uri="../documentation">documentation</link>
+        <link uri="user">user</link>
+    </links>
+
+    <sidebar>
+        <title>Javadocs</title>
+
+        <p>
+            API documentation is generated using Javadocs. It is
+            automatically generated as part of the build process.
+        </p>
+        
+        <p>
+            <link href="documentation/api/index.html"
+                  name="Javadoc API documentation"/>
+        </p>
+    </sidebar>
+    
+    <body>
+        <sect1>
+            <p>
+                Documentation is split into three sections -
+                user documentation, API documentation
+                and GM notes.
+            </p>
+        </sect1>
+        
+        <sect1>
+            <title>Terrain sets</title>
+            
+            <p>
+                Indoor, outdoor, hex, square.
+            </p>
+        </sect1>
+    </body>
+</page>

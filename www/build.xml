@@ -90,5 +90,23 @@
              <fileset dir="html"/>
         </ftp>
     </target>
+    
+    <target name="javadocs">
+        <delete dir="tmp/uk" quiet="true"/>
+        
+        <mkdir dir="${target.dir}/documentation/api"/>
+        <mkdir dir="tmp/uk/co/demon/bifrost/rpg/mapcraft"/>
+        <copy todir="tmp/uk/co/demon/bifrost/rpg/mapcraft">
+            <fileset dir="../mapcraft/src"/>
+        </copy>
+        <javadoc classpath="../mapcraft/build"
+                 sourcepath="tmp"
+                 packagenames="*"
+                 destdir="${target.dir}/documentation/api"
+                 windowtitle="Mapcraft sources"
+        />
+        
+        <delete dir="tmp/uk" quiet="true"/>
+    </target>
 
 </project>

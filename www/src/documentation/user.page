@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<page>
+    <header>
+        <title>User Documentation</title>
+
+        <summary>User documentation for Mapcraft</summary>
+
+        <cvsinfo>
+            <version>$Revision$</version>
+            <date>$Date$</date>
+        </cvsinfo>
+        
+        <style>default</style>
+        <footer href="../footer.inc"/>
+    </header>
+
+    <links>
+        <link uri="index">home</link>
+        <link uri="documentation/user">user</link>
+        <link uri="documentation/gm">gm</link>
+    </links>
+
+    <sidebar>
+        <title>Javadocs</title>
+
+        <p>
+            API documentation is generated using Javadocs. It is
+            automatically generated as part of the build process.
+        </p>
+        
+        <p>
+            <link href="documentation/api/index.html"
+                  name="Javadoc API documentation"/>
+        </p>
+    </sidebar>
+    
+    <body>
+        <sect1>
+            <p>
+                This documentation is for users.
+            </p>
+        </sect1>
+        
+        <sect1>
+            <title>Introduction</title>
+            
+            <sect2>
+                <title>Parents, siblings and children</title>
+                
+                <p>
+                    The relationship between maps is best described with
+                    an example. Imagine a map of a continent, defined to
+                    have a scale of 1 tile = 25km. At some point later,
+                    it becomes desirable to detail one region of the map
+                    at a higher resolution, maybe 1 tile = 5km.
+                </p>
+                
+                <p>
+                    When this is done, the region is selected and cropped
+                    (maybe a 30x30 tile part of the original map). After
+                    cropping, the new map is rescaled to the higher
+                    resolution, giving a 150x150 tile map, with each tile
+                    representing 5km.
+                </p>
+                
+                <p>
+                    The original map is the parent, the new map the child.
+                    The child map keeps a record of their parent, and also
+                    the location in the parent from which they were cut.
+                </p>
+                
+                <p>
+                    If a third map is generated from the parent, then
+                    both children are siblings of each other, and may
+                    overlap. Facilities exist to <em>merge</em> siblings
+                    so that overlapping areas are forced to be identical.
+                    Changes to the children can also be ported back into
+                    the parent (though at the lower resolution).
+                </p>
+                
+                <p>
+                    The hierarchy of maps becomes important when such
+                    merging is done, but it is all kept track of
+                    transparently by the application.
+                </p>
+            </sect2>
+            
+            <sect2>
+                <title>Terminology</title>
+
+                <termlist>
+                    <item term="Template">
+                        A template holds descriptions of tiles and objects
+                        for use in a map. Each template has associated
+                        images to go with it, and defines whether the map
+                        has hexagonal or square tiles.
+                    </item>
+                    
+                    <item term="Terrain">
+                        Terrain is the lowest level layer drawn on the map.
+                        It is what people walk on, rather than bump into. In
+                        world maps it describes the general vegetation and
+                        climate.
+                    </item>
+                    
+                    <item term="Features">
+                        Features modify the terrain, or sit upon it. Hills
+                        and mountains are features in world maps. Walls and
+                        doors are features in local maps. Features are
+                        always drawn ontop of a terrain tile, and each tile
+                        has at most a single feature.
+                    </item>
+                    
+                    <item term="Things">
+                        Things are free floating objects which are not based
+                        on the tile grid. Multiple things can sit on the
+                        same tile, or across two or more tiles. Things can
+                        be of any shape or size. On world maps, things
+                        represent towns and cities. On local maps, they may
+                        be tables, beds or chests.
+                    </item>
+                    
+                    <item term="Path">
+                        A path is a free floating line on the map. Like
+                        things, they are not restricted to tiles. They
+                        generally represent roads or rivers.
+                    </item>
+                </termlist>
+            </sect2>
+        </sect1>
+    </body>
+</page>

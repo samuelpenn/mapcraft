@@ -16,9 +16,8 @@
 
     <links>
         <link uri="index">home</link>
-        <link uri="user">user</link>
-        <link uri="api">api</link>
-        <link uri="junit">junit</link>
+        <link uri="documentation/user">user</link>
+        <link uri="documentation/gm">gm</link>
     </links>
 
     <sidebar>
@@ -26,8 +25,12 @@
 
         <p>
             API documentation is generated using Javadocs. It is
-            automatically generated as part of the nightly build
-            process.
+            automatically generated as part of the build process.
+        </p>
+        
+        <p>
+            <link href="documentation/api/index.html"
+                  name="Javadoc API documentation"/>
         </p>
     </sidebar>
 
@@ -43,8 +46,39 @@
     <body>
         <sect1>
             <p>
-                Place holder for documentation.
+                Documentation is split into three sections -
+                user documentation, API documentation
+                and GM notes.
             </p>
+            
+            <sect2>
+                <title>User Documentation</title>
+                
+                <p>
+                    User documentation describes how to use the software,
+                    giving details of the GUI interface. It is best to
+                    read this first.
+                </p>
+            </sect2>
+            
+            <sect2>
+                <title>API Documentation</title>
+                
+                <p>
+                    Currently, this just consists of JavaDocs. They are
+                    incomplete and variable in their usefulness.
+                </p>
+            </sect2>
+            
+            <sect2>
+                <title>GM Notes</title>
+                
+                <p>
+                    This provides background on the ideas behind map
+                    generation, including discussion of the various
+                    terrain types and how best to use them.
+                </p>
+            </sect2>
         </sect1>
     </body>
 </page>
