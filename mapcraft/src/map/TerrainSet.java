@@ -35,11 +35,30 @@ public class TerrainSet {
         return null;
     }
     
+    public Terrain[]
+    toArray() {
+        Terrain[]   array = new Terrain[terrainList.size()];
+        Iterator    it = iterator();
+        int i = 0;
+
+        while (it.hasNext()) {
+            Terrain t = (Terrain) it.next();
+            array[i++] = t;
+        }
+
+        return array;
+    }
+
     public Iterator
     iterator() {
         System.out.println("Getting TerrainSet iterator for "+
                 terrainList.size()+" items");
         return terrainList.iterator();
+    }
+
+    public int
+    size() {
+        return terrainList.size();
     }
 
     /**

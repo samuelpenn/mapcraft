@@ -2,6 +2,7 @@
 package uk.co.demon.bifrost.rpg.xmlmap;
 
 import javax.swing.*;
+import javax.swing.event.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.awt.image.*;
@@ -12,12 +13,46 @@ import java.util.*;
 import uk.co.demon.bifrost.utils.Options;
 
 
-public class MapEditor extends MapViewer implements ActionListener {
+public class MapEditor extends MapViewer
+                       implements ActionListener {
+
     private JFrame      frame;
     private JMenuBar    menuBar;
 
     private short       terrainSelected = 3;
-    
+
+    private Pane        terrainPane = null;
+    private Pane        riverPane = null;
+
+    public class
+    TerrainPalette implements ListSelectionListener {
+        private MapEditor editor;
+
+        public
+        TerrainPalette(MapEditor editor) {
+            this.editor = editor;
+        }
+
+        public void
+        valueChanged(ListSelectionEvent e) {
+            int first, last, index;
+
+            // We get a result for both the item which was
+            // selected, and the one unselected, so we need
+            // to figure out which is which.
+            index = first = e.getFirstIndex();
+            last = e.getLastIndex();
+            if (terrainPane.isSelected(last)) {
+                index = last;
+            }
+
+            System.out.println("TerrainPalette: "+index);
+            Terrain ta[] = map.getTerrainSet().toArray();
+            terrainSelected = ta[index].getId();
+            System.out.println("Terrain selected: "+terrainSelected);
+        }
+    }
+
     private void
     log(int level, String message) {
         System.out.println(message);
@@ -175,6 +210,10 @@ public class MapEditor extends MapViewer implements ActionListener {
         frame.setSize(new Dimension(1200, 900));
 
         frame.addKeyListener(new KeyEventHandler());
+        
+        terrainPane = new Pane(new TerrainPalette(this), "Terrain");
+        terrainPane.setPalette(map.getTerrainSet().toArray(), false);
+        terrainPane.makeFrame();
 
     }
 
