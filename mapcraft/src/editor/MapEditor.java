@@ -900,6 +900,22 @@ public class MapEditor extends MapViewer
         }
     }
 
+    /**
+     * Resize the map, changing its width and height. The scale of the map
+     * is preserved, and blank rows and columns are inserted at the edges
+     * of the map. No other changes are performed.
+     */
+    public void
+    resize() {
+        try {
+            ResizeDialog    dialog = new ResizeDialog(map.getWidth(),
+                                                      map.getHeight(), frame);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void
     main(String args[]) {
         Options options = new Options(args);
