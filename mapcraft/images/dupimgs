@@ -1,7 +1,7 @@
 #!/bin/sh
 
-cd xlarge
-for dir in xxsmall xsmall small medium large xxlarge
+cd $1/medium
+for dir in xxsmall xsmall small large xlarge xxlarge
 do
 	h=`grep icon.height ../$dir/icons.properties | awk '{print $2; }'`
 	w=`grep icon.width ../$dir/icons.properties | awk '{print $2; }'`

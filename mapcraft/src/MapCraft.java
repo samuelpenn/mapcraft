@@ -208,6 +208,39 @@ public class MapCraft implements ActionListener {
             properties.setProperty("path.run", System.getProperty("user.dir"));
             properties.setProperty("path.images", System.getProperty("user.dir")+"/images");
         }
+        
+        if (options.isOption("-create")) {
+            String      name = options.getString("-create");
+            int         width = options.getInt("-width");
+            int         height = options.getInt("-height");
+            int         scale = options.getInt("-scale");
+            String      terrain = options.getString("-terrain");
+            String      imagedir = options.getString("-images");
+            boolean     square = options.isOption("-square");
+            boolean     local = options.isOption("-local");
+
+            try {
+                Map newmap = new Map(name, width, height, scale);
+
+                if (square) {
+                    newmap.setTileShape(Map.SQUARE);
+                }
+                if (local) {
+                    newmap.setType(Map.LOCAL);
+                }
+                if (imagedir != null) {
+                    newmap.setImageDir(imagedir);
+                } else {
+                    newmap.setImageDir(".");
+                }
+                newmap.loadTerrainSet(terrain);
+                newmap.save(name+".map");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.exit(0);
+        }
+
 
         
         if (options.isOption("-load")) {

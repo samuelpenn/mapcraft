@@ -154,6 +154,11 @@ public class Map {
     
     public String getImageDir() { return imagedir; }
     
+    public void
+    setImageDir(String imagedir) {
+        this.imagedir = imagedir;
+    }
+    
     /**
      * Get the shape of the tiles - either SQUARE or HEXAGONAL.
      */
@@ -584,7 +589,7 @@ public class Map {
         } else {
             writer.write("        <shape>Hexagonal</shape>\n");
         }
-        writer.write("        <imagedir>"+imagedir+"</imagedir>");
+        writer.write("        <imagedir>"+imagedir+"</imagedir>\n");
         writer.write("        <format>0.0.4</format>\n");
         writer.write("    </header>\n");
     }
