@@ -101,7 +101,7 @@ public class MapCraft implements ActionListener {
         window.setJMenuBar(menubar);
         window.setVisible(true);
     }
-    
+
     public MapEditor
     getEditor() {
         return editor;
@@ -156,6 +156,11 @@ public class MapCraft implements ActionListener {
         } catch (IOException ioe) {
             new JOptionPane("Cannot save file", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public MapCraft
+    crop(int x, int y, int w, int h) {
+        return this;
     }
 
     private JButton
@@ -225,7 +230,7 @@ public class MapCraft implements ActionListener {
             properties.setProperty("path.run", System.getProperty("user.dir"));
             properties.setProperty("path.images", System.getProperty("user.dir")+"/images");
         }
-        
+
         if (options.isOption("-create")) {
             String      name = options.getString("-create");
             int         width = options.getInt("-width");
@@ -267,11 +272,26 @@ public class MapCraft implements ActionListener {
         if (options.isOption("-imagedir")) {
             properties.setProperty("path.images", options.getString("-imagedir"));
         }
-        
+
+        boolean     crop = false;
+        int         x=0, y=0, w=0, h=0;
+        if (options.isOption("-crop")) {
+            x = options.getInt("-x");
+            y = options.getInt("-y");
+            w = options.getInt("-w");
+            h = options.getInt("-h");
+
+            crop = true;
+        }
+
         if (mapfile == null) {
             map = new MapCraft(properties);
         } else {
             map = new MapCraft(properties, mapfile);
+            if (crop) {
+                MapCraft     newMap = map.crop(x, y, w, h);
+                newMap.save("cropped.map");
+            }
         }
 
 

@@ -19,7 +19,7 @@ import java.util.*;
  * @author  Samuel Penn (sam@bifrost.demon.co.uk)
  * @version $Revision$
  */
-public class TerrainSet {
+public class TerrainSet implements Cloneable {
     protected ArrayList     terrainList;
     protected String        id;
     protected String        path;
@@ -105,5 +105,20 @@ public class TerrainSet {
         }
     }
 
+    /**
+     * Perform a deep copy of this object.
+     */
+    public Object
+    clone() throws CloneNotSupportedException {
+        TerrainSet      ts = new TerrainSet(id, path);
+        int             i = 0;
+
+        for (i=0; i < terrainList.size(); i++) {
+            Terrain     t = (Terrain)terrainList.get(i);
+            ts.add((Terrain)t.clone());
+        }
+
+        return (Object)ts;
+    }
 
 }

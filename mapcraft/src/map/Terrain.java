@@ -17,7 +17,7 @@ package uk.co.demon.bifrost.rpg.mapcraft.map;
  * @author  Samuel Penn (sam@bifrost.demon.co.uk)
  * @version $Revision$
  */
-public class Terrain {
+public class Terrain implements Cloneable {
     private short   id;
     private String  name;
     private String  description;
@@ -35,4 +35,17 @@ public class Terrain {
     public String getName() { return name; }
     public String getDescription() { return description; }
     public String getImagePath() { return imagePath; }
+
+    /**
+     * Performs a deep copy of this object, returning a new object which
+     * is identicle, but unrelated, to the current object.
+     */
+    public Object
+    clone() throws CloneNotSupportedException {
+        Terrain t;
+
+        t = new Terrain(id, name, description, imagePath);
+
+        return (Object)t;
+    }
 }
