@@ -581,8 +581,8 @@ public class MapViewer extends JPanel {
                 continue;
             }
 
-            Shape   shape = path.getGraphicsShape(g, tileXSize, tileYSize, tileYOffset,
-                                                  iconWidth, iconHeight);
+            Shape   shape = path.getGraphicsShape(g, tileXSize, tileYSize,
+                                 tileYOffset, iconWidth, iconHeight);
 
             g.setStroke(new BasicStroke(path.getWidth()));
             if (path.isHighlighted()) {

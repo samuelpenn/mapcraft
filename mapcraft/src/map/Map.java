@@ -1200,8 +1200,14 @@ public class Map implements Cloneable {
      */
     public int
     addPath(String name, int x, int y) {
-        return tileSets[0].addPath(name, x, y);
+        return tileSets[currentSet].addPath(name, x, y);
     }
+
+    public int
+    addPath(String name, short type, short style, int x, int y) {
+        return tileSets[currentSet].addPath(name, type, style, x, y);
+    }
+
 
     public void
     extendPath(int id, int x, int y) {

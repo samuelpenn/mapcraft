@@ -283,18 +283,18 @@ public class MapEditor extends MapViewer
     }
 
     private void
-    applyBrushPaths(int x, int y, int type) throws MapOutOfBoundsException {
+    applyBrushPaths(int x, int y, short type) throws MapOutOfBoundsException {
         switch (brush.getMode()) {
         case Brush.SELECT:
-            info("Selecting river");
+            info("Selecting path");
             map.unselectPaths();
             int     nearest = 0;
             int     min = -1;
             for (int r = 1; r <= map.getPaths().size(); r++) {
-                Path    river = (Path) map.getPath(r);
-                int     v = river.getNearestVertex(x, y, 250);
+                Path    path = (Path) map.getPath(r);
+                int     v = path.getNearestVertex(x, y, 250);
                 if (v > -1) {
-                    int     d = river.getDistanceToVertex(x, y, v);
+                    int     d = path.getDistanceToVertex(x, y, v);
                     if (min == -1 || d < min) {
                         min = d;
                         nearest = r;
@@ -309,13 +309,13 @@ public class MapEditor extends MapViewer
             drawPaths();
             break;
         case Brush.NEW:
-            info("New river");
+            info("New path");
             // Have not yet selected a river.
-            String  name = "River "+(map.getPaths().size()+1);
-            info("Creating new river ["+name+"] at "+x+","+y);
-            int     id = map.addPath(name, x, y);
+            String  name = "Path "+(map.getPaths().size()+1);
+            info("Creating new path ["+name+"] at "+x+","+y);
+            int     id = map.addPath(name, type, Path.PLAIN,  x, y);
             info("created");
-            brush.setSelected(Brush.RIVERS, (short)id);
+            brush.setSelected(brush.getType(), (short)id);
             brush.setMode(Brush.EDIT);
             map.unselectPaths();
             map.selectPath(id);
@@ -334,11 +334,13 @@ public class MapEditor extends MapViewer
                 Path.Element    start = river.getStartPoint();
                 if (river.isAtEnd(brush.getX(), brush.getY())) {
                     debug("Next to end, so adding");
-                    map.extendPath(brush.getSelected(), brush.getX(), brush.getY());
+                    map.extendPath(brush.getSelected(), brush.getX(),
+                                   brush.getY());
                     drawPaths();
                 } else if (river.isAtStart(brush.getX(), brush.getY())) {
                     debug("Next to start, so adding");
-                    map.extendPath(brush.getSelected(), brush.getX(), brush.getY());
+                    map.extendPath(brush.getSelected(), brush.getX(),
+                                   brush.getY());
                     drawPaths();
                 }
             } else if (brush.getButton() == Brush.MIDDLE) {

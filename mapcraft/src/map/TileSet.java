@@ -597,13 +597,18 @@ public class TileSet implements Cloneable {
      */
     int
     addPath(String name, int x, int y) {
-        Path    path = new Path(name, x, y);
-
-        //tileSets[0].getTile(x, y).setRiver(true);
-        rivers.add(path);
+        rivers.add(new Path(name, x, y));
 
         return rivers.size();
     }
+
+    int
+    addPath(String name, short type, short style, int x, int y) {
+        rivers.add(new Path(name, type, style, x, y));
+
+        return rivers.size();
+    }
+
 
     void
     extendPath(int id, int x, int y) {
