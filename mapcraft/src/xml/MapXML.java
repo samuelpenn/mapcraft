@@ -437,15 +437,18 @@ public class MapXML {
         short   terrain;
         short   height;
         short   hills;
-        
+        int     area;
+
         terrain = (short)fromBase64(data.substring(0, 2));
         height = (short)fromBase64(data.substring(2, 5));
         hills = (short)fromBase64(data.substring(5, 6));
-        
+        area = fromBase64(data.substring(7, 8));
+
         height -= 100000; // Baseline
 
         tile = new Tile(terrain, height, true);
         tile.setHills(hills);
+        tile.setArea(area);
 
         return tile;
     }

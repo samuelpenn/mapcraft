@@ -64,6 +64,7 @@ public class MapViewer extends JPanel {
     private boolean       showCoasts = true;
     private boolean       showRivers = true;
     private boolean       showRoads = true;
+    private boolean       showAreas = true;
 
     protected Properties        properties;
     protected ViewProperties    views[];
@@ -538,6 +539,7 @@ public class MapViewer extends JPanel {
                 int x1, x2, y1, y2;
                 Graphics2D  g2 = (Graphics2D)g;
                 g2.setColor(Color.BLACK);
+                g2.setStroke(new BasicStroke(1));
 
                 // Vertical lines
                 y1 = 0;
@@ -579,6 +581,29 @@ public class MapViewer extends JPanel {
     }
 
     /**
+     * Return a point representing the top left corner of thhis tile.
+     * For hexagonal maps, this is non-trivial to work out.
+     */
+    private Point
+    getPosition(int x, int y) {
+        int     px = 0;
+        int     py = 0;
+
+        if (map.getTileShape() == Map.SQUARE) {
+            px = x * tileXSize;
+            py = y * tileYSize;
+        } else {
+            px = x * tileXSize;
+            py = y * tileYSize;
+            if (x%2 == 1) {
+                py += tileYOffset;
+            }
+        }
+
+        return new Point(px, py);
+    }
+
+    /**
      * Paint a single tile on the map. Tile is referenced by its
      * coordinate. Tile is painted to the supplied graphics object.
      */
@@ -602,6 +627,84 @@ public class MapViewer extends JPanel {
             if (map.getHills(x, y) > 0) {
                 icon = hillSet.getIcon(map.getHills(x, y));
                 g.drawImage(icon, xp, yp, this);
+            }
+
+            // Area borders should be drawn if the neighbouring tiles belong
+            // to a different area. Borders are not drawn on the edge of the
+            // map, and are only drawn on three sides (the neighbours will
+            // draw their own border for the other three sides).
+            if (showAreas && map.getTileShape() == Map.HEXAGONAL) {
+                Graphics2D  g2 = (Graphics2D)g;
+                int         area = map.getTile(x, y).getArea();
+                int         x1, y1, x2, y2;
+
+                g2.setColor(Color.RED);
+                g2.setStroke(new BasicStroke((float)(0.5 * view)));
+
+                // Top neighbour (only if not top row).
+                if (y > 0) {
+                    if (area != map.getTile(x, y-1).getArea()) {
+                        Point   p = getPosition(x, y);
+
+                        x1 = (int)p.getX() + (int)(iconWidth * 0.3);
+                        x2 = (int)p.getX() + (int)(iconWidth * 0.7);
+                        y1 = y2 = (int)p.getY();
+
+                        GeneralPath gp = new GeneralPath();
+                        Line2D      line = new Line2D.Float(x1, y1, x2, y2);
+                        gp.append(line, true);
+                        g2.draw(gp);
+                    }
+                }
+
+                // Now left top neighbour. For hexagonal maps, this is
+                // complicated by the uneven columns.
+                if (x > 0 && y > 0) {
+                    int     n = 0;
+
+                    if (x%2 == 0) {
+                        n = map.getTile(x-1, y-1).getArea();
+                    } else {
+                        n = map.getTile(x-1, y).getArea();
+                    }
+                    if (area != n) {
+                        Point   p = getPosition(x, y);
+
+                        x1 = (int)p.getX();
+                        x2 = (int)p.getX() + (int)(iconWidth * 0.3);
+                        y1 = (int)p.getY() + (int)(tileYSize * 0.5);
+                        y2 = (int)p.getY();
+
+                        GeneralPath gp = new GeneralPath();
+                        Line2D      line = new Line2D.Float(x1, y1, x2, y2);
+                        gp.append(line, true);
+                        g2.draw(gp);
+                    }
+                }
+
+                // Now left bottom neighbour.
+                if (x > 0 && y < map.getHeight()) {
+                    int     n = 0;
+
+                    if (x%2 == 0) {
+                        n = map.getTile(x-1, y).getArea();
+                    } else {
+                        n = map.getTile(x-1, y+1).getArea();
+                    }
+                    if (area != n) {
+                        Point   p = getPosition(x, y);
+
+                        x1 = (int)p.getX();
+                        x2 = (int)p.getX() + (int)(iconWidth * 0.3);
+                        y1 = (int)p.getY() + (int)(tileYSize * 0.5);
+                        y2 = (int)p.getY() + tileYSize;
+
+                        GeneralPath gp = new GeneralPath();
+                        Line2D      line = new Line2D.Float(x1, y1, x2, y2);
+                        gp.append(line, true);
+                        g2.draw(gp);
+                    }
+                }
             }
 
             if (map.isSite(x, y)) {

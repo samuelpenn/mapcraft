@@ -39,7 +39,7 @@ public class Actions {
     public final static String  FILE_SAVEAS         = "file.saveas";
     public final static String  FILE_PRINT          = "file.print";
     public final static String  FILE_EXIT           = "file.exit";
-    
+
     public final static String  VIEW_ZOOMIN         = "view.zoomin";
     public final static String  VIEW_ZOOMOUT        = "view.zoomout";
     public final static String  VIEW_XXSMALL        = "view.xxsmall";
@@ -52,6 +52,7 @@ public class Actions {
     public final static String  VIEW_SHOWTERRAIN    = "view.showterrain";
     public final static String  VIEW_SHOWFEATURES   = "view.showfeatures";
     public final static String  VIEW_SHOWHILLS      = "view.hills";
+    public final static String  VIEW_SHOWAREAS      = "view.areas";
     public final static String  VIEW_GRID           = "view.grid";
     public final static String  VIEW_LARGEGRID      = "view.largegrid";
 
@@ -60,13 +61,14 @@ public class Actions {
     public final static String  EDIT_FEATURES       = "edit.features";
     public final static String  EDIT_HILLS          = "edit.hills";
     public final static String  EDIT_RIVERS         = "edit.rivers";
+    public final static String  EDIT_AREAS          = "edit.areas";
     public final static String  EDIT_SMALL          = "edit.small";
     public final static String  EDIT_MEDIUM         = "edit.medium";
     public final static String  EDIT_LARGE          = "edit.large";
 
     public class Actor extends AbstractAction {
         private ActionListener  listener;
-        
+
         public
         Actor(String name, String label) {
             putValue(Action.NAME, label);
@@ -121,6 +123,7 @@ public class Actions {
             addLocal(VIEW_SHOWTERRAIN, "Terrain palette", "terrain");
             addLocal(VIEW_SHOWFEATURES, "Feature palette", "features");
             addLocal(VIEW_SHOWHILLS, "Hills palette", "hills");
+            addLocal(VIEW_SHOWAREAS, "Areas palette", "terrain");
             addLocal(VIEW_GRID, "Toggle grid", "grid");
             addLocal(VIEW_LARGEGRID, "Toggle rulers", "biggrid");
 
@@ -136,6 +139,7 @@ public class Actions {
             addLocal(EDIT_SELECT, "Select", "select");
             addLocal(EDIT_TERRAIN, "Terrain Brush", "terrain");
             addLocal(EDIT_FEATURES, "Features Brush", "features");
+            addLocal(EDIT_FEATURES, "Area Brush", "terrain");
             addLocal(EDIT_RIVERS, "Rivers Brush", "rivers");
             addLocal(EDIT_HILLS, "Hills brush", "hills");
 

@@ -646,12 +646,12 @@ public class Map implements Cloneable {
      * information, and there are eight tiles per row (64 character
      * wide lines).
      *
-     * Data is stored as follows: tthhhmcf
+     * Data is stored as follows: tthhhmca
      *      tt = terrain type
      *      hhh = height (m), 0= -100km
      *      m = mountains/hills
      *      c = coastline flags
-     *      f = flags
+     *      a = area
      *
      * Base64 encoding is as follows:
      * ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/
@@ -679,22 +679,25 @@ public class Map implements Cloneable {
             for (y=0; y < set.getHeight(); y++) {
                 try {
                     Tile    tile = set.getTile(x, y);
-                    String  t="AA", h="AAA", m="A", c="A", f="A";
+                    String  t="AA", h="AAA", m="A", c="A", f="A", a="A";
 
                     try {
                         t = MapXML.toBase64(tile.getTerrain(), 2);
                         h = MapXML.toBase64(tile.getHeight()+100000, 3);
                         h = "AAA"; // HACK!
                         m = MapXML.toBase64(tile.getHills(), 1);
+                        if (tile.getArea() != 0) {
+                            System.out.println("Non-zero area");
+                        }
+                        a = MapXML.toBase64(tile.getArea(), 1);
                     } catch (Exception e) {
                         System.out.println("Got exception writing tile "+x+","+y);
                         System.out.println(tile);
                         System.exit(0);
                     }
                     c = "A";
-                    f = "A";
 
-                    tmp = t + h + m + c + f + " ";
+                    tmp = t + h + m + c + a + " ";
 
                     if ((y%6)==0) {
                         terrain.append("\n");
@@ -864,6 +867,10 @@ public class Map implements Cloneable {
         return hills;
     }
 
+    public AreaSet
+    getAreaSet() {
+        return areaSet;
+    }
     
     public Vector
     getRivers() {

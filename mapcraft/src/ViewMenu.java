@@ -48,6 +48,7 @@ public class ViewMenu extends JMenu implements ActionListener {
         addItem(Actions.VIEW_SHOWTERRAIN);
         addItem(Actions.VIEW_SHOWFEATURES);
         addItem(Actions.VIEW_SHOWHILLS);
+        addItem(Actions.VIEW_SHOWAREAS);
         addSeparator();
         addItem(Actions.VIEW_ZOOMIN);
         addItem(Actions.VIEW_ZOOMOUT);
@@ -119,6 +120,8 @@ public class ViewMenu extends JMenu implements ActionListener {
             application.getEditor().showFeaturePalette();
         } else if (cmd.equals(Actions.VIEW_SHOWHILLS)) {
             application.getEditor().showHillPalette();
+        } else if (cmd.equals(Actions.VIEW_SHOWAREAS)) {
+            application.getEditor().showAreaPalette();
         }
     }
 

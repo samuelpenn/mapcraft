@@ -39,6 +39,7 @@ public class MapEditor extends MapViewer
     private Pane        riverPane = null;
     private Pane        placePane = null;
     private Pane        hillPane = null;
+    private Pane        areaPane = null;
 
     private Brush       brush = new Brush();
 
@@ -146,6 +147,9 @@ public class MapEditor extends MapViewer
         }
     }
 
+    /**
+     * Displays a list of all defined areas. An area has a name (no icons).
+     */
     public class
     AreaPalette implements ListSelectionListener {
         private MapEditor editor;
@@ -157,6 +161,23 @@ public class MapEditor extends MapViewer
 
         public void
         valueChanged(ListSelectionEvent e) {
+            int first, last, index;
+            int type = Brush.AREAS;
+
+            // We get a result for both the item which was
+            // selected, and the one unselected, so we need
+            // to figure out which is which.
+            index = first = e.getFirstIndex();
+            last = e.getLastIndex();
+            if (areaPane.isSelected(last)) {
+                index = last;
+            }
+
+            System.out.println("AreaPalette: "+index);
+            brush.setSelected(type, (short)index);
+            System.out.println("Area selected: "+brush.getSelected());
+
+            brush.setType(type);
         }
     }
 
@@ -220,6 +241,9 @@ public class MapEditor extends MapViewer
                 } else {
                     // Do nothing.
                 }
+                break;
+            case Brush.AREAS:
+                map.getTile(x, y).setArea(brush.getSelected());
                 break;
             }
         } catch (MapOutOfBoundsException moobe) {
@@ -449,32 +473,7 @@ public class MapEditor extends MapViewer
 
         addMouseMotionListener(new MouseMotionHandler());
         addMouseListener(new MouseHandler());
-/*
-        menuBar = new JMenuBar();
-        frame.setJMenuBar(menuBar);
-        menuBar.add(createFileMenu());
-        menuBar.add(createEditMenu());
-        menuBar.add(createViewMenu());
-        menuBar.add(createPaletteMenu());
-        menuBar.setVisible(true);
-        frame.setSize(new Dimension(600, 400));
 
-        frame.addKeyListener(new KeyEventHandler());
-
-        terrainPane = new Pane(new TerrainPalette(this), "Terrain");
-        terrainPane.setImagePath(imagePath+"/medium");
-        terrainPane.setPalette(map.getTerrainSet().toArray(), false);
-        terrainPane.makeFrame();
-
-        if (map.getType() == Map.LOCAL) {
-            placePane = new Pane(new PlacePalette(this), "Features");
-        } else {
-            placePane = new Pane(new PlacePalette(this), "Places");
-        }
-        placePane.setImagePath(imagePath+"/medium");
-        placePane.setPalette(map.getPlaceSet().toArray(), false);
-        placePane.makeFrame();
-*/
     }
 
     public
@@ -518,6 +517,13 @@ public class MapEditor extends MapViewer
 */
         hillPane.setPalette(map.getHillSet().toArray(), false);
         hillPane.makeFrame();
+    }
+
+    public void
+    showAreaPalette() {
+        areaPane = new Pane(new AreaPalette(this), "Areas");
+        areaPane.setPalette(map.getAreaSet().toTerrainArray(), false);
+        areaPane.makeFrame();
     }
 
     public void
