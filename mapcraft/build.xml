@@ -22,4 +22,25 @@
         />
     </target>
 
+    <target name="test">
+
+        <mkdir dir="tests/reports"/>
+        <junit>
+            <formatter type="xml"/>
+            <classpath>
+                <pathelement location="build"/>
+                <pathelement path="${java.class.path}"/>
+            </classpath>
+            <test name="uk.co.demon.bifrost.rpg.mapcraft.map.MapTest"
+                  todir="tests"/>
+        </junit>
+
+        <junitreport todir="tests/reports">
+            <fileset dir="tests">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="tests/reports/html"/>
+        </junitreport>
+    </target>
+
 </project>
