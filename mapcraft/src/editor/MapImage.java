@@ -27,6 +27,7 @@ import java.awt.geom.Line2D;
 
 import com.sun.image.codec.jpeg.*;
 
+import uk.co.demon.bifrost.utils.Options;
 
 /**
  * A version of the MapViewer class which is designed for generating
@@ -186,19 +187,21 @@ public class MapImage extends MapViewer {
 
     public static void
     main(String args[]) {
+        Options     options = new Options(args);
         try {
             MapImage    map = null;
-            String      filename = "earth.map";
+            String      filename = options.getString("-image");
+            String      outfile = options.getString("-out");
             Properties  properties = new Properties();
 
             properties.setProperty("path.run", System.getProperty("user.dir"));
             properties.setProperty("path.images", System.getProperty("user.dir")+"/images");
 
             map = new MapImage(properties, filename);
-            map.setShowThings(false);
-            map.setShowAreas(false);
+            map.setShowThings(true);
+            map.setShowAreas(true);
             map.setShowLargeGrid(false);
-            map.saveImage("xplanet.jpg", 0, true);
+            map.saveImage(outfile, 2, false);
         } catch (Exception e) {
             e.printStackTrace();
         }

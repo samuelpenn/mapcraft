@@ -306,6 +306,11 @@ public class MapCraft implements ActionListener {
             System.exit(0);
         }
 
+        if (options.isOption("-image")) {
+            MapImage.main(args);
+            System.exit(0);
+        }
+
 
         
         if (options.isOption("-load")) {
