@@ -1,0 +1,112 @@
+
+
+body {
+    background-color: white;
+}
+
+h1 {
+    font-size: xx-large;
+    background-color: #604090;
+    color: #40f000;
+    line-height: 100%;
+    margin: 0mm;
+    padding: 0mm;
+    border-bottom: 2pt solid #9060ff;
+}
+
+div.links {
+    text-align: center;
+    background-color: #8060d0;
+    margin-bottom: 2mm;
+}
+
+div.links a {
+    text-align: center;
+    color: #40f000;
+    padding-left: 2mm;
+    padding-right: 2mm;
+    margin-right: 2mm;
+    border-left: 1pt solid black;
+    border-right: 1pt solid black;
+}
+
+div.links a:hover {
+    color: white;
+    background-color: #403060;
+}
+
+div.sect1 {
+    background-color: white;
+    margin-right: 50mm;
+}
+
+div.sect1 h1 {
+    color: white;
+    background-color: #8060d0;
+    font-size: x-large;
+    font-weight: bold;
+    margin-top: 0mm;
+}
+
+div.sect2 {
+    background-color: white;
+    margin-left: 5mm;
+}
+
+div.sect2 h2 {
+    color: white;
+    background-color: #8060d0;
+    font-size: large;
+    font-weight: bold;
+}
+
+div.sect3 {
+    margin-left: 5mm;
+}
+
+div.sect3 h3 {
+    color: white;
+    background-color: #8060d0;
+    font-size: medium;
+    font-weight: bold;
+}
+
+div.sect4 h4 {
+    color: white;
+    background-color: #8060d0;
+    font-size: medium;
+    font-weight: bold;
+    font-style: italic;
+}
+
+div.sect5 h5 {
+    color: white;
+    background-color: #8060d0;
+    font-size: medium;
+    font-weight: medium;
+    font-style: italic;
+    left: 100;
+}
+
+div.sidebar {
+    float: right;
+    width: 45mm;
+    margin-right: 0mm;
+    margin-bottom: 5mm;
+    clear: both;
+    background-color: #ddbbff;
+}
+
+div.sidebar h6 {
+    color: white;
+    background-color: black;
+    font-size: medium;
+    font-weight: bold;
+    margin: 0mm;
+}
+
+div.sidebar p {
+    font-size: small;
+    margin-top: 0mm;
+    margin-bottom: 5mm;
+}

@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<project name="Website" default="html">
+
+    <property file="ant.properties"/>
+
+    <path id="lib.path">
+        <pathelement location="/usr/share/java/cvslib/cvslib.jar"/>
+        <pathelement path="/home/sam/src/web/pagexml/build"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="html" quiet="true"/>
+        <delete dir="tmp" quiet="true"/>
+    </target>
+
+    <target name="html" depends="css">
+        <xslt basedir="src" destdir="${target.dir}" extension=".html"
+              classpathref="lib.path"
+              includes="**/*.page" style="/home/sam/src/web/pagexml/xsl/page.xsl">
+
+              <param name="ant-target-dir" expression="${target.dir}"/>
+              <param name="ant-tmp-dir" expression="${tmp.dir}"/>
+        </xslt>
+    </target>
+    
+    <target name="css">
+        <copy todir="${target.dir}/usr/share/web/css">
+            <fileset dir="css">
+                <include name="*.css"/>
+            </fileset>
+        </copy>
+
+        <!--
+        <delete dir="${tmp.dir}" quiet="true"/>
+        <mkdir dir="${tmp.dir}"/>
+        <cvs cvsRoot="${cvs.rpg.root}"
+             command="export" dest="${tmp.dir}"
+             package="yagsbook/css"
+             date="TODAY"
+             passfile="${cvs.pass}"/>
+
+        <mkdir dir="${target.dir}/usr/share/web/css/yagsbook"/>
+        <move todir="${target.dir}/usr/share/web/css/yagsbook">
+            <fileset dir="${tmp.dir}/yagsbook/css">
+                <include name="*.css"/>
+            </fileset>
+        </move>
+        <delete dir="${tmp.dir}/yagsbook" quiet="true"/>
+        -->
+    </target>
+
+
+    <target name="push" depends="html">
+        <copy todir="/opt/home/www/public_html">
+            <fileset dir="html"/>
+        </copy>
+    </target>
+
+    <target name="pushftp">
+        <taskdef name="ftp"
+                 classname="org.apache.tools.ant.taskdefs.optional.net.FTP">
+        </taskdef>
+        <ftp server="wotan" userid="anonymous" password="anonymous"
+             remotedir="htdocs">
+
+             <fileset dir="html"/>
+        </ftp>
+    </target>
+
+</project>

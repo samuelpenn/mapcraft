@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+
+<page>
+    <header>
+        <title>Mapcraft</title>
+
+        <summary>Java based RPG Mapping Tool</summary>
+
+        <cvsinfo>
+            <version>$Revision$</version>
+            <date>$Date$</date>
+        </cvsinfo>
+
+        <style>default</style>
+    </header>
+
+    <links>
+        <link uri="http://www.bifrost.demon.co.uk/index.html">bifrost</link>
+        <link uri="http://sourceforge.org/projects/mapcraft">sourceforge</link>
+        <link uri="/comp/index">screenshots</link>
+        <link uri="/links">features</link>
+        <link uri="/documentation">documentation</link>
+        <link uri="/rss.xml">webcvs</link>
+        <link uri="/rss.xml">xml</link>
+    </links>
+
+    <sidebar>
+        <title>Project</title>
+
+        <p>
+            Mapcraft is a Java based tool for creating and managing maps
+            for use in pen and paper roleplaying games. Maps are tile
+            based, and make use of properties and meta data to keep track
+            of objects and manage relationships between different maps.
+        </p>
+    </sidebar>
+
+    <sidebar>
+        <title>License</title>
+
+        <p>
+            The software is released under the GNU Public License.
+        </p>
+    </sidebar>
+    
+    <sidebar>
+        <title>Sourceforge</title>
+        
+        <p>
+            Mapcraft is hosted by Sourceforge.
+        </p>
+    </sidebar>
+    
+    <sidebar>
+        <title>Author</title>
+        
+        <p>
+            The author of this software is Samuel Penn.
+        </p>
+    </sidebar>
+
+    <body>
+        <sect1>
+            <p>
+                <e>Mapcraft</e> is designed to create and edit tile based
+                maps for use in pen and paper roleplaying games. The
+                principle aim is to support sufficient metadata to enable
+                the map to be accessed programmatically, and more
+                importantly, automatically. A change in a map can then be
+                immediately reflected in associated documents. Inline
+                graphics can be created from the maps for HTML pages, and
+                statistics (the population or area of a region for example)
+                can be generated and included in campaign background.
+            </p>
+
+            <p>
+                This is different from the normal aim of just trying to
+                create maps which look pretty. The idea is to have
+                pretty maps as well, though this is secondary. Consistency
+                is held to be more important.
+            </p>
+        </sect1>
+        
+        <sect1>
+            <title>Introduction</title>
+            
+            <p>
+                Mapcraft stores all its maps as XML files.
+            </p>
+        </sect1>
+    </body>
+</page>
