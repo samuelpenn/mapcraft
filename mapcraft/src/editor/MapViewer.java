@@ -251,6 +251,20 @@ public class MapViewer extends JPanel {
         toolkit = Toolkit.getDefaultToolkit();
     }
 
+    private void
+    prepareImage(Image image) {
+        int     count = 3;
+
+        while (!prepareImage(image, -1, -1, this) && (count-- > 0)) {
+            try {
+                Thread.sleep(200);
+            } catch (Exception e) {
+            }
+        }
+
+        return;
+    }
+
     protected IconSet
     readIcons(String name, TerrainSet set) {
         IconSet     iconSet = new IconSet(name);
@@ -271,7 +285,6 @@ public class MapViewer extends JPanel {
                 String  path = views[view].getPath()+"/"+t.getImagePath();
                 //debug("Loading icon ["+path+"]");
                 Image   icon = toolkit.getImage(path);
-                toolkit.prepareImage(icon, -1, -1, this);
 
                 Image scaled = icon.getScaledInstance(views[view].getIconWidth(),
                                                       views[view].getIconHeight(),
@@ -280,8 +293,10 @@ public class MapViewer extends JPanel {
                 if (views[view].isHexagonal()) {
                     icon = createImage(new FilteredImageSource(scaled.getSource(), filter));
                     iconSet.add(id, icon);
+                    prepareImage(icon);
                 } else {
                     iconSet.add(id, scaled);
+                    prepareImage(scaled);
                 }
             }
         }
@@ -837,28 +852,19 @@ public class MapViewer extends JPanel {
         double fontScale = 1.0;
 
         switch (view) {
-            case 0: // usmall
-                fontScale = 0.6;
+            case 0: // xsmall
+                fontScale = 0.5;
                 break;
-            case 1: // xxsmall
+            case 1: // small
                 fontScale = 0.75;
                 break;
-            case 2: // xsmall
-                fontScale = 0.85;
-                break;
-            case 3: // small
+            case 2: // medium
                 fontScale = 1.0;
                 break;
-            case 4: // medium
-                fontScale = 1.0;
+            case 3: // large
+                fontScale = 1.5;
                 break;
-            case 5: // large
-                fontScale = 1.3;
-                break;
-            case 6: // xlarge
-                fontScale = 1.6;
-                break;
-            case 7: // xxlarge
+            case 4: // xlarge
                 fontScale = 2.0;
                 break;
         }
@@ -872,16 +878,14 @@ public class MapViewer extends JPanel {
         int     fontSize = 10;
         Image   icon = thingSet.getIcon(thing.getType());
 
-        debug("paintThing: ["+thing.getName()+"]");
-
         // If scale is too large, and thing not importance enough,
         // then don't display it.
         switch (thing.getImportance()) {
             case Thing.LOW:
-                if (view < 4) return;
+                if (view < 3) return;
                 break;
             case Thing.NORMAL:
-                if (view < 2) return;
+                if (view < 1) return;
                 break;
             case Thing.HIGH:
                 break;
