@@ -1,7 +1,19 @@
+/*
+ * Copyright (C) 2002 Samuel Penn, sam@bifrost.demon.co.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2,
+ * or (at your option) any later version. See the file COPYING.
+ *
+ * $Release: 1.1 $
+ * $Date$
+ */
 
 package uk.co.demon.bifrost.rpg.mapcraft.editor;
 
 import uk.co.demon.bifrost.rpg.mapcraft.map.*;
+import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -501,7 +513,32 @@ public class MapEditor extends MapViewer
     public static void
     main(String args[]) {
         Options options = new Options(args);
-        MapEditor   editor = new MapEditor(options.getString("-load"));
+        MapEditor   editor = null;
+        Map         map = null;
+
+        try {
+            options = new Options(args);
+            System.out.println("Hello");
+            if (options.isOption("-create")) {
+                int width = options.getInt("-width");
+                int height = options.getInt("-height");
+                int scale = options.getInt("-scale");
+                String name = options.getString("-create");
+                String terrain = options.getString("-terrain");
+
+                System.out.println("Creating map "+name+" "+width+"x"+height);
+                map = new Map(name, width, height, scale);
+                map.loadTerrainSet(terrain);
+                map.save(name+".map");
+            } else if (options.isOption("-load")) {
+                editor = new MapEditor(options.getString("-load"));
+            } else if (options.isOption("-rewrite")) {
+                map = new Map(options.getString("-rewrite"));
+                map.save("new.map");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
