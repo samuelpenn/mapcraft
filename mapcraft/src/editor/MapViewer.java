@@ -721,6 +721,7 @@ public class MapViewer extends JPanel {
     public void
     paintTile(int x, int y, Graphics g) {
         int         xp, yp;
+        Graphics2D  g2 = (Graphics2D)g;
 
         if (map.getTileShape() == Map.SQUARE) {
             xp = x * tileXSize;
@@ -733,11 +734,19 @@ public class MapViewer extends JPanel {
         try {
             short   t = map.getTerrain(x, y);
             Image   icon = iconSet.getIcon(t);
-            g.drawImage(icon, xp, yp, this);
+            double  r = 0.0;
+
+            r = Math.toRadians(map.getTerrainRotation(x, y));
+            if (r != 0) {
+                g2.rotate(r, xp+tileXSize/2, yp+tileYSize/2);
+                g2.drawImage(icon, xp, yp, this);
+                g2.rotate(-r, xp+tileXSize/2, yp+tileYSize/2);
+            } else {
+                g.drawImage(icon, xp, yp, this);
+            }
 
             if (map.getFeature(x, y) > 0) {
-                Graphics2D  g2 = (Graphics2D)g;
-                double      r = Math.toRadians(map.getRotation(x, y));
+                r = Math.toRadians(map.getFeatureRotation(x, y));
                 icon = featureSet.getIcon(map.getFeature(x, y));
                 g2.rotate(r, xp+tileXSize/2, yp+tileYSize/2);
                 g2.drawImage(icon, xp, yp, this);
@@ -749,7 +758,6 @@ public class MapViewer extends JPanel {
             // map, and are only drawn on three sides (the neighbours will
             // draw their own border for the other three sides).
             if (showAreas && map.getTileShape() == Map.HEXAGONAL) {
-                Graphics2D  g2 = (Graphics2D)g;
                 int         area = map.getTile(x, y).getArea();
                 int         parent;
                 int         x1, y1, x2, y2;

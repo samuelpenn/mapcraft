@@ -359,7 +359,7 @@ public class Map implements Cloneable {
             this.tileShape = HEXAGONAL;
         }
     }
-    
+
     public void
     setType(String typeName) {
         if (typeName.equals(MapXML.LOCAL)) {
@@ -677,15 +677,56 @@ public class Map implements Cloneable {
     }
 
     public void
-    setRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
-        tileSets[currentSet].setRotation(x, y, rotation);
+    setFeatureRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
+        if (tileShape == SQUARE) {
+            rotation /= 90;
+        } else {
+            rotation /= 60;
+        }
+        System.out.println("new rotation = "+rotation);
+        tileSets[currentSet].setFeatureRotation(x, y, rotation);
     }
 
     public short
-    getRotation(int x, int y) throws MapOutOfBoundsException {
-        return tileSets[currentSet].getRotation(x, y);
+    getFeatureRotation(int x, int y) throws MapOutOfBoundsException {
+        short r = tileSets[currentSet].getFeatureRotation(x, y);
+
+        if (tileShape == SQUARE) {
+            r *= 90;
+        } else {
+            r *= 60;
+        }
+        if (r>0) {
+            System.out.println("old rotation = "+r);
+        }
+        return r;
     }
 
+    public void
+    setTerrainRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
+        if (tileShape == SQUARE) {
+            rotation /= 90;
+        } else {
+            rotation /= 60;
+        }
+        System.out.println("new rotation = "+rotation);
+        tileSets[currentSet].setTerrainRotation(x, y, rotation);
+    }
+
+    public short
+    getTerrainRotation(int x, int y) throws MapOutOfBoundsException {
+        short r = tileSets[currentSet].getTerrainRotation(x, y);
+
+        if (tileShape == SQUARE) {
+            r *= 90;
+        } else {
+            r *= 60;
+        }
+        if (r>0) {
+            System.out.println("old rotation = "+r);
+        }
+        return r;
+    }
 
 
 
@@ -921,10 +962,10 @@ public class Map implements Cloneable {
                     String  t="AA", h="AA", m="AA", c="A", f="A", a="AA";
 
                     try {
-                        t = MapXML.toBase64(tile.getTerrain(), 2);
+                        t = MapXML.toBase64(tile.getTerrainRaw(), 2);
                         h = MapXML.toBase64(tile.getHeight()+1000, 2);
                         h = "AA"; // HACK!
-                        m = MapXML.toBase64(tile.getFeatureRotated(), 2);
+                        m = MapXML.toBase64(tile.getFeatureRaw(), 2);
                         a = MapXML.toBase64(tile.getArea(), 2);
                         c = "A";
                         f = "A";

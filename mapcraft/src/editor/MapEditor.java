@@ -431,11 +431,12 @@ public class MapEditor extends MapViewer
             System.out.println("Pressed!");
             int     key = e.getKeyCode();
             char    ch = e.getKeyChar();
-            int     x, y;
+            int     x, y, angle;
 
             if (map.getTileShape() == Map.SQUARE) {
                 x = brush.getLastMouseX()/tileXSize;
                 y = brush.getLastMouseY()/tileYSize;
+                angle = 90;
             } else {
                 x = brush.getLastMouseX()/tileXSize;
                 int yp = brush.getLastMouseY();
@@ -444,31 +445,37 @@ public class MapEditor extends MapViewer
                     yp -= tileYOffset;
                 }
                 y = yp/tileYSize;
+
+                angle = 60;
             }
 
             try {
+                short   r = -1;
                 switch (key) {
                 case KeyEvent.VK_NUMPAD8:
                     System.out.println("0 degrees");
-                    map.setRotation(x, y, (short)0);
-                    paintTile(x, y);
+                    r = 0;
                     break;
                 case KeyEvent.VK_NUMPAD2:
                     System.out.println("180 degrees");
-                    map.setRotation(x, y, (short)180);
-                    paintTile(x, y);
+                    r = 2;
                     break;
                 case KeyEvent.VK_NUMPAD4:
                     System.out.println("90 degrees");
-                    map.setRotation(x, y, (short)90);
-                    paintTile(x, y);
+                    r = 1;
                     break;
                 case KeyEvent.VK_NUMPAD6:
                     System.out.println("270 degrees");
-                    map.setRotation(x, y, (short)270);
-                    paintTile(x, y);
+                    r = 3;
                     break;
                 }
+                debug("Brush type = "+brush.getType());
+                if (brush.getType() == Brush.TERRAIN) {
+                    map.setTerrainRotation(x, y, (short)(r * angle));
+                } else {
+                    map.setFeatureRotation(x, y, (short)(r * angle));
+                }
+                paintTile(x, y);
 
                 switch (ch) {
                 case '[':

@@ -37,7 +37,8 @@ public class Tile implements Cloneable {
     private boolean writable;
     private boolean river;
     private short   area;
-    private short   rotation;
+
+    private final static short MAXTYPES = 512;
 
     public String
     toString() {
@@ -76,7 +77,6 @@ public class Tile implements Cloneable {
         this.river = tile.river;
         this.feature = tile.feature;
         this.area = tile.area;
-        this.rotation = tile.rotation;
     }
 
     public Object
@@ -88,7 +88,6 @@ public class Tile implements Cloneable {
         t.river = river;
         t.feature = feature;
         t.area = area;
-        t.rotation = rotation;
 
         return (Object)t;
     }
@@ -119,8 +118,23 @@ public class Tile implements Cloneable {
         }
     }
 
+    public void
+    setTerrainRotation(short r) {
+        this.terrain = (short) ((terrain%MAXTYPES) + MAXTYPES*r);
+    }
+
     public short
     getTerrain() {
+        return (short)(terrain%MAXTYPES);
+    }
+
+    public short
+    getTerrainRotation() {
+        return (short)(terrain/MAXTYPES);
+    }
+
+    public short
+    getTerrainRaw() {
         return terrain;
     }
 
@@ -138,7 +152,7 @@ public class Tile implements Cloneable {
 
     public short
     getFeature() {
-        return feature;
+        return (short)(feature%MAXTYPES);
     }
 
     public void
@@ -149,17 +163,18 @@ public class Tile implements Cloneable {
     }
 
     public short
-    getFeatureRotated() {
-        short   r = feature;
-        r += 1000 * (short)(rotation/90);
-
-        return r;
+    getFeatureRaw() {
+        return feature;
     }
 
     public void
-    setFeatureRotated(short feature) {
-        this.feature = (short)(feature%1000);
-        this.rotation = (short)(90 * (feature/1000));
+    setFeatureRotation(short r) {
+        this.feature = (short) ((feature%MAXTYPES) + MAXTYPES*r);
+    }
+
+    public short
+    getFeatureRotation() {
+        return (short)(feature/MAXTYPES);
     }
 
     public boolean
@@ -206,26 +221,5 @@ public class Tile implements Cloneable {
             this.area = area;
         }
     }
-
-    /**
-     * Return the rotation (in degrees) of the feature for this tile.
-     * This only makes sense for square maps, but can be set/get for any
-     * type of map. Rotation must be a multiple of 90.
-     *
-     * @param rotation      New rotation for this tile. If not a multiple
-     *                      of 90, then set attempt will be ignored.
-     */
-    void
-    setRotation(short rotation) {
-        if (rotation%90 == 0) {
-            this.rotation = (short)(rotation%360);
-        }
-    }
-
-    short
-    getRotation() {
-        return rotation;
-    }
-
 
 }

@@ -646,13 +646,23 @@ public class TileSet implements Cloneable {
     }
 
     public short
-    getRotation(int x, int y) throws MapOutOfBoundsException {
-        return getTile(x, y).getRotation();
+    getFeatureRotation(int x, int y) throws MapOutOfBoundsException {
+        return getTile(x, y).getFeatureRotation();
     }
 
     public void
-    setRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
-        getTile(x, y).setRotation(rotation);
+    setFeatureRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
+        getTile(x, y).setFeatureRotation(rotation);
+    }
+
+    public short
+    getTerrainRotation(int x, int y) throws MapOutOfBoundsException {
+        return getTile(x, y).getTerrainRotation();
+    }
+
+    public void
+    setTerrainRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
+        getTile(x, y).setTerrainRotation(rotation);
     }
 
 }
