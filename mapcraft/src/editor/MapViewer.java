@@ -59,6 +59,7 @@ public class MapViewer extends JPanel {
     private boolean       showRivers = true;
     private boolean       showRoads = true;
 
+    protected Properties        properties;
     protected ViewProperties    views[];
     protected int               view = 0;
 
@@ -227,24 +228,29 @@ public class MapViewer extends JPanel {
      * Constructor to load a map from a file and display it.
      */
     public
-    MapViewer(String filename, String path) {
+    MapViewer(Properties properties, String filename) {
         super(true);
 
         toolkit = Toolkit.getDefaultToolkit();
+        
+        debug("Image path = "+properties.getProperty("path.images"));
 
-        this.imagePath = path;
-
-        views = new ViewProperties[7];
-        views[0] = getNewViewProperties(path+"/xxsmall");
-        views[1] = getNewViewProperties(path+"/xsmall");
-        views[2] = getNewViewProperties(path+"/small");
-        views[3] = getNewViewProperties(path+"/medium");
-        views[4] = getNewViewProperties(path+"/large");
-        views[5] = getNewViewProperties(path+"/xlarge");
-        views[6] = getNewViewProperties(path+"/xxlarge");
+        this.properties = properties;
+        
+        String path = properties.getProperty("path.images", "images");
 
         try {
             map = new Map(filename);
+            path = path + "/"+map.getImageDir();
+
+            views = new ViewProperties[7];
+            views[0] = getNewViewProperties(path+"/xxsmall");
+            views[1] = getNewViewProperties(path+"/xsmall");
+            views[2] = getNewViewProperties(path+"/small");
+            views[3] = getNewViewProperties(path+"/medium");
+            views[4] = getNewViewProperties(path+"/large");
+            views[5] = getNewViewProperties(path+"/xlarge");
+            views[6] = getNewViewProperties(path+"/xxlarge");
             setView(3);
 
             readAllIcons();
@@ -556,11 +562,13 @@ public class MapViewer extends JPanel {
      */
     public static void
     main(String args[]) {
+    /*
         JFrame      frame = new JFrame("Map Viewer");
         MapViewer   view = new MapViewer("maps/harn.map", "images");
 
         frame.getContentPane().add(view);
         frame.setSize(new Dimension(600,700));
         frame.setVisible(true);
+    */
     }
 }

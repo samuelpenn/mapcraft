@@ -33,6 +33,7 @@ public class MapEditor extends MapViewer
 
     private JFrame      frame;
     private JMenuBar    menuBar;
+    private ScrollPane  scrollpane;
 
     private Pane        terrainPane = null;
     private Pane        riverPane = null;
@@ -342,37 +343,26 @@ public class MapEditor extends MapViewer
             }
         }
     }
+    
+    public ScrollPane
+    getScrollPane() {
+        return scrollpane;
+    }
 
 
     /**
      * Main constructor.
      */
     public
-    MapEditor(String filename, String imagePath) {
-        super(filename, imagePath);
+    MapEditor(Properties properties, String filename) {
+        super(properties, filename);
 
 
         this.setSize(new Dimension(2000, 1200));
-        JScrollPane scrollPane = new JScrollPane(this,
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-
-        frame = new JFrame("Map Editor");
-        frame.getContentPane().add(scrollPane);
-        frame.setSize(new Dimension(640,400));
-        frame.setVisible(true);
-
-        // Close the application if the window is closed.
-        frame.addWindowListener(new WindowAdapter() {
-                public void
-                windowClosing(WindowEvent e) {
-                    System.exit(0);
-                }
-            });
 
         addMouseMotionListener(new MouseMotionHandler());
         addMouseListener(new MouseHandler());
-
+/*
         menuBar = new JMenuBar();
         frame.setJMenuBar(menuBar);
         menuBar.add(createFileMenu());
@@ -383,7 +373,7 @@ public class MapEditor extends MapViewer
         frame.setSize(new Dimension(600, 400));
 
         frame.addKeyListener(new KeyEventHandler());
-        
+
         terrainPane = new Pane(new TerrainPalette(this), "Terrain");
         terrainPane.setImagePath(imagePath+"/medium");
         terrainPane.setPalette(map.getTerrainSet().toArray(), false);
@@ -397,7 +387,7 @@ public class MapEditor extends MapViewer
         placePane.setImagePath(imagePath+"/medium");
         placePane.setPalette(map.getPlaceSet().toArray(), false);
         placePane.makeFrame();
-
+*/
     }
 
     public
@@ -423,7 +413,7 @@ public class MapEditor extends MapViewer
      * but it keeps things consistant with other applications.
      *
      * @return	A fully defined menu.
-     */
+     *
     JMenu
     createFileMenu() {
         JMenu       menu = new JMenu("File");
@@ -461,7 +451,7 @@ public class MapEditor extends MapViewer
         menu.add(item);
 
         return menu;
-    }
+    }*/
 
     /**
      * Create the 'Edit' menu for the frame.
@@ -569,7 +559,7 @@ public class MapEditor extends MapViewer
         Options options = new Options(args);
         MapEditor   editor = null;
         Map         map = null;
-
+/*
         try {
             options = new Options(args);
 
@@ -591,7 +581,7 @@ public class MapEditor extends MapViewer
                 map.save(name+".map");
             } else if (options.isOption("-load")) {
                 String  images = "images";
-                
+
                 if (options.isOption("-images")) {
                     images = options.getString("-images");
                 }
@@ -603,7 +593,7 @@ public class MapEditor extends MapViewer
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+*/
     }
 
 }

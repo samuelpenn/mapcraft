@@ -48,6 +48,7 @@ public class Map {
     private String  id;
     private String  parent;
     private String  format;
+    private String  imagedir;
 
     // XML backend data.
     private MapXML  xml;
@@ -114,6 +115,7 @@ public class Map {
             this.filename = filename;
             this.name = xml.getName();
             this.format = xml.getFormat();
+            this.imagedir = xml.getImageDir();
             this.id = xml.getId();
             this.parent = xml.getParent();
             this.author = xml.getAuthor();
@@ -147,8 +149,10 @@ public class Map {
     }
 
     public String getName() { return name; }
-    
+
     public String getFilename() { return filename; }
+    
+    public String getImageDir() { return imagedir; }
     
     /**
      * Get the shape of the tiles - either SQUARE or HEXAGONAL.
@@ -580,7 +584,8 @@ public class Map {
         } else {
             writer.write("        <shape>Hexagonal</shape>\n");
         }
-        writer.write("        <format>0.0.3</format>\n");
+        writer.write("        <imagedir>"+imagedir+"</imagedir>");
+        writer.write("        <format>0.0.4</format>\n");
         writer.write("    </header>\n");
     }
 

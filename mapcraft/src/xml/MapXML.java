@@ -50,6 +50,7 @@ public class MapXML {
     protected String        name, author, id, parent;
     protected String        version, date;
     protected String        format, type;
+    protected String        imagedir;
     protected String        tileShape;
     
     public static final String BASE64 = new String("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
@@ -154,6 +155,7 @@ public class MapXML {
             parent = getTextNode("/map/header/parent");
             tileShape = getTextNode("/map/header/shape");
             type = getTextNode("/map/header/type");
+            imagedir = getTextNode("/map/header/imagedir");
 
             System.out.println(name+","+id+","+parent+","+author);
         } catch (XMLException xe) {
@@ -359,6 +361,7 @@ public class MapXML {
     public String getParent() { return parent; }
     public String getTileShape() { return tileShape; }
     public String getType() { return type; }
+    public String getImageDir() { return imagedir; }
 
     /**
      * Return all the terrains from the named terrainset in the XML data.

@@ -1,0 +1,185 @@
+/*
+ * Copyright (C) 2002 Samuel Penn, sam@bifrost.demon.co.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2,
+ * or (at your option) any later version. See the file COPYING.
+ *
+ * $Revision$
+ * $Date$
+ */
+
+package uk.co.demon.bifrost.rpg.mapcraft;
+
+import uk.co.demon.bifrost.rpg.mapcraft.editor.*;
+import uk.co.demon.bifrost.rpg.mapcraft.map.*;
+import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
+
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.event.*;
+import java.awt.*;
+import java.awt.image.*;
+import java.net.*;
+import java.io.*;
+import java.util.*;
+
+import uk.co.demon.bifrost.utils.Options;
+
+
+public class MapCraft implements ActionListener {
+    private JFrame      window;
+    private MapEditor   editor;
+    private JScrollPane scrollpane;
+
+    // Tools and stuff.
+    private Actions     actions = new Actions(this);
+    private JToolBar    toolbar;
+    private JMenuBar    menubar;
+
+    // Global vars
+    private Properties  properties;
+
+    
+    protected void
+    shutdown() {
+        System.exit(0);
+    }
+
+    
+    public
+    MapCraft(Properties properties, String map) {
+        this.properties = properties;
+
+        setupWindows();
+        load(map);
+    }
+
+    public
+    MapCraft(Properties properties) {
+        this.properties = properties;
+
+        setupWindows();
+    }
+    
+
+    public void
+    setupWindows() {
+        window = new JFrame("Map Craft");
+//        editor = new MapEditor("maps/rivers.map", "images");
+
+        scrollpane = new JScrollPane(editor,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+        // Make sure closing the window will close the application.
+        window.addWindowListener(new WindowAdapter() {
+                public void
+                windowClosing(WindowEvent e) {
+                    shutdown();
+                }
+            });
+        window.getContentPane().setLayout(new BorderLayout());
+        window.getContentPane().add(createToolbar(), BorderLayout.NORTH);
+//        window.getContentPane().add(scrollpane, BorderLayout.CENTER);
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+        menubar = new JMenuBar();
+        menubar.add(new FileMenu(this));
+        menubar.setVisible(true);
+
+        window.setJMenuBar(menubar);
+        window.setVisible(true);
+    }
+
+
+    public void
+    load(String map) {
+        editor = new MapEditor(properties, map);
+
+        scrollpane = new JScrollPane(editor,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+        window.getContentPane().add(scrollpane, BorderLayout.CENTER);
+    }
+    
+    private JButton
+    createToolbarButton(String action) {
+        JButton         button = new JButton();
+
+        button.setAction(actions.get(action));
+        button.setText("");
+        
+        return button;
+    }
+
+    /**
+     * Create the toolbar ready for it to be added to our frame.
+     */
+    private JToolBar
+    createToolbar() {
+        JButton     button;
+
+        this.toolbar = new JToolBar();
+
+        toolbar.add(createToolbarButton(Actions.FILE_NEW));
+        toolbar.add(createToolbarButton(Actions.FILE_OPEN));
+        toolbar.add(createToolbarButton(Actions.FILE_SAVE));
+
+        toolbar.addSeparator();
+
+        toolbar.add(createToolbarButton(Actions.VIEW_ZOOMIN));
+        toolbar.add(createToolbarButton(Actions.VIEW_ZOOMOUT));
+
+        toolbar.addSeparator();
+
+        toolbar.add(createToolbarButton(Actions.EDIT_TERRAIN));
+        toolbar.add(createToolbarButton(Actions.EDIT_FEATURES));
+        toolbar.add(createToolbarButton(Actions.EDIT_RIVERS));
+
+        return this.toolbar;
+    }
+
+    
+    public void
+    actionPerformed(ActionEvent e) {
+        System.out.println("ACTION ["+e.getActionCommand()+"]");
+    }
+
+    public static void
+    main(String args[]) {
+        MapCraft        map = null;
+        Options         options = new Options(args);
+        String          mapfile = null;
+        Properties      properties = new Properties();
+
+
+        if (options.isOption("-rundir")) {
+            properties.setProperty("path.run", options.getString("-rundir"));
+            properties.setProperty("path.images", options.getString("-rundir")+"/images");
+        } else {
+            properties.setProperty("path.run", System.getProperty("user.dir"));
+            properties.setProperty("path.images", System.getProperty("user.dir")+"/images");
+        }
+
+        
+        if (options.isOption("-load")) {
+            mapfile = options.getString("-load");
+        }
+
+        if (options.isOption("-imagedir")) {
+            properties.setProperty("path.images", options.getString("-imagedir"));
+        }
+        
+        if (mapfile == null) {
+            map = new MapCraft(properties);
+        } else {
+            map = new MapCraft(properties, mapfile);
+        }
+
+
+    }
+}
