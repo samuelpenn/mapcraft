@@ -1180,6 +1180,22 @@ public class Map implements Cloneable {
         return index;
     }
 
+    /**
+     * Return nearest site for the given coordinates.
+     * @see getNearestSiteIndex
+     */
+    public Site
+    getNearestSite(int x, int y, int max) {
+        Site    site = null;
+        int     index = getNearestSiteIndex(x, y, max);
+
+        if (index >= 0) {
+            site = (Site)sites.elementAt(index);
+        }
+
+        return site;
+    }
+
     public static void
     main(String args[]) {
         Map         map;

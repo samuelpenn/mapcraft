@@ -229,25 +229,36 @@ public class MapEditor extends MapViewer
                 paintTile(x, y);
                 break;
             case Brush.SITES:
-                if (brush.getSelected() == 0) {
-                    int     s = map.getNearestSiteIndex(brush.getX(), brush.getY(), 100);
-                    if (s >= 0) {
-                        map.removeSite(s);
+                switch (brush.getButton()) {
+                case MouseEvent.BUTTON1:
+                    if (brush.getSelected() == 0) {
+                        int     s = map.getNearestSiteIndex(brush.getX(), brush.getY(), 100);
+                        if (s >= 0) {
+                            map.removeSite(s);
+                        }
+                        map.getTile(x, y).setSite((Site)null);
+                    } else {
+                        // Only set site if no site currently present.
+                        Site    site = new Site(brush.getSelected(), "Unnamed", "Unknown",
+                                                brush.getX(), brush.getY());
+                        info("Applying site brush "+brush.getSelected());
+                        map.addSite(site);
+                        info("Opening dialog");
+                        SiteDialog dialog = new SiteDialog(site, frame);
+                        info("Finished dialog");
+                        site.setName(dialog.getName());
+                        site.setDescription(dialog.getDescription());
                     }
-                    map.getTile(x, y).setSite((Site)null);
-                } else {
-                    // Only set site if no site currently present.
-                    Site    site = new Site(brush.getSelected(), "Unnamed", "Unknown",
-                                            brush.getX(), brush.getY());
-                    info("Applying site brush "+brush.getSelected());
-                    map.addSite(site);
-                    info("Opening dialog");
-                    SiteDialog dialog = new SiteDialog(site, frame);
-                    info("Finished dialog");
-                    site.setName(dialog.getName());
-                    site.setDescription(dialog.getDescription());
+                    break;
+                case MouseEvent.BUTTON2:
+                    info("Moving site");
+                    Site    site = map.getNearestSite(brush.getX(), brush.getY(), 100);
+                    if (site != null) {
+                        site.setPosition(brush.getX(), brush.getY());
+                    }
+                    break;
                 }
-                paintTile(x, y);
+                paintComponent();
                 break;
             case Brush.AREAS:
                 map.getTile(x, y).setArea(brush.getSelected());
@@ -322,6 +333,7 @@ public class MapEditor extends MapViewer
             // Record actual X/Y coordinate of mouse click.
             brush.setX((e.getX()*100)/tileXSize);
             brush.setY((e.getY()*100)/tileYSize);
+            brush.setButton(e.getButton());
 
             if (map.getTileShape() == Map.SQUARE) {
                 x = e.getX()/tileXSize;
@@ -336,10 +348,7 @@ public class MapEditor extends MapViewer
                 y = yp/tileYSize;
             }
 
-            if (e.getButton() == e.BUTTON1) {
-                // Left mouse button
-                applyBrush(x, y);
-            } else if (e.getButton() == e.BUTTON3) {
+            if (e.getButton() == e.BUTTON3) {
                 // Right mouse button
                 debug("Right mouse");
                 try {
@@ -354,6 +363,8 @@ public class MapEditor extends MapViewer
                 } catch (MapOutOfBoundsException oobe) {
                     warn("Mouse click out of bounds");
                 }
+            } else {
+                applyBrush(x, y);
             }
         }
     }
@@ -533,11 +544,12 @@ public class MapEditor extends MapViewer
     public
     MapEditor(int width, int height, int scale) {
     }
-    
+
     public void
     showTerrainPalette() {
         terrainPane = new Pane(new TerrainPalette(this), "Terrain");
-        terrainPane.setImagePath(properties.getProperty("path.images")+"/"+map.getImageDir()+"/medium");
+        terrainPane.setImagePath(properties.getProperty("path.images")+
+                "/"+map.getImageDir()+"/medium");
         terrainPane.setPalette(map.getTerrainSet().toArray(), false);
         terrainPane.makeFrame();
     }
@@ -549,7 +561,8 @@ public class MapEditor extends MapViewer
         } else {
             placePane = new Pane(new PlacePalette(this), "Places");
         }
-        placePane.setImagePath(properties.getProperty("path.images")+"/"+map.getImageDir()+"/medium");
+        placePane.setImagePath(properties.getProperty("path.images")+
+                "/"+map.getImageDir()+"/medium");
         placePane.setPalette(map.getPlaceSet().toArray(), false);
         placePane.makeFrame();
     }
@@ -557,18 +570,9 @@ public class MapEditor extends MapViewer
     public void
     showHillPalette() {
         hillPane = new Pane(new HillPalette(this), "Hills");
-        hillPane.setImagePath(properties.getProperty("path.images")+"/"+map.getImageDir()+"/medium");
+        hillPane.setImagePath(properties.getProperty("path.images")+
+                "/"+map.getImageDir()+"/medium");
 
-        /*
-        Terrain[]   set = new Terrain[6];
-
-        set[0] = new Terrain((short)0, "clear", "Clear", "0.png");
-        set[1] = new Terrain((short)1, "lowhills", "Low hills", "1.png");
-        set[2] = new Terrain((short)2, "highhills", "High hills", "2.png");
-        set[3] = new Terrain((short)3, "foothills", "Foot hills", "3.png");
-        set[4] = new Terrain((short)4, "lowmnts", "Low mountains", "4.png");
-        set[5] = new Terrain((short)5, "highmnts", "High mountains", "5.png");
-*/
         hillPane.setPalette(map.getHillSet().toArray(), false);
         hillPane.makeFrame();
     }

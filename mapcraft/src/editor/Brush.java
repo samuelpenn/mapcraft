@@ -50,6 +50,7 @@ public class Brush {
 
     private int     rawX = 0;
     private int     rawY = 0;
+    private int     button = 1;
 
     Brush() {
         brush = TERRAIN;
@@ -59,7 +60,7 @@ public class Brush {
     getType() {
         return brush;
     }
-    
+
     int
     getSize() {
         return size;
@@ -67,9 +68,11 @@ public class Brush {
 
     int getX() { return rawX; }
     int getY() { return rawY; }
+    int getButton() { return button; }
 
     void setX(int x) { this.rawX = x; }
     void setY(int y) { this.rawY = y; }
+    void setButton(int button) { this.button = button; }
 
     short
     getSelected() {

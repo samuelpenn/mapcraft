@@ -760,8 +760,8 @@ public class MapViewer extends JPanel {
 
         debug("paintSite: ["+site.getName()+"]");
 
-        x = site.getX() * tileXSize / 100;
-        y = site.getY() * tileYSize / 100;
+        x = site.getX() * tileXSize / 100 - tileXSize/2;
+        y = site.getY() * tileYSize / 100 - tileYSize/2;
 
         g.drawImage(icon, x, y, this);
         // Show name, should be configurable.
