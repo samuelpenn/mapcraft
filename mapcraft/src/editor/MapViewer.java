@@ -356,7 +356,8 @@ public class MapViewer extends JPanel {
         for (int i = 0; i < icons.length; i++) {
             String      name = icons[i]+".png";
             String      path = views[view].getPath()+"/effects/"+name;
-            Image       icon = toolkit.getImage(path);
+            URL         url = MapViewer.class.getResource(path);
+            Image       icon = toolkit.getImage(url);
             Image       scaled = null;
             int     x = -1, y = -1;
 
