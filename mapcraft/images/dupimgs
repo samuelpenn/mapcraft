@@ -14,11 +14,15 @@ do
 		convert -scale $geom $img ../$dir/$img
 	done
 
-	if [ -d features ]
-	then
-		for img in features/*.png
-		do
-			convert -scale $geom $img ../$dir/$img
-		done
-	fi
+	for sub in features places hills
+	do
+		if [ -d $sub ]
+		then
+			for img in $sub/*.png
+			do
+				convert -scale $geom $img ../$dir/$img
+			done
+		fi
+	done
+
 done

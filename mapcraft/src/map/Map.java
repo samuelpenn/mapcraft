@@ -687,7 +687,9 @@ public class Map {
         writeHeader(writer);
 
         // Terrain Sets
+        writer.write("    <!-- Standard terrain set -->\n");
         writeTerrainSet(terrainSet, writer);
+        writer.write("    <!-- Features -->\n");
         writeTerrainSet(placeSet, writer);
 
         // Now go through each of the tilesets in turn.
@@ -804,6 +806,7 @@ public class Map {
         hills.add(new Terrain((short)3, "foothills", "Foot hills", "hills/3.png"));
         hills.add(new Terrain((short)4, "lowmnts", "Low mountains", "hills/4.png"));
         hills.add(new Terrain((short)5, "highmnts", "High mountains", "hills/5.png"));
+        hills.add(new Terrain((short)6, "marsh", "Marshland", "hills/marsh.png"));
         
         return hills;
     }
