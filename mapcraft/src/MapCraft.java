@@ -123,6 +123,14 @@ public class MapCraft implements ActionListener {
 
         window.getContentPane().add(scrollpane, BorderLayout.CENTER);
         scrollpane.setVisible(true);
+        editor.setVisible(true);
+        
+        // Components refuse to draw themselves until the scrollpane is
+        // resized, so force a resize. There has to be a better way of
+        // doing this. repaint() etc doesn't seem to work.
+        Dimension dim = window.getSize();
+        window.setSize(new Dimension((int)dim.getWidth()+1, (int)dim.getHeight()+1));
+
     }
     
     /**
