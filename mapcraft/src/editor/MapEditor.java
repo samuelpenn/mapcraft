@@ -179,7 +179,6 @@ public class MapEditor extends MapViewer
 
     public void
     applyBrush(int x, int y) {
-        System.out.println("DISTANCE: "+map.distance(5, 5, x, y));
         try {
             switch (brush.getType()) {
             case Brush.TERRAIN:
@@ -229,6 +228,10 @@ public class MapEditor extends MapViewer
                 break;
             case Brush.ROADS:
                 applyBrushPaths(brush.getX(), brush.getY(), Path.ROAD);
+                break;
+            case Brush.HIGHLIGHT:
+                map.setHighlighted(x, y, true);
+                paintTile(x, y);
                 break;
             }
         } catch (MapOutOfBoundsException moobe) {

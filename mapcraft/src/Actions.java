@@ -63,6 +63,7 @@ public class Actions {
     public final static String  EDIT_RIVERS         = "edit.rivers";
     public final static String  EDIT_AREAS          = "edit.areas";
     public final static String  EDIT_ROADS          = "edit.roads";
+    public final static String  EDIT_HIGHLIGHT      = "edit.highlight";
     public final static String  EDIT_SMALL          = "edit.small";
     public final static String  EDIT_MEDIUM         = "edit.medium";
     public final static String  EDIT_LARGE          = "edit.large";
@@ -143,12 +144,13 @@ public class Actions {
             add(VIEW_XXLARGE, "XX-Large");
 
             // Palettes
-            addLocal(EDIT_TERRAIN, "Terrain Brush", "terrain");
-            addLocal(EDIT_FEATURES, "Features Brush", "features");
-            addLocal(EDIT_AREAS, "Area Brush", "terrain");
-            addLocal(EDIT_RIVERS, "Rivers Brush", "rivers");
+            addLocal(EDIT_TERRAIN, "Terrain brush", "terrain");
+            addLocal(EDIT_FEATURES, "Features brush", "features");
+            addLocal(EDIT_AREAS, "Area brush", "terrain");
+            addLocal(EDIT_RIVERS, "Rivers brush", "rivers");
             addLocal(EDIT_THINGS, "Things brush", "things");
-            addLocal(EDIT_ROADS, "Roads Brush", "roads");
+            addLocal(EDIT_ROADS, "Roads brush", "roads");
+            addLocal(EDIT_HIGHLIGHT, "Highlight brush", "highlight");
 
             // Brushes
             addLocal(EDIT_SMALL,"Small brush", "small-brush");

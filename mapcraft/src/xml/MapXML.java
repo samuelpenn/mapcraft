@@ -150,7 +150,6 @@ public class MapXML {
      */
     private void
     load(String filename) throws XMLException, IOException {
-        System.out.println("MapXML.Load "+filename);
         try {
             InputSource             in;
             FileInputStream         fis;
@@ -165,8 +164,6 @@ public class MapXML {
 
             document = dbf.newDocumentBuilder().parse(in);
 
-            System.out.println("Parsed document "+filename);
-
             name = getTextNode("/map/header/name");
             author = getTextNode("/map/header/author");
             version = getTextNode("/map/header/cvs/version");
@@ -178,7 +175,6 @@ public class MapXML {
             type = getTextNode("/map/header/type");
             imagedir = getTextNode("/map/header/imagedir");
 
-            System.out.println(name+","+id+","+parent+","+author);
         } catch (XMLException xe) {
             throw xe;
         } catch (IOException ioe) {
@@ -502,7 +498,6 @@ public class MapXML {
 
         try {
             // First, create an empty tileset.
-            System.out.println("Creating tileSet "+format+" of w "+width+" and h "+height);
             tileSet = new TileSet(name, width, height, scale);
 
             // Next, populate the tiles with data from the XML.
@@ -541,7 +536,6 @@ public class MapXML {
             columns = null; // Free memory;
 
             try {
-                System.out.println("Looking for tileset parent");
                 int     parentScale, parentX, parentY;
                 parentScale = getIntNode(node, "parent/scale");
                 parentX = getIntNode(node, "parent/x");
@@ -558,8 +552,6 @@ public class MapXML {
         } catch (Exception e) {
             System.out.println(e);
         }
-
-        System.out.println(name+" "+scale+"km "+width+"x"+height);
 
         return tileSet;
     }
@@ -627,10 +619,8 @@ public class MapXML {
             NodeList    list = getNodeList(xpath);
             if (list == null || list.getLength() == 0) {
                 // No things found. This is perfectly valid.
-                System.out.println("No things found at ["+xpath+"]");
                 return things;
             }
-            System.out.println("Found "+list.getLength()+" things to load");
 
             for (i=0; i < list.getLength(); i++) {
                 Node        node = list.item(i);
@@ -783,8 +773,6 @@ public class MapXML {
                     } catch (Exception e2) {
                         style = "plain";
                     }
-
-                    System.out.println("Adding "+ptype+" ["+name+"/"+style+"]");
 
                     // Now get each path element in turn. First should be a <start/>
                     child = node.getFirstChild();

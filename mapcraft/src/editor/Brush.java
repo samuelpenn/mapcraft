@@ -104,6 +104,7 @@ public class Brush {
         case HEIGHT:    return height;
         case AREAS:     return area;
         case ROADS:     return road;
+        case HIGHLIGHT: return (short)1;
         default:
             return 0;
         }

@@ -56,6 +56,7 @@ public class EditMenu extends JMenu implements ActionListener {
         addItem(Actions.EDIT_AREAS);
         addItem(Actions.EDIT_RIVERS);
         addItem(Actions.EDIT_ROADS);
+        addItem(Actions.EDIT_HIGHLIGHT);
 
         addItem(Actions.EDIT_SELECT);
         addItem(Actions.EDIT_NEW);
@@ -158,6 +159,18 @@ public class EditMenu extends JMenu implements ActionListener {
             actions.get(Actions.EDIT_SMALL).setEnabled(false);
             actions.get(Actions.EDIT_MEDIUM).setEnabled(false);
             actions.get(Actions.EDIT_LARGE).setEnabled(false);
+        } else if (cmd.equals(Actions.EDIT_HIGHLIGHT)) {
+            application.getEditor().setBrushType(Brush.HIGHLIGHT);
+            actions.get(Actions.EDIT_SELECT).setEnabled(false);
+            actions.get(Actions.EDIT_EDIT).setEnabled(false);
+            actions.get(Actions.EDIT_INSERT).setEnabled(true);
+            actions.get(Actions.EDIT_DELETE).setEnabled(true);
+            actions.get(Actions.EDIT_NEW).setEnabled(false);
+            actions.get(Actions.EDIT_SMALL).setEnabled(true);
+            actions.get(Actions.EDIT_MEDIUM).setEnabled(true);
+            actions.get(Actions.EDIT_LARGE).setEnabled(true);
+
+            application.getEditor().setBrushMode(Brush.INSERT);
         } else if (cmd.equals(Actions.EDIT_SELECT)) {
             application.getEditor().setBrushMode(Brush.SELECT);
         } else if (cmd.equals(Actions.EDIT_NEW)) {

@@ -228,6 +228,7 @@ public class MapCraft implements ActionListener {
         toolbar.add(createToolbarButton(Actions.EDIT_FEATURES));
         toolbar.add(createToolbarButton(Actions.EDIT_RIVERS));
         toolbar.add(createToolbarButton(Actions.EDIT_ROADS));
+        toolbar.add(createToolbarButton(Actions.EDIT_HIGHLIGHT));
 
         toolbar.addSeparator();
 

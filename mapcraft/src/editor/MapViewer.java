@@ -55,6 +55,7 @@ public class MapViewer extends JPanel {
     protected IconSet     iconSet = null;
     protected IconSet     thingSet = null;
     protected IconSet     featureSet = null;
+    protected IconSet     effectSet = null;
 
     private boolean       showGrid = true;
     private boolean       showLargeGrid = true;
@@ -64,6 +65,8 @@ public class MapViewer extends JPanel {
     private boolean       showRivers = true;
     private boolean       showRoads = true;
     private boolean       showAreas = true;
+
+    private final static short  HIGHLIGHT_ICON = 0;
 
     protected Properties        properties;
     protected ViewProperties    views[];
@@ -189,11 +192,8 @@ public class MapViewer extends JPanel {
                     tileOffset = 0;
                 }
 
-                System.out.println("ViewProperties["+baseFile+"] "+iconWidth+"x"+iconHeight+
-                                   " "+tileWidth+"x"+tileHeight+", +"+tileOffset);
-
             } catch (Exception e) {
-                System.out.println("Cannot load properties from file ["+file+"]");
+                error("Cannot load properties from file ["+file+"]");
                 throw e;
             }
         }
@@ -235,7 +235,7 @@ public class MapViewer extends JPanel {
          * The actual physical width of each icon, in pixels.
          */
         public int getIconWidth() { return iconWidth; }
-        
+
         /**
          * The height of a tile. For square maps, this is identical to the
          * icon height. For hexagonal maps, it may be different.
@@ -285,6 +285,11 @@ public class MapViewer extends JPanel {
         return;
     }
 
+    /**
+     * Read in all icons for a particular set. Size information is obtained
+     * from the current view profile. If this is a hexagonal map, then
+     * ensure that each icon is filtered through the Square->Hex filter.
+     */
     protected IconSet
     readIcons(String name, TerrainSet set) {
         IconSet     iconSet = new IconSet(name);
@@ -341,11 +346,51 @@ public class MapViewer extends JPanel {
         return iconSet;
     }
 
+    protected IconSet
+    readEffectIcons() {
+        IconSet     iconSet = new IconSet("effects");
+        HexFilter   filter = new HexFilter(views[view].getIconWidth(),
+                                           views[view].getIconHeight());
+        String[]    icons = { "highlight" };
+
+        for (int i = 0; i < icons.length; i++) {
+            String      name = icons[i]+".png";
+            String      path = views[view].getPath()+"/effects/"+name;
+            debug(path);
+            Image       icon = toolkit.getImage(path);
+            Image       scaled = null;
+            int     x = -1, y = -1;
+
+            if (icon == null) {
+                warn("Null highlight image icon found");
+            }
+            x = views[view].getIconWidth();
+            y = views[view].getIconHeight();
+            scaled = icon.getScaledInstance(x, y, Image.SCALE_SMOOTH);
+
+            if (views[view].isHexagonal()) {
+                int  h = (int)((Math.sqrt(3)/2)*x);
+                filter = new HexFilter(x, h);
+                icon = createImage(new FilteredImageSource(scaled.getSource(), filter));
+                iconSet.add((short)i, icon);
+                prepareImage(icon);
+            } else {
+                iconSet.add((short)i, scaled);
+                prepareImage(scaled);
+            }
+        }
+
+        iconSet.prepareImages(this);
+
+        return iconSet;
+    }
+
     protected void
     readAllIcons() {
         iconSet = readIcons("terrain", map.getTerrainSet());
         thingSet = readIcons("things", map.getThingSet());
         featureSet = readIcons("features", map.getFeatureSet());
+        effectSet = readEffectIcons();
     }
 
     private ViewProperties
@@ -462,7 +507,7 @@ public class MapViewer extends JPanel {
         realHeight = tileYSize * (map.getHeight()+1);
 
         setPreferredSize(new Dimension(realWidth, realHeight));
-        
+
         readAllIcons();
         repaint();
     }
@@ -812,6 +857,7 @@ public class MapViewer extends JPanel {
                 g2.drawImage(icon, xp, yp, this);
                 g2.rotate(-r, xp+tileXSize/2, yp+tileYSize/2);
             }
+
 /*
  * Calculate distances from a point.
             {
@@ -919,6 +965,15 @@ public class MapViewer extends JPanel {
                         gp.append(line, true);
                         g2.draw(gp);
                     }
+                }
+            }
+
+            if (map.isHighlighted(x, y)) {
+                icon = effectSet.getIcon(HIGHLIGHT_ICON);
+                if (icon != null) {
+                    g2.drawImage(icon, xp, yp, this);
+                } else {
+                    warn("Highlight icon is null");
                 }
             }
         } catch (Exception e) {

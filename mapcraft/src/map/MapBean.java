@@ -408,6 +408,16 @@ public class MapBean implements Cloneable {
         return tileSets[currentSet].getTile(x, y).getFeature();
     }
 
+    public void
+    setHighlighted(int x, int y, boolean hl) throws MapOutOfBoundsException {
+        tileSets[currentSet].setHighlighted(x, y, hl);
+    }
+
+    public boolean
+    isHighlighted(int x, int y) throws MapOutOfBoundsException {
+        return tileSets[currentSet].isHighlighted(x, y);
+    }
+
     public  Vector
     getThings() {
         return tileSets[0].getThings();
