@@ -60,6 +60,10 @@ public class MapXML {
     
     public static final String LOCAL = "Local";
     public static final String WORLD = "World";
+
+    public
+    MapXML() {
+    }
     
     /**
      * Convert an integer into its Base64 representation as a string
@@ -467,7 +471,7 @@ public class MapXML {
 
         try {
             // First, create an empty tileset.
-            System.out.println("Creating tileSet of w "+width+" and h "+height);
+            System.out.println("Creating tileSet "+format+" of w "+width+" and h "+height);
             tileSet = new TileSet(name, width, height, scale);
 
             // Next, populate the tiles with data from the XML.
