@@ -420,23 +420,40 @@ public class MapBean implements Cloneable {
 
     public  Vector
     getThings() {
-        return tileSets[0].getThings();
+        return tileSets[currentSet].getThings();
     }
 
     public void
     setThings(Vector things) {
-        tileSets[0].setThings(things);
+        tileSets[currentSet].setThings(things);
     }
 
     public void
     removeThing(int s) {
-        tileSets[0].removeThing(s);
+        tileSets[currentSet].removeThing(s);
     }
 
     public void
     addThing(Thing s) {
-        tileSets[0].addThing(s);
+        tileSets[currentSet].addThing(s);
     }
+
+    public String[]
+    getThingNames() {
+        return tileSets[currentSet].getThingNames();
+    }
+
+    public String[]
+    getRiverNames() {
+        return tileSets[currentSet].getPathNames(Path.RIVER);
+    }
+
+    public String[]
+    getRoadNames() {
+        return tileSets[currentSet].getPathNames(Path.ROAD);
+    }
+
+
 
     /**
      * Set the terrain of the given tile for the currently

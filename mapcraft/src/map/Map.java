@@ -304,9 +304,9 @@ public class Map extends MapBean implements Cloneable {
      * Crop the specified tileset to the given rectangle.
      */
     public boolean
-    crop(int set, int x, int y, int w, int h) {
+    crop(int x, int y, int w, int h) {
         try {
-            tileSets[set].crop(x, y, w, h);
+            tileSets[getCurrentSet()].crop(x, y, w, h);
         } catch (MapOutOfBoundsException moobe) {
             return false;
         }
@@ -321,10 +321,21 @@ public class Map extends MapBean implements Cloneable {
      * each direction by the margin size.
      */
     public boolean
-    cropToArea(int set, short area, int margin) {
+    cropToArea(short area, int margin) {
         try {
             System.out.println("Cropping to area "+area+" with margin "+margin);
-            tileSets[set].cropToArea(area, margin);
+            tileSets[getCurrentSet()].cropToArea(area, margin);
+        } catch (MapOutOfBoundsException moobe) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean
+    cropToHighlighted() {
+        try {
+            tileSets[getCurrentSet()].cropToHighlighted();
         } catch (MapOutOfBoundsException moobe) {
             return false;
         }

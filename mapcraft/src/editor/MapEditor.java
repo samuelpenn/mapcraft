@@ -856,6 +856,15 @@ public class MapEditor extends MapViewer
     crop() {
         try {
             CropDialog  dialog = new CropDialog(map, frame);
+            if (dialog.isOkay()) {
+                if (dialog.isHighlight()) {
+                    map.cropToHighlighted();
+                } else if (dialog.isArea()) {
+                    short    margin = dialog.getMargin();
+                    short    area = (short)map.getAreaByName(dialog.getSelection()).getId();
+                    map.cropToArea(area, margin);
+                }
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

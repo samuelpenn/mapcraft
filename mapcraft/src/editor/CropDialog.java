@@ -30,9 +30,19 @@ public class CropDialog extends JDialog implements ItemListener {
     private GridBagLayout       gridbag;
     private GridBagConstraints  c;
 
-    private JComboBox           cropType;
+    private JComboBox           cropBox, areaBox, thingBox, riverBox, roadBox;
+    private JTextField          margin, radius;
+    private JButton             okay, cancel;
+
     private Map                 map;
 
+    private boolean             doCrop = false;
+
+    private final static String HIGHLIGHT = "Highlighted";
+    private final static String AREA = "Named area";
+    private final static String THING = "Thing";
+    private final static String RIVER = "River";
+    private final static String ROAD = "Road";
 
     public void
     itemStateChanged(ItemEvent e) {
@@ -40,24 +50,124 @@ public class CropDialog extends JDialog implements ItemListener {
         }
     }
 
+    private void
+    deselectAll() {
+        areaBox.setEnabled(false);
+        thingBox.setEnabled(false);
+        riverBox.setEnabled(false);
+        roadBox.setEnabled(false);
+        margin.setEnabled(false);
+        radius.setEnabled(false);
+    }
 
+    private void
+    selectedType() {
+        String  selection = (String)cropBox.getSelectedItem();
 
+        deselectAll();
+        if (selection.equals(HIGHLIGHT)) {
+        } else if (selection.equals(AREA)) {
+            areaBox.setEnabled(true);
+            margin.setEnabled(true);
+        } else if (selection.equals(THING)) {
+            thingBox.setEnabled(true);
+            radius.setEnabled(true);
+        } else if (selection.equals(RIVER)) {
+            riverBox.setEnabled(true);
+            margin.setEnabled(true);
+        } else if (selection.equals(ROAD)) {
+            roadBox.setEnabled(true);
+            margin.setEnabled(true);
+        }
+    }
+
+    /**
+     * Create a JComboBox listing all the possible selection targets.
+     */
     private JComboBox
     createTypeCombo() {
-        String[]    labels = { "Highlighted", "Area", "Thing" };
+        String[]    labels = { HIGHLIGHT, AREA, THING, RIVER, ROAD };
         JComboBox   box = new JComboBox(labels);
-        box.setSelectedItem("Highlighted");
+        box.setSelectedItem(HIGHLIGHT);
+        box.addItemListener(new ItemListener() {
+                                public void
+                                itemStateChanged(ItemEvent e) {
+                                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                                        selectedType();
+                                    }
+                                }
+                            });
+
+        return box;
+    }
+
+    /**
+     * Create a JComboBox listing all the named areas in the map.
+     */
+    private JComboBox
+    createAreaCombo() {
+        JComboBox   box = null;
+        AreaSet     areas = map.getAreaSet();
+        String[]    labels = areas.toNameArray();
+
+        if (labels != null) {
+            box = new JComboBox(labels);
+        } else {
+            box = new JComboBox();
+            box.setEnabled(false);
+            cropBox.removeItem(AREA);
+        }
+
+        return box;
+    }
+
+    /**
+     * Create a JComboBox listing all the things in the map.
+     */
+    private JComboBox
+    createThingCombo() {
+        JComboBox   box = null;
+        String[]    labels = map.getThingNames();
+
+        if (labels != null) {
+            box = new JComboBox(labels);
+        } else {
+            box = new JComboBox();
+            box.setEnabled(false);
+            cropBox.removeItem(THING);
+        }
 
         return box;
     }
 
     private JComboBox
-    createAreaCombo() {
-        String[]    labels = null;
+    createRiverCombo() {
         JComboBox   box = null;
-        AreaSet     areas = map.getAreaSet();
+        String[]    labels = map.getRiverNames();
 
-        box = new JComboBox(areas.toNameArray());
+        if (labels != null) {
+            box = new JComboBox(labels);
+        } else {
+            box = new JComboBox();
+            box.setEnabled(false);
+            cropBox.removeItem(RIVER);
+        }
+
+        return box;
+    }
+
+    private JComboBox
+    createRoadCombo() {
+        JComboBox   box = null;
+        String[]    labels = map.getRoadNames();
+
+        if (labels != null) {
+            box = new JComboBox(labels);
+        } else {
+            box = new JComboBox();
+            box.setEnabled(false);
+            cropBox.removeItem(ROAD);
+        }
 
         return box;
     }
@@ -73,7 +183,7 @@ public class CropDialog extends JDialog implements ItemListener {
      */
     public
     CropDialog(Map map, JFrame frame) {
-        super(frame, "Crop map", true);
+        super(frame, "Select region", true);
 
         if (frame != null) {
             // This is very crude positioning.
@@ -95,17 +205,50 @@ public class CropDialog extends JDialog implements ItemListener {
         c.weightx = 1.0;
         c.weighty = 0.0;
 
-        add(new Label("Margin"), 0, 1, 1, 1);
-        add(new TextField(5), 1, 1, 2, 1);
+        int     y = 0;
+        add(new Label("Crop type"), 0, y, 1, 1);
+        add(cropBox = createTypeCombo(), 1, y++, 2, 1);
 
-        add(new Label("Crop type"), 0, 0, 1, 1);
-        add(cropType = createTypeCombo(), 1, 0, 2, 1);
+        add(new Label("Area"), 0, y, 1, 1);
+        add(areaBox = createAreaCombo(), 1, y++, 2, 1);
 
-        add(new Label("Area"), 0, 2, 1, 1);
-        add(createAreaCombo(), 1, 2, 2, 1);
+        add(new Label("Thing"), 0, y, 1, 1);
+        add(thingBox = createThingCombo(), 1, y++, 2, 1);
+
+        add(new Label("River"), 0, y, 1, 1);
+        add(riverBox = createRiverCombo(), 1, y++, 2, 1);
+
+        add(new Label("Road"), 0, y, 1, 1);
+        add(roadBox = createRoadCombo(), 1, y++, 2, 1);
+
+        add(new Label("Margin"), 0, y, 1, 1);
+        add(margin = new JTextField("1", 5), 1, y++, 1, 1);
+
+        add(new Label("Radius"), 0, y, 1, 1);
+        add(radius = new JTextField("5", 5), 1, y++, 1, 1);
+
+        add(okay = new JButton("Crop"), 1, y, 1, 1);
+        add(cancel = new JButton("Cancel"), 2, y, 1, 1);
+
+        okay.addActionListener(new ActionListener() {
+                                    public void
+                                    actionPerformed(ActionEvent e) {
+                                        crop();
+                                    }
+                               });
+
+        cancel.addActionListener(new ActionListener() {
+                                    public void
+                                    actionPerformed(ActionEvent e) {
+                                        doCrop = false;
+                                        setVisible(false);
+                                    }
+                                 });
 
 
-        setSize(new Dimension(300, 400));
+        selectedType();
+
+        setSize(new Dimension(300, 250));
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -118,6 +261,118 @@ public class CropDialog extends JDialog implements ItemListener {
         c.gridheight = h;
         gridbag.setConstraints(cmp, c);
         getContentPane().add(cmp);
+    }
+
+    public void
+    crop() {
+        doCrop = true;
+        setVisible(false);
+    }
+
+    /**
+     * Return true if user clicked 'Okay', false otherwise.
+     */
+    public boolean
+    isOkay() {
+        return doCrop;
+    }
+
+    /**
+     * Does the user want to crop to the highlighted region?
+     */
+    public boolean
+    isHighlight() {
+        String  selection = (String)cropBox.getSelectedItem();
+
+        return selection.equals(HIGHLIGHT);
+    }
+
+    /**
+     * Does the user want to crop to the named area?
+     */
+    public boolean
+    isArea() {
+        String  selection = (String)cropBox.getSelectedItem();
+
+        return selection.equals(AREA);
+    }
+
+    /**
+     * Does the user want to crop to a thing?
+     */
+    public boolean
+    isThing() {
+        String  selection = (String)cropBox.getSelectedItem();
+
+        return selection.equals(THING);
+    }
+
+    /**
+     * Does the user want to crop to a river?
+     */
+    public boolean
+    isRiver() {
+        String  selection = (String)cropBox.getSelectedItem();
+
+        return selection.equals(RIVER);
+    }
+
+    /**
+     * Does the user want to crop to a road?
+     */
+    public boolean
+    isRoad() {
+        String  selection = (String)cropBox.getSelectedItem();
+
+        return selection.equals(ROAD);
+    }
+
+    /**
+     * Get the name of the region to crop to. This may be a named area,
+     * a thing, river or road, depending on what type the user has selected.
+     * Use the various isRoad() methods etc to find out what.
+     *
+     * For highlighted regions, null is returned.
+     */
+    public String
+    getSelection() {
+        String      name = null;
+
+        if (isThing()) {
+            name = (String)thingBox.getSelectedItem();
+        } else if (isArea()) {
+            name = (String)areaBox.getSelectedItem();
+        } else if (isRiver()) {
+            name = (String)riverBox.getSelectedItem();
+        } else if (isRoad()) {
+            name = (String)roadBox.getSelectedItem();
+        }
+
+        return name;
+    }
+
+    public short
+    getMargin() {
+        String  value = (String)margin.getText();
+        short   i = 0;
+
+        try {
+            i = Short.parseShort(value);
+        } catch (Exception e) {
+        }
+        return i;
+    }
+
+    public short
+    getRadius() {
+        String  value = (String)radius.getText();
+        short   i = 0;
+
+        try {
+            i = Short.parseShort(value);
+        } catch (Exception e) {
+        }
+        return i;
     }
 
     public static void

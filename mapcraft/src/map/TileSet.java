@@ -691,6 +691,64 @@ public class TileSet implements Cloneable {
         return things;
     }
 
+    /**
+     * Get a list of the names of all the things in this TileSet.
+     * The list is returned as an array of Strings. It is not guaranteed
+     * that all things will have unique names.
+     *
+     * @return      Array of strings holding all things in the map.
+     *              null if there are no things defined.
+     */
+    public String[]
+    getThingNames() {
+        if (things.size() == 0) {
+            return null;
+        }
+
+        String[]    names = new String[things.size()];
+
+        for (int i=0; i < things.size(); i++) {
+            names[i] = ((Thing)things.elementAt(i)).getName();
+        }
+
+        return names;
+    }
+
+    /**
+     * Get the names of roads and rivers as an array. The type should be
+     * either 0 for all types, Path.ROAD for roads or Path.RIVER for rivers.
+     * If no paths of the given type are found, then null is returned.
+     */
+    public String[]
+    getPathNames(short type) {
+        String[]    names = null;
+        int         count = 0;
+
+        if (type == 0) {
+            count = rivers.size();
+        } else {
+            for (int i = 0; i < rivers.size(); i++) {
+                Path    path = (Path)rivers.elementAt(i);
+                if (path.getType() == type) {
+                    count++;
+                }
+            }
+        }
+        if (count == 0) {
+            return null;
+        }
+
+        names = new String[count];
+        for (int i = 0, j = 0; i < rivers.size(); i++) {
+            Path        path = (Path)rivers.elementAt(i);
+            if (type == 0 || path.getType() == type) {
+                names[j++] = path.getName();
+            }
+        }
+
+        return names;
+    }
+
     Path
     getPath(int id) {
         Path        path;
