@@ -23,34 +23,35 @@
         </terrain>
 
         <terrain id="1">
+            <name>clear.clear</name>
+            <description>Clear</description>
+            <image>clear.png</image>
+            <solid value="false"/>
+        </terrain>
+        
+        <terrain id="2">
             <name>water.water</name>
             <description>Water</description>
             <image>water.png</image>
             <solid value="false"/>
         </terrain>
 
-        <terrain id="10">
-            <name>clear.clear</name>
-            <description>Clear</description>
-            <image>clear.png</image>
-            <solid value="false"/>
-        </terrain>
 
-        <terrain id="11">
+        <terrain id="3">
             <name>clear.grass</name>
             <description>Grass</description>
             <image>grass.png</image>
             <solid value="false"/>
         </terrain>
 
-        <terrain id="12">
+        <terrain id="4">
             <name>clear.sand</name>
             <description>Sand</description>
             <image>sand.png</image>
             <solid value="false"/>
         </terrain>
 
-        <terrain id="20">
+        <terrain id="5">
             <name>solid.stone</name>
             <description>Stone</description>
             <image>stone.png</image>
