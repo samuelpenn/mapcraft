@@ -24,10 +24,25 @@
     </target>
 
     <target name="jar" depends="build">
-        <jar basedir="${build.dir}" jarfile="${jar.file}"
-             manifest="MANIFEST.MF"
-             excludes="**/*.java"
-        />
+        <jar jarfile="${jar.file}"
+             manifest="MANIFEST.MF">
+
+            <fileset dir="${build.dir}">
+                <include name="**/*.class"/>
+            </fileset>
+
+            <fileset dir="${icons.dir}">
+                <include name="**/*.png"/>
+                <include name="**/*.gif"/>
+                <exclude name="**/.xvpics/*"/>
+            </fileset>
+
+            <fileset dir="${images.dir}">
+                <include name="**/*.properties"/>
+                <include name="**/*.png"/>
+                <exclude name="**/.xvpics/*"/>
+            </fileset>
+        </jar>
     </target>
 
     <target name="docs">

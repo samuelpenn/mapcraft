@@ -30,7 +30,7 @@ import java.util.*;
  */
 public class Actions {
     private static Hashtable    actions;
-    private String              path="icons/toolbar/";
+    private String              path="toolbar/";
     private ActionListener      globalListener;
 
     public final static String  FILE_NEW            = "file.new";
@@ -90,7 +90,12 @@ public class Actions {
 
         public
         Actor(String name, String label, String image) {
-            ImageIcon icon = new ImageIcon(image);
+            URL       url = Actions.class.getResource("/"+image);
+            ImageIcon icon = null;
+
+            if (url != null) {
+                icon = new ImageIcon(url);
+            }
 
             putValue(Action.NAME, label);
             putValue(Action.SMALL_ICON, icon);
@@ -192,7 +197,7 @@ public class Actions {
     
     private void
     addLocal(String name, String label, String image) {
-        Action      action = new Actor(name, label, "icons/mapcraft/"+image+".png");
+        Action      action = new Actor(name, label, "mapcraft/"+image+".png");
         actions.put(name, action);
     }
 

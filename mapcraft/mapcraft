@@ -4,4 +4,5 @@ export CLASSPATH=$CLASSPATH:build:src
 
 export MAPCRAFTDIR=`pwd`
 
-java -Xmx1024m uk.co.demon.bifrost.rpg.mapcraft.MapCraft -rundir $MAPCRAFTDIR $*
+#java -Xmx1024m uk.co.demon.bifrost.rpg.mapcraft.MapCraft -rundir $MAPCRAFTDIR $*
+java -Xmx1024m -jar mapcraft.jar $*

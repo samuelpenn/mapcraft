@@ -282,7 +282,7 @@ public class MapCraft implements ActionListener {
             properties.setProperty("path.images", options.getString("-rundir")+"/images");
         } else {
             properties.setProperty("path.run", System.getProperty("user.dir"));
-            properties.setProperty("path.images", System.getProperty("user.dir")+"/images");
+            properties.setProperty("path.images", "");
         }
 
         if (options.isOption("-create")) {

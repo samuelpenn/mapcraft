@@ -166,10 +166,10 @@ public class MapViewer extends JPanel {
             String              file = basePath+"/"+baseFile+".properties";
 
             properties = new Properties();
-
             try {
-                input = new FileInputStream(file);
-                properties.load(input);
+                URL     url = MapViewer.class.getResource(file);
+                //input = new FileInputStream(file);
+                properties.load(url.openStream());
 
                 viewName = (String)properties.get("view.name");
                 viewShape = (String)properties.get("view.shape");
@@ -191,7 +191,6 @@ public class MapViewer extends JPanel {
                     tileWidth = iconWidth;
                     tileOffset = 0;
                 }
-
             } catch (Exception e) {
                 error("Cannot load properties from file ["+file+"]");
                 throw e;
@@ -308,7 +307,8 @@ public class MapViewer extends JPanel {
             if (t != null) {
                 short   id = t.getId();
                 String  path = views[view].getPath()+"/"+t.getImagePath();
-                Image   icon = toolkit.getImage(path);
+                URL     url = MapViewer.class.getResource(path);
+                Image   icon = toolkit.getImage(url);
                 Image   scaled = null;
                 int     x = -1, y = -1;
 
