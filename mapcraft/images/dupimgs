@@ -1,0 +1,24 @@
+#!/bin/sh
+
+cd xlarge
+for dir in xxsmall xsmall small medium large xxlarge
+do
+	h=`grep icon.height ../$dir/icons.properties | awk '{print $2; }'`
+	w=`grep icon.width ../$dir/icons.properties | awk '{print $2; }'`
+
+	geom=${w}x${h}
+	echo $geom
+
+	for img in *.png
+	do
+		convert -scale $geom $img ../$dir/$img
+	done
+
+	if [ -d features ]
+	then
+		for img in features/*.png
+		do
+			convert -scale $geom $img ../$dir/$img
+		done
+	fi
+done
