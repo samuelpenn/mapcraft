@@ -75,6 +75,9 @@ public class Actions {
     public final static String  EDIT_INSERT         = "edit.insert";
 
     public final static String  TOOL_CROP           = "tool.crop";
+    public final static String  TOOL_RESCALE        = "tool.rescale";
+    public final static String  TOOL_RESIZE         = "tool.resize";
+    public final static String  TOOL_MERGE          = "tool.merge";
 
     public class Actor extends AbstractAction {
         private ActionListener  listener;
@@ -167,7 +170,10 @@ public class Actions {
             addLocal(EDIT_DELETE, "Delete", "delete");
 
             // Tools
-            addLocal(TOOL_CROP, "Crop", "crop");
+            addLocal(TOOL_CROP, "Crop...", "crop");
+            addLocal(TOOL_RESCALE, "Rescale...", "rescale");
+            addLocal(TOOL_RESIZE, "Resize...", "resize");
+            addLocal(TOOL_MERGE, "Merge maps...", "merge");
 
         }
     }
