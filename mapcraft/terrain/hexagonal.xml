@@ -22,87 +22,87 @@
             <name>null</name>
             <description>Unchartable</description>
             <image>blank.png</image>
-            <solid value="false"/>
-            <attributes water="false" woods="0" quality="0"/>
         </terrain>
         <terrain id="1">
             <name>water.sea</name>
-            <description>Sea</description>
+            <description>Coastal sea</description>
             <image>sea.png</image>
-            <solid value="false"/>
-            <attributes water="true" woods="0" quality="0"/>
         </terrain>
-        <terrain id="10">
-            <name>clear.cropland</name>
+        <terrain id="2">
+            <name>water.ocean</name>
+            <description>Deep sea</description>
+            <image>ocean.png</image>
+        </terrain>
+        <terrain id="3">
+            <name>plains.cropland</name>
             <description>Cropland</description>
             <image>cropland.png</image>
-            <solid value="false"/>
-            <attributes water="false" woods="10" quality="100"/>
         </terrain>
-        <terrain id="11">
-            <name>woods.light</name>
-            <description>Light Woodland</description>
-            <image>light-woods.png</image>
-            <solid value="false"/>
-            <attributes water="false" woods="25" quality="100"/>
+        <terrain id="4">
+            <name>plains.grassland</name>
+            <description>Grassland</description>
+            <image>grassland.png</image>
         </terrain>
-        <terrain id="12">
-            <name>woods.medium</name>
-            <description>Medium Woods</description>
-            <image>medium-woods.png</image>
-            <solid value="false"/>
-            <attributes water="false" woods="50" quality="100"/>
+        <terrain id="5">
+            <name>plains.grassland.dry</name>
+            <description>Dry grassland</description>
+            <image>grassland-dry.png</image>
         </terrain>
-        <terrain id="13">
-            <name>woods.thick</name>
-            <description>Thick woods</description>
-            <image>heavy-woods.png</image>
-            <solid value="false"/>
-            <attributes water="false" woods="75" quality="100"/>
+        <terrain id="6">
+            <name>plains.desert.rock</name>
+            <description>Rock desert</description>
+            <image>rock.png</image>
         </terrain>
-        <terrain id="20">
-            <name>wild.heath</name>
+        <terrain id="7">
+            <name>plains.desert.sand</name>
+            <description>Sandy desert</description>
+            <image>desert.png</image>
+        </terrain>
+        <terrain id="8">
+            <name>plains.tundra</name>
+            <description>Tundra</description>
+            <image>tundra.png</image>
+        </terrain>
+        <terrain id="9">
+            <name>plains.snow</name>
+            <description>Snow</description>
+            <image>snow.png</image>
+        </terrain>
+        <terrain id="10">
+            <name>plains.heath</name>
             <description>Heath</description>
             <image>heath.png</image>
-            <solid value="false"/>
-            <attributes water="false" woods="0" quality="50"/>
         </terrain>
-        <terrain id="21">
-            <name>wild.moor</name>
+        <terrain id="11">
+            <name>plains.moor</name>
             <description>Moor</description>
             <image>moor.png</image>
-            <solid value="false"/>
-            <attributes water="false" woods="0" quality="25"/>
         </terrain>
-        <terrain id="22">
-            <name>wild.rock</name>
-            <description>Rock</description>
-            <image>rock.png</image>
-            <solid value="false"/>
-            <attributes water="false" woods="0" quality="5"/>
+        <terrain id="12">
+            <name>forest.woodland</name>
+            <description>Woodland</description>
+            <image>woodland.png</image>
         </terrain>
-        <terrain id="23">
-            <name>wild.desert</name>
-            <description>Sand desert</description>
-            <image>desert.png</image>
-            <solid value="false"/>
-            <attributes water="false" woods="0" quality="0"/>
+        <terrain id="13">
+            <name>forest.forest</name>
+            <description>Forest</description>
+            <image>forest.png</image>
         </terrain>
-        <terrain id="30">
-            <name>cold.snow</name>
-            <description>Snow or rock</description>
-            <image>snow.png</image>
-            <solid value="false"/>
-            <attributes water="false" woods="0" quality="0"/>
+        <terrain id="14">
+            <name>forest.jungle</name>
+            <description>Jungle</description>
+            <image>jungle.png</image>
         </terrain>
-        <terrain id="31">
-            <name>cold.alpine</name>
+        <terrain id="15">
+            <name>forest.alpine</name>
             <description>Alpine forest</description>
             <image>alpine.png</image>
-            <solid value="false"/>
-            <attributes water="false" woods="50" quality="10"/>
         </terrain>
-
+        <terrain id="16">
+            <name>plains.wetland</name>
+            <description>Wetlands</description>
+            <image>wetland.png</image>
+        </terrain>
     </terrainset>
     <!-- Things -->
     <terrainset id="things" path="things">
