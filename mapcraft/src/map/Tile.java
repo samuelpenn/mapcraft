@@ -33,9 +33,9 @@ package uk.co.demon.bifrost.rpg.mapcraft.map;
 public class Tile {
     private short   terrain;
     private short   height;
+    private short   hills;
     private boolean writable;
     private boolean river;
-    private byte    riverMask;
 
     private Site    site;
 
@@ -46,9 +46,9 @@ public class Tile {
     public Tile() {
         terrain = (short)1;
         height = 0;
+        hills = 0;
         writable = true;
         river = false;
-        riverMask = 0;
         site = null;
     }
 
@@ -62,8 +62,8 @@ public class Tile {
         this.height = tile.height;
         this.writable = tile.writable;
         this.river = tile.river;
-        this.riverMask = tile.riverMask;
         this.site = tile.site;
+        this.hills = tile.hills;
     }
 
     /**
@@ -104,10 +104,15 @@ public class Tile {
     getHeight() {
         return height;
     }
-    
+
     public short
     getHills() {
-        return 0;
+        return hills;
+    }
+    
+    public void
+    setHills(short hills) {
+        this.hills = hills;
     }
 
     public boolean
@@ -122,21 +127,17 @@ public class Tile {
 
     public short
     getRiverMask() {
-        return (short)riverMask;
+        return (short)0;
     }
 
     public void
     setRiverMask(short mask) {
         this.river = true;
-        this.riverMask = (byte)mask;
     }
 
     public void
     setRiver(boolean river) {
         this.river = river;
-        if (river == false) {
-            riverMask = (byte)0;
-        }
     }
 
     public void

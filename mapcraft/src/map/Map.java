@@ -333,6 +333,11 @@ public class Map {
     getRiverMask(int set, int x, int y) throws MapOutOfBoundsException {
         return tileSets[set].getRiverMask(x, y);
     }
+    
+    public short
+    getHills(int x, int y) throws MapOutOfBoundsException {
+        return tileSets[0].getTile(x, y).getHills();
+    }
 
     
     public boolean
@@ -783,10 +788,24 @@ public class Map {
     getTerrainSet() {
         return terrainSet;
     }
-    
+
     public TerrainSet
     getPlaceSet() {
         return placeSet;
+    }
+    
+    public TerrainSet
+    getHillSet() {
+        TerrainSet      hills = new TerrainSet("hills", "images/hexagonal/standard/medium");
+
+        hills.add(new Terrain((short)0, "clear", "Clear", "hills/0.png"));
+        hills.add(new Terrain((short)1, "lowhills", "Low hills", "hills/1.png"));
+        hills.add(new Terrain((short)2, "highhills", "High hills", "hills/2.png"));
+        hills.add(new Terrain((short)3, "foothills", "Foot hills", "hills/3.png"));
+        hills.add(new Terrain((short)4, "lowmnts", "Low mountains", "hills/4.png"));
+        hills.add(new Terrain((short)5, "highmnts", "High mountains", "hills/5.png"));
+        
+        return hills;
     }
 
     

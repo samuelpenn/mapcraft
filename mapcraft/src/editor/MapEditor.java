@@ -38,6 +38,7 @@ public class MapEditor extends MapViewer
     private Pane        terrainPane = null;
     private Pane        riverPane = null;
     private Pane        placePane = null;
+    private Pane        hillPane = null;
 
     private Brush       brush = new Brush();
 
@@ -91,7 +92,7 @@ public class MapEditor extends MapViewer
         valueChanged(ListSelectionEvent e) {
             int first, last, index;
             int type = Brush.SITES;
-            
+
             if (map.getType() == Map.LOCAL) {
                 type = Brush.FEATURES;
             }
@@ -105,10 +106,41 @@ public class MapEditor extends MapViewer
                 index = last;
             }
 
-            System.out.println("TerrainPalette: "+index);
+            System.out.println("PlacePalette: "+index);
             Terrain ta[] = map.getPlaceSet().toArray();
             brush.setSelected(type, ta[index].getId());
-            System.out.println("Terrain selected: "+brush.getSelected());
+            System.out.println("Place selected: "+brush.getSelected());
+
+            brush.setType(type);
+        }
+    }
+
+    public class
+    HillPalette implements ListSelectionListener {
+        private MapEditor editor;
+
+        public
+        HillPalette(MapEditor editor) {
+            this.editor = editor;
+        }
+
+        public void
+        valueChanged(ListSelectionEvent e) {
+            int first, last, index;
+            int type = Brush.HILLS;
+
+            // We get a result for both the item which was
+            // selected, and the one unselected, so we need
+            // to figure out which is which.
+            index = first = e.getFirstIndex();
+            last = e.getLastIndex();
+            if (hillPane.isSelected(last)) {
+                index = last;
+            }
+
+            System.out.println("HillPalette: "+index);
+            brush.setSelected(type, (short)index);
+            System.out.println("Hill selected: "+brush.getSelected());
 
             brush.setType(type);
         }
@@ -144,6 +176,10 @@ public class MapEditor extends MapViewer
                     map.setTerrain(x, y, brush.getSelected());
                     break;
                 }
+                break;
+            case Brush.HILLS:
+                info("Applying hill brush");
+                map.getTile(x, y).setHills(brush.getSelected());
                 break;
             case Brush.FEATURES:
                 info("Applying feature brush");
@@ -449,6 +485,25 @@ public class MapEditor extends MapViewer
         placePane.setImagePath(properties.getProperty("path.images")+"/"+map.getImageDir()+"/medium");
         placePane.setPalette(map.getPlaceSet().toArray(), false);
         placePane.makeFrame();
+    }
+
+    public void
+    showHillPalette() {
+        hillPane = new Pane(new HillPalette(this), "Hills");
+        hillPane.setImagePath(properties.getProperty("path.images")+"/"+map.getImageDir()+"/medium");
+
+        /*
+        Terrain[]   set = new Terrain[6];
+
+        set[0] = new Terrain((short)0, "clear", "Clear", "0.png");
+        set[1] = new Terrain((short)1, "lowhills", "Low hills", "1.png");
+        set[2] = new Terrain((short)2, "highhills", "High hills", "2.png");
+        set[3] = new Terrain((short)3, "foothills", "Foot hills", "3.png");
+        set[4] = new Terrain((short)4, "lowmnts", "Low mountains", "4.png");
+        set[5] = new Terrain((short)5, "highmnts", "High mountains", "5.png");
+*/
+        hillPane.setPalette(map.getHillSet().toArray(), false);
+        hillPane.makeFrame();
     }
 
     public void

@@ -51,11 +51,13 @@ public class Actions {
     public final static String  VIEW_XXLARGE        = "view.xxlarges";
     public final static String  VIEW_SHOWTERRAIN    = "view.showterrain";
     public final static String  VIEW_SHOWFEATURES   = "view.showfeatures";
+    public final static String  VIEW_SHOWHILLS      = "view.hills";
     public final static String  VIEW_GRID           = "view.grid";
     public final static String  VIEW_LARGEGRID      = "view.largegrid";
 
     public final static String  EDIT_TERRAIN        = "edit.terrain";
     public final static String  EDIT_FEATURES       = "edit.features";
+    public final static String  EDIT_HILLS          = "edit.hills";
     public final static String  EDIT_RIVERS         = "edit.rivers";
     public final static String  EDIT_SMALL          = "edit.small";
     public final static String  EDIT_MEDIUM         = "edit.medium";
@@ -117,6 +119,7 @@ public class Actions {
             add(VIEW_ZOOMOUT, "Zoom out", "general/ZoomOut");
             addLocal(VIEW_SHOWTERRAIN, "Terrain palette", "terrain");
             addLocal(VIEW_SHOWFEATURES, "Feature palette", "features");
+            addLocal(VIEW_SHOWHILLS, "Hills palette", "hills");
             addLocal(VIEW_GRID, "Toggle grid", "grid");
             addLocal(VIEW_LARGEGRID, "Toggle rulers", "biggrid");
 
@@ -132,6 +135,7 @@ public class Actions {
             addLocal(EDIT_TERRAIN, "Terrain Brush", "terrain");
             addLocal(EDIT_FEATURES, "Features Brush", "features");
             addLocal(EDIT_RIVERS, "Rivers Brush", "rivers");
+            addLocal(EDIT_HILLS, "Hills brush", "hills");
             
             // Brushes
             addLocal(EDIT_SMALL,"Small brush", "small-brush");

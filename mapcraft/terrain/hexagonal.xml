@@ -53,6 +53,36 @@
             <image>thick-forest.png</image>
             <solid value="false"/>
         </terrain>
+        <terrain id="20">
+            <name>wild.heath</name>
+            <description>Heath</description>
+            <image>heath.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="21">
+            <name>wild.moor</name>
+            <description>Moor</description>
+            <image>moor.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="22">
+            <name>wild.marsh</name>
+            <description>Marsh</description>
+            <image>marsh.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="30">
+            <name>cold.snow</name>
+            <description>Snow or rock</description>
+            <image>snow.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="31">
+            <name>cold.alpine</name>
+            <description>Alpine forest</description>
+            <image>alpine.png</image>
+            <solid value="false"/>
+        </terrain>
     </terrainset>
 
     <!-- Icons for places -->

@@ -52,6 +52,7 @@ public class MapViewer extends JPanel {
     protected IconSet     iconSet = null;
     protected IconSet     riverSet = null;
     protected IconSet     siteSet = null;
+    protected IconSet     hillSet = null;
 
     private boolean       showGrid = true;
     private boolean       showLargeGrid = true;
@@ -210,11 +211,12 @@ public class MapViewer extends JPanel {
 
         return iconSet;
     }
-    
+
     protected void
     readAllIcons() {
         iconSet = readIcons("terrain", map.getTerrainSet());
         siteSet = readIcons("sites", map.getPlaceSet());
+        hillSet = readIcons("hills", map.getHillSet());
     }
     
     private ViewProperties
@@ -512,6 +514,11 @@ public class MapViewer extends JPanel {
                     Image icon = iconSet.getIcon(t);
                     g.drawImage(icon, xp, ypp, this);
 
+                    if (map.getHills(x, y) > 0) {
+                        icon = hillSet.getIcon(map.getHills(x, y));
+                        g.drawImage(icon, xp, ypp, this);
+                    }
+
                     // Display grid if asked for.
                     if (showGrid) {
                         g.drawImage(outlineIcon, xp, ypp, this);
@@ -597,6 +604,11 @@ public class MapViewer extends JPanel {
             Image   icon = iconSet.getIcon(t);
             g.drawImage(icon, xp, yp, this);
 
+            if (map.getHills(x, y) > 0) {
+                icon = hillSet.getIcon(map.getHills(x, y));
+                g.drawImage(icon, xp, yp, this);
+            }
+            
             // Now display a river, if one is needed.
             if (map.isRiver(x, y)) {
                 icon = riverSet.getIcon(map.getRiverMask(x, y));
