@@ -1,0 +1,441 @@
+<?xml version="1.0"?>
+<map>
+    <header>
+        <name>island</name>
+        <author>Unknown</author>
+        <id>island.1066074810973</id>
+        <parent>none</parent>
+        <cvs>
+            <version>$Revision$</version>
+            <date>$Date$</date>
+        </cvs>
+        <type>World</type>
+        <shape>Hexagonal</shape>
+        <imagedir>hexagonal/standard</imagedir>
+        <format>0.2.1</format>
+    </header>
+    <!-- Standard terrain set -->
+    <terrainset id="basic" path="terrain">
+        <terrain id="0">
+            <name>null</name>
+            <description>Unchartable</description>
+            <image>blank.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="1">
+            <name>water.sea</name>
+            <description>Coastal sea</description>
+            <image>sea.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="2">
+            <name>water.ocean</name>
+            <description>Deep sea</description>
+            <image>ocean.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="3">
+            <name>plains.cropland</name>
+            <description>Cropland</description>
+            <image>cropland.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="4">
+            <name>plains.grassland</name>
+            <description>Grassland</description>
+            <image>grassland.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="5">
+            <name>plains.grassland.dry</name>
+            <description>Dry grassland</description>
+            <image>grassland-dry.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="6">
+            <name>plains.desert.rock</name>
+            <description>Rock desert</description>
+            <image>rock.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="7">
+            <name>plains.desert.sand</name>
+            <description>Sandy desert</description>
+            <image>desert.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="8">
+            <name>plains.tundra</name>
+            <description>Tundra</description>
+            <image>tundra.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="9">
+            <name>plains.snow</name>
+            <description>Snow</description>
+            <image>snow.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="10">
+            <name>plains.heath</name>
+            <description>Heath</description>
+            <image>heath.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="11">
+            <name>plains.moor</name>
+            <description>Moor</description>
+            <image>moor.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="12">
+            <name>forest.woodland</name>
+            <description>Woodland</description>
+            <image>woodland.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="13">
+            <name>forest.forest</name>
+            <description>Forest</description>
+            <image>forest.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="14">
+            <name>forest.jungle</name>
+            <description>Jungle</description>
+            <image>jungle.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="15">
+            <name>forest.alpine</name>
+            <description>Alpine forest</description>
+            <image>alpine.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="16">
+            <name>plains.wetland</name>
+            <description>Wetlands</description>
+            <image>wetland.png</image>
+            <solid value="false"/>
+        </terrain>
+    </terrainset>
+    <!-- Things -->
+    <terrainset id="things" path="things">
+        <terrain id="0">
+            <name>null</name>
+            <description>Empty</description>
+            <image>clear.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="1">
+            <name>settlement.village</name>
+            <description>Village</description>
+            <image>village.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="2">
+            <name>settlement.town</name>
+            <description>Town</description>
+            <image>town.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="3">
+            <name>castle.keep</name>
+            <description>Keep</description>
+            <image>keep.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="4">
+            <name>castle.castle</name>
+            <description>Castle</description>
+            <image>castle.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="5">
+            <name>misc.ruins</name>
+            <description>Ruins</description>
+            <image>ruins.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="6">
+            <name>misc.mines</name>
+            <description>Mines</description>
+            <image>mine.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="7">
+            <name>misc.label</name>
+            <description>Label</description>
+            <image>label.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="8">
+            <name>misc.peak</name>
+            <description>Peak</description>
+            <image>peak.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="9">
+            <name>settlement.city</name>
+            <description>Small city</description>
+            <image>city.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="10">
+            <name>settlement.largecity</name>
+            <description>Large city</description>
+            <image>large-city.png</image>
+            <solid value="false"/>
+        </terrain>
+    </terrainset>
+    <!-- Features -->
+    <terrainset id="features" path="features">
+        <terrain id="0">
+            <name>clear</name>
+            <description>Clear</description>
+            <image>clear.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="1">
+            <name>lowhills</name>
+            <description>Low hills</description>
+            <image>lowhills.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="2">
+            <name>highhills</name>
+            <description>High hills</description>
+            <image>highhills.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="3">
+            <name>foothills</name>
+            <description>Foot hills</description>
+            <image>foothills.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="4">
+            <name>lowmnts</name>
+            <description>Low mountains</description>
+            <image>lowmnts.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="5">
+            <name>highmnts</name>
+            <description>High mountains</description>
+            <image>highmnts.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="6">
+            <name>marsh</name>
+            <description>Marshland</description>
+            <image>marsh.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="7">
+            <name>ice</name>
+            <description>Ice sheet</description>
+            <image>ice.png</image>
+            <solid value="false"/>
+        </terrain>
+    </terrainset>
+    <!-- TileSets contain blob data for the tiles -->
+    <!-- Format is: "tthhffaacu" for each tile. -->
+    <!--     tt = Terrain type    hh = height     -->
+    <!--     ff = Feature         aa = area       -->
+    <!--     c  = coast mask      u  = unused     -->
+    <!-- Each blob is Base 64 encoded.            -->
+    <tileset id="root">
+        <dimensions>
+            <scale>5</scale>
+            <width>30</width>
+            <height>20</height>
+        </dimensions>
+
+        <tiles>
+            <column x="0">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="1">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="2">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="3">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="4">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="5">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA AEAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="6">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="7">
+                ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="8">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                AMAAAAAAAA AMAAAAAAAA AMAAAAAAAA AMAAAAAAAA ABAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="9">
+                ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA AMAAAAAAAA 
+                AMAAAAAAAA AMAAAAAAAA AMAAAAAAAA AMAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA ANAAAAAAAA 
+                ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="10">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA ALAAAAAAAA ALAAAAAAAA AMAAAAAAAA AMAAAAAAAA 
+                AMAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                ANAAAAAAAA ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="11">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA ALAAAAAAAA ALAAAAAAAA AMAAAAAAAA AMAAAAAAAA 
+                AMAAAAAAAA AMAAAAAAAA ANAAAAAAAA AEAAAAAAAA ANAAAAAAAA 
+                ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="12">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                ALAAAAAAAA ALAAAAAAAA ALAAAAAAAA AKAAAAAAAA AKAAAAAAAA 
+                AMAAAAAAAA AMAAAAAAAA ANAAAAAAAA ANAAAAAAAA ANAAAAAAAA 
+                ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="13">
+                ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA ALAAAAAAAA 
+                ALAAAAAAAA ALAAAAAAAA AKAAAAAAAA AKAAAAAAAA AKAAAAAAAA 
+                AKAAAAAAAA AMAAAAAAAA ANAAAAAAAA ANAAAAAAAA ANAAAAAAAA 
+                ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="14">
+                ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                ALAAAAAAAA ALAAAAAAAA AKAAAAAAAA AKAAAAAAAA AKAAAAAAAA 
+                AKAAAAAAAA AKAAAAAAAA AMAAAAAAAA AMAAAAAAAA ANAAAAAAAA 
+                ANAAAAAAAA ANAAAAAAAA ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="15">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA ALAAAAAAAA 
+                ALAAAAAAAA ALAAAAAAAA AKAAAAAAAA AMAAAAAAAA AMAAAAAAAA 
+                AKAAAAAAAA AMAAAAAAAA AMAAAAAAAA AMAAAAAAAA ANAAAAAAAA 
+                ANAAAAAAAA ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="16">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                ALAAAAAAAA ALAAAAAAAA ALAAAAAAAA AKAAAAAAAA AKAAAAAAAA 
+                AMAAAAAAAA AMAAAAAAAA AMAAAAAAAA AMAAAAAAAA ANAAAAAAAA 
+                ANAAAAAAAA ANAAAAAAAA ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="17">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA ALAAAAAAAA 
+                ALAAAAAAAA ALAAAAAAAA AKAAAAAAAA AKAAAAAAAA AKAAAAAAAA 
+                AKAAAAAAAA AMAAAAAAAA AMAAAAAAAA AMAAAAAAAA ANAAAAAAAA 
+                ANAAAAAAAA ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="18">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                ALAAAAAAAA ALAAAAAAAA ALAAAAAAAA AKAAAAAAAA AKAAAAAAAA 
+                AKAAAAAAAA AKAAAAAAAA AMAAAAAAAA AMAAAAAAAA AMAAAAAAAA 
+                ANAAAAAAAA ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="19">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                ALAAAAAAAA ALAAAAAAAA ALAAAAAAAA ALAAAAAAAA AKAAAAAAAA 
+                AKAAAAAAAA AMAAAAAAAA AMAAAAAAAA AMAAAAAAAA ANAAAAAAAA 
+                AMAAAAAAAA ANAAAAAAAA ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="20">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA ALAAAAAAAA ALAAAAAAAA ALAAAAAAAA ALAAAAAAAA 
+                AKAAAAAAAA AKAAAAAAAA AMAAAAAAAA AMAAAAAAAA AMAAAAAAAA 
+                AMAAAAAAAA AEAAAAAAAA ANAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="21">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA ALAAAAAAAA ALAAAAAAAA ALAAAAAAAA ALAAAAAAAA 
+                AMAAAAAAAA AMAAAAAAAA AMAAAAAAAA AEAAAAAAAA AMAAAAAAAA 
+                AMAAAAAAAA AEAAAAAAAA AEAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="22">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA ALAAAAAAAA ALAAAAAAAA ALAAAAAAAA 
+                ALAAAAAAAA AMAAAAAAAA AMAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                AMAAAAAAAA AEAAAAAAAA AEAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="23">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA ALAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA AMAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="24">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="25">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA 
+                AEAAAAAAAA ABAAAAAAAA ABAAAAAAAA AEAAAAAAAA ABAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA AEAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="26">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA AEAAAAAAAA AEAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="27">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                AEAAAAAAAA AEAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="28">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA AEAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+            <column x="29">
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+                ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA ABAAAAAAAA 
+            </column>
+        </tiles>
+    </tileset>
+
+    <areas>
+    </areas>
+</map>
