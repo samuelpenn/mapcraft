@@ -509,11 +509,11 @@ public class MapXML {
                     Node            river = rivers.item(r);
                     Node            value;
                     NamedNodeMap    values;
-                    
+
                     if (river != null) {
                         int     x = 0, y = 0;
                         short   mask = 0;
-                        
+
                         values = river.getAttributes();
                         x = getIntNode(values.getNamedItem("x"));
                         y = getIntNode(values.getNamedItem("y"));
@@ -575,7 +575,7 @@ public class MapXML {
 
         return ret;
     }
-    
+
     /**
      * Return an array of all the sites in the map.
      */
@@ -623,14 +623,73 @@ public class MapXML {
 
         return;
     }
-    
+
     /**
      * Return all the rivers in the map.
      *
-    public Rivers
+     */
+    public Vector
     getRivers() throws XMLException {
+        Vector      rivers = new Vector();
+
+        try {
+            NodeList    list = getNodeList("/map/rivers/river");
+            if (list == null || list.getLength() == 0) {
+                return rivers;
+            }
+
+            // For each <river> in the document
+            for (int i=0; i < list.getLength(); i++) {
+                Node            node = list.item(i);
+                NamedNodeMap    values = null;
+                Node            child = null;
+                Path            path = null;
+
+                if (node != null) {
+                    values = node.getAttributes();
+                    String name = getTextNode(values.getNamedItem("name"));
+
+                    // Now get each path element in turn. First should be a <start/>
+                    child = node.getFirstChild();
+                    values = child.getAttributes();
+
+                    NodeList children = node.getChildNodes();
+                    for (int c = 0; c < children.getLength(); c++) {
+                        int     type = Path.PATH;
+
+                        child = children.item(c);
+                        values = child.getAttributes();
+
+                        if (child.getNodeName().equals("start")) {
+                            type = Path.START;
+                            path = new Path(name, getIntNode(values.getNamedItem("x")),
+                                                  getIntNode(values.getNamedItem("y")));
+                            continue;
+                        } else if (child.getNodeName().equals("end")) {
+                            type = Path.END;
+                        } else if (child.getNodeName().equals("path")) {
+                            type = Path.PATH;
+                        } else {
+                            continue;
+                        }
+
+                        path.add(type, getIntNode(values.getNamedItem("x")),
+                                       getIntNode(values.getNamedItem("y")));
+                    }
+                    System.out.println("Adding river ["+name+"]");
+                    rivers.add(path);
+                }
+            }
+        } catch (XMLException xe) {
+            throw xe;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new XMLException("Error in gettings rivers");
+        }
+
+        return rivers;
     }
-    */
+
 
 
     public static void

@@ -52,7 +52,7 @@ public class TerrainSet {
 
         return null;
     }
-    
+
     public Terrain[]
     toArray() {
         Terrain[]   array = new Terrain[terrainList.size()];
@@ -69,8 +69,6 @@ public class TerrainSet {
 
     public Iterator
     iterator() {
-        System.out.println("Getting TerrainSet iterator for "+
-                terrainList.size()+" items");
         return terrainList.iterator();
     }
 

@@ -1,5 +1,5 @@
 
-MAPCRAFT, Version 0.1
+MAPCRAFT, Version 0.2 Alpha
 
 Copyright (C) 2002 Samuel Penn, sam@bifrost.demon.co.uk
 
@@ -27,14 +27,28 @@ really useful. See the PLAN for a list of planned features.
 
 RUNNING
 
+There are four varieties of map, governed by two flags.
+World scale maps have hexagonal tiles (this is the default).
+Local area maps often use square tiles. Use -local and -square
+to switch on the latter features when creating a map.
+
+For the latter, you also need to point things at the square
+tiles rather than the default hexagonal ones.
+
 To view one of the sample maps, run the program as follows:
 
 ./run MapEditor -load maps/harn.map
+or
+./run MapEditor -load maps/gargun.map -images images/square
 
 To create a new map:
 
 ./run MapEditor -create mymap -width 200 -height 150 \
-                -scale 25 -terrain terrain.xml
+                -scale 25 -terrain terrain/hexagonal.xml
+
+./run MapEditor -create mymap -width 200 -height 150 \
+                -scale 1 -terrain terrain/square.xml \
+                -square -local
 
 Everything else you'll have to figure out for yourself.
 

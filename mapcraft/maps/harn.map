@@ -9,8 +9,9 @@
             <version>$Revision$</version>
             <date>$Date$</date>
         </cvs>
-        <format>0.0.3</format>
+	<type>World</type>
         <shape>Hexagonal</shape>
+        <format>0.0.3</format>
     </header>
     <terrainset id="basic" path=".">
         <terrain id="0">

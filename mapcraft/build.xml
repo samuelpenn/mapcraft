@@ -5,7 +5,7 @@
         <copy todir="build">
             <fileset dir="src"/>
         </copy>
-        <javac srcdir="build" destdir="build"/>
+        <javac srcdir="build" destdir="build" debug="on"/>
         <jar basedir="build" jarfile="mapcraft.jar"
              manifest="MANIFEST.MF"
              excludes="**/*.java"

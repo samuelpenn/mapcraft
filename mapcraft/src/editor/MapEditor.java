@@ -554,7 +554,6 @@ public class MapEditor extends MapViewer
         
         while (it.hasNext()) {
             Terrain t = (Terrain)it.next();
-            System.out.println("Adding terrain "+t.getId()+" ("+t.getDescription()+")");
             menu.add(item = new JMenuItem(t.getDescription()));
             item.setActionCommand(""+t.getId());
             item.addActionListener(listener);

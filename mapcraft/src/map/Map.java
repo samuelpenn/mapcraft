@@ -56,6 +56,8 @@ public class Map {
     TerrainSet      terrainSet = null;
     TerrainSet      placeSet = null;
     TileSet         tileSets[] = null;
+    Vector          rivers = null;
+
     private int     tileShape = HEXAGONAL;
     private int     type = WORLD;
 
@@ -102,12 +104,12 @@ public class Map {
         try {
             System.out.println("Loading map");
             xml = new MapXML(filename);
-            System.out.println("Reading tilesets");
             tileSets = xml.getTileSets();
             terrainSet = xml.getTerrainSet("basic");
             placeSet = xml.getTerrainSet("places");
-            
+
             xml.getSites(tileSets[0]);
+            rivers = xml.getRivers();
 
             this.filename = filename;
             this.name = xml.getName();
@@ -127,11 +129,10 @@ public class Map {
         } catch (MapException mape) {
             throw mape;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new MapException("Failed to load map");
         }
     }
-    
+
     public void
     loadTerrainSet(String filename) {
         MapXML  xml;

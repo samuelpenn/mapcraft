@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export CLASSPATH=$CLASSPATH:build
+export CLASSPATH=$CLASSPATH:build:src
 
 
 java uk.co.demon.bifrost.rpg.mapcraft.editor.$*

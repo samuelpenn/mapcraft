@@ -78,7 +78,7 @@ public class MapViewer extends JPanel {
      */
     protected class ViewProperties {
         private Properties  properties;
-        
+
         private String  viewName;
         private String  viewShape;
         private String  path;
@@ -89,7 +89,7 @@ public class MapViewer extends JPanel {
         private int     tileOffset;
 
         public
-        ViewProperties(String path) {
+        ViewProperties(String path) throws Exception {
             FileInputStream     input = null;
             String              file = path+"/icons.properties";
 
@@ -111,10 +111,9 @@ public class MapViewer extends JPanel {
                 tileWidth = (int)Integer.parseInt((String)properties.get("tile.width"));
                 tileOffset = (int)Integer.parseInt((String)properties.get("tile.offset"));
 
-                System.out.println(viewName);
             } catch (Exception e) {
                 System.out.println("Cannot load properties from file ["+file+"]");
-                e.printStackTrace();
+                throw e;
             }
         }
         
@@ -140,7 +139,7 @@ public class MapViewer extends JPanel {
          * The actual physical height of each icon, in pixels.
          */
         public int getIconHeight() { return iconHeight; }
-        
+
         /**
          * The actual physical width of each icon, in pixels.
          */
@@ -193,12 +192,10 @@ public class MapViewer extends JPanel {
         while (iter.hasNext()) {
             Terrain t = (Terrain)iter.next();
             if (t != null) {
-                info("Defining terrain "+t.getName());
                 short   id = t.getId();
                 String  path = views[view].getPath()+"/"+t.getImagePath();
                 Image   icon = toolkit.getImage(path);
 
-                debug("Adding icon "+path+" for terrain "+id);
                 iconSet.add(id, icon);
             }
         }
@@ -213,6 +210,15 @@ public class MapViewer extends JPanel {
         iconSet = readIcons("terrain", map.getTerrainSet());
         siteSet = readIcons("sites", map.getPlaceSet());
     }
+    
+    private ViewProperties
+    getNewViewProperties(String path) {
+        try {
+            return new ViewProperties(path);
+        } catch (Exception e) {
+            return (ViewProperties) null;
+        }
+    }
 
     /**
      * Constructor to load a map from a file and display it.
@@ -226,13 +232,13 @@ public class MapViewer extends JPanel {
         this.imagePath = path;
 
         views = new ViewProperties[7];
-        views[0] = new ViewProperties(path+"/xxsmall");
-        views[1] = new ViewProperties(path+"/xsmall");
-        views[2] = new ViewProperties(path+"/small");
-        views[3] = new ViewProperties(path+"/medium");
-        views[4] = new ViewProperties(path+"/large");
-        views[5] = new ViewProperties(path+"/xlarge");
-        views[6] = new ViewProperties(path+"/xxlarge");
+        views[0] = getNewViewProperties(path+"/xxsmall");
+        views[1] = getNewViewProperties(path+"/xsmall");
+        views[2] = getNewViewProperties(path+"/small");
+        views[3] = getNewViewProperties(path+"/medium");
+        views[4] = getNewViewProperties(path+"/large");
+        views[5] = getNewViewProperties(path+"/xlarge");
+        views[6] = getNewViewProperties(path+"/xxlarge");
 
         try {
             map = new Map(filename);
@@ -247,7 +253,7 @@ public class MapViewer extends JPanel {
         }
     }
 
-        
+
     public void
     setImagePath(String path) {
         this.imagePath = path;
@@ -258,13 +264,11 @@ public class MapViewer extends JPanel {
         try {
             map = new Map(filename);
 
-            System.out.println("Setting up terrain icons");
             TerrainSet  set = map.getTerrainSet();
 
 
             iconSet = readIcons("terrain", set);
             siteSet = readIcons("sites", map.getPlaceSet());
-
 
             map.setCurrentSet("root");
 
