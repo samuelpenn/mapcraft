@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<page>
+    <header>
+        <title>Using the Command Line</title>
+
+        <summary>User documentation for Mapcraft</summary>
+
+        <cvsinfo>
+            <version>$Revision$</version>
+            <date>$Date$</date>
+        </cvsinfo>
+        
+        <style>default</style>
+        <footer href="../footer.inc"/>
+    </header>
+
+    <links>
+        <link uri="../index">home</link>
+        <link uri="user">user</link>
+    </links>
+
+    <sidebar>
+        <title>Linux</title>
+
+        <p>
+            This documentation is written from the point of view of Linux.
+            Using Mapcraft on other operating systems may mean slight
+            differences in the way things are invoked, but the overall
+            behaviour of command switches should be the same.
+        </p>
+    </sidebar>
+    
+    <sidebar>
+        <title>Version</title>
+        
+        <p>
+            This documentation is for version 0.3 of Mapcraft.
+        </p>
+    </sidebar>
+    
+    <sidebar>
+        <title>Java Options</title>
+        
+        <p>
+            By default, the <cmd>mapcraft</cmd> script invokes Java with
+            the <cmd>-Xmx1024m</cmd>, which tells Java to use up to 1GB
+            of memory for its heap. If you don't have 1GB available,
+            that's okay, because Java will only actually use the lesser
+            of what it actually needs and what it can get.
+        </p>
+        
+        <p>
+            Without this switch, Java is limited to using only a few tens
+            of MB, which sometimes isn't enough for large maps. For really
+            large maps, this memory can be increased by changing the option
+            in the script, assuming you have the memory available.
+        </p>
+    </sidebar>
+    
+    <body>
+        <sect1>
+            <p>
+                Mapcraft is normally invoked from the command line. There
+                is a script called <cmd>mapcraft</cmd> (or, on Microsoft
+                platforms, <cmd>mapcraft.bat</cmd>) which can be used to
+                start the software. With no command line options given,
+                the main GUI window will open, and the user can create a
+                new map, or load an existing one, from the
+                <menu>File</menu> menu.
+            </p>
+            
+            <p>
+                See the <link uri="gui" name="GUI"/> documentation for
+                details on how to use the GUI environment.
+            </p>
+        </sect1>
+        
+        <sect1>
+            <title>Standard Operations</title>
+            
+            <p>
+                The standard operations are to load an existing map, or
+                to create a new map. General usage information can be
+                obtained by doing the following.
+            </p>
+            
+            <script prefix="$ ">
+                <cmd command="mapcraft">
+                    <option name="-help"/>
+                </cmd>
+            </script>
+            
+            <sect2>
+                <title>Load a map</title>
+            
+                <script prefix="$ ">
+                    <cmd command="mapcraft">
+                        <option name="-load" parameter="filename"/>
+                    </cmd>
+                </script>
+                
+                <p>
+                    To test this, from the installation directory, you
+                    can try:
+                </p>
+                
+                <script prefix="$ ">
+                    <cmd command="mapcraft">
+                        <option name="-load" value="maps/island.map"/>
+                    </cmd>
+                </script>
+            </sect2>
+            
+            <sect2>
+                <title>Create a map</title>
+                
+                <script prefix="$ ">
+                    <cmd command="mapcraft">
+                        <option name="-create" parameter="name"/>
+                        <option name="-width" parameter="width"/>
+                        <option name="-height" parameter="height"/>
+                        <option name="-scale" parameter="scale"/>
+                        <option name="-terrain" parameter="filename"/>
+                        <option name="-square" optional="true"/>
+                        <option name="-local" optional="true"/>
+                    </cmd>
+                </script>
+            </sect2>
+        </sect1>
+    </body>
+</page>

@@ -16,8 +16,9 @@
 
     <links>
         <link uri="../index">home</link>
-        <link uri="documentation/user">user</link>
-        <link uri="documentation/gm">gm</link>
+        <link uri="gm">gm</link>
+        <link uri="commandline">command line</link>
+        <link uri="gui">gui</link>
     </links>
 
     <sidebar>
@@ -38,6 +39,12 @@
         
         <sect1>
             <title>Introduction</title>
+            
+            <para>
+                The purpose of Mapcraft is to create, display and edit
+                maps for roleplaying games. Maps are mostly tile based,
+                so resolution is limited.
+            </para>
             
             <sect2>
                 <title>Parents, siblings and children</title>
