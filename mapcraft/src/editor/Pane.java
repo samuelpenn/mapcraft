@@ -54,7 +54,8 @@ public class Pane extends JPanel implements ListSelectionListener {
                                     
 
             Terrain t = (Terrain)value;
-            Image     image = toolkit.getImage(imagePath+"/"+t.getImagePath());
+            URL         url = Pane.class.getResource(imagePath+"/"+t.getImagePath());
+            Image       image = toolkit.getImage(url);
             image = image.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
             ImageIcon icon = new ImageIcon(image);
             setIcon(icon);

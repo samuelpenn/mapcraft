@@ -21,6 +21,7 @@ import java.awt.image.*;
 import java.awt.event.*;
 
 import java.util.*;
+import java.net.URL;
 
 public class ThingDialog extends JDialog implements ItemListener {
     private Thing       thing;
@@ -127,8 +128,8 @@ public class ThingDialog extends JDialog implements ItemListener {
         if (e.getStateChange() == e.SELECTED) {
             Terrain     t = (Terrain)e.getItem();
             String path = basePath;
-            path = path + "/" + t.getImagePath();
-            icon = new ImageIcon(path);
+            URL    url = ThingDialog.class.getResource(path + "/" + t.getImagePath());
+            icon = new ImageIcon(url);
             picture.setIcon(icon);
             //picture.setText(t.getDescription());
         }
@@ -296,8 +297,9 @@ public class ThingDialog extends JDialog implements ItemListener {
         name = new JTextField(thing.getName(), 20);
         description = new JTextArea(thing.getDescription(), 5, 30);
         String path = basePath;
-        path = path + "/" + icons.getTerrain(thing.getType()).getImagePath();
-        icon = new ImageIcon(path, "");
+        URL    url = ThingDialog.class.getResource(path + "/" +
+                       icons.getTerrain(thing.getType()).getImagePath());
+        icon = new ImageIcon(url, "");
 
         picture = new JLabel(icon);
 
