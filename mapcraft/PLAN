@@ -44,7 +44,7 @@ Project Plan
 *   Rotation for tiles and features.
 *   Rotation for Things (0.4).
 *   Oversized Things (0.4).
-    Rotation on hexagonal maps as well as square maps.
+*   Rotation on hexagonal maps as well as square maps.
 *   Move <thing>/<river> tags into <tileset> ready for multi-tileset support.
 
 0.2.3

@@ -454,7 +454,6 @@ public class MapEditor extends MapViewer
     KeyEventHandler extends KeyAdapter {
         public void
         keyPressed(KeyEvent e) {
-            System.out.println("Pressed!");
             int     key = e.getKeyCode();
             char    ch = e.getKeyChar();
             int     x, y, angle;
@@ -487,7 +486,6 @@ public class MapEditor extends MapViewer
 
                 switch (ch) {
                 case '[':
-                    System.out.println("Anti-clockwise");
                     if (brush.getType() == Brush.TERRAIN) {
                         r = (short) (map.getTerrainRotation(x, y) - angle);
                         if (r < 0) r = (short) (360-angle);
@@ -507,7 +505,6 @@ public class MapEditor extends MapViewer
                     brush.setRotation(r);
                     break;
                 case ']':
-                    System.out.println("Clockwise");
                     if (brush.getType() == Brush.TERRAIN) {
                         r = (short) (map.getTerrainRotation(x, y) + angle);
                         if (r >= 360) r = (short) 0;
@@ -534,12 +531,10 @@ public class MapEditor extends MapViewer
 
         public void
         keyTyped(KeyEvent e) {
-            System.out.println("Typed!");
         }
 
         public void
         keyReleased(KeyEvent e) {
-            System.out.println("Released!");
         }
     }
 

@@ -62,6 +62,7 @@ public class Actions {
     public final static String  EDIT_THINGS         = "edit.things";
     public final static String  EDIT_RIVERS         = "edit.rivers";
     public final static String  EDIT_AREAS          = "edit.areas";
+    public final static String  EDIT_ROADS          = "edit.roads";
     public final static String  EDIT_SMALL          = "edit.small";
     public final static String  EDIT_MEDIUM         = "edit.medium";
     public final static String  EDIT_LARGE          = "edit.large";
@@ -147,6 +148,7 @@ public class Actions {
             addLocal(EDIT_AREAS, "Area Brush", "terrain");
             addLocal(EDIT_RIVERS, "Rivers Brush", "rivers");
             addLocal(EDIT_THINGS, "Things brush", "things");
+            addLocal(EDIT_ROADS, "Roads Brush", "roads");
 
             // Brushes
             addLocal(EDIT_SMALL,"Small brush", "small-brush");

@@ -589,6 +589,11 @@ public class TileSet implements Cloneable {
     }
 
     void
+    setRoads(Vector roads) {
+        this.roads = roads;
+    }
+
+    void
     setThings(Vector things) {
         this.things = things;
     }
@@ -596,6 +601,11 @@ public class TileSet implements Cloneable {
     Vector
     getRivers() {
         return rivers;
+    }
+
+    Vector
+    getRoads() {
+        return roads;
     }
 
     Vector
@@ -634,6 +644,29 @@ public class TileSet implements Cloneable {
         Path    river = getRiver(id);
 
         river.add(x, y);
+    }
+
+    Path
+    getRoad(int id) {
+        if (--id > roads.size()) {
+            return null;
+        }
+        return (Path)roads.elementAt(id);
+    }
+
+    int
+    addRoad(String name, int x, int y) {
+        roads.add(new Path(name, x, y));
+        return roads.size();
+    }
+
+    void
+    extendRoad(int id, int x, int y) {
+        Path    road = getRoad(id);
+
+        if (road != null) {
+            road.add(x, y);
+        }
     }
 
     void

@@ -1218,7 +1218,22 @@ public class Map implements Cloneable {
      */
     public Path
     getRiver(int id) {
-        return tileSets[0].getRiver(id);
+        return tileSets[currentSet].getRiver(id);
+    }
+
+    public Vector
+    getRoads() {
+        return tileSets[currentSet].getRoads();
+    }
+
+    public void
+    setRoads(Vector roads) {
+        tileSets[currentSet].setRoads(roads);
+    }
+
+    public Path
+    getRoad(int id) {
+        return tileSets[currentSet].getRoad(id);
     }
 
 

@@ -85,6 +85,7 @@ public class MapViewer extends JPanel {
         private int     width;
         private int     height;
         private int     h;
+
         private double  SQRTHREE;
 
         public
@@ -95,8 +96,7 @@ public class MapViewer extends JPanel {
             canFilterIndexColorModel = true;
 
             SQRTHREE = Math.sqrt(3);
-            h = (int)((SQRTHREE/4)*width);
-            System.out.println(SQRTHREE);
+            h = (int)((SQRTHREE/4)*width+0.5);
         }
 
         public int
@@ -309,7 +309,9 @@ public class MapViewer extends JPanel {
                 }
                 scaled = icon.getScaledInstance(x, y, Image.SCALE_SMOOTH);
 
-                if (views[view].isHexagonal()) {
+                if (views[view].isHexagonal() && !set.isAnySize()) {
+                    int  h = (int)((Math.sqrt(3)/2)*x);
+                    filter = new HexFilter(x, h);
                     icon = createImage(new FilteredImageSource(scaled.getSource(), filter));
                     iconSet.add(id, icon);
                     prepareImage(icon);
@@ -413,7 +415,7 @@ public class MapViewer extends JPanel {
     
     public void
     zoomIn() {
-        if (view < 6) {
+        if (view < ViewProperties.XXLARGE) {
             setView(view+1);
         }
     }
@@ -762,9 +764,9 @@ public class MapViewer extends JPanel {
 
             r = Math.toRadians(map.getTerrainRotation(x, y));
             if (r != 0) {
-                g2.rotate(r, xp+tileXSize/2, yp+tileYSize/2);
+                g2.rotate(r, xp+iconWidth/2, yp+tileYSize/2);
                 g2.drawImage(icon, xp, yp, this);
-                g2.rotate(-r, xp+tileXSize/2, yp+tileYSize/2);
+                g2.rotate(-r, xp+iconWidth/2, yp+tileYSize/2);
             } else {
                 g.drawImage(icon, xp, yp, this);
             }

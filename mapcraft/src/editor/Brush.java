@@ -26,6 +26,7 @@ public class Brush {
     public static final int FEATURES = 4;
     public static final int HEIGHT = 5;
     public static final int AREAS = 6;
+    public static final int ROADS = 7;
 
     public static final int SMALL = 1;
     public static final int MEDIUM = 2;
@@ -47,6 +48,7 @@ public class Brush {
 
     private short terrain = 1;
     private short river = 0;
+    private short road = 0;
     private short thing = 1;
     private short feature = 0;
     private short height = 0;
@@ -100,6 +102,7 @@ public class Brush {
         case RIVERS:    return river;
         case HEIGHT:    return height;
         case AREAS:     return area;
+        case ROADS:     return road;
         default:
             return 0;
         }
@@ -112,8 +115,9 @@ public class Brush {
 
         switch (brush) {
         case RIVERS:
+        case ROADS:
             mode = SELECT;
-            river = 0;
+            road = river = 0;
             break;
         default:
             break;
@@ -152,6 +156,9 @@ public class Brush {
             break;
         case AREAS:
             area = selected;
+            break;
+        case ROADS:
+            road = selected;
             break;
         default:
             return;
