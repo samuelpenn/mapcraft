@@ -437,6 +437,7 @@ public class MapXML {
         hills = (short)fromBase64(data.substring(5, 6));
 
         tile = new Tile(terrain, height, true);
+        tile.setHills(hills);
 
         return tile;
     }
