@@ -37,6 +37,7 @@ import com.sun.image.codec.jpeg.*;
  * @version $Revision$
  */
 public class MapImage extends MapViewer {
+    private int     thumbnail = 0;
 
     public
     MapImage() {
@@ -99,6 +100,51 @@ public class MapImage extends MapViewer {
 
         return image;
     }
+    // This method returns a buffered image with the contents of an image
+    private BufferedImage
+    getBufferedImage(Image image) {
+        // Create a buffered image with a format that's compatible with the screen
+        BufferedImage bimage = null;
+        /*
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        try {
+            // Determine the type of transparency of the new buffered image
+            int transparency = Transparency.OPAQUE;
+
+            // Create the buffered image
+            GraphicsDevice gs = ge.getDefaultScreenDevice();
+            GraphicsConfiguration gc = gs.getDefaultConfiguration();
+            bimage = gc.createCompatibleImage(
+                image.getWidth(null), image.getHeight(null), transparency);
+        } catch (HeadlessException e) {
+            // The system does not have a screen
+        }
+        */
+
+        if (bimage == null) {
+            // Create a buffered image using the default color model
+            int type = BufferedImage.TYPE_INT_RGB;
+            bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), type);
+        }
+    
+        // Copy image to buffered image
+        Graphics g = bimage.createGraphics();
+    
+        // Paint the image onto the buffered image
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+    
+        return bimage;
+    }
+
+
+    private void
+    saveAsJPEG(BufferedImage image, String filename) throws IOException {
+        File          file = new File(filename);
+        OutputStream  out = new BufferedOutputStream(new FileOutputStream(file));
+        JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+        encoder.encode(image);
+    }
 
     public void
     saveImage(String filename, int scale, boolean unwrap) {
@@ -109,13 +155,14 @@ public class MapImage extends MapViewer {
 
         try {
             image = toImage(scale, unwrap);
+            saveAsJPEG(image, filename);
 
-            File file = new File(filename);
-
-            out = new BufferedOutputStream(new FileOutputStream(file));
-            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-
-            encoder.encode(image);
+            if (thumbnail > 0) {
+                Image   thumb = image.getScaledInstance(thumbnail, -1,
+                                                Image.SCALE_SMOOTH);
+                String  thumbFile = filename.replaceAll("\\.jpg", "-t.jpg");
+                saveAsJPEG(getBufferedImage(thumb), thumbFile);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -126,6 +173,11 @@ public class MapImage extends MapViewer {
                 }
             } catch (Throwable t) {}
         }
+    }
+
+    public void
+    setThumbnail(int thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public static void
