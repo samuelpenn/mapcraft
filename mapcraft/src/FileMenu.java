@@ -99,6 +99,7 @@ public class FileMenu extends JMenu implements ActionListener {
         System.out.println("FILEMENU ["+cmd+"]");
 
         if (cmd.equals(Actions.FILE_NEW)) {
+            create();
         } else if (cmd.equals(Actions.FILE_OPEN)) {
             open();
         } else if (cmd.equals(Actions.FILE_SAVE)) {
@@ -147,6 +148,8 @@ public class FileMenu extends JMenu implements ActionListener {
      */
     private void
     create() {
+        CreateMap   create = new CreateMap(application);
+        System.out.println("Done");
     }
 
 }

@@ -102,11 +102,15 @@ public class MapCraft implements ActionListener {
         window.setVisible(true);
     }
 
-    public MapEditor
+    MapEditor
     getEditor() {
         return editor;
     }
 
+    JFrame
+    getWindow() {
+        return window;
+    }
 
     /**
      * Load a map into the application and display it.
@@ -155,6 +159,15 @@ public class MapCraft implements ActionListener {
             editor.save(filename);
         } catch (IOException ioe) {
             new JOptionPane("Cannot save file", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void
+    create() {
+        try {
+            CreateMap   create = new CreateMap(this);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -217,10 +230,20 @@ public class MapCraft implements ActionListener {
         return this.toolbar;
     }
 
+    public void
+    actionCreate(ActionEvent e) {
+    }
+
 
     public void
     actionPerformed(ActionEvent e) {
-        System.out.println("ACTION ["+e.getActionCommand()+"]");
+        String      cmd = e.getActionCommand();
+        System.out.println("ACTION ["+cmd+"]");
+
+        if (cmd.equals("createmap.save")) {
+            CreateMap   create = (CreateMap)e.getSource();
+        } else if (cmd.equals("createmap.cancel")) {
+        }
     }
 
     public static void
