@@ -209,12 +209,14 @@ public class MapEditor extends MapViewer
                     break;
                 default:
                     map.setTerrain(x, y, brush.getSelected());
+                    paintTile(x, y);
                     break;
                 }
                 break;
             case Brush.HILLS:
                 info("Applying hill brush");
                 map.getTile(x, y).setHills(brush.getSelected());
+                paintTile(x, y);
                 break;
             case Brush.FEATURES:
                 info("Applying feature brush");
@@ -224,6 +226,7 @@ public class MapEditor extends MapViewer
                     Site site = new Site(brush.getSelected(), "Unnamed", "Unnamed");
                     map.getTile(x, y).setSite(site);
                 }
+                paintTile(x, y);
                 break;
             case Brush.SITES:
                 if (brush.getSelected() == 0) {
@@ -241,12 +244,14 @@ public class MapEditor extends MapViewer
                 } else {
                     // Do nothing.
                 }
+                paintTile(x, y);
                 break;
             case Brush.AREAS:
                 map.getTile(x, y).setArea(brush.getSelected());
+                paintTile(x, y);
                 break;
             case Brush.RIVERS:
-                info("Distance: "+map.isNextTo(2, 2, x, y));
+                info("Distance: "+map.distance(2, 2, x, y));
                 if (brush.getSelected() == 0) {
                     // Have not yet selected a river.
                     String  name = "River "+(map.getRivers().size()+1);
@@ -254,21 +259,23 @@ public class MapEditor extends MapViewer
                     int     id = map.addRiver(name, x, y);
                     brush.setSelected(Brush.RIVERS, (short)id);
                     drawRivers();
+                } else if (map.isRiver(x, y)) {
+                    debug("There is already a river here");
                 } else {
                     Path    river = map.getRiver(brush.getSelected());
                     debug("Adding to river ["+river.getName()+"]");
                     // Add to a current river.
-                    if (map.isRiver(x, y)) {
-                        // Do nothing.
-                        debug("There is already a river here");
-                    } else {
-                        info("Adding new element to river");
-                        Path.Element    end = river.getEndPoint();
-                        if (map.isNextTo(end.getX(), end.getY(), x, y)) {
-                            debug("Next to, so adding");
-                            map.extendRiver(brush.getSelected(), x, y);
-                            drawRivers();
-                        }
+                    info("Adding new element to river");
+                    Path.Element    end = river.getEndPoint();
+                    Path.Element    start = river.getStartPoint();
+                    if (map.isNextTo(end.getX(), end.getY(), x, y)) {
+                        debug("Next to end, so adding");
+                        map.extendRiver(brush.getSelected(), x, y);
+                        drawRivers();
+                    } else if (map.isNextTo(start.getX(), start.getY(), x, y)) {
+                        debug("Next to start, so adding");
+                        map.extendRiver(brush.getSelected(), x, y);
+                        drawRivers();
                     }
                 }
                 break;
@@ -277,7 +284,6 @@ public class MapEditor extends MapViewer
             warn("Out of bounds!");
         }
 
-        paintTile(x, y);
     }
 
     /**

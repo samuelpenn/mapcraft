@@ -82,7 +82,6 @@ public class Path {
         if (end.getType() == END) {
             end.setType(PATH);
         }
-        add(END, x, y);
     }
 
     public void

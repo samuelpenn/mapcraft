@@ -962,26 +962,20 @@ public class Map implements Cloneable {
     /**
      * Return the distance in tiles between any two tiles. The tiles are
      * specified by their x and y coordinates.
+     *
+     * This does not yet work.
      */
     public int
     distance(int x0, int y0, int x1, int y1) {
         int         d = 0;
-        double      dx0 = x0;
-        double      dy0 = y0;
-        double      dx1 = x1;
-        double      dy1 = y1;
+        int         x = x0 - x1;
+        int         y = y0 - y1;
 
-        double      dx, dy;
-
-        if (x0%2 == 1) dy0 += 0.5;
-        if (x1%2 == 1) dy1 += 0.5;
-
-        dx = Math.abs(dx0 - dx1);
-        dy = Math.abs(dy0 - dy1);
-
-        d = (int)Math.sqrt(dx * dx + dy * dy);
-
-        d = Math.abs(x0 - x1) + Math.abs(y0 - y1);
+        d = Math.abs(x) + Math.abs(x - y)+ Math.abs(y);
+        if ((x0 <= x1) && (y0<=y1)) {
+            d +=-1;
+        }
+        d = d /2;
 
         return d;
     }
