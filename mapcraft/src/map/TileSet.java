@@ -186,6 +186,76 @@ public class TileSet implements Cloneable {
         cropAllRivers(x, y);
     }
 
+
+    /**
+     * Rescale the map. The scale of the tiles is changed, and, the number
+     * of tiles is changed to reflect the new scale. If changing to a smaller
+     * scale, then the number of tiles is increased.
+     */
+    boolean
+    rescale(int newScale) {
+        if (newScale == scale) {
+            // Trivial case.
+            return true;
+        }
+
+        if (newScale > scale) {
+            return scaleLarger(newScale);
+        }
+
+        if (newScale < scale) {
+            return scaleSmaller(newScale);
+        }
+        return true;
+    }
+
+    private boolean
+    scaleLarger(int newScale) {
+        return false;
+    }
+
+    /**
+     * The new scale is smaller than current scale, so the map will get
+     * bigger.
+     */
+    private boolean
+    scaleSmaller(int newScale) {
+        if (scale%newScale != 0) {
+            // Can only cope with exact multiples.
+            return false;
+        }
+
+        int         factor = scale / newScale;
+        int         newWidth = width * factor;
+        int         offset = factor/2;
+        int         newHeight = height * factor + offset;
+        Tile[][]    scaled = new Tile[newHeight][newWidth];
+
+        System.out.println("scaleSmaller: factor "+factor+" "+newWidth+"x"+newHeight);
+
+        for (int x=0;  x < newWidth; x++) {
+            boolean even = (x/factor)%2 == 0;
+            int     top = even?0:offset;
+            int     bottom = even?offset:0;
+
+            for (int y=0; y < top; y++) {
+                scaled[y][x] = new Tile(tiles[0][x/factor]);
+            }
+            for (int y=newHeight-bottom; y < newHeight; y++) {
+                scaled[y][x] = new Tile(tiles[height-1][x/factor]);
+            }
+
+            for (int y=0; y < newHeight-offset; y++) {
+                scaled[y+top][x] = new Tile(tiles[y/factor][x/factor]);
+            }
+        }
+        width = newWidth;
+        height = newHeight;
+        tiles = scaled;
+
+        return true;
+    }
+
     private void
     checkBounds(int x, int y) throws MapOutOfBoundsException {
         if (x >= width || x < 0) {

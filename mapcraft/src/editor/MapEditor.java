@@ -734,6 +734,14 @@ public class MapEditor extends MapViewer
         return true;
     }
 
+    public boolean
+    rescale(int newScale) {
+        map.rescale(map.getCurrentSet(), newScale);
+        paintComponent();
+        
+        return true;
+    }
+
 
     public static void
     main(String args[]) {

@@ -181,6 +181,11 @@ public class MapCraft implements ActionListener {
         editor.cropToArea(area, margin);
     }
 
+    public void
+    rescale(int scale) {
+        editor.rescale(scale);
+    }
+
     private JButton
     createToolbarButton(String action) {
         JButton         button = new JButton();
@@ -304,10 +309,13 @@ public class MapCraft implements ActionListener {
 
         boolean     crop = false;
         boolean     area = false;
+        boolean     rescale = false;
 
         int         x=0, y=0, w=0, h=0;
         String      areaName = null;
         int         margin = 0;
+        int         newScale = 1;
+
         if (options.isOption("-crop")) {
             x = options.getInt("-x");
             y = options.getInt("-y");
@@ -326,6 +334,11 @@ public class MapCraft implements ActionListener {
             area = true;
         }
 
+        if (options.isOption("-rescale")) {
+            newScale = options.getInt("-rescale");
+            rescale = true;
+        }
+
         if (mapfile == null) {
             map = new MapCraft(properties);
         } else {
@@ -336,6 +349,10 @@ public class MapCraft implements ActionListener {
             if (area) {
                 map.cropToArea(areaName, margin);
             }
+            if (rescale) {
+                map.rescale(newScale);
+            }
+
         }
 
 

@@ -664,6 +664,13 @@ public class Map implements Cloneable {
         this.scale = scale;
     }
 
+    public void
+    rescale(int set, int newScale) {
+        tileSets[set].rescale(newScale);
+        setScale(newScale);
+        width = (tileSets[set].getWidth());
+        height = (tileSets[set].getHeight());
+    }
 
     /**
      * Rescales the map. The width and height of the map is
