@@ -71,8 +71,8 @@ public class SanityCheck {
             if (a == null) {
                 throw new Exception("Failed to find attribute");
             }
-            
-            value = a.getFirstChild().getNodeValue();
+
+            value = a.getNodeValue();
             if (value == null || !value.equals("greeting")) {
                 throw new Exception("Failed to get attribute");
             }

@@ -773,6 +773,8 @@ public class Map extends MapBean implements Cloneable {
         Options     options;
 
         try {
+            map = new Map("/home/sam/src/forge/mapcraft/mapcraft/maps/island.map");
+            System.exit(0);
             options = new Options(args);
 
             if (options.isOption("-create")) {

@@ -147,7 +147,7 @@ public class MapXML {
         } catch (IOException ioe) {
             throw new MapException("Cannot load XML document ("+ioe.getMessage()+")");
         } catch (XMLException xmle) {
-            throw new MapException("Cannot parse XML d ata ("+xmle.getMessage()+")");
+            throw new MapException("Cannot parse XML data ("+xmle.getMessage()+")");
         }
     }
 
@@ -332,7 +332,11 @@ public class MapXML {
         String  text = null;
 
         try {
-            if (node.hasChildNodes()) {
+            if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
+                text = node.getNodeValue();
+            } else if (node.getNodeType() == Node.TEXT_NODE) {
+                text = node.getNodeValue();
+            } else if (node.hasChildNodes()) {
                 node = node.getFirstChild();
                 if (node.getNodeType() == Node.TEXT_NODE) {
                     text = node.getNodeValue();
