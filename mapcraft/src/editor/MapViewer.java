@@ -284,12 +284,40 @@ public class MapViewer extends JPanel {
         super.paintComponent(g);
         int             x=0, y=0;
         int             xp, yp, ypp;
+        
+        // Boundary rectangle which needs to be drawn.
+        int             startX = 0;
+        int             startY = 0;
+        int             endX = map.getWidth();
+        int             endY = map.getHeight();
+
+        // Clip area to rectangle.
+        Rectangle   clip = g.getClipBounds();
+        System.out.println("Clipping coords: "+clip.getX()+", "+clip.getY());
+        startX = (int)(clip.getX()/tileXSize) -1;
+        endX = (int)((clip.getX()+clip.getWidth())/tileXSize) + 1;
+
+        startY = (int)(clip.getY()/tileYSize) -1;
+        endY = (int)((clip.getY()+clip.getHeight())/tileYSize) + 1;
+        
+        if (startX < 0) startX = 0;
+        if (startY < 0) startY = 0;
+
+        if (endX > map.getWidth()) {
+            endX = map.getWidth();
+        }
+        
+        if (endY > map.getHeight()) {
+            endY = map.getHeight();
+        }
+        
+        System.out.println("Draw "+startX+" - "+endX+", "+startY+" - "+endY);
 
         try {
-            for (y = 0; y < map.getHeight(); y++) {
+            for (y = startY; y < endY; y++) {
                 yp = y * tileYSize;
 
-                for (x = 0; x < map.getWidth(); x++) {
+                for (x = startX; x < endX; x++) {
 
                     if (map.getTileShape() == Map.SQUARE) {
                         xp = x * tileXSize;
@@ -325,9 +353,9 @@ public class MapViewer extends JPanel {
             }
             // Now draw labels. Need to draw these last so
             // that they don't get overwritten by tiles.
-            for (y = 0; y < map.getHeight(); y++) {
+            for (y = startY; y < endY; y++) {
                 yp = y * tileYSize;
-                for (x = 0; x < map.getWidth(); x++) {
+                for (x = startX; x < endX; x++) {
                     if (map.isSite(x, y)) {
                         // Show name, should be configurable.
                         xp = x * tileXSize;

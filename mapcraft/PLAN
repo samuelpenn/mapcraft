@@ -27,6 +27,7 @@ Project Plan
     Subhex placement of sites.
     Faster display - precrop hex display etc.
     Toolbar support for brush types.
+*   Support square tiles for indoor maps.
 
 0.3 (Printing support)
     Support for multiple display resolutions.
