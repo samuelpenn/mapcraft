@@ -750,6 +750,21 @@ public class Map extends MapBean implements Cloneable {
 
         return buffer.toString();
     }
+    
+    /**
+     * Find all occurrences of an area on a map, and delete them. Also
+     * remove the area from the AreaSet for the map. If the area has a
+     * parent, then the map locations are set to be the parent area.
+     * 
+     * @param area      Id of area to be deleted.
+     */
+    public void
+    deleteArea(short area) {
+        short       parent = (short)getAreaSet().getArea(area).getParent();
+        tileSets[getCurrentSet()].changeArea(area, parent);
+        
+        getAreaSet().deleteArea(area);
+    }
 
 
     public static void

@@ -211,4 +211,20 @@ import java.util.*;
 
         return array;
     }
+    
+    /**
+     * Delete the specified area from the list of areas.
+     * 
+     * @param id        Id of area to be removed.
+     */
+    public void
+    deleteArea(int id) {
+        for (int i=0; i < list.size(); i++) {
+            Area area = (Area)list.get(i);
+            if (area.getId() == id) {
+                list.remove(i);
+                break;
+            }
+        }
+    }
  }

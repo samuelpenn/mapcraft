@@ -96,6 +96,24 @@ public class AreaSetDialog extends JDialog {
 
     }
 
+    private Object[]
+    getListData(AreaSet set) {
+        Area        a;
+        ArrayList   array = new ArrayList();
+        
+        for (Iterator iter = set.iterator(); iter.hasNext(); ) {
+            Area    area = (Area) iter.next();
+            String  name = area.getName();
+            
+            if (area.getParent() > 0) {
+                String  parent = set.getArea(area.getParent()).getName();
+                name += " ("+parent+")";
+            }
+            array.add(name);
+        }
+        
+        return array.toArray();
+    }
     /**
      * Setup and display the centre pane. This contains the list of areas
      * currently available.
@@ -112,25 +130,13 @@ public class AreaSetDialog extends JDialog {
         c.anchor = GridBagConstraints.NORTHWEST;
         
         AreaSet     set = map.getAreaSet();
-        Area        a;
-        ArrayList   array = new ArrayList();
-        for (Iterator iter = set.iterator(); iter.hasNext(); ) {
-            Area    area = (Area) iter.next();
-            String  name = area.getName();
-            
-            if (area.getParent() > 0) {
-                String  parent = set.getArea(area.getParent()).getName();
-                name += " ("+parent+")";
-            }
-            array.add(name);
-        }
-        
-        list = new JList(array.toArray());
+        list = new JList(getListData(set));
         add(centrePane, g, c, new JScrollPane(list), 0, 0, 6, 6);
     }
     
     private void
     setupBottomPane() {
+        System.out.println("setupBottomPane:");
         bottomPane.add(cancel = new JButton("Cancel"));
         bottomPane.add(okay = new JButton("Okay"));
         
@@ -162,7 +168,7 @@ public class AreaSetDialog extends JDialog {
         super(frame, "Add/Edit areas", true);
         this.map = map;
         this.frame = frame;
-
+        
         if (frame != null) {
             // This is very crude positioning.
             // TODO: Centre in parent frame.
@@ -188,7 +194,6 @@ public class AreaSetDialog extends JDialog {
     
     /**
      * Add a new area to the list of areas.
-     * TODO: Need to dynamically updated the GUI list with the new area.
      */
     private void
     add() {
@@ -208,13 +213,14 @@ public class AreaSetDialog extends JDialog {
                 area.setParent(id);
             }
             set.add(area);
+            // Redisplay the new data.
+            list.setListData(getListData(set));
         }
         
     }
     
     /**
      * Modify the selected area.
-     * TODO: Need to dynamically update the GUI list with changed info.
      */
     private void
     modify() {
@@ -234,12 +240,37 @@ public class AreaSetDialog extends JDialog {
             if (parent.length() > 0) {
                 int     id = set.getArea(parent).getId();
                 area.setParent(id);
+            } else {
+                area.setParent(0);
             }
+            // Redisplay the new data.
+            list.setListData(getListData(set));
         }
     }
     
+    /**
+     * Delete the currently selected area. Prompt the user for confirmation
+     * first.
+     */
     private void
     delete() {
+        AreaSet         set = map.getAreaSet();
+        
+        String          selected = (String)list.getSelectedValue();
+        selected = selected.replaceAll(" \\(.*\\)", "");
+        Area            area = set.getArea(selected);
+        String          message;
+
+        message = "Do you really want to delete area '"+selected+"'";
+        int option = JOptionPane.showConfirmDialog(null, message,
+                "Are you sure?",
+                JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            // Do this via the Map, since it also needs to clean up any
+            // parts of the map set to this area.
+            map.deleteArea((short)area.getId());
+            list.setListData(getListData(set));
+        }
     }
     
     public void

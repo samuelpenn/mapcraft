@@ -989,5 +989,32 @@ public class TileSet implements Cloneable {
         return value;
     }
 
+    /**
+     * Find all occurrences of a given area on a map, and change them to be
+     * the new area. Often used when an area is deleted, and it is to be set
+     * to the parent area (or zero, if it has no parent).
+     * 
+     * @param oldArea       Area to be found and changed.
+     * @param newArea       Area to set to, or zero to delete.
+     */
+    public void
+    changeArea(short oldArea, short newArea) {
+        System.out.println("changeArea: "+oldArea+" -> "+newArea);
+        if (oldArea == 0) {
+            // Do nothing.
+            return;
+        }
+        for (int x=0; x < width; x++) {
+            for (int y=0; y < height; y++) {
+                try {
+                    if (getArea(x, y) == oldArea) {
+                        setArea(x, y, newArea);
+                    }
+                } catch (MapOutOfBoundsException e) {
+                }
+            }
+        }
+    }
+
 }
 
