@@ -71,15 +71,32 @@
                    alt="Picture of globe"/>
 
             <p>
-                <e>Mapcraft</e> is designed to create and edit tile based
-                maps for use in pen and paper roleplaying games. The
-                principle aim is to support sufficient metadata to enable
-                the map to be accessed programmatically, and more
-                importantly, automatically. A change in a map can then be
-                immediately reflected in associated documents. Inline
-                graphics can be created from the maps for HTML pages, and
-                statistics (the population or area of a region for example)
-                can be generated and included in campaign background.
+                <e>Mapcraft</e> is a tile based map editor for pen and paper
+                roleplaying games. It is designed to handle everything from
+                complete world maps (including spherical worlds, like the
+                image shown here) down to local village maps, automatically
+                keeping track of where smaller maps are located within
+                their larger scale parents.
+            </p>
+            
+            <p>
+                Maps can be rescaled, merged (so maps of neighbouring
+                areas can overlap, whilst remaining consistent) and
+                cropped. More importantly, metadata can be stored on any
+                object within the map. For example, you could store
+                population data about towns and villages, keep track of
+                who rules them and what their feudal obligations are.
+                Then it would be possible to automatically generate
+                population and fief statistics on a country for inclusion
+                in another document.
+            </p>
+            
+            <p>
+                Maps are stored as XML data, so can be accessed
+                programmatically via standard XML APIs. There are already
+                plugins for <link href="http://xml.apache.org"
+                name="Xalan"/> which allow a JPEG image to be created
+                from a map automatically and inserted into a Document.
             </p>
 
             <p>
@@ -90,17 +107,5 @@
             </p>
         </sect1>
         
-        <sect1>
-            <title>Introduction</title>
-            
-            <p>
-                There are two main interfaces to Mapcraft. The first is a
-                Java Swing based GUI for creating and editing the maps.
-                The second consists of Xerces plugins for XSLT which enable
-                a stylesheet to fetch a map, create a JPEG image of the
-                requested portion, and display it inline within an HTML
-                page.
-            </p>
-        </sect1>
     </body>
 </page>
