@@ -364,6 +364,7 @@ public class MapEditor extends MapViewer
             int     x,y;
             int     yp;
 
+            requestFocus();
             // Record actual X/Y coordinate of mouse click.
             brush.setX((e.getX()*100)/tileXSize);
             brush.setY((e.getY()*100)/tileYSize);
@@ -421,8 +422,44 @@ public class MapEditor extends MapViewer
     public class
     KeyEventHandler extends KeyAdapter {
         public void
-        KeyPressed(KeyEvent e) {
+        keyPressed(KeyEvent e) {
             System.out.println("Pressed!");
+            int     key = e.getKeyCode();
+            char    ch = e.getKeyChar();
+
+            switch (key) {
+            case KeyEvent.VK_NUMPAD8:
+                System.out.println("0 degrees");
+                break;
+            case KeyEvent.VK_NUMPAD2:
+                System.out.println("180 degrees");
+                break;
+            case KeyEvent.VK_NUMPAD4:
+                System.out.println("90 degrees");
+                break;
+            case KeyEvent.VK_NUMPAD6:
+                System.out.println("270 degrees");
+                break;
+            }
+
+            switch (ch) {
+            case '[':
+                System.out.println("Anti-clockwise");
+                break;
+            case ']':
+                System.out.println("Clockwise");
+                break;
+            }
+        }
+
+        public void
+        keyTyped(KeyEvent e) {
+            System.out.println("Typed!");
+        }
+
+        public void
+        keyReleased(KeyEvent e) {
+            System.out.println("Released!");
         }
     }
 
@@ -550,11 +587,11 @@ public class MapEditor extends MapViewer
     MapEditor(Properties properties, String filename) {
         super(properties, filename);
 
-
         this.setSize(new Dimension(2000, 1200));
 
         addMouseMotionListener(new MouseMotionHandler());
         addMouseListener(new MouseHandler());
+        addKeyListener(new KeyEventHandler());
 
     }
 

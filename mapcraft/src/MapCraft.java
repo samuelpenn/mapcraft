@@ -127,6 +127,7 @@ public class MapCraft implements ActionListener {
 
         window.getContentPane().add(scrollpane, BorderLayout.CENTER);
         scrollpane.setVisible(true);
+        //scrollpane.addKeyListener(editor);
         editor.setVisible(true);
         
         // Components refuse to draw themselves until the scrollpane is
