@@ -24,6 +24,7 @@ public class TerrainSet implements Cloneable {
     protected String        id;
     protected String        path;
     protected String        basePath;
+    protected boolean       anySize;
 
     public
     TerrainSet(String id, String path) {
@@ -31,6 +32,7 @@ public class TerrainSet implements Cloneable {
         this.path = path;
         this.basePath = ".";
         terrainList = new ArrayList();
+        anySize = false;
     }
 
     public
@@ -39,15 +41,27 @@ public class TerrainSet implements Cloneable {
         this.path = path;
         this.basePath = basePath;
         terrainList = new ArrayList();
+        anySize = false;
     }
 
     public String getId() { return id; }
     public String getPath() { return path; }
     public String getBasePath() { return basePath; }
+    public boolean isAnySize() { return anySize; }
 
     public void
     setBasePath(String basePath) {
         this.basePath = basePath;
+    }
+
+    /**
+     * If anySize is set to be true, then graphics in this TerrainSet are
+     * not limited to being the same size as the underlying map tiles.
+     * They can be any size and shape.
+     */
+    public void
+    setAnySize(boolean anySize) {
+        this.anySize = anySize;
     }
 
     /**

@@ -231,9 +231,11 @@ public class MapEditor extends MapViewer
                                                 "Unnamed", "Unknown",
                                                 brush.getX(), brush.getY());
                         map.addThing(thing);
-                        ThingDialog dialog = new ThingDialog(thing, frame,
-                                        map.getThingSet(), views[4].getPath());
-                        dialog.getThing();
+                        if (map.getType() == Map.WORLD) {
+                            ThingDialog dialog = new ThingDialog(thing, frame,
+                                            map.getThingSet(), views[4].getPath());
+                            dialog.getThing();
+                        }
                     }
                     break;
                 case MouseEvent.BUTTON2:
@@ -438,6 +440,7 @@ public class MapEditor extends MapViewer
             int     key = e.getKeyCode();
             char    ch = e.getKeyChar();
             int     x, y, angle;
+            Thing   thing = null;
 
             if (map.getTileShape() == Map.SQUARE) {
                 x = brush.getLastMouseX()/tileXSize;
@@ -454,36 +457,15 @@ public class MapEditor extends MapViewer
 
                 angle = 60;
             }
+            if (brush.getType() == Brush.THINGS) {
+                x = (brush.getLastMouseX()*100)/tileXSize;
+                y = (brush.getLastMouseY()*100)/tileYSize;
+                thing = map.getNearestThing(x, y, 100);
+                angle = 30;
+            }
 
             try {
                 short   r = -1;
-                switch (key) {
-                case KeyEvent.VK_NUMPAD8:
-                    System.out.println("0 degrees");
-                    r = 0;
-                    break;
-                case KeyEvent.VK_NUMPAD2:
-                    System.out.println("180 degrees");
-                    r = 2;
-                    break;
-                case KeyEvent.VK_NUMPAD4:
-                    System.out.println("90 degrees");
-                    r = 1;
-                    break;
-                case KeyEvent.VK_NUMPAD6:
-                    System.out.println("270 degrees");
-                    r = 3;
-                    break;
-                }
-                if (r > -1) {
-                    debug("Brush type = "+brush.getType());
-                    if (brush.getType() == Brush.TERRAIN) {
-                        map.setTerrainRotation(x, y, (short)(r * angle));
-                    } else {
-                        map.setFeatureRotation(x, y, (short)(r * angle));
-                    }
-                    paintTile(x, y);
-                }
 
                 switch (ch) {
                 case '[':
@@ -492,27 +474,39 @@ public class MapEditor extends MapViewer
                         r = (short) (map.getTerrainRotation(x, y) - angle);
                         if (r < 0) r = (short) (360-angle);
                         map.setTerrainRotation(x, y, r);
+                        paintTile(x, y);
                     } else if (brush.getType() == Brush.FEATURES) {
                         r = (short) (map.getFeatureRotation(x, y) - angle);
                         if (r < 0) r = (short) (360-angle);
                         map.setFeatureRotation(x, y, r);
+                        paintTile(x, y);
+                    } else if (brush.getType() == Brush.THINGS && thing != null) {
+                        r = (short) (thing.getRotation() - angle);
+                        if (r < 0) r = (short) (360 - angle);
+                        thing.setRotation(r);
+                        paintComponent();
                     }
                     brush.setRotation(r);
-                    paintTile(x, y);
                     break;
                 case ']':
                     System.out.println("Clockwise");
                     if (brush.getType() == Brush.TERRAIN) {
                         r = (short) (map.getTerrainRotation(x, y) + angle);
-                        if (r >= 360) r = (short) (angle);
+                        if (r >= 360) r = (short) 0;
                         map.setTerrainRotation(x, y, r);
+                        paintTile(x, y);
                     } else if (brush.getType() == Brush.FEATURES) {
                         r = (short) (map.getFeatureRotation(x, y) + angle);
-                        if (r >= 360) r = (short) (angle);
+                        if (r >= 360) r = (short) 0;
                         map.setFeatureRotation(x, y, r);
+                        paintTile(x, y);
+                    } else if (brush.getType() == Brush.THINGS && thing != null) {
+                        r = (short) (thing.getRotation() + angle);
+                        if ( r >= 360) r = (short) 0;
+                        thing.setRotation(r);
+                        paintComponent();
                     }
                     brush.setRotation(r);
-                    paintTile(x, y);
                     break;
                 }
             } catch (MapOutOfBoundsException moobe) {

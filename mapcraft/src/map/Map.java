@@ -59,8 +59,6 @@ public class Map implements Cloneable {
     TerrainSet      featureSet = null;
     TileSet         tileSets[] = null;
     AreaSet         areaSet = null;
-    //Vector          rivers = null;
-    //Vector          things = null;
 
     private int     tileShape = HEXAGONAL;
     private int     type = WORLD;
@@ -68,12 +66,6 @@ public class Map implements Cloneable {
     // State fields
     private String  currentSetName = null;
     private int     currentSet = 0;
-
-    // Legacy
-    //private Tile    tiles[][];
-    //private int     width = 0;
-    //private int     height = 0;
-    //private int     scale = 0;
 
     // Constants
     public static final int SQUARE = 1;
@@ -259,6 +251,7 @@ public class Map implements Cloneable {
             tileSets = xml.getTileSets();
             terrainSet = xml.getTerrainSet("basic");
             thingSet = xml.getTerrainSet("things");
+            thingSet.setAnySize(true);
             featureSet = xml.getTerrainSet("features");
             areaSet = xml.getAreas();
 
@@ -1065,7 +1058,8 @@ public class Map implements Cloneable {
                 Thing    thing = (Thing)things.elementAt(i);
                 writer.write("        <thing type=\""+thing.getType()+"\" "+
                                         "x=\""+thing.getX()+
-                                        "\" y=\""+thing.getY()+"\">\n");
+                                        "\" y=\""+thing.getY()+"\" "+
+                                        "rotation=\""+thing.getRotation()+"\">\n");
                 writer.write("            <name>"+thing.getName()+"</name>\n");
                 writer.write("            <description>");
                 writer.write(thing.getDescription());

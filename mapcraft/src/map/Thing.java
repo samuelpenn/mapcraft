@@ -31,6 +31,7 @@ public class Thing implements Cloneable {
     private boolean     bold;
     private boolean     italic;
     private boolean     underlined;
+    private short       rotation;
 
 
     public static final int   SMALL = 1;  // 8pt
@@ -62,6 +63,7 @@ public class Thing implements Cloneable {
         this.description = description;
         this.x = 0;
         this.y = 0;
+        this.rotation = 0;
     }
 
     /**
@@ -75,6 +77,7 @@ public class Thing implements Cloneable {
         this.description = "";
         this.x = 0;
         this.y = 0;
+        this.rotation = 0;
     }
 
     /**
@@ -87,6 +90,7 @@ public class Thing implements Cloneable {
         this.description = description;
         this.x = x;
         this.y = y;
+        this.rotation = 0;
     }
 
     public Object
@@ -95,6 +99,7 @@ public class Thing implements Cloneable {
 
         s.x = x;
         s.y = y;
+        s.rotation = rotation;
 
         return (Object)s;
     }
@@ -122,6 +127,11 @@ public class Thing implements Cloneable {
     public int
     getImportance() {
         return importance;
+    }
+
+    public short
+    getRotation() {
+        return rotation;
     }
 
     public boolean
@@ -165,6 +175,11 @@ public class Thing implements Cloneable {
         if (importance >= LOW && importance <= HIGH) {
             this.importance = importance;
         }
+    }
+
+    public void
+    setRotation(short rotation) {
+        this.rotation = rotation;
     }
 
     public void

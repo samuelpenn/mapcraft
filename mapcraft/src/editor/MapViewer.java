@@ -278,12 +278,24 @@ public class MapViewer extends JPanel {
             if (t != null) {
                 short   id = t.getId();
                 String  path = views[view].getPath()+"/"+t.getImagePath();
-                //debug("Loading icon ["+path+"]");
                 Image   icon = toolkit.getImage(path);
+                Image   scaled = null;
+                int     x = -1, y = -1;
 
-                Image scaled = icon.getScaledInstance(views[view].getIconWidth(),
-                                                      views[view].getIconHeight(),
-                                                      Image.SCALE_SMOOTH);
+                if (set.isAnySize()) {
+                    while (x == -1 || y == -1) {
+                        prepareImage(icon);
+                        x = icon.getWidth(this);
+                        y = icon.getHeight(this);
+                    }
+                    x = (x * views[view].getIconWidth())/96;
+                    y = (y * views[view].getIconHeight())/96;
+
+                } else {
+                    x = views[view].getIconWidth();
+                    y = views[view].getIconHeight();
+                }
+                scaled = icon.getScaledInstance(x, y, Image.SCALE_SMOOTH);
 
                 if (views[view].isHexagonal()) {
                     icon = createImage(new FilteredImageSource(scaled.getSource(), filter));
@@ -882,9 +894,10 @@ public class MapViewer extends JPanel {
 
     public void
     paintThing(Thing thing, Graphics g) {
-        int     x=0, y=0;
-        int     fontSize = 12;
-        Image   icon = thingSet.getIcon(thing.getType());
+        int         x=0, y=0;
+        int         fontSize = 12;
+        Image       icon = thingSet.getIcon(thing.getType());
+        Graphics2D  g2 = (Graphics2D)g;
 
         // If scale is too large, and thing not importance enough,
         // then don't display it.
@@ -902,7 +915,12 @@ public class MapViewer extends JPanel {
         x = thing.getX() * tileXSize / 100 - tileXSize/2;
         y = thing.getY() * tileYSize / 100 - tileYSize/2;
 
-        g.drawImage(icon, x, y, this);
+        double  r = 0.0;
+        r = Math.toRadians(thing.getRotation());
+        g2.rotate(r, x+tileXSize/2, y+tileYSize/2);
+        g2.drawImage(icon, x, y, this);
+        g2.rotate(-r, x+tileXSize/2, y+tileYSize/2);
+        //g.drawImage(icon, x, y, this);
         g.setColor(Color.BLACK);
 
         switch (thing.getFontSize())  {

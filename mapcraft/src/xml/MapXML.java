@@ -63,6 +63,21 @@ public class MapXML {
     public static final String LOCAL = "Local";
     public static final String WORLD = "World";
 
+    private void
+    debug(String message) {
+        System.out.println(message);
+    }
+
+    private void
+    warning(String message) {
+        System.out.println("Warning: "+message);
+    }
+
+    private void
+    error(String message) {
+        System.out.println("ERROR: "+message);
+    }
+
     public
     MapXML() {
     }
@@ -654,7 +669,7 @@ public class MapXML {
         String          image;
         String          path;
         int             x, y, i = 0;
-        short           type;
+        short           type, rotation;
         NamedNodeMap    values;
         Node            value;
 
@@ -672,9 +687,19 @@ public class MapXML {
 
                 if (node != null) {
                     values = node.getAttributes();
-                    type = (short)getIntNode(values.getNamedItem("type"));
-                    x = getIntNode(values.getNamedItem("x"));
-                    y = getIntNode(values.getNamedItem("y"));
+                    try {
+                        type = (short)getIntNode(values.getNamedItem("type"));
+                        x = getIntNode(values.getNamedItem("x"));
+                        y = getIntNode(values.getNamedItem("y"));
+                    } catch (Exception e1) {
+                        warning("Missing core attribute on thing "+i);
+                        continue;
+                    }
+                    try {
+                        rotation = (short)getIntNode(values.getNamedItem("rotation"));
+                    } catch (Exception e2) {
+                        rotation = 0;
+                    }
 
                     name = getTextNode(node, "name");
                     description = getTextNode(node, "description");
@@ -683,6 +708,7 @@ public class MapXML {
                     thing = new Thing(type, name, description, x, y);
                     thing.setFontSize(fontSize);
                     thing.setImportance(importance);
+                    thing.setRotation(rotation);
                     things.add(thing);
                 }
             }

@@ -74,9 +74,9 @@
             <attributes water="false" woods="0" quality="25"/>
         </terrain>
         <terrain id="22">
-            <name>wild.marsh</name>
-            <description>Marsh</description>
-            <image>marsh.png</image>
+            <name>wild.rock</name>
+            <description>Badlands</description>
+            <image>rock.png</image>
             <solid value="false"/>
             <attributes water="false" woods="0" quality="5"/>
         </terrain>
