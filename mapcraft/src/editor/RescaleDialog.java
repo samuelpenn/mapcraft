@@ -16,6 +16,7 @@ import uk.co.demon.bifrost.rpg.mapcraft.map.*;
 import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
 
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.awt.image.*;
@@ -24,14 +25,18 @@ import java.awt.event.*;
 import java.util.*;
 
 /**
- * Implements a GUI dialog for controlling cropping of the map.
+ * Implements a GUI dialog for controlling rescaling of a map.
+ * Rescaling involves changing the map resolution, not just the size
+ * represented by each time. Changing a map from 1:5km to 1:1km would
+ * increase the number of tiles by a factor of 25.
  */
-public class ResizeDialog extends JDialog  {
+public class RescaleDialog extends JDialog  {
     private GridBagLayout       gridbag;
     private GridBagConstraints  c;
 
-    private int                 orgWidth, orgHeight;
-    private JSpinner            width, height;
+    private int                 orgScale, orgWidth, orgHeight;
+    private JLabel              width, height;
+    private JSpinner            scale;
     private JCheckBox           left, top;
     private JButton             okay, cancel;
 
@@ -50,7 +55,7 @@ public class ResizeDialog extends JDialog  {
      * @param basePath  Base path to thing icons to use in dialog.
      */
     public
-    ResizeDialog(int orgWidth, int orgHeight, JFrame frame) {
+    RescaleDialog(int orgScale, int orgWidth, int orgHeight, JFrame frame) {
         super(frame, "Resize map", true);
 
         if (frame != null) {
@@ -62,6 +67,7 @@ public class ResizeDialog extends JDialog  {
         }
         this.orgWidth = orgWidth;
         this.orgHeight = orgHeight;
+        this.orgScale = orgScale;
 
         gridbag = new GridBagLayout();
         c = new GridBagConstraints();
@@ -72,23 +78,26 @@ public class ResizeDialog extends JDialog  {
         c.weighty = 0.0;
 
         int     y = 0;
-        add(new Label("Current"), 1, 0, 1, 1);
-        add(new Label("New"), 2, 0, 1, 1);
+        add(new JLabel("Current"), 1, 0, 1, 1);
+        add(new JLabel("New"), 2, 0, 1, 1);
 
-        add(new Label("Width"), 0, 1, 1, 1);
-        add(new Label("Height"), 0, 2, 1, 1);
+        add(new JLabel("Width"), 0, 1, 1, 1);
+        add(new JLabel("Height"), 0, 2, 1, 1);
+        add(new JLabel("Scale"), 0, 3, 1, 1);
 
-        add(new Label(""+orgWidth), 1, 1, 1, 1);
-        add(new Label(""+orgHeight), 1, 2, 1, 1);
+        add(new JLabel(""+orgWidth), 1, 1, 1, 1);
+        add(new JLabel(""+orgHeight), 1, 2, 1, 1);
+        add(new JLabel(""+orgScale), 1, 3, 1, 1);
 
-        add(width = new JSpinner(new SpinnerNumberModel(orgWidth, 0, 999, 1)), 2, 1, 1, 1);
-        add(height = new JSpinner(new SpinnerNumberModel(orgHeight, 0, 999, 1)), 2, 2, 1, 1);
+        add(width = new JLabel(""+orgWidth), 2, 1, 1, 1);
+        add(height = new JLabel(""+orgHeight), 2, 2, 1, 1);
+        add(scale = new JSpinner(new SpinnerNumberModel(orgScale, 1, 1000, 1)), 2, 3, 1, 1);
 
-        add(left = new JCheckBox("Insert/remove columns at left edge"), 0, 3, 3, 1);
-        add(top = new JCheckBox("Insert/remove rows at top edge"), 0, 4, 3, 1);
+        //add(left = new JCheckBox("Insert/remove columns at left edge"), 0, 4, 3, 1);
+        //add(top = new JCheckBox("Insert/remove rows at top edge"), 0, 5, 3, 1);
 
-        add(okay = new JButton("Resize"), 1, 5, 1, 1);
-        add(cancel = new JButton("Cancel"), 2, 5, 1, 1);
+        add(okay = new JButton("Rescale"), 1, 6, 1, 1);
+        add(cancel = new JButton("Cancel"), 2, 6, 1, 1);
 
         okay.addActionListener(new ActionListener() {
                                     public void
@@ -105,9 +114,31 @@ public class ResizeDialog extends JDialog  {
                                     }
                                  });
 
+        scale.addChangeListener(new ChangeListener() {
+                                    public void
+                                    stateChanged(ChangeEvent e) {
+                                        scaleChanged();
+                                    }
+                                 });
+
         setSize(new Dimension(300, 200));
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    /**
+     * Recalculates the new width and height of the map.
+     * Called when the scale is changed, so the user gets instant feedback
+     * on how big their new map is going to be.
+     */
+    private void
+    scaleChanged() {
+        int     s = getNewScale();
+        int     w = (this.orgWidth * this.orgScale) / s;
+        int     h = (this.orgHeight * this.orgScale) / s;
+
+        width.setText(""+w);
+        height.setText(""+h);
     }
 
     private void
@@ -151,21 +182,11 @@ public class ResizeDialog extends JDialog  {
     }
 
     /**
-     * Get the new width of the map.
+     * Get the new scale of the map.
      */
     public int
-    getNewWidth() {
-        Integer  i = (Integer)width.getValue();
-
-        return i.intValue();
-    }
-
-    /**
-     * Get the new height of the map.
-     */
-    public int
-    getNewHeight() {
-        Integer i = (Integer)height.getValue();
+    getNewScale() {
+        Integer  i = (Integer)scale.getValue();
 
         return i.intValue();
     }

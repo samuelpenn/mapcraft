@@ -927,7 +927,12 @@ public class MapEditor extends MapViewer
     public void
     rescale() {
         try {
-            map.rescale(25);
+            RescaleDialog   dialog = new RescaleDialog(map.getScale(),
+                                    map.getWidth(), map.getHeight(), frame);
+
+            if (dialog.isOkay()) {
+                map.rescale(dialog.getNewScale());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
