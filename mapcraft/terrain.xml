@@ -14,35 +14,85 @@
             <image>hex.gif</image>
             <solid value="false"/>
         </terrain>
-    
+
         <terrain id="1">
             <name>sea.ocean</name>
             <description>Ocean</description>
             <image>sea.gif</image>
             <solid value="false"/>
         </terrain>
-        
         <terrain id="2">
-            <name>sea.coastal</name>
-            <description>Coastal sea</description>
+            <name>sea.ocean</name>
+            <description>Sea</description>
             <image>sea.gif</image>
             <solid value="false"/>
         </terrain>
-        
+
         <terrain id="10">
-            <name>temperate.flat</name>
-            <description>Grass plains</description>
-            <image>plains.gif</image>
+            <name>clear.flat</name>
+            <description>Cropland</description>
+            <image>cropland.gif</image>
+            <solid value="false"/>
         </terrain>
+        <terrain id="11">
+            <name>clear.wooded</name>
+            <description>Mixed woods</description>
+            <image>cropland.gif</image>
+        </terrain>
+
+        <terrain id="20">
+            <name>wild.heath</name>
+            <description>Heath</description>
+            <image>heath.gif</image>
+        </terrain>
+        <terrain id="21">
+            <name>wild.moor</name>
+            <description>Moor</description>
+            <image>heath.gif</image>
+        </terrain>
+        <terrain id="22">
+            <name>wild.marsh</name>
+            <description>Marshland</description>
+            <image>marsh.gif</image>
+        </terrain>
+        
+        <terrain id="30">
+            <name>woods.light</name>
+            <description>Light woods</description>
+            <image>woods.gif</image>
+        </terrain>
+        <terrain id="31">
+            <name>woods.medium</name>
+            <description>Medium woods</description>
+            <image>woods.gif</image>
+        </terrain>
+        <terrain id="32">
+            <name>woods.thick</name>
+            <description>Thick woods</description>
+            <image>woods.gif</image>
+        </terrain>
+        
+        <terrain id="40">
+            <name>mountains.foot</name>
+            <description>Foot hills</description>
+            <image>hills.gif</image>
+        </terrain>
+        
+        <terrain id="41">
+            <name>mountains.low</name>
+            <description>Low mountains</description>
+            <image>hills.gif</image>
+        </terrain>
+
     </terrainset>
-    
+
     <tileset id="root">
         <dimensions>
             <scale>1</scale>
             <width>1</width>
             <height>1</height>
         </dimensions>
-        
+
         <tiles>
             <tile x="0" y="0" terrain="0" />
         </tiles>

@@ -379,16 +379,16 @@ public class Map {
 
         return submap;
     }
-    
+
     /**
      * Save the map as an XML file.
      */
     public void
-    save(String filename) throws IOException {
+    saveLongFormat(String filename) throws IOException {
         FileWriter      writer = new FileWriter(filename);
         int             x, y;
         int             i;
-        
+
         writer.write("<?xml version=\"1.0\"?>\n");
         writer.write("<map>\n");
         writer.write("    <header>\n");
@@ -399,7 +399,7 @@ public class Map {
 
         // Terrain Set
         writer.write("    <terrainset>\n");
-        
+
         // Iterate over the terrain types, and save them out.
         Iterator iter = terrainSet.iterator();
         while (iter.hasNext()) {
@@ -422,7 +422,7 @@ public class Map {
             writer.write("            <width>"+tileSets[i].getWidth()+"</width>\n");
             writer.write("            <height>"+tileSets[i].getHeight()+"</height>\n");
             writer.write("        </dimensions>\n");
-            
+
             writer.write("        <tiles>\n");
             for (y = 0; y < tileSets[i].getHeight(); y++) {
                 for (x = 0; x < tileSets[i].getWidth(); x++) {
@@ -448,6 +448,92 @@ public class Map {
 
         writer.close();
     }
+    
+
+    /**
+     * Save the map as an XML file.s
+     */
+    public void
+    save(String filename) throws IOException {
+        FileWriter      writer = new FileWriter(filename);
+        int             x, y;
+        int             i;
+
+        writer.write("<?xml version=\"1.0\"?>\n");
+        writer.write("<map>\n");
+        writer.write("    <header>\n");
+        writer.write("        <name>"+name+"</name>\n");
+        writer.write("        <author>Unknown</author>\n");
+        writer.write("        <cvsversion>$Revision$</cvsversion>\n");
+        writer.write("        <format>1.1</format>\n");
+        writer.write("    </header>\n");
+
+        // Terrain Set
+        writer.write("    <terrainset>\n");
+
+        // Iterate over the terrain types, and save them out.
+        Iterator iter = terrainSet.iterator();
+        while (iter.hasNext()) {
+            Terrain t = (Terrain)iter.next();
+
+            writer.write("        <terrain id=\""+t.getId()+"\">\n");
+            writer.write("            <name>"+t.getName()+"</name>\n");
+            writer.write("            <description>"+t.getDescription()+"</description>\n");
+            writer.write("            <image>"+t.getImagePath()+"</image>\n");
+            writer.write("            <solid value=\"false\"/>\n");
+            writer.write("        </terrain>\n");
+        }
+        writer.write("    </terrainset>\n");
+
+        // Now go through each of the tilesets in turn.
+        for (i=0; i < tileSets.length; i++) {
+            writer.write("    <tileset id=\""+tileSets[i].getName()+"\">\n");
+            writer.write("        <dimensions>\n");
+            writer.write("            <scale>"+tileSets[i].getScale()+"</scale>\n");
+            writer.write("            <width>"+tileSets[i].getWidth()+"</width>\n");
+            writer.write("            <height>"+tileSets[i].getHeight()+"</height>\n");
+            writer.write("        </dimensions>\n");
+
+            writer.write("        <tiles>\n");
+
+            for (x=0; x < tileSets[i].getWidth(); x++) {
+                System.out.println("Writing column "+x);
+
+                writer.write("        ");
+                writer.write("<column x=\""+x+"\">");
+
+                StringBuffer    terrain = new StringBuffer();
+                String          tmp;
+
+                for (y=0; y < tileSets[i].getHeight(); y++) {
+                    try {
+                        Tile    tile = tileSets[i].getTile(x, y);
+                        tmp = Integer.toString(tile.getTerrain(), 36);
+                        if (tmp.length() < 2) {
+                            tmp = "0"+tmp;
+                        }
+
+                        if ((y%32)==0) {
+                            terrain.append("\n");
+                            terrain.append("            ");
+                        }
+
+                        terrain.append(tmp);
+                    } catch (MapOutOfBoundsException e) {
+                    }
+                }
+                writer.write(terrain.toString());
+                writer.write("\n");
+                writer.write("        ");
+                writer.write("</column>\n");
+             }
+            writer.write("        </tiles>\n");
+            writer.write("    </tileset>\n\n");
+        }
+        writer.write("</map>\n");
+
+        writer.close();
+    }
 
     /**
      * Load the map from an XML file.
@@ -458,7 +544,7 @@ public class Map {
     load(String filename) throws IOException {
         try {
             MapXML  xml = new MapXML(filename);
-            
+
             this.filename = filename;
             this.name = xml.getName();
 

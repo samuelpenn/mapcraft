@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<map>
+    <header>
+        <name>null</name>
+        <author>Unknown</author>
+        <cvsversion>$Revision$</cvsversion>
+        <format>1.1</format>
+    </header>
+    <terrainset>
+        <terrain id="0">
+            <name>null</name>
+            <description>Unchartable</description>
+            <image>hex.gif</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="1">
+            <name>sea.ocean</name>
+            <description>Ocean</description>
+            <image>sea.gif</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="2">
+            <name>sea.ocean</name>
+            <description>Sea</description>
+            <image>sea.gif</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="3">
+            <name>temperate.flat</name>
+            <description>Cropland</description>
+            <image>cropland.gif</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="4">
+            <name>temperate.woods</name>
+            <description>Woods</description>
+            <image>woods.gif</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="5">
+            <name>temperate.woods</name>
+            <description>Heath</description>
+            <image>heath.gif</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="6">
+            <name>temperate.woods</name>
+            <description>Marsh</description>
+            <image>marsh.gif</image>
+            <solid value="false"/>
+        </terrain>
+    </terrainset>
+    <tileset id="root">
+        <dimensions>
+            <scale>20</scale>
+            <width>16</width>
+            <height>16</height>
+        </dimensions>
+        <tiles>
+        <column x="0">
+            01010101010101010101010101010101
+        </column>
+        <column x="1">
+            01010101010101010101010101010101
+        </column>
+        <column x="2">
+            01010106060101010101010101010101
+        </column>
+        <column x="3">
+            01010506060101010601010505050101
+        </column>
+        <column x="4">
+            01010506010101060606060505050501
+        </column>
+        <column x="5">
+            01010606010301060606030505050501
+        </column>
+        <column x="6">
+            01010101010303030303030305050101
+        </column>
+        <column x="7">
+            01010101010303030304040305050101
+        </column>
+        <column x="8">
+            01010101030304040404040303050101
+        </column>
+        <column x="9">
+            01010101030304040404060606060101
+        </column>
+        <column x="10">
+            01010101010303040403030306010101
+        </column>
+        <column x="11">
+            01010101030304040303010606010101
+        </column>
+        <column x="12">
+            01010101030304030303030606010101
+        </column>
+        <column x="13">
+            01010101010103010101010106060601
+        </column>
+        <column x="14">
+            01010101010101010101010106060101
+        </column>
+        <column x="15">
+            01010101010101010101010101010101
+        </column>
+        </tiles>
+    </tileset>
+
+</map>

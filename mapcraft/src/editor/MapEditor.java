@@ -8,6 +8,8 @@ import java.awt.image.*;
 import java.net.*;
 import java.io.*;
 
+import uk.co.demon.bifrost.utils.Options;
+
 
 public class MapEditor extends MapViewer implements ActionListener {
     private JFrame      frame;
@@ -323,7 +325,8 @@ public class MapEditor extends MapViewer implements ActionListener {
 
     public static void
     main(String args[]) {
-        MapEditor   editor = new MapEditor("kanday.map");
+        Options options = new Options(args);
+        MapEditor   editor = new MapEditor(options.getString("-load"));
 
     }
 

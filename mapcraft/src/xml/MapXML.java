@@ -117,6 +117,9 @@ public class MapXML {
         return;
     }
 
+
+
+
     /**
      * Return the node of the root document defined by the
      * xpath query. Since this uses the XPathAPI, it is not
@@ -333,10 +336,9 @@ public class MapXML {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return set;
     }
-
 
 
     protected TileSet
@@ -351,7 +353,7 @@ public class MapXML {
         Node            id = attrs.getNamedItem("id");
 
         TileSet         tileSet = null;
-        
+
         int             scale, width, height;
         String          name = null;
 
@@ -379,28 +381,45 @@ public class MapXML {
             tileSet = new TileSet(name, width, height, scale);
 
             // Next, populate the tiles with data from the XML.
-            NodeList    tiles = getNodeList(node, "tiles/tile");
-            if (tiles == null) {
-                throw new XMLException("No tiles defined in this tileset");
+            NodeList    columns = getNodeList(node, "tiles/column");
+            if (columns == null) {
+                throw new XMLException("No columns defined in this tileset");
             }
 
-            for (int t=0; t < tiles.getLength(); t++) {
-                Node            tile = tiles.item(t);
+            for (int t=0; t < columns.getLength(); t++) {
+                Node            column = columns.item(t);
                 Node            value;
                 NamedNodeMap    values;
 
-                if (tile != null) {
-                    int     x, y;
-                    short   terrain;
+                // A column consists of an X coordinate, and stream
+                // data for all the rows in the column. Rows are stored
+                // as 2 digit base 36 numbers. White space is ignored.
+                if (column != null) {
+                    int     x=0, y=0;
+                    short   terrain=0;
+                    int     i;
 
                     // Do NOT used the XPathAPI here, since the docs
                     // don't exagerate when they say it's slow.
-                    values = tile.getAttributes();
+                    values = column.getAttributes();
                     x = getIntNode(values.getNamedItem("x"));
-                    y = getIntNode(values.getNamedItem("y"));
-                    terrain = (short) getIntNode(values.getNamedItem("terrain"));
+                    System.out.println("Reading column "+x);
 
-                    tileSet.setTile(x, y, terrain);
+                    String  data = getTextNode(column).replaceAll(" |\n|\t", "");
+                    System.out.println(data);
+
+                    System.out.println("Data length is "+data.length());
+                    for (y=0,i=0; i < data.length(); i+=2, y++) {
+                        String  part = data.substring(i, i+2);
+                        terrain = Short.valueOf(part, 36).shortValue();
+                        
+                        System.out.println("For "+y+" ("+i+") read "+part+" = "+terrain);
+                        tileSet.setTile(x, y, terrain);
+                    }
+
+//                    y = getIntNode(values.getNamedItem("y"));
+//                    terrain = (short) getIntNode(values.getNamedItem("terrain"));
+//
                 }
             }
         } catch (InvalidArgumentException iae) {
@@ -408,6 +427,8 @@ public class MapXML {
         } catch (MapOutOfBoundsException mbe) {
             System.out.println(mbe);
             throw new XMLException("Tiles in tileset out of bounds");
+        } catch (Exception e) {
+            System.out.println(e);
         }
 
         System.out.println(name+" "+scale+"km "+width+"x"+height);
