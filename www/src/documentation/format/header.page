@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!--
+    XML Source for HTML.
+    Use pagexml stylesheets to render.
+ -->
+<page>
+    <header>
+        <title>Header</title>
+
+        <summary>
+            Header element for map files.
+        </summary>
+
+        <cvsinfo>
+            <version>$Revision$</version>
+            <date>$Date$</date>
+        </cvsinfo>
+        
+        <style>default</style>    
+        <footer href="../../footer.inc"/>
+    </header>
+    
+    <links>
+        <link uri="/index">home</link>
+        <link uri="../user">user documentation</link>
+        <link uri="../gm">gm documentation</link>
+        <link uri="map">map</link>
+    </links>
+
+    <sidebar>
+        <title>Summary</title>
+
+        <p>
+            A <xml>header</xml> is the first child of the
+            <xml ur="map">map</xml> element. It contains meta information
+            on the map, including references to sibling and parent maps.
+        </p>
+    </sidebar>
+    
+    <sidebar>
+        <title>Possible parents</title>
+        
+        <p>
+            <xml uri="map">map</xml>.
+        </p>
+    </sidebar>
+    
+    <sidebar>
+        <title>Children</title>
+        
+        <p>
+            <xml uri="header">header</xml>,
+            <xml uri="terrainset">terrainset</xml>,
+            <xml uri="tileset">tileset</xml>,
+            <xml uri="areas">areas</xml>.
+        </p>
+    </sidebar>
+        
+
+    <body>
+        <sect1>
+            <p>
+                A <xml>header</xml> node is always present.
+            </p>
+            
+            <sect2>
+                <title>Example</title>
+                
+                <xmlroot name="header">
+                    <element name="name" value="Example Map"/>
+                    <element name="author" value="Samuel Penn"/>
+                    <element name="id" value="example.1066074818754"/>
+                    <element name="parent" value="none"/>
+                    
+                    <element name="cvs">
+                        <element name="version" value="$Revision$"/>
+                        <element name="date" value="$Date: 2004/07/10 21:46:22"/>
+                    </element>
+                    
+                    <element name="type" value="World"/>
+                    <element name="shape" value="Hexagonal"/>
+                    <element name="imagedir" value="hexagonal/standard"/>
+                    <element name="format" value="0.2.1"/>
+                </xmlroot>
+            </sect2>
+            
+            <sect2>
+                <title>Definition</title>
+                
+                <p>
+                    header:: (name, author, id, parent, cvs, type, shape,
+                              imagedir, format)
+                    cvs:: (version, date)
+                </p>
+                
+                <sect3>
+                    <title>name</title>
+                    
+                    <p>
+                        The human readable name of the map. This does not
+                        have to be unique, and is only used for presentation
+                        purposes.
+                    </p>
+                </sect3>
+                
+                <sect3>
+                    <title>author</title>
+                    
+                    <p>
+                        The author of the map. Human readable, and is not
+                        used in processing in any way.
+                    </p>
+                </sect3>
+                
+                <sect3>
+                    <title>id</title>
+                    
+                    <p>
+                        Unique identifier for this map. It is generated
+                        when the map is first created. Currently it consists
+                        of the name originally given to the map followed by
+                        the current time in milliseconds.
+                    </p>
+                    
+                    <p>
+                        It is used if this map is referenced by another map,
+                        so must not be changed.
+                    </p>
+                </sect3>
+                
+            </sect2>
+            
+            <sect2>
+                <title>Presentation</title>
+                
+                <p>
+                    A <xml>map</xml> is not designed to be rendered directly
+                    since it represents graphical rather than textual data.
+                    It is meant to be loaded by <e>Mapcraft</e> and displayed
+                    within as a Java JComponent.
+                </p>
+            </sect2>
+        </sect1>
+        
+    </body>
+</page>

@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!--
+    XML Source for HTML.
+    Use pagexml stylesheets to render.
+ -->
+<page>
+    <header>
+        <title>Map</title>
+
+        <summary>
+            An XML format for describing a map.
+        </summary>
+
+        <cvsinfo>
+            <version>$Revision$</version>
+            <date>$Date$</date>
+        </cvsinfo>
+        
+        <style>default</style>    
+        <footer href="../../footer.inc"/>
+    </header>
+    
+    <links>
+        <link uri="/index">home</link>
+        <link uri="../user">user documentation</link>
+        <link uri="../gm">gm documentation</link>
+    </links>
+
+    <sidebar>
+        <title>Summary</title>
+
+        <p>
+            A <xml>map</xml> is the top level root node of a Mapcraft
+            map file.
+        </p>
+        
+    </sidebar>
+    
+    <sidebar>
+        <title>Children</title>
+        
+        <p>
+            <xml uri="header">header</xml>,
+            <xml uri="terrainset">terrainset</xml>,
+            <xml uri="tileset">tileset</xml>,
+            <xml uri="areas">areas</xml>.
+        </p>
+    </sidebar>
+        
+
+    <body>
+        <sect1>
+            <p>
+                A <xml>map</xml> node is always the root node. It contains
+                all information on a single map, including links to other
+                maps, the bitmap image, terrain information and so on.
+            </p>
+            
+            <sect2>
+                <title>Example</title>
+                
+                <xmlroot name="map">
+                    <element name="header">
+                        <element name="name" value="Example Map"/>
+                        <element name="author" value="Samuel Penn"/>
+                        <element name="id" value="example.1066074818754"/>
+                        <element name="parent" value="none"/>
+                        
+                        <element name="cvs">
+                            <element name="version" value="$Revision$"/>
+                            <element name="date" value="$Date: 2004/07/10 21:46:22"/>
+                        </element>
+                        
+                        <element name="type" value="World"/>
+                        <element name="shape" value="Hexagonal"/>
+                        <element name="imagedir" value="hexagonal/standard"/>
+                        <element name="format" value="0.2.1"/>
+                    </element>
+                    
+                    <element name="terrainset"/>
+                    <element name="terrainset"/>
+                    <element name="terrainset"/>
+                    
+                    <element name="tileset"/>
+                    
+                    <element name="areas"/>
+                </xmlroot>
+            </sect2>
+            
+            <sect2>
+                <title>Definition</title>
+                
+                <p>
+                    map:: (header, terrainset, terrainset, terrainset,
+                           tileset, areas?)
+                </p>
+                
+            </sect2>
+            
+            <sect2>
+                <title>Presentation</title>
+                
+                <p>
+                    A <xml>map</xml> is not designed to be rendered directly
+                    since it represents graphical rather than textual data.
+                    It is meant to be loaded by <e>Mapcraft</e> and displayed
+                    within as a Java JComponent.
+                </p>
+            </sect2>
+        </sect1>
+        
+    </body>
+</page>

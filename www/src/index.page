@@ -19,7 +19,7 @@
     </header>
     
     <links>
-        <link href="http://www.bifrost.demon.co.uk/index.html">bifrost</link>
+        <link href="http://www.glendale.org.uk/index.html">glendale</link>
         <link href="http://sourceforge.net/projects/mapcraft">sourceforge</link>
         <link uri="screenshots">screenshots</link>
         <link uri="features">features</link>
@@ -60,7 +60,7 @@
         
         <p>
             The author of this software is
-            <link href="http://www.bifrost.demon.co.uk/samuelpenn.html"
+            <link href="http://www.glendale.org.uk/~sam/samuelpenn.html"
                   name="Samuel Penn"/>.
         </p>
     </sidebar>

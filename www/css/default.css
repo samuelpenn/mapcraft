@@ -123,3 +123,35 @@ img {
 img.inline {
     float: right;
 }
+
+/*
+ * Following styles are for displaying XML structures in HTML.
+ * Used for documenting XML formats.
+ */
+div.xml {
+    color: red;
+    border: 1pt solid black;
+    padding: 2mm;
+    font-size: small;
+}
+
+div.xml p {
+    margin: 0mm;
+}
+
+div.xmlindent {
+    margin-left: 5mm;
+}
+ 
+span.node {
+    color: darkblue;
+}
+
+span.text {
+    color: black;
+}
+
+span.inline {
+    font-size: 80%;
+    color: red;
+}

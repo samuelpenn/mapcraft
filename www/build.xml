@@ -17,7 +17,8 @@
     <target name="html" depends="css,icons">
         <xslt basedir="src" destdir="${target.dir}" extension=".html"
               classpathref="lib.path"
-              includes="**/*.page" style="/home/sam/src/web/pagexml/xsl/page.xsl">
+              includes="**/*.page"
+              style="/usr/share/xml/yagsbook/pagexml/xslt/html/page.xsl">
 
               <param name="ant-target-dir" expression="${target.dir}"/>
               <param name="ant-tmp-dir" expression="${tmp.dir}"/>
@@ -48,7 +49,7 @@
     </target>
     
     <target name="css">
-        <copy todir="${target.dir}/usr/share/web/css">
+        <copy todir="${target.dir}/usr/share/css">
             <fileset dir="css">
                 <include name="*.css"/>
             </fileset>

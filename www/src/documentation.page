@@ -18,6 +18,7 @@
         <link uri="index">home</link>
         <link uri="documentation/user">user</link>
         <link uri="documentation/gm">gm</link>
+        <link uri="documentation/format/map">file format</link>
     </links>
 
     <sidebar>
@@ -46,9 +47,9 @@
     <body>
         <sect1>
             <p>
-                Documentation is split into three sections -
-                user documentation, API documentation
-                and GM notes.
+                Documentation is split into four sections -
+                user documentation, API documentation, GM notes and
+                file format.
             </p>
             
             <sect2>
@@ -77,6 +78,17 @@
                     This provides background on the ideas behind map
                     generation, including discussion of the various
                     terrain types and how best to use them.
+                </p>
+            </sect2>
+            
+            <sect2>
+                <title>File Format</title>
+                
+                <p>
+                    Map files are stored as XML files which contain binary
+                    data for the map itself. This isn't ideal from a
+                    readability point of view, but storing each tile in
+                    the bitmap has an XML node is very impractical.
                 </p>
             </sect2>
         </sect1>
