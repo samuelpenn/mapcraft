@@ -192,9 +192,14 @@ public class MapEditor extends MapViewer
     public
     MapEditor(String filename) {
         super(filename);
+        
+        this.setSize(new Dimension(2000, 1200));
+        JScrollPane scrollPane = new JScrollPane(this,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         frame = new JFrame("Map Editor");
-        frame.getContentPane().add(this);
+        frame.getContentPane().add(scrollPane);
         frame.setSize(new Dimension(1400,900));
         frame.setVisible(true);
 

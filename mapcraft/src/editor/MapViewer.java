@@ -99,6 +99,15 @@ public class MapViewer extends JPanel {
 
             map.setCurrentSet("root");
 
+            // Now work out how big we want to be. Can assume we'll
+            // be placed in a scrollable widget of some sort, so don't
+            // worry about screen size or anything like that.
+            int realWidth, realHeight;
+            
+            realWidth = tileXSize * (map.getWidth()+1);
+            realHeight = tileYSize * (map.getHeight()+1);
+
+            setPreferredSize(new Dimension(realWidth, realHeight));
         } catch (MapException e) {
             e.printStackTrace();
         }
