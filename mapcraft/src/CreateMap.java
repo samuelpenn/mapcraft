@@ -135,7 +135,7 @@ public class CreateMap extends JDialog implements ActionListener {
         add(new JLabel("Height"), 2, 4, 1, 1);
         add(mapHeight = new JTextField("70"), 3, 4, 1, 1);
 
-        add(okay = new JButton("Save..."), 2, 5, 1, 1);
+        add(okay = new JButton("Create"), 2, 5, 1, 1);
         add(cancel = new JButton("Cancel"), 3, 5, 1, 1);
 
         okay.setActionCommand("createmap.save");

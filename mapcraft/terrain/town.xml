@@ -13,11 +13,11 @@
         <type>Local</type>
         <shape>Square</shape>
         <imagedir>square/town</imagedir>
-        <format>0.2.0</format>
+        <format>0.2.1</format>
     </header>
 
     <terrainset id="basic" path="terrain">
-       <terrain id="0">
+        <terrain id="0">
             <name>null</name>
             <description>Unchartable</description>
             <image>null.png</image>
@@ -48,32 +48,58 @@
             <solid value="false"/>
         </terrain>
         <terrain id="5">
-            <name>solid.stone</name>
-            <description>Rock wall</description>
-            <image>rock-wall.png</image>
-            <solid value="true"/>
+            <name>clear.grass.2</name>
+            <description>Grass 2</description>
+            <image>grass2.png</image>
+            <solid value="false"/>
         </terrain>
         <terrain id="6">
-            <name>clear.rock</name>
-            <description>Rock floor</description>
-            <image>rock.png</image>
+            <name>clear.grass.3</name>
+            <description>Grass 3</description>
+            <image>grass3.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="7">
+            <name>clear.grass.4</name>
+            <description>Grass 4</description>
+            <image>grass4.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="8">
+            <name>clear.grass.5</name>
+            <description>Grass 5</description>
+            <image>grass5.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="9">
             <name>clear.dirt</name>
             <description>Dirt</description>
             <image>dirt.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="8">
-            <name>solid.dirt</name>
-            <description>Dirt wall</description>
-            <image>dirt-wall.png</image>
-            <solid value="true"/>
-        </terrain>
-
     </terrainset>
-
+    <!-- Things -->
+    <terrainset id="things" path="things">
+        <terrain id="1">
+            <name>house.1</name>
+            <description>House</description>
+            <image>house1.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="2">
+            <name>house.2</name>
+            <description>House 2</description>
+            <image>house2.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="3">
+            <name>house.3</name>
+            <description>House 3</description>
+            <image>house3.png</image>
+            <solid value="false"/>
+        </terrain>
+    </terrainset>
+    <!-- Features -->
     <terrainset id="features" path="features">
         <terrain id="0">
             <name>blank</name>
@@ -82,24 +108,33 @@
             <solid value="false"/>
         </terrain>
         <terrain id="1">
-            <name>wall.wood-n</name>
-            <description>Wooden wall</description>
-            <image>wall-wood-n.png</image>
+            <name>bush</name>
+            <description>Bush</description>
+            <image>bush.png</image>
             <solid value="false"/>
         </terrain>
         <terrain id="2">
-            <name>wall.wood-nw</name>
-            <description>Wooden walls</description>
-            <image>wall-wood-nw.png</image>
+            <name>shore</name>
+            <description>Shoreline</description>
+            <image>shore.png</image>
             <solid value="false"/>
         </terrain>
-    </terrainset>
-
-    <terrainset id="things" path="things">
-        <terrain id="0">
-            <name>Cottage</name>
-            <description>Peasant cottage</description>
-            <image>cottage.png</image>
+        <terrain id="3">
+            <name>shore.angle</name>
+            <description>Angled shoreline</description>
+            <image>shore-angle.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="4">
+            <name>shore.inner</name>
+            <description>Inner Shoreline</description>
+            <image>shore-ic.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="5">
+            <name>shore.outer</name>
+            <description>Outer Shoreline</description>
+            <image>shore-oc.png</image>
             <solid value="false"/>
         </terrain>
     </terrainset>

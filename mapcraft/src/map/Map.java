@@ -208,34 +208,73 @@ public class Map extends MapBean implements Cloneable {
         return (Object)m;
     }
 
+    /**
+     * Retrieve settings from loaded XML terrain set. Terrain, things
+     * and features are copied, as is the type of map and the shape
+     * of the tiles.
+     *
+     * @param xml    Document containing terrainset definitions.
+     */
+    private void
+    loadTerrainSet(MapXML xml) throws XMLException {
+        terrainSet = xml.getTerrainSet("basic");
+        thingSet = xml.getTerrainSet("things");
+        featureSet = xml.getTerrainSet("features");
+
+        System.out.println("Shape ["+xml.getTileShape()+"] Type ["+xml.getType()+"]");
+
+        setTileShape(xml.getTileShape());
+        setType(xml.getType());
+
+        setImageDir(xml.getImageDir());
+    }
+
+    /**
+     * Load a terrain set from the specified file, and copy information
+     * into the current map.
+     *
+     * @param filename    Pathname to file containing terrainset.
+     */
     public void
     loadTerrainSet(String filename) {
         MapXML  xml;
 
         try {
             xml = new MapXML(filename);
-            terrainSet = xml.getTerrainSet("basic");
-            thingSet = xml.getTerrainSet("things");
-            featureSet = xml.getTerrainSet("features");
-            setImageDir(xml.getImageDir());
-        } catch (Exception e) {
-            e.printStackTrace();
+            loadTerrainSet(xml);
+        } catch (XMLException e) {
+            System.out.println("Invalid XML in terrain set ("+
+                               e.getMessage()+") from file ["+
+                               filename+"]");
+        } catch (MapException e) {
+            System.out.println("Failed to load terrain set ("+
+                               e.getMessage()+") from file ["+
+                               filename+"]");
         }
     }
 
 
+    /**
+     * Load a terrain set from the specified URL, and copy information
+     * into the current map. Used to retrieve terrainset from Jar file.
+     *
+     * @param url    URL to file containing terrainset.
+     */
     public void
     loadTerrainSet(URL url) {
         MapXML  xml;
 
         try {
             xml = new MapXML(url);
-            terrainSet = xml.getTerrainSet("basic");
-            thingSet = xml.getTerrainSet("things");
-            featureSet = xml.getTerrainSet("features");
-            setImageDir(xml.getImageDir());
-        } catch (Exception e) {
-            e.printStackTrace();
+            loadTerrainSet(xml);
+        } catch (XMLException e) {
+            System.out.println("Invalid XML in terrain set ("+
+                               e.getMessage()+") from URL ["+
+                               url+"]");
+        } catch (MapException e) {
+            System.out.println("Failed to load terrain set ("+
+                               e.getMessage()+") from URL ["+
+                               url+"]");
         }
     }
 

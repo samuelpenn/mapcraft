@@ -390,8 +390,8 @@ public class MapBean implements Cloneable {
     setTile(int set, Tile tile, int x, int y) throws MapOutOfBoundsException {
         tileSets[set].setTile(x, y, tile);
     }
-    
-    
+
+
     public short
     getTerrain(int x, int y) throws MapOutOfBoundsException {
         return getTerrain(currentSet, x, y);
@@ -672,7 +672,8 @@ public class MapBean implements Cloneable {
 
             writer.write("        <terrain id=\""+t.getId()+"\">\n");
             writer.write("            <name>"+t.getName()+"</name>\n");
-            writer.write("            <description>"+t.getDescription()+"</description>\n");
+            writer.write("            <description>"+t.getDescription());
+            writer.write("</description>\n");
             writer.write("            <image>"+path+"</image>\n");
             writer.write("            <solid value=\"false\"/>\n");
             writer.write("        </terrain>\n");
@@ -690,7 +691,8 @@ public class MapBean implements Cloneable {
         while (iter.hasNext()) {
             Area    a = (Area)iter.next();
 
-            writer.write("        <area id=\""+a.getId()+"\" name=\""+a.getName()+"\"/>\n");
+            writer.write("        <area id=\""+a.getId()+"\" name=\"");
+            writer.write(a.getName()+"\"/>\n");
         }
         writer.write("    </areas>\n");
     }
@@ -870,7 +872,8 @@ public class MapBean implements Cloneable {
                 writer.write(thing.getDescription());
                 writer.write("</description>\n");
                 writer.write(pad+"        <font>"+thing.getFontSize()+"</font>\n");
-                writer.write(pad+"        <importance>"+thing.getImportance()+"</importance>\n");
+                writer.write(pad+"        <importance>");
+                writer.write(thing.getImportance()+"</importance>\n");
 
                 if (thing.getPropertyCount() > 0) {
                     writer.write(pad+"        <properties>\n");
