@@ -705,6 +705,7 @@ public class MapXML {
         String          image;
         String          path;
         int             id, x, y, i = 0;
+        int             parent;
         NamedNodeMap    values;
         Node            value;
         AreaSet         areas = new AreaSet();
@@ -724,7 +725,12 @@ public class MapXML {
                     values = node.getAttributes();
                     id = getIntNode(values.getNamedItem("id"));
                     name = getTextNode(values.getNamedItem("name"));
-                    areas.add(id, name);
+                    if (values.getNamedItem("parent") != null) {
+                        parent = getIntNode(values.getNamedItem("parent"));
+                    } else {
+                        parent = 0;
+                    }
+                    areas.add(id, name, parent);
                 }
             }
             list = null;

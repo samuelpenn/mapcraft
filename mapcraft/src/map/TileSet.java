@@ -559,6 +559,7 @@ public class TileSet implements Cloneable {
                         found = true;
                     }
                 } catch (MapOutOfBoundsException moobe) {
+                    System.out.println(moobe);
                 }
             }
         }

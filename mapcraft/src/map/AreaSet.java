@@ -53,6 +53,12 @@ import java.util.*;
         list.add(a);
     }
 
+    public void
+    add(int id, String name, int parent) {
+        Area    a = new Area(id, name, parent);
+        list.add(a);
+    }
+
     public Area
     getArea(String name) {
         Iterator    it = list.iterator();

@@ -1236,6 +1236,26 @@ public class Map implements Cloneable {
         return thing;
     }
 
+    public String
+    getParent() {
+        return parent;
+    }
+
+    /**
+     * Merges the supplied map into this map. Both maps must have the same
+     * parent, and must be the same scale. It is assumed that they are both
+     * from different regions on the parent map, but that they overlap to
+     * some extent. Differences in the supplied map overwrite this map.
+     */
+    public boolean
+    merge(Map merge) {
+        if (!getParent().equals(merge.getParent())) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static void
     main(String args[]) {
         Map         map;
