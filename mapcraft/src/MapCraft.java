@@ -241,7 +241,6 @@ public class MapCraft implements ActionListener {
         System.out.println("ACTION ["+cmd+"]");
 
         if (cmd.equals("createmap.save")) {
-            CreateMap   create = (CreateMap)e.getSource();
         } else if (cmd.equals("createmap.cancel")) {
         }
     }

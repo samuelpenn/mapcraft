@@ -24,6 +24,8 @@ import java.util.*;
 
 import javax.swing.filechooser.FileFilter;
 
+import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
+
 public class FileMenu extends JMenu implements ActionListener {
     Actions     actions = new Actions(null);
     MapCraft    application = null;
@@ -150,6 +152,24 @@ public class FileMenu extends JMenu implements ActionListener {
     create() {
         CreateMap   create = new CreateMap(application);
         System.out.println("Done");
-    }
+
+        int         width = create.getWidth();
+        int         height = create.getHeight();
+        int         scale = create.getScale();
+
+        String      name = create.getMapName();
+        String      author = create.getAuthorName();
+        String      terrain = create.getMapType();
+
+        try {
+            Map         newMap = new Map(name, width, height, scale);
+            newMap.loadTerrainSet("terrain/"+terrain+".xml");
+            newMap.save(name+".map");
+            newMap = null;
+            application.load(name+".map");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+   }
 
 }

@@ -27,37 +27,23 @@ really useful. See the PLAN for a list of planned features.
 
 RUNNING
 
-There are four varieties of map, governed by two flags.
-World scale maps have hexagonal tiles (this is the default).
-Local area maps often use square tiles. Use -local and -square
-to switch on the latter features when creating a map.
+To run, you should be able to use:
 
-For the latter, you also need to point things at the square
-tiles rather than the default hexagonal ones.
+./mapcraft
 
-To view one of the sample maps, run the program as follows:
+You may need to source the profile first. There are several
+example maps in the 'maps' directory.
 
-./mapcraft -load maps/Harn.map
-or
-./mapcraft -load maps/Euressa.map
-or
-./mapcraft -load maps/gargun.map
-
-To create a new map:
-
-./mapcraft -create mymap -width 200 -height 150 \
-           -scale 25 -terrain terrain/hexagonal.xml
-
-./mapcraft -create mymap -width 200 -height 150 \
-           -scale 1 -terrain terrain/square.xml \
-           -square -local
-
-Everything else you'll have to figure out for yourself.
 
 
 RELEASE HISTORY
 
-Current
+Current (0.2.1)
+    Full world maps, with xplanet output (command line only)
+    Towns/cities no longer fixed to a tile.
+    Much improved GUI.
+
+Version 0.2
     Better GUI frontend.
     Zooming.
     Support for hills.

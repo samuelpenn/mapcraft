@@ -29,25 +29,32 @@ Project Plan
 *   Wrapper class to provide GUI framework. (0.6)
 
 0.2.1
-    Support rivers as vectors, inc graphical editing.
+*   Full world maps (inc 2D sphere support) (0.5).
+*   Output to xplanet texture format (0.5).
 *   Decouple sites from tiles.
 *   Control over font used with sites.
 *   Resize of site labels depending on tile size.
 *   Consistency in naming. Sites = things, hills = features. Always
-    Feedback in a status bar to say what editing.
+*   Map creation dialogs.
 
 0.2.2
-    Support map cropping and linking to submaps.
-    Support rescale facility (up and down).
+    Support rivers as vectors, inc graphical editing.
     Support roads as vectors, inc graphical editing.
-    Fix display issues with area editing.
-    Fix display issues with site editing.
     Properties on sites.
 
-0.3 (Printing support)
-    Link to yagsbook encyclopedia.
-    Support map cropping on image print.
+0.2.3
+    Support map cropping and linking to submaps.
+    Support rescale facility (up and down).
+
+0.2.4
+    Fix display issues with area editing.
+    Fix display issues with site editing.
+    Feedback in a status bar to say what editing.
+
+0.3 (Printing/XSLT support)
+    XSLT plugin for calling map from Yagsbook.
     Interface to pull out areas around named sites.
+    Support map cropping on image print.
     Create image from the GUI.
 
 0.3.1
@@ -56,20 +63,29 @@ Project Plan
     Auto-print overlapped image tiles to A3/A4 size.
 
 0.4 (Finish standard features)
+    Names for rivers and roads displayed on map.
+    Creating/editing areas in GUI.
+    Rotating things.
+    Oversized things.
+    Font styles for site labels.
+
+0.4.1
+    Merging child maps back into parent.
+
+0.4.2
     Height palette. 2D display only.
     Contours.
     Fancy coastlines.
-    Names for rivers and roads displayed on map.
-    Creating/editing areas in GUI.
+    Longitude/latitude calculation.
     Should be able to support full Harn map.
 
-0.5 (Support for worlds)
-    Full world maps (inc 2D sphere support).
-    Longitude/latitude calculation.
-    Output to xplanet texture format.
+0.5 (Multiple tilesets)
+    Fix low level support for multiple tilesets.
+    Multiple floors for indoor maps.
+    Transparent overlay of floors over each other.
+    Calculation of connecting stairs between floors.
 
 0.6 (UI design considerations)
-    Map creation dialogs.
     Map properties dialog/editor.
     GUI interface to map resize and cropping.
     Drop down palette menus from toolbar.
@@ -107,3 +123,4 @@ Project Plan
     Links into yagsbook for inline display of maps.
     Output SVG
     Random village names? Based on dictionary.
+
