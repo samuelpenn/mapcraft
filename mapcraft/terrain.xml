@@ -4,7 +4,13 @@
     <header>
         <name>Terrain Set</name>
         <author>Samuel Penn</author>
-        <cvsversion>$Revision$</cvsversion>
+        <id>terrain.0</id>
+        <parent>none</parent>
+        <cvs>
+            <version>$Revision$</version>
+            <date>$Date$</date>
+        </cvs>
+        <format>0.0.2</format>
     </header>
 
     <terrainset id="basic" path=".">
@@ -37,7 +43,7 @@
         <terrain id="11">
             <name>clear.wooded</name>
             <description>Mixed woods</description>
-            <image>mixed.png</image>
+            <image>woods.png</image>
         </terrain>
 
         <terrain id="20">

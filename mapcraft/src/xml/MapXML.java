@@ -552,7 +552,8 @@ public class MapXML {
         try {
             NodeList    list = getNodeList("/map/sites/site");
             if (list == null || list.getLength() == 0) {
-                throw new XMLException("No sites were found");
+                // No sites found. This is perfectly valid.
+                return;
             }
 
             for (i=0; i < list.getLength(); i++) {
