@@ -255,8 +255,11 @@ public class Map implements Cloneable {
             featureSet = xml.getTerrainSet("features");
             areaSet = xml.getAreas();
 
-            setThings(xml.getThings());
-            setRivers(xml.getRivers());
+            for (int i = 0; i < tileSets.length; i++) {
+                setCurrentSet(i);
+                setThings(xml.getThings(tileSets[i].getName()));
+                setRivers(xml.getRivers(tileSets[i].getName()));
+            }
 
             this.filename = filename;
             this.name = xml.getName();
@@ -891,7 +894,7 @@ public class Map implements Cloneable {
             writer.write("        <shape>Hexagonal</shape>\n");
         }
         writer.write("        <imagedir>"+imagedir+"</imagedir>\n");
-        writer.write("        <format>0.1.0</format>\n");
+        writer.write("        <format>0.2.0</format>\n");
         writer.write("    </header>\n");
     }
 
@@ -977,6 +980,12 @@ public class Map implements Cloneable {
             writer.write("</column>\n");
         }
         writer.write("        </tiles>\n");
+
+        // Now write out the rivers for this set.
+        writeRivers(writer);
+        // ... and the things.
+        writeThings(writer);
+
         writer.write("    </tileset>\n\n");
         writer.flush();
     }
@@ -993,10 +1002,10 @@ public class Map implements Cloneable {
             return;
         }
 
-        writer.write("    <rivers>\n");
+        writer.write("        <rivers>\n");
         for (i=0; i < rivers.size(); i++) {
             river = (Path)rivers.elementAt(i);
-            writer.write("        <river name=\""+river.getName()+"\">\n");
+            writer.write("            <river name=\""+river.getName()+"\">\n");
             elements = river.getElements();
             for (e=0; e < elements.size(); e++) {
                 Path.Element    element = (Path.Element)elements.elementAt(e);
@@ -1005,13 +1014,54 @@ public class Map implements Cloneable {
                 int             w = river.getWidth();
                 int             t = element.getType();
 
-                writer.write("            ");
+                writer.write("                ");
                 writer.write("<"+types[t]+" x=\""+x+"\" y=\""+y+"\" width=\""+w+"\"/>\n");
             }
-            writer.write("        </river>\n\n");
+            writer.write("            </river>\n\n");
         }
-        writer.write("    </rivers>\n");
+        writer.write("        </rivers>\n");
 
+    }
+
+    public void
+    writeThings(FileWriter writer) throws IOException {
+        Vector      things = getThings();
+        String      pad = "        ";
+        int         i = 0;
+
+        if (things != null && things.size() > 0) {
+            writer.write(pad+"<things>\n");
+            for (i=0; i < things.size(); i++) {
+                Thing    thing = (Thing)things.elementAt(i);
+                writer.write(pad+"    <thing type=\""+thing.getType()+"\" "+
+                                        "x=\""+thing.getX()+
+                                        "\" y=\""+thing.getY()+"\" "+
+                                        "rotation=\""+thing.getRotation()+"\">\n");
+                writer.write(pad+"        <name>"+thing.getName()+"</name>\n");
+                writer.write(pad+"        <description>");
+                writer.write(thing.getDescription());
+                writer.write("</description>\n");
+                writer.write(pad+"        <font>"+thing.getFontSize()+"</font>\n");
+                writer.write(pad+"        <importance>"+thing.getImportance()+"</importance>\n");
+
+                if (thing.getPropertyCount() > 0) {
+                    writer.write(pad+"        <properties>\n");
+                    Enumeration     keys = thing.getProperties().keys();
+                    while (keys.hasMoreElements()) {
+                        String  key = (String)keys.nextElement();
+                        String  value = thing.getProperty(key);
+
+                        writer.write(pad+"            ");
+                        writer.write("<property name=\""+key+"\">"+value+"</property>\n");
+                    }
+
+                    writer.write(pad+"        </properties>\n");
+                }
+
+                writer.write(pad+"    </thing>\n");
+            }
+            writer.write(pad+"</things>\n");
+        }
     }
 
 
@@ -1048,33 +1098,14 @@ public class Map implements Cloneable {
         writer.write("    <!-- Each blob is Base 64 encoded.            -->\n");
         // Now go through each of the tilesets in turn.
         for (i=0; i < tileSets.length; i++) {
-            writeTileSet(tileSets[i], writer);
-        }
-
-        Vector      things = getThings();
-        if (things != null && things.size() > 0) {
-            writer.write("    <things>\n");
-            for (i=0; i < things.size(); i++) {
-                Thing    thing = (Thing)things.elementAt(i);
-                writer.write("        <thing type=\""+thing.getType()+"\" "+
-                                        "x=\""+thing.getX()+
-                                        "\" y=\""+thing.getY()+"\" "+
-                                        "rotation=\""+thing.getRotation()+"\">\n");
-                writer.write("            <name>"+thing.getName()+"</name>\n");
-                writer.write("            <description>");
-                writer.write(thing.getDescription());
-                writer.write("</description>\n");
-                writer.write("            <font>"+thing.getFontSize()+"</font>\n");
-                writer.write("            <importance>"+thing.getImportance()+"</importance>\n");
-
-                writer.write("        </thing>\n");
+            try {
+                setCurrentSet(i);
+                writeTileSet(tileSets[i], writer);
+            } catch (MapException me) {
             }
-            writer.write("    </things>\n");
         }
 
         writeAreaSet(writer);
-        writeRivers(writer);
-
         writer.write("</map>\n");
 
         writer.close();
@@ -1173,12 +1204,12 @@ public class Map implements Cloneable {
      */
     public Vector
     getRivers() {
-        return tileSets[0].getRivers();
+        return tileSets[currentSet].getRivers();
     }
 
     public void
     setRivers(Vector rivers) {
-        tileSets[0].setRivers(rivers);
+        tileSets[currentSet].setRivers(rivers);
     }
 
     /**

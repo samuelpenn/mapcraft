@@ -34,19 +34,24 @@ Project Plan
 *   Decouple sites from tiles.
 *   Control over font used with sites.
 *   Resize of site labels depending on tile size.
-*   Consistency in naming. Sites = things, hills = features. Always
+*   Consistency in naming. Sites = things, hills = features. Always.
 *   Map creation dialogs.
 
 0.2.2
 *   Support rivers as vectors, inc graphical editing.
     Support roads as vectors, inc graphical editing.
-    Properties on sites.
+*   Properties on sites.
 *   Rotation for tiles and features.
+*   Rotation for Things (0.4).
+*   Oversized Things (0.4).
     Rotation on hexagonal maps as well as square maps.
+*   Move <thing>/<river> tags into <tileset> ready for multi-tileset support.
 
 0.2.3
     Support GUI map cropping and linking to submaps.
     Support GUI rescale facility (up and down).
+    Support for multiple tile sets (floors in a multi-level dungeon/building).
+    Make Tile class have package scope. Only TileSet should reference it directly.
 
 0.2.4
     Fix display issues with area editing.
@@ -65,14 +70,13 @@ Project Plan
     Auto-print overlapped image tiles to A3/A4 size.
 
 0.4 (Finish standard features)
+    Edit and set river properties, including name.
     Names for rivers and roads displayed on map.
     Creating/editing areas in GUI.
-    Rotating things.
-    Oversized things.
     Font styles for site labels.
 
 0.4.1
-    Merging child maps back into parent.
+    GUI for Merging child maps back into parent.
 
 0.4.2
     Height palette. 2D display only.

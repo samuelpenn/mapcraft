@@ -143,6 +143,18 @@ public class MapViewer extends JPanel {
         private int     tileOffset;
         private int     fontSize;
 
+        public static final int USMALL = 0;
+        public static final int XXSMALL = 0;
+        public static final int XSMALL = 0;
+        public static final int SMALL = 1;
+        public static final int MEDIUM = 2;
+        public static final int LARGE = 3;
+        public static final int XLARGE = 4;
+        public static final int XXLARGE = 4;
+
+        public static final int PALETTE = 2;
+        public static final int EDITICON = 3;
+
         public
         ViewProperties(String basePath, String baseFile) throws Exception {
             FileInputStream     input = null;

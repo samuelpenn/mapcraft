@@ -119,7 +119,7 @@ public class EditMenu extends JMenu implements ActionListener {
             actions.get(Actions.EDIT_SELECT).setEnabled(true);
             actions.get(Actions.EDIT_EDIT).setEnabled(true);
             actions.get(Actions.EDIT_INSERT).setEnabled(false);
-            actions.get(Actions.EDIT_DELETE).setEnabled(false);
+            actions.get(Actions.EDIT_DELETE).setEnabled(true);
             actions.get(Actions.EDIT_NEW).setEnabled(true);
             actions.get(Actions.EDIT_SMALL).setEnabled(false);
             actions.get(Actions.EDIT_MEDIUM).setEnabled(false);

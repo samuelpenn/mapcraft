@@ -256,7 +256,7 @@ public class MapXML {
         try {
             list = XPathAPI.selectNodeList(root, xpath);
         } catch (TransformerException te) {
-            throw new XMLException("Cannot find nodelist");
+            throw new XMLException("Cannot find nodelist ["+xpath+"]");
         }
 
         return list;
@@ -583,6 +583,7 @@ public class MapXML {
 
             // Now, get data on rivers. Since river data is a lot
             // less, we don't use blobs for rivers.
+            /*
             System.out.println("Reading river data...");
             NodeList    rivers = getNodeList(node, "rivers/river");
 
@@ -604,6 +605,7 @@ public class MapXML {
                     }
                 }
             }
+            */
 
         } catch (InvalidArgumentException iae) {
             throw new XMLException("Cannot create TileSet from XML");
@@ -662,7 +664,7 @@ public class MapXML {
      * Return an array of all the things in the map.
      */
     public Vector
-    getThings() throws XMLException {
+    getThings(String set) throws XMLException {
         Vector          things = new Vector();
         String          name, description;
         int             fontSize, importance;
@@ -672,11 +674,17 @@ public class MapXML {
         short           type, rotation;
         NamedNodeMap    values;
         Node            value;
+        String          xpath = "/map/things/thing";
+
+        if (!format.equals("0.1.0")) {
+            xpath = "/map/tileset[@id='"+set+"']/things/thing";
+        }
 
         try {
-            NodeList    list = getNodeList("/map/things/thing");
+            NodeList    list = getNodeList(xpath);
             if (list == null || list.getLength() == 0) {
                 // No things found. This is perfectly valid.
+                System.out.println("No things found at ["+xpath+"]");
                 return things;
             }
             System.out.println("Found "+list.getLength()+" things to load");
@@ -710,6 +718,20 @@ public class MapXML {
                     thing.setImportance(importance);
                     thing.setRotation(rotation);
                     things.add(thing);
+
+                    NodeList    props = getNodeList(node, "properties/property");
+                    if (props != null && props.getLength() > 0) {
+                        String      key = null, val = null;
+                        debug("Found properties for thing ["+thing.getName()+"]");
+                        for (int p=0; p < props.getLength(); p++) {
+                            Node    pnode = props.item(p);
+                            key = getTextNode(pnode, "@name");
+                            val = getTextNode(pnode, ".");
+
+                            thing.setProperty(key, val);
+                        }
+
+                    }
                 }
             }
             list = null;
@@ -770,15 +792,21 @@ public class MapXML {
     }
 
     /**
-     * Return all the rivers in the map.
+     * Return all the rivers in the given tileset.
      *
      */
     public Vector
-    getRivers() throws XMLException {
+    getRivers(String set) throws XMLException {
         Vector      rivers = new Vector();
+        String          xpath = "/map/tileset[@id='"+set+"']/rivers/river";
+
+        if (format.equals("0.1.0")) {
+            warning("Old format river elements");
+            xpath = "/map/rivers/river";
+        }
 
         try {
-            NodeList    list = getNodeList("/map/rivers/river");
+            NodeList    list = getNodeList(xpath);
             if (list == null || list.getLength() == 0) {
                 return rivers;
             }

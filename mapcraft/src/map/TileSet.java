@@ -31,6 +31,7 @@ public class TileSet implements Cloneable {
     protected Tile[][]  tiles;
 
     protected Vector    rivers = null;
+    protected Vector    roads = null;
     protected Vector    things = null;
 
     private Parent      parent = null;

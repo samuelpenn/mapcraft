@@ -15,14 +15,17 @@ package uk.co.demon.bifrost.rpg.mapcraft.editor;
 import uk.co.demon.bifrost.rpg.mapcraft.map.*;
 
 import javax.swing.*;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 
+import java.util.*;
+
 public class ThingDialog extends JDialog implements ItemListener {
     private Thing       thing;
     private JTextField  name;
-    private JTextField  description;
+    private JTextArea   description;
     private JButton     okay;
     private JButton     cancel;
     private ImageIcon   icon = null;
@@ -32,9 +35,92 @@ public class ThingDialog extends JDialog implements ItemListener {
     private JComboBox   type = null;
     private JComboBox   fontSize = null;
     private JComboBox   importance = null;
+    private JTable      table = null;
 
     private GridBagLayout       gridbag;
     private GridBagConstraints  c;
+
+    private Vector              keys, values;
+
+    private class PropertyModel extends AbstractTableModel {
+        public int
+        getColumnCount() {
+            return 2;
+        }
+
+        public String
+        getColumnName(int column) {
+            if (column == 0) {
+                return "Property";
+            }
+            return "Value";
+        }
+
+        public int
+        getRowCount() {
+            return keys.size()+1;
+        }
+
+        public boolean
+        isCellEditable(int x, int y) {
+            return true;
+        }
+
+        public void
+        setValueAt(Object value, int y, int x) {
+            String  s = (String)value;
+            System.out.println("setValueAt: "+x+","+y);
+
+            if (x == 0) {
+                if (y >= keys.size()) {
+                    keys.add(s);
+                    values.add("");
+                } else {
+                    keys.setElementAt(s, y);
+                }
+            } else {
+                if (y >= keys.size()) {
+                    values.add(s);
+                    keys.add("");
+                } else {
+                    values.setElementAt(s, y);
+                }
+            }
+            table.revalidate();
+            table.repaint();
+        }
+
+        public Object
+        getValueAt(int row, int column) {
+            String      v = null;
+
+            if (row >= keys.size()) {
+                v = "";
+            } else if (column == 0) {
+                v = (String)keys.elementAt(row);
+            } else {
+                v = (String)values.elementAt(row);
+            }
+
+            return (Object)v;
+        }
+    }
+
+    private void
+    fetchProperties() {
+        keys = new Vector();
+        values = new Vector();
+
+        if (thing.getProperties() == null) {
+            return;
+        }
+        Enumeration     e = thing.getProperties().keys();
+        while (e.hasMoreElements()) {
+            String  k = (String) e.nextElement();
+            keys.add((String)k);
+            values.add((String)thing.getProperty(k));
+        }
+    }
 
     public void
     itemStateChanged(ItemEvent e) {
@@ -44,7 +130,7 @@ public class ThingDialog extends JDialog implements ItemListener {
             path = path + "/" + t.getImagePath();
             icon = new ImageIcon(path);
             picture.setIcon(icon);
-            picture.setText(t.getDescription());
+            //picture.setText(t.getDescription());
         }
     }
 
@@ -120,6 +206,27 @@ public class ThingDialog extends JDialog implements ItemListener {
         thing.setFontSize(getFontSize());
         thing.setImportance(getImportance());
 
+        if (keys.size() > 0) {
+            Properties      props = new Properties();
+
+            for (int i=0; i<keys.size(); i++) {
+                String      k = (String)keys.elementAt(i);
+                if (k.length() > 0) {
+                    String  v = (String)values.elementAt(i);
+                    if (v.length() > 0) {
+                        props.put(k, v);
+                    }
+                }
+            }
+            if (props.size() > 0) {
+                thing.setProperties(props);
+            } else {
+                thing.setProperties(null);
+            }
+        } else {
+            thing.setProperties(null);
+        }
+
         return thing;
     }
 
@@ -187,34 +294,39 @@ public class ThingDialog extends JDialog implements ItemListener {
         c.weighty = 0.0;
 
         name = new JTextField(thing.getName(), 20);
-        description = new JTextField(thing.getDescription(), 30);
+        description = new JTextArea(thing.getDescription(), 5, 30);
         String path = basePath;
         path = path + "/" + icons.getTerrain(thing.getType()).getImagePath();
-        icon = new ImageIcon(path);
+        icon = new ImageIcon(path, "");
 
-        picture = new JLabel(icons.getTerrain(thing.getType()).getDescription(),
-                             icon, SwingConstants.LEFT);
+        picture = new JLabel(icon);
 
-
-        add(picture, 0, 0, 1, 2);
-        add(type = createTypeCombo(), 0, 2, 1, 1);
-        add(new JLabel("Name"), 1, 1, 1, 1);
-        add(name, 1, 2, 1, 1);
+        add(picture, 0, 0, 3, 3);
+        add(name, 2, 0, 2, 1);
+        add(type = createTypeCombo(), 2, 1, 2, 1);
 
         add(new JLabel("Description"), 0, 3, 1, 1);
-        add(description, 0, 4, 2, 3);
+        c.weighty = 1.0;
+        add(description, 0, 4, 5, 3);
+        c.weighty = 0.0;
 
-        add(fontSize = createFontCombo(), 0, 7, 1, 1);
-        add(importance = createImportanceCombo(), 1, 7, 1, 1);
-        /*
-        c.gridy = 2;
-        c.gridx = 1;
-        c.weightx = 0.0;
-        okay = new JButton("Okay");
-        gridbag.setConstraints(okay, c);
-        getContentPane().add(okay);
-        */
-        setSize(new Dimension(300,200));
+        add(new JLabel("Font size"), 0, 7, 1, 1);
+        add(fontSize = createFontCombo(), 2, 7, 3, 1);
+        add(new JLabel("Importance"), 0, 8, 1, 1);
+        add(importance = createImportanceCombo(), 2, 8, 3, 1);
+
+        fetchProperties();
+        table = new JTable(new PropertyModel());
+        table.setCellSelectionEnabled(true);
+        table.setCellEditor(new DefaultCellEditor(new JTextField()));
+
+        add(new JLabel("Meta data"), 0, 9, 1, 1);
+        c.weighty = 1.0;
+        add(new JScrollPane(table), 0, 10, 5, 3);
+
+
+        setSize(new Dimension(300, 400));
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 

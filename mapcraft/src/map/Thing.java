@@ -11,6 +11,7 @@
  */
 package uk.co.demon.bifrost.rpg.mapcraft.map;
 
+import java.util.Properties;
 
 /**
  * A Thing is a place of interest on a map, often a town or castle. For
@@ -32,6 +33,8 @@ public class Thing implements Cloneable {
     private boolean     italic;
     private boolean     underlined;
     private short       rotation;
+
+    private Properties  properties;
 
 
     public static final int   SMALL = 1;  // 8pt
@@ -64,6 +67,7 @@ public class Thing implements Cloneable {
         this.x = 0;
         this.y = 0;
         this.rotation = 0;
+        this.properties = null;
     }
 
     /**
@@ -78,6 +82,7 @@ public class Thing implements Cloneable {
         this.x = 0;
         this.y = 0;
         this.rotation = 0;
+        this.properties = null;
     }
 
     /**
@@ -91,6 +96,7 @@ public class Thing implements Cloneable {
         this.x = x;
         this.y = y;
         this.rotation = 0;
+        this.properties = null;
     }
 
     public Object
@@ -100,6 +106,7 @@ public class Thing implements Cloneable {
         s.x = x;
         s.y = y;
         s.rotation = rotation;
+        s.properties = properties;
 
         return (Object)s;
     }
@@ -228,4 +235,53 @@ public class Thing implements Cloneable {
         this.y = y;
     }
 
+    /**
+     * Get all the properties of this Thing, as a Properties object.
+     * Properties are user defined values, which can be added to any Thing.
+     */
+    public Properties
+    getProperties() {
+        return properties;
+    }
+
+    /**
+     * Set the properties for this Thing.
+     */
+    public void
+    setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    /**
+     * Get the value of the named property. If it doesn't exist, then null
+     * is returned.
+     */
+    public String
+    getProperty(String key) {
+        if (properties == null) {
+            return null;
+        }
+
+        return properties.getProperty(key);
+    }
+
+    /**
+     * Set a new property, or replace an existing one.
+     */
+    public void
+    setProperty(String key, String value) {
+        if (properties == null) {
+            properties = new Properties();
+        }
+
+        properties.setProperty(key, value);
+    }
+
+    public int
+    getPropertyCount() {
+        if (properties == null) {
+            return 0;
+        }
+        return properties.size();
+    }
 }

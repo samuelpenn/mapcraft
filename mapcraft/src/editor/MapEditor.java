@@ -217,35 +217,7 @@ public class MapEditor extends MapViewer
                 paintTile(x, y);
                 break;
             case Brush.THINGS:
-                switch (brush.getButton()) {
-                case MouseEvent.BUTTON1:
-                    if (brush.getSelected() == 0) {
-                        int     s = map.getNearestThingIndex(brush.getX(),
-                                                    brush.getY(), 100);
-                        if (s >= 0) {
-                            map.removeThing(s);
-                        }
-                    } else {
-                        // Only set Thing if no Thing currently present.
-                        Thing   thing = new Thing(brush.getSelected(),
-                                                "Unnamed", "Unknown",
-                                                brush.getX(), brush.getY());
-                        map.addThing(thing);
-                        if (map.getType() == Map.WORLD) {
-                            ThingDialog dialog = new ThingDialog(thing, frame,
-                                            map.getThingSet(), views[4].getPath());
-                            dialog.getThing();
-                        }
-                    }
-                    break;
-                case MouseEvent.BUTTON2:
-                    info("Moving thing");
-                    Thing    thing = map.getNearestThing(brush.getX(), brush.getY(), 100);
-                    if (thing != null) {
-                        thing.setPosition(brush.getX(), brush.getY());
-                    }
-                    break;
-                }
+                applyBrushThings();
                 paintComponent();
                 break;
             case Brush.AREAS:
@@ -260,6 +232,52 @@ public class MapEditor extends MapViewer
             warn("Out of bounds!");
         }
 
+    }
+
+    /**
+     * Apply the actions of the current brush to the nearest Thing.
+     */
+    private void
+    applyBrushThings() throws MapOutOfBoundsException {
+        Thing       thing = null;
+        ThingDialog dialog = null;
+
+        switch (brush.getMode()) {
+        case Brush.NEW:
+            if (brush.getSelected() > 0) {
+                // Only set Thing if no Thing currently present.
+                thing = new Thing(brush.getSelected(), "Unnamed", "Unknown",
+                                        brush.getX(), brush.getY());
+                map.addThing(thing);
+                if (map.getType() == Map.WORLD) {
+                    dialog = new ThingDialog(thing, frame,
+                                    map.getThingSet(), views[ViewProperties.EDITICON].getPath());
+                    dialog.getThing();
+                } else {
+                    thing.setImportance(Thing.HIGH);
+                }
+            }
+            break;
+        case Brush.DELETE:
+            int     t = map.getNearestThingIndex(brush.getX(),
+                                    brush.getY(), 100);
+            if (t >= 0) {
+                map.removeThing(t);
+            }
+            break;
+        case Brush.SELECT:
+            thing = map.getNearestThing(brush.getX(), brush.getY(), 100);
+            if (thing != null) {
+                thing.setPosition(brush.getX(), brush.getY());
+            }
+            break;
+        case Brush.EDIT:
+            thing = map.getNearestThing(brush.getX(), brush.getY(), 100);
+            dialog = new ThingDialog(thing, frame, map.getThingSet(),
+                                    views[ViewProperties.EDITICON].getPath());
+            dialog.getThing();
+            break;
+        }
     }
 
     private void
