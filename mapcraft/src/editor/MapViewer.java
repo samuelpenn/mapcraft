@@ -812,7 +812,19 @@ public class MapViewer extends JPanel {
                 g2.drawImage(icon, xp, yp, this);
                 g2.rotate(-r, xp+tileXSize/2, yp+tileYSize/2);
             }
+/*
+ * Calculate distances from a point.
+            {
+                int d = map.distance(5, 5, x, y);
+                int x1, y1;
 
+                g2.drawString(""+d, xp + iconWidth/2, (int)(yp+tileYSize*0.4));
+                g2.drawString("("+x+","+y+")", (int)(xp + iconWidth*0.4),
+                                 (int)(yp+tileYSize*0.65));
+                g2.drawString("["+x+","+(y - (x)/2)+"]", (int)(xp + iconWidth*0.4),
+                                 (int)(yp+tileYSize*0.9));
+            }
+*/
             // Area borders should be drawn if the neighbouring tiles belong
             // to a different area. Borders are not drawn on the edge of the
             // map, and are only drawn on three sides (the neighbours will

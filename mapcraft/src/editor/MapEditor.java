@@ -179,6 +179,7 @@ public class MapEditor extends MapViewer
 
     public void
     applyBrush(int x, int y) {
+        System.out.println("DISTANCE: "+map.distance(5, 5, x, y));
         try {
             switch (brush.getType()) {
             case Brush.TERRAIN:

@@ -120,7 +120,6 @@ public class MapBean implements Cloneable {
     MapBean(String filename) throws MapException {
         this.filename = filename;
         try {
-            System.out.println("Loading map");
             xml = new MapXML(filename);
             tileSets = xml.getTileSets();
             terrainSet = xml.getTerrainSet("basic");
@@ -144,11 +143,6 @@ public class MapBean implements Cloneable {
             this.author = xml.getAuthor();
             setTileShape(xml.getTileShape());
             setType(xml.getType());
-
-            System.out.println("LOADED MAP ["+name+"]");
-            System.out.println("Author     "+author);
-            System.out.println("Id         "+id+"/"+parent);
-            System.out.println("Shape      "+((tileShape == SQUARE)?"Square":"Hexagonal"));
 
             setCurrentSet("root");
         } catch (MapException mape) {
