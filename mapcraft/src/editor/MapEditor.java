@@ -245,36 +245,7 @@ public class MapEditor extends MapViewer
                 paintTile(x, y);
                 break;
             case Brush.RIVERS:
-                info("Distance: "+Map.distance(2, 2, x, y));
-                if (brush.getSelected() == 0) {
-                    // Have not yet selected a river.
-                    String  name = "River "+(map.getRivers().size()+1);
-                    info("Creating new river ["+name+"] at "+x+","+y);
-                    int     id = map.addRiver(name, brush.getX(), brush.getY());
-                    info("created");
-                    brush.setSelected(Brush.RIVERS, (short)id);
-                    map.unselectRivers();
-                    map.selectRiver(id);
-                    drawRivers();
-                } else if (map.isRiver(x, y)) {
-                    debug("There is already a river here");
-                } else {
-                    Path    river = map.getRiver(brush.getSelected());
-                    debug("Adding to river ["+river.getName()+"]");
-                    // Add to a current river.
-                    info("Adding new element to river");
-                    Path.Element    end = river.getEndPoint();
-                    Path.Element    start = river.getStartPoint();
-                    if (river.isAtEnd(brush.getX(), brush.getY())) {
-                        debug("Next to end, so adding");
-                        map.extendRiver(brush.getSelected(), brush.getX(), brush.getY());
-                        drawRivers();
-                    } else if (river.isAtStart(brush.getX(), brush.getY())) {
-                        debug("Next to start, so adding");
-                        map.extendRiver(brush.getSelected(), brush.getX(), brush.getY());
-                        drawRivers();
-                    }
-                }
+                applyBrushRivers(brush.getX(), brush.getY());
                 break;
             }
         } catch (MapOutOfBoundsException moobe) {
@@ -282,6 +253,70 @@ public class MapEditor extends MapViewer
         }
 
     }
+
+    private void
+    applyBrushRivers(int x, int y) throws MapOutOfBoundsException {
+        switch (brush.getMode()) {
+        case Brush.SELECT:
+            info("Selecting river");
+            map.unselectRivers();
+            int     nearest = 0;
+            int     min = -1;
+            for (int r = 1; r <= map.getRivers().size(); r++) {
+                Path    river = (Path) map.getRiver(r);
+                int     v = river.getNearestVertex(x, y, 250);
+                if (v > -1) {
+                    int     d = river.getDistanceToVertex(x, y, v);
+                    if (min == -1 || d < min) {
+                        min = d;
+                        nearest = r;
+                    }
+                }
+            }
+            if (nearest > 0) {
+                debug("Nearest river is "+nearest);
+                map.getRiver(nearest).setHighlighted(true);
+            }
+            drawRivers();
+            break;
+        case Brush.NEW:
+            info("New river");
+            // Have not yet selected a river.
+            String  name = "River "+(map.getRivers().size()+1);
+            info("Creating new river ["+name+"] at "+x+","+y);
+            int     id = map.addRiver(name, x, y);
+            info("created");
+            brush.setSelected(Brush.RIVERS, (short)id);
+            brush.setMode(Brush.EDIT);
+            map.unselectRivers();
+            map.selectRiver(id);
+            drawRivers();
+            break;
+        case Brush.EDIT:
+            info("Edit river "+brush.getSelected());
+
+            Path    river = map.getRiver(brush.getSelected());
+            debug("Adding to river ["+river.getName()+"]");
+            // Add to a current river.
+            info("Adding new element to river");
+            Path.Element    end = river.getEndPoint();
+            Path.Element    start = river.getStartPoint();
+            if (river.isAtEnd(brush.getX(), brush.getY())) {
+                debug("Next to end, so adding");
+                map.extendRiver(brush.getSelected(), brush.getX(), brush.getY());
+                drawRivers();
+            } else if (river.isAtStart(brush.getX(), brush.getY())) {
+                debug("Next to start, so adding");
+                map.extendRiver(brush.getSelected(), brush.getX(), brush.getY());
+                drawRivers();
+            }
+            break;
+        default:
+            info("applyBrushRiver: Unknown action");
+        }
+    }
+
+
 
     /**
      * Set the size of the brush.
@@ -300,6 +335,11 @@ public class MapEditor extends MapViewer
     setBrushType(int type) {
         debug("Setting brush type to be "+type);
         brush.setType(type);
+    }
+
+    public void
+    setBrushMode(int mode) {
+        brush.setMode(mode);
     }
 
 

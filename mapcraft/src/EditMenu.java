@@ -146,6 +146,16 @@ public class EditMenu extends JMenu implements ActionListener {
             actions.get(Actions.EDIT_SMALL).setEnabled(false);
             actions.get(Actions.EDIT_MEDIUM).setEnabled(false);
             actions.get(Actions.EDIT_LARGE).setEnabled(false);
+        } else if (cmd.equals(Actions.EDIT_SELECT)) {
+            application.getEditor().setBrushMode(Brush.SELECT);
+        } else if (cmd.equals(Actions.EDIT_NEW)) {
+            application.getEditor().setBrushMode(Brush.NEW);
+        } else if (cmd.equals(Actions.EDIT_EDIT)) {
+            application.getEditor().setBrushMode(Brush.EDIT);
+        } else if (cmd.equals(Actions.EDIT_DELETE)) {
+            application.getEditor().setBrushMode(Brush.DELETE);
+        } else if (cmd.equals(Actions.EDIT_INSERT)) {
+            application.getEditor().setBrushMode(Brush.INSERT);
         }
     }
 

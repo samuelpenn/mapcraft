@@ -98,7 +98,15 @@ public class Brush {
     void
     setType(int type) {
         this.brush = type;
-        river = 0;
+
+        switch (brush) {
+        case RIVERS:
+            mode = SELECT;
+            river = 0;
+            break;
+        default:
+            break;
+        }
     }
 
     void
@@ -106,6 +114,11 @@ public class Brush {
         if (size == SMALL || size == MEDIUM || size == LARGE) {
             this.size = size;
         }
+    }
+
+    void
+    setMode(int mode) {
+        this.mode = mode;
     }
 
     void
