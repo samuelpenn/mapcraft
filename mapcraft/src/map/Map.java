@@ -119,6 +119,12 @@ public class Map extends MapBean implements Cloneable {
 
     /**
      * This map becomes a child of the original.
+     * Should be called <b>before</b> performing some operation such as
+     * crop(), so we keep a reference to the original map. This enables
+     * the new map to be merged back into the parent at a later date.
+     *
+     * The id of the map is appended with a new identifier, to
+     * distinguish it from the original.
      */
     public void
     fork() {

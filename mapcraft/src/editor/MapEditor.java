@@ -835,7 +835,10 @@ public class MapEditor extends MapViewer
         return menu;
     }
 
-
+    /**
+     * Called before cropping a map. Enables a reference to
+     * the original map to be kept for future merger.
+     */
     public void
     fork() {
         map.fork();
@@ -852,11 +855,18 @@ public class MapEditor extends MapViewer
         }
     }
 
+    /**
+     * Use the Crop dialog to crop the map. The map is forked, and cropped
+     * according to the criteria chosen by the user. It is possible to crop
+     * to the currently selected region, a named area, near to a thing, or
+     * along the length of a road or river.
+     */
     public void
     crop() {
         try {
             CropDialog  dialog = new CropDialog(map, frame);
             if (dialog.isOkay()) {
+                fork();
                 if (dialog.isHighlight()) {
                     map.cropToHighlighted();
                 } else if (dialog.isArea()) {
