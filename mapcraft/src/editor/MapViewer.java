@@ -140,7 +140,10 @@ public class MapViewer extends JPanel {
         private int     tileHeight;
         private int     tileWidth;
         private int     tileOffset;
-        private int     fontSize;
+        private int     fontSizeSmall;
+        private int     fontSizeMedium;
+        private int     fontSizeLarge;
+        private int     fontSizeHuge;
 
         public static final int USMALL = 0;
         public static final int XXSMALL = 0;
@@ -169,8 +172,12 @@ public class MapViewer extends JPanel {
                 viewShape = (String)properties.get("view.shape");
                 path = basePath + "/" + (String)properties.get("icon.path");
 
-                iconHeight = (int)Integer.parseInt((String)properties.get("icon.height"));
-                iconWidth = (int)Integer.parseInt((String)properties.get("icon.width"));
+                iconHeight = (int)Integer.parseInt(properties.getProperty("icon.height"));
+                iconWidth = (int)Integer.parseInt(properties.getProperty("icon.width"));
+                fontSizeSmall = (int)Integer.parseInt(properties.getProperty("font.small.size"));
+                fontSizeMedium = (int)Integer.parseInt(properties.getProperty("font.medium.size"));
+                fontSizeLarge = (int)Integer.parseInt(properties.getProperty("font.large.size"));
+                fontSizeHuge = (int)Integer.parseInt(properties.getProperty("font.huge.size"));
 
                 if (viewShape.equals("Hexagonal")) {
                     tileHeight = (int)(Math.sqrt(3.0)/2.0 * iconWidth);
@@ -250,6 +257,13 @@ public class MapViewer extends JPanel {
          */
         public int getTileOffset() { return tileOffset; }
 
+        public int getSmallFont() { return fontSizeSmall; }
+
+        public int getMediumFont() { return fontSizeMedium; }
+
+        public int getLargeFont() { return fontSizeLarge; }
+
+        public int getHugeFont() { return fontSizeHuge; }
     }
 
 
@@ -901,36 +915,13 @@ public class MapViewer extends JPanel {
         }
     }
 
-    private double
-    getFontScale() {
-        double fontScale = 1.0;
-
-        switch (view) {
-            case 0: // xsmall
-                fontScale = 0.5;
-                break;
-            case 1: // small
-                fontScale = 0.75;
-                break;
-            case 2: // medium
-                fontScale = 1.0;
-                break;
-            case 3: // large
-                fontScale = 1.5;
-                break;
-            case 4: // xlarge
-                fontScale = 2.0;
-                break;
-        }
-
-        return fontScale;
-    }
-
     public void
     paintThing(Thing thing, Graphics g) {
         int         x=0, y=0;
-        int         fontSize = 12;
+        int         fontSize = 16;
+        int         fontStyle = Font.PLAIN;
         Image       icon = thingSet.getIcon(thing.getType());
+        Font        font = null;
         Graphics2D  g2 = (Graphics2D)g;
 
         // If scale is too large, and thing not importance enough,
@@ -954,28 +945,28 @@ public class MapViewer extends JPanel {
         g2.rotate(r, x+tileXSize/2, y+tileYSize/2);
         g2.drawImage(icon, x, y, this);
         g2.rotate(-r, x+tileXSize/2, y+tileYSize/2);
-        //g.drawImage(icon, x, y, this);
-        g.setColor(Color.BLACK);
 
-        switch (thing.getFontSize())  {
-        case Thing.SMALL:
-            fontSize = 8;
-            break;
-        case Thing.MEDIUM:
-            fontSize = 10;
-            break;
-        case Thing.LARGE:
-            fontSize = 14;
-            break;
-        case Thing.HUGE:
-            fontSize = 18;
-            break;
-        }
-        fontSize = (int) (getFontScale() * fontSize);
-        Font    font = new Font("Helvetica", Font.PLAIN, fontSize);
-        g.setFont(font);
-        // Show name, should be configurable.
         if (map.getType() != Map.LOCAL) {
+            switch (thing.getFontSize())  {
+            case Thing.SMALL:
+                fontSize = views[view].getSmallFont();
+                break;
+            case Thing.MEDIUM:
+                fontSize = views[view].getMediumFont();
+                break;
+            case Thing.LARGE:
+                fontSize = views[view].getLargeFont();
+                fontStyle = Font.BOLD;
+                break;
+            case Thing.HUGE:
+                fontSize = views[view].getHugeFont();
+                fontStyle = Font.BOLD;
+                break;
+            }
+
+            font = new Font("Helvetica", fontStyle, fontSize);
+            g.setColor(Color.BLACK);
+            g.setFont(font);
             g.drawString(thing.getName(), x, y);
         }
     }
