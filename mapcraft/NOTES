@@ -6,7 +6,8 @@ uk.co.demon.bifrost.rpg.worldcraft
 
 Uses hex based tiles.
 
-A full world will have to support 'null' hexes which cannot be mapped to. These are to represent the spherical world.
+A full world will have to support 'null' hexes which cannot be mapped
+to. These are to represent the spherical world.
 
 Maybe use xplanet to render 3D images? Need high resolution map for this.
 
@@ -14,9 +15,21 @@ Maybe use xplanet to render 3D images? Need high resolution map for this.
     5km        8800
     25km        1760
     125km    352
-    
-125km hex is probably highest resolution can support, at least until we have SAX support, and even then it gets dodgy.
-SAX support tricky since we keep stuff in memory in MapXML object.
+
+125km hex is probably highest resolution can support, at least until we
+have SAX support, and even then it gets dodgy. SAX support tricky since
+we keep stuff in memory in MapXML object.
+
+
+Harn Maps
+
+Standard Harn map is 84x50 hexes in size, with each hex being 20km.
+This gives a map size of 1680km x 1000km, which is a single country.
+
+
+Euressa Maps
+
+168x100 hexes.
 
 
 Blob Data (0.0.3)
@@ -78,7 +91,8 @@ Types:
     
 Roads
 
-Can we draw roads in real time? Makes them very straight... Look at Java 2D stuff. No need to draw lots of gif files though.
+Can we draw roads in real time? Makes them very straight...
+Look at Java 2D stuff. No need to draw lots of gif files though.
 
 
 Different types of painting tools:
@@ -94,8 +108,8 @@ Different types of painting tools:
 
 Map Identification
 
-Each map has a unique identifier string - millisecond time of creation and map name, e.g.:
-    "harn.105578476346"
+Each map has a unique identifier string - millisecond time of creation
+and map name, e.g.:  "harn.105578476346"
 
 <map>
     <header>
@@ -115,7 +129,9 @@ Each map has a unique identifier string - millisecond time of creation and map n
 
 Tilesets?
 
-Are they still needed? With current memory constraints, we may want to dump them, and jut use linking instead. This would make things a lot simpler.
+Are they still needed? With current memory constraints, we may want to
+dump them, and jut use linking instead. This would make things a lot
+simpler.
 
 Current position of river info won't work if we have multiple tilesets.
 How do we port diffs to children/parents? We could do a comparison of two
@@ -126,17 +142,24 @@ Easier than any automatic function that works on tilesets.
 
 Drop tilesets.
 
-May want to have different terrain palettes in different scales of the map as well. Much better if maps completely independent. Still have parent reference however.
+May want to have different terrain palettes in different scales of the
+map as well. Much better if maps completely independent. Still have
+parent reference however.
 
 
 
 Hills/Height
 
 Height will be represented with blobs.
-There will be a height scale, probably 10m. Heights can be positive and negative. 2 chars will be used for each tile. Map will have a base height as well, just in case we need it for small maps, and height scale can be changed from the default.
+There will be a height scale, probably 10m. Heights can be positive and
+negative. 2 chars will be used for each tile. Map will have a base height
+as well, just in case we need it for small maps, and height scale can be
+changed from the default.
 
 Hills will be a mask, similar to rivers. Represents how hilly a tile is.
-Could, in theory, have very tight blobs - probably only need 4 values for hills, so one char could represent many tiles. Or double up hill and river data.
+Could, in theory, have very tight blobs - probably only need 4 values for
+hills, so one char could represent many tiles. Or double up hill and
+river data.
 
 0 = flat
 1 = rolling hills
@@ -183,4 +206,22 @@ Sites
     <name>Underhill</name>
     <description>Some place</description>
 </site>
-#ÿ
+
+
+
+
+Editing Rivers
+
+
+Select 'Create River'. Give it a name, and click where to start.
+Each click in a surrounding hex places the next point there.
+Ends at another river or a sea hex.
+
+Edit River.
+
+
+
+
+
+
+

@@ -11,6 +11,7 @@
         </cvs>
 	<type>World</type>
         <shape>Hexagonal</shape>
+        <imagedir>.</imagedir>
         <format>0.0.3</format>
     </header>
     <terrainset id="basic" path=".">

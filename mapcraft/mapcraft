@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export CLASSPATH=$CLASSPATH:build:src
+
+export MAPCRAFTDIR=`pwd`
+
+java uk.co.demon.bifrost.rpg.mapcraft.MapCraft -rundir $MAPCRAFTDIR $*

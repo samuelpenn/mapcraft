@@ -11,6 +11,7 @@
         </cvs>
         <type>Local</type>
         <shape>Square</shape>
+        <imagedir>square</imagedir>
         <format>0.0.3</format>
     </header>
     <terrainset id="basic" path=".">

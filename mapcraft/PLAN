@@ -52,6 +52,7 @@ Project Plan
     File load/save inferface.
     Toolbar for common features.
     Map properties dialog/editor.
+    GUI interface to map resize and cropping.
     Wrapper class to provide GUI framework.
 
 0.7 (Web support)
@@ -63,7 +64,7 @@ Project Plan
     Anti-aliase on rescale.
     Diff support for scaled children.
     Fill option.
-    Brush options.
+    Brush size options.
 
 0.9 (Optimisation)
     Any necessary speed enhancements.
