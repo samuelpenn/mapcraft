@@ -13,6 +13,7 @@ package net.sourceforge.mapcraft.editor;
 
 import net.sourceforge.mapcraft.map.*;
 import net.sourceforge.mapcraft.map.Map;
+import net.sourceforge.mapcraft.utils.ImageUtils;
 import net.sourceforge.mapcraft.MapCraft;
 
 import javax.swing.*;
@@ -48,7 +49,6 @@ public class MapViewer extends JPanel {
 
     protected Toolkit     toolkit = null;
     protected Image[]     icons = null;
-    protected Image       outlineIcon = null;
     protected String      imagePath = "images";
 
     protected IconSet     iconSet = null;
@@ -339,20 +339,33 @@ public class MapViewer extends JPanel {
             warn("No iterator");
             return null;
         }
+        JFrame      f = new JFrame("Processing");
+        f.setVisible(true);
 
         iconSet = new IconSet(map.getName());
         while (iter.hasNext()) {
             Terrain t = (Terrain)iter.next();
             if (t != null) {
+                short       id = t.getId();
+                Image       icon = null;
+                Image       scaled = null;
+                int         x = views[view].getIconWidth();
+                int         y = views[view].getIconHeight();
+
                 try {
-                    short   id = t.getId();
-                    String  path = views[view].getPath()+"/"+t.getImagePath();
-                    URL     url = MapViewer.class.getResource(path);
-                    Image   icon = toolkit.getImage(url);
-                    Image   scaled = null;
-                    int     x = -1, y = -1;
+                    if (t.getImagePath().startsWith("#")) {
+                        // If the path is #rrggbb, then create a plain
+                        // image of that colour.
+                        ImageUtils  iu = new ImageUtils(f);
+                        icon = iu.createImage(x, y, t.getImagePath());
+                    } else {
+                        String  path = views[view].getPath()+"/"+t.getImagePath();
+                        URL     url = MapViewer.class.getResource(path);
+                        icon = toolkit.getImage(url);
+                    }
     
                     if (set.isAnySize()) {
+                        // Icon is not limited to the expected size.
                         while (x == -1 || y == -1) {
                             prepareImage(icon);
                             x = icon.getWidth(this);
@@ -360,10 +373,6 @@ public class MapViewer extends JPanel {
                         }
                         x = (x * views[view].getIconWidth())/96;
                         y = (y * views[view].getIconHeight())/96;
-    
-                    } else {
-                        x = views[view].getIconWidth();
-                        y = views[view].getIconHeight();
                     }
                     scaled = icon.getScaledInstance(x, y, Image.SCALE_SMOOTH);
     
@@ -382,8 +391,8 @@ public class MapViewer extends JPanel {
                 }
             }
         }
-
-        outlineIcon = toolkit.getImage(views[view].getPath()+"/outline.png");
+        f.setVisible(false);
+        f.dispose();
         iconSet.prepareImages(this);
 
         return iconSet;

@@ -22,6 +22,39 @@ public class WorldGenerator {
     private Map         map = null;
     private WorldUtils  utils = null;
     
+    private int         GREY = 1;
+    private int         YELLOW = 16;
+    private int         RED = 32;
+    
+    // Types of worlds.
+    private static final int    SELENIAN = 1;
+    private static final int    HERMIAN = 2;
+    private static final int    AREAN = 3;
+    
+    private int         worldType = SELENIAN;
+    
+    private String
+    toColour(int c) {
+        if (c < 0) c = 0;
+        if (c > 255) c = 255;
+        
+        String      string = Integer.toHexString(c);
+        
+        if (string.length() < 2) {
+            string = "0"+string;
+        }
+        return string;
+    }
+    
+    private String
+    toColour(int r, int g, int b) {
+        String  red = toColour(r); 
+        String  green = toColour(g);
+        String  blue = toColour(b);
+        
+        return "#"+red+green+blue;
+    }
+    
     public
     WorldGenerator(String name, int radius) {
         try {
@@ -33,10 +66,78 @@ public class WorldGenerator {
             // Default to totally random map.
             //randomise(1, 16);
             //heightMap();
-            
-            
+            setWorldType(HERMIAN);
         } catch (MapException e) {
             e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Define the terrain types for Moon-like Selenian worlds.
+     * These tend to consist of greys, with no real colour.
+     */
+    private void
+    setupSelenian() {
+        TerrainSet      ts = map.getTerrainSet();
+
+        for (int i = 1; i < 17; i++) {
+            String      tag = "grey."+i;
+            int         c = 50 + i*12;
+            String      colour = toColour(c, c, c);
+            ts.add((short)(GREY+i-1), tag, tag, colour);
+        }
+    }
+    
+    /**
+     * Define the terrain types for Mercury-like Hermian worlds.
+     * These tend to have reddish orange uplands with yellow or
+     * white plains.
+     */
+    private void
+    setupHermian() {
+        TerrainSet      ts = map.getTerrainSet();
+        
+        for (int i = 1; i < 17; i++) {
+            String      tag = "hermian."+i;
+            String      colour = toColour(i*15, i*(i-1), 2*i*(i-8));
+            colour = toColour(255 - (i*12), 255 - (i*17), 200 - (i*25));
+            ts.add((short)(GREY+i-1), tag, tag, colour);
+        }
+    }
+    
+    /**
+     * Setup Mars-like worlds.
+     */
+    private void
+    setupArean() {
+        TerrainSet      ts = map.getTerrainSet();
+
+        for (int i = 1; i < 17; i++) {
+            String      tag = "red."+i;
+            String      colour = toColour(i*12, 0, 0);
+            ts.add((short)(RED+i-1), tag, tag, colour);
+        }
+
+        for (int i = 1; i < 17; i++) {
+            String      tag = "yellow."+i;
+            String      colour = toColour(i*12, i*15, 0);
+            ts.add((short)(YELLOW+i-1), tag, tag, colour);
+        }
+    }
+    
+    public void
+    setWorldType(int worldType) {
+        this.worldType = worldType;
+        switch (worldType) {
+        case SELENIAN:
+            setupSelenian();
+            break;
+        case HERMIAN:
+            setupHermian();
+            break;
+        case AREAN:
+            setupArean();
+            break;
         }
     }
     

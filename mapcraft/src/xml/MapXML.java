@@ -505,7 +505,13 @@ public class MapXML {
                     description = getTextNode(terrain, "description");
                     image = getTextNode(terrain, "image");
 
-                    set.add(id, name, description, path+"/"+image);
+                    if (image.startsWith("#")) {
+                        // A colour has been specified rather than an
+                        // existing image file.
+                        set.add(id, name, description, image);
+                    } else {
+                        set.add(id, name, description, path+"/"+image);
+                    }
                 }
             }
             list = null;

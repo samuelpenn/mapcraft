@@ -13,6 +13,7 @@
 package net.sourceforge.mapcraft.editor;
 
 import net.sourceforge.mapcraft.map.*;
+import net.sourceforge.mapcraft.utils.ImageUtils;
 import net.sourceforge.mapcraft.xml.*;
 
 import javax.swing.*;
@@ -51,9 +52,13 @@ public class Pane extends JPanel implements ListSelectionListener {
             Terrain t = (Terrain)value;
 
             if (t.getImagePath() != null) {
+                ImageUtils  iu = new ImageUtils(this, imagePath);
+                image = iu.getImage(t.getImagePath(), 24, 24);
+                /*
                 URL         url = Pane.class.getResource(imagePath+"/"+t.getImagePath());
                 image = toolkit.getImage(url);
                 image = image.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+                */
                 icon = new ImageIcon(image);
                 setIcon(icon);
             }
@@ -80,7 +85,6 @@ public class Pane extends JPanel implements ListSelectionListener {
 
     public void
     valueChanged(ListSelectionEvent e) {
-        System.out.println("Pane index: "+e.getFirstIndex()+", "+e.getLastIndex());
     }
 
     public
@@ -96,7 +100,6 @@ public class Pane extends JPanel implements ListSelectionListener {
     
     public void
     setImagePath(String path) {
-        System.out.println("Pane path: "+path);
         this.imagePath = path;
     }
 

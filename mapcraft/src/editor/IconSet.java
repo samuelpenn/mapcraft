@@ -12,7 +12,6 @@
 package net.sourceforge.mapcraft.editor;
 
 import java.awt.*;
-import java.awt.image.ImageObserver;
 
 /**
  * Holds all the icons for a particular view.

@@ -238,6 +238,11 @@ public class MapCraft implements ActionListener {
     getWindow() {
         return window;
     }
+    
+    public Image
+    createImage(int x, int y) {
+        return window.createImage(x, y);
+    }
 
     /**
      * Load a map into the application and display it.
