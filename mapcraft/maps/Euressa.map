@@ -3306,4 +3306,13 @@
             <description>Royal Castle</description>
         </site>
     </sites>
+    <areas>
+        <area id="1" name="Weidany"/>
+        <area id="2" name="Bryteland"/>
+        <area id="3" name="Tanwall"/>
+        <area id="4" name="Cancha"/>
+        <area id="5" name="Taneith"/>
+        <area id="6" name="Danuch"/>
+        <area id="7" name="Cadwold"/>
+    </areas>
 </map>

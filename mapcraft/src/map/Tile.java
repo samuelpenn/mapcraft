@@ -36,6 +36,7 @@ public class Tile implements Cloneable {
     private short   hills;
     private boolean writable;
     private boolean river;
+    private int     area;
 
     private Site    site;
 
@@ -175,5 +176,15 @@ public class Tile implements Cloneable {
     public Site
     getSite() {
         return site;
+    }
+
+    public int
+    getArea() {
+        return area;
+    }
+
+    public void
+    setArea(int area) {
+        this.area = area;
     }
 }

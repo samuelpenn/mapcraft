@@ -206,7 +206,7 @@ public class MapViewer extends JPanel {
                 short   id = t.getId();
                 String  path = views[view].getPath()+"/"+t.getImagePath();
                 Image   icon = toolkit.getImage(path);
-
+                toolkit.prepareImage(icon, -1, -1, this);
                 iconSet.add(id, icon);
             }
         }
@@ -537,6 +537,7 @@ public class MapViewer extends JPanel {
             if (showLargeGrid) {
                 int x1, x2, y1, y2;
                 Graphics2D  g2 = (Graphics2D)g;
+                g2.setColor(Color.BLACK);
 
                 // Vertical lines
                 y1 = 0;
@@ -628,62 +629,6 @@ public class MapViewer extends JPanel {
 
     }
 
-    /**
-     * Convert the map to an Image, ready for saving to disc.
-     */
-    public BufferedImage
-    toImage() {
-        BufferedImage   image = null;
-        Graphics2D      graphics = null;
-        int             w, h;
-
-        try {
-            w = map.getWidth() * tileXSize;
-            h = map.getHeight() * tileYSize;
-
-            image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-            System.out.println("Painting image...");
-            paintComponent(image.getGraphics());
-            System.out.println("...finished painting");
-
-        } catch (Exception e) {
-            System.out.println("toImage: "+e.getMessage());
-            e.printStackTrace();
-        }
-
-        return image;
-    }
-
-    public void
-    saveImage(String filename) {
-        OutputStream    out = null;
-        BufferedImage   image = null;
-
-        System.out.println("Saving image as ["+filename+"]");
-        try {
-            Thread.sleep(5000);
-        } catch (Exception ee) { }
-
-        try {
-            image = toImage();
-
-            File file = new File(filename);
-
-            out = new BufferedOutputStream(new FileOutputStream(file));
-            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-
-            encoder.encode(image);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (Throwable t) {}
-        }
-    }
 
     /**
      * Main method for use when testing.

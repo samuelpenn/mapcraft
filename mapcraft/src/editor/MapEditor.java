@@ -146,6 +146,20 @@ public class MapEditor extends MapViewer
         }
     }
 
+    public class
+    AreaPalette implements ListSelectionListener {
+        private MapEditor editor;
+
+        public
+        AreaPalette(MapEditor editor) {
+            this.editor = editor;
+        }
+
+        public void
+        valueChanged(ListSelectionEvent e) {
+        }
+    }
+
 
     public void
     applyBrush(int x, int y) {

@@ -27,6 +27,7 @@ public class Brush {
     public static final int HILLS = 4;
     public static final int HEIGHT = 5;
     public static final int FEATURES = 6;
+    public static final int AREAS = 7;
     
     public static final int SMALL = 1;
     public static final int MEDIUM = 2;
@@ -40,6 +41,7 @@ public class Brush {
     private short site = 0;
     private short hill = 0;
     private short height = 0;
+    private short area = 0;
 
     Brush() {
         brush = TERRAIN;
@@ -65,6 +67,7 @@ public class Brush {
         case RIVERS:  return river;
         case HILLS:   return hill;
         case HEIGHT:  return height;
+        case AREAS:   return area;
         default:
             return 0;
         }
@@ -100,6 +103,9 @@ public class Brush {
             break;
         case HEIGHT:
             height = selected;
+            break;
+        case AREAS:
+            area = selected;
             break;
         default:
             return;

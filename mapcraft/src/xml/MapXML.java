@@ -57,7 +57,7 @@ public class MapXML {
 
     public static final String SQUARE = "Square";
     public static final String HEXAGONAL = "Hexagonal";
-    
+
     public static final String LOCAL = "Local";
     public static final String WORLD = "World";
 
@@ -260,7 +260,7 @@ public class MapXML {
             if (node == null) {
                 throw new XMLException("Node \""+xpath+"\" not found");
             }
-            
+
             text = getTextNode(node);
         } catch (TransformerException te) {
             throw new XMLException("Cannot find node \""+xpath+"\"");
@@ -279,10 +279,12 @@ public class MapXML {
                 if (node.getNodeType() == Node.TEXT_NODE) {
                     text = node.getNodeValue();
                 } else {
-                    throw new XMLException("Node is not a text node");
+                    throw new XMLException("Node ["+node.getNodeName()+
+                                           "] is not a text node");
                 }
             } else {
-                throw new XMLException("Node does not have text element");
+                throw new XMLException("Node ["+node.getNodeName()+
+                                       "] does not have text element");
             }
         } catch (XMLException xe) {
             throw xe;
@@ -652,6 +654,47 @@ public class MapXML {
         }
 
         return;
+    }
+
+    /**
+     * Return an AreaSet for this map.
+     */
+    public AreaSet
+    getAreas() throws XMLException {
+        String          name, description;
+        String          image;
+        String          path;
+        int             id, x, y, i = 0;
+        NamedNodeMap    values;
+        Node            value;
+        AreaSet         areas = new AreaSet();
+
+        try {
+            NodeList    list = getNodeList("/map/areas/area");
+            if (list == null || list.getLength() == 0) {
+                // No areas found. This is perfectly valid.
+                return areas;
+            }
+
+            for (i=0; i < list.getLength(); i++) {
+                Node        node = list.item(i);
+                Area        area = null;
+
+                if (node != null) {
+                    values = node.getAttributes();
+                    id = getIntNode(values.getNamedItem("id"));
+                    name = getTextNode(values.getNamedItem("name"));
+                    areas.add(id, name);
+                }
+            }
+            list = null;
+        } catch (XMLException xe) {
+            throw xe;
+        } catch (Exception e) {
+            throw new XMLException("Error in getting Areas");
+        }
+
+        return areas;
     }
 
     /**

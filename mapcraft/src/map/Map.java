@@ -57,6 +57,7 @@ public class Map implements Cloneable {
     TerrainSet      terrainSet = null;
     TerrainSet      placeSet = null;
     TileSet         tileSets[] = null;
+    AreaSet         areaSet = null;
     Vector          rivers = null;
 
     private int     tileShape = HEXAGONAL;
@@ -108,6 +109,7 @@ public class Map implements Cloneable {
             tileSets = xml.getTileSets();
             terrainSet = xml.getTerrainSet("basic");
             placeSet = xml.getTerrainSet("places");
+            areaSet = xml.getAreas();
 
             xml.getSites(tileSets[0]);
             rivers = xml.getRivers();
@@ -400,6 +402,17 @@ public class Map implements Cloneable {
         tileSets[set].setTerrain(x, y, t);
     }
 
+    public Area
+    getArea(int x, int y) throws MapOutOfBoundsException {
+        int a = tileSets[currentSet].getArea(x, y);
+        return areaSet.getArea(a);
+    }
+
+    public void
+    setArea(int x, int y, int area) throws MapOutOfBoundsException {
+        tileSets[currentSet].setArea(x, y, area);
+    }
+
     public short
     getHeight(int x, int y) {
         if (x < 0 || x >= width) {
@@ -584,6 +597,18 @@ public class Map implements Cloneable {
         writer.write("    </terrainset>\n");
     }
 
+    private void
+    writeAreaSet(FileWriter writer) throws IOException {
+        writer.write("    <areas>\n");
+        Iterator    iter = areaSet.iterator();
+        while (iter.hasNext()) {
+            Area    a = (Area)iter.next();
+
+            writer.write("        <area id=\""+a.getId()+"\" name=\""+a.getName()+"\"/>\n");
+        }
+        writer.write("    </areas>\n");
+    }
+
     /**
      * Write out the header of the map file.
      */
@@ -698,7 +723,7 @@ public class Map implements Cloneable {
         FileWriter      writer = new FileWriter(filename);
         int             x, y;
         int             i;
-        
+
         System.out.println("Saving map");
 
         writer.write("<?xml version=\"1.0\"?>\n");
@@ -746,7 +771,9 @@ public class Map implements Cloneable {
             }
         }
         writer.write("    </sites>\n");
-        
+
+        writeAreaSet(writer);
+
         writer.write("</map>\n");
 
         writer.close();

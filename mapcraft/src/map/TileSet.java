@@ -220,5 +220,15 @@ public class TileSet implements Cloneable {
     setSite(int x, int y, Site site) throws MapOutOfBoundsException {
         getTile(x, y).setSite(site);
     }
+
+    public int
+    getArea(int x, int y) throws MapOutOfBoundsException {
+        return getTile(x, y).getArea();
+    }
+
+    public void
+    setArea(int x, int y, int area) throws MapOutOfBoundsException {
+        getTile(x, y).setArea(area);
+    }
 }
 
