@@ -224,7 +224,7 @@ public class Map implements Cloneable {
         } catch (MapException mape) {
             throw mape;
         } catch (Exception e) {
-            throw new MapException("Failed to load map");
+            throw new MapException("Failed to load map ("+e.getMessage()+")");
         }
     }
 

@@ -118,7 +118,7 @@ public class FileMenu extends JMenu implements ActionListener {
 
         int returnVal = chooser.showOpenDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
-            String filename = chooser.getSelectedFile().getName();
+            String filename = chooser.getSelectedFile().getAbsolutePath();
 
             System.out.println("Opening file ["+filename+"]");
             application.load(filename);

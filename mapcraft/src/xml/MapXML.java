@@ -332,11 +332,39 @@ public class MapXML {
         return number;
     }
 
+    protected int
+    getIntNode(String xpath, int dflt) {
+        try {
+            return getIntNode(xpath);
+        } catch (Exception e) {
+            return dflt;
+        }
+    }
+
+    protected int
+    getIntNode(Node root, int dflt) {
+        try {
+            return getIntNode(root);
+        } catch (Exception e) {
+            return dflt;
+        }
+    }
+
+    protected int
+    getIntNode(Node root, String xpath, int dflt) {
+        try {
+            return getIntNode(root, xpath);
+        } catch (Exception e) {
+            return dflt;
+        }
+    }
+
+
     /**
      * Returns the name of the map.
      */
     public String getName() { return name; }
-    
+
     /**
      * Returns the map author.
      */
@@ -612,7 +640,7 @@ public class MapXML {
                 // No sites found. This is perfectly valid.
                 return sites;
             }
-            System.out.println("Found "+list.getLength()+"sites to load");
+            System.out.println("Found "+list.getLength()+" sites to load");
 
             for (i=0; i < list.getLength(); i++) {
                 Node        node = list.item(i);
@@ -620,6 +648,7 @@ public class MapXML {
 
                 if (node != null) {
                     System.out.println("Loading site "+i);
+
                     values = node.getAttributes();
                     type = (short)getIntNode(values.getNamedItem("type"));
                     x = getIntNode(values.getNamedItem("x"));
@@ -627,8 +656,9 @@ public class MapXML {
 
                     name = getTextNode(node, "name");
                     description = getTextNode(node, "description");
-                    fontSize = getIntNode(node, "font");
-                    importance = getIntNode(node, "importance");
+                    System.out.println("Site ["+name+"] ["+description+"]");
+                    fontSize = getIntNode(node, "font", Site.MEDIUM);
+                    importance = getIntNode(node, "importance", Site.NORMAL);
                     site = new Site(type, name, description, x, y);
                     site.setFontSize(fontSize);
                     site.setImportance(importance);

@@ -464,8 +464,6 @@ public class MapViewer extends JPanel {
     drawRivers(Graphics2D g) {
         int     i = 0, e = 0;
 
-        info("Drawing all rivers");
-
         g.setColor(Color.BLUE);
         for (i=0; i < map.getRivers().size(); i++) {
 
@@ -473,7 +471,6 @@ public class MapViewer extends JPanel {
             Shape   shape = path.getGraphicsShape(g, tileXSize, tileYSize, tileYOffset,
                                                   iconWidth, iconHeight);
 
-            info("Drawing shape for river");
             g.draw(shape);
         }
     }
@@ -549,10 +546,8 @@ public class MapViewer extends JPanel {
             // get overwritten by tiles. No labels are drawn for LOCAL maps.
             if (map.getType() == Map.WORLD && showSites) {
                 Vector   sites = map.getSites();
-                debug("Drawing all sites: "+sites.size());
                 for (int i=0; i < sites.size(); i++) {
                     Site    site = (Site)sites.elementAt(i);
-                    debug("Paint site "+i+",  "+site.getX()+", "+site.getY());
                     if (site.getX() < (100 * startX) || site.getX() > (100 * endX)) {
                         continue;
                     }
