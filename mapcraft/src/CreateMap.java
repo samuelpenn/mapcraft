@@ -182,6 +182,38 @@ public class CreateMap extends JDialog implements ActionListener {
         }
 
         return scale;
-
     }
+
+    public int
+    getMapWidth() {
+        int     num = 50;
+        String  value = "";
+
+        if (mapWidth != null) {
+            try {
+                value = mapWidth.getText();
+                num = Integer.parseInt(value);
+            } catch (NumberFormatException nfe) {
+            }
+        }
+
+        return num;
+    }
+
+    public int
+    getMapHeight() {
+        int     num = 50;
+        String  value = "";
+
+        if (mapHeight != null) {
+            try {
+                value = mapHeight.getText();
+                num = Integer.parseInt(value);
+            } catch (NumberFormatException nfe) {
+            }
+        }
+
+        return num;
+    }
+
 }

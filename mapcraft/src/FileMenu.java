@@ -153,8 +153,8 @@ public class FileMenu extends JMenu implements ActionListener {
         CreateMap   create = new CreateMap(application);
         System.out.println("Done");
 
-        int         width = create.getWidth();
-        int         height = create.getHeight();
+        int         width = create.getMapWidth();
+        int         height = create.getMapHeight();
         int         scale = create.getScale();
 
         String      name = create.getMapName();
@@ -162,6 +162,7 @@ public class FileMenu extends JMenu implements ActionListener {
         String      terrain = create.getMapType();
 
         try {
+            System.out.println("Creating new map of "+width+"x"+height);
             Map         newMap = new Map(name, width, height, scale);
             newMap.loadTerrainSet("terrain/"+terrain+".xml");
             newMap.save(name+".map");
