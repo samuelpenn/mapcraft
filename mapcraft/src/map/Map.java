@@ -83,6 +83,16 @@ public class Map implements Cloneable {
     public static final int LOCAL = 2;
 
 
+    /**
+     * Create a brand new map, of the given size and scale. Details such
+     * as the tile shape and terrain definitions should be given later
+     * using the relevent setter methods.
+     *
+     * @param name      Name of the map.
+     * @param width     Width of the map, in tiles.
+     * @param height    Height of the map, in tiles.
+     * @param scale     Map scale - what each tile represents (either km or m).
+     */
     public
     Map(String name, int width, int height, int scale) throws MapException {
         this.name = name;
@@ -95,7 +105,14 @@ public class Map implements Cloneable {
     }
 
     /**
-     * Create a new map, based on a world of a given radius.
+     * Create a new map, based on a world of a given radius. The map
+     * will be a hexagonal world map. Height and width are calculated
+     * from the scale, and the radius of the world. A sinusoidal
+     * projection is used, so the corners of the map will be blank.
+     *
+     * @param name      Name of the map.
+     * @param radius    World radius, in km.
+     * @param scale     Tile width, in km.
      */
     public
     Map(String name, int radius, int scale) throws MapException {
@@ -644,7 +661,7 @@ public class Map implements Cloneable {
         TileSet     resized = null;
         TileSet     original = tileSets[0];
         int         dx, dy;
-        
+
         // Get the deltas for the changing width/height.
         dx = newWidth - original.getWidth();
         dy = newHeight - original.getHeight();
@@ -685,6 +702,44 @@ public class Map implements Cloneable {
         }
         tileSets[0] = resized;
 
+    }
+
+    public Map
+    getAreaMap(short area) {
+        Map     map = null;
+        int     minX, minY, maxX, maxY;
+        int     x, y;
+        boolean found = false;
+
+        minX = minY = maxX = maxY = -1;
+        for (x=0; x < map.getWidth(); x++) {
+            for (y=0; y < map.getHeight(); y++) {
+                try {
+                    if (getArea(x, y).getId() == area) {
+                        if (!found || x < minX) {
+                            minX = x;
+                        }
+                        if (!found || x > maxX) {
+                            maxX = x;
+                        }
+                        if (!found || y < minY) {
+                            minY = y;
+                        }
+                        if (!found || y > maxY) {
+                            maxY = y;
+                        }
+                        found = true;
+                    }
+                } catch (MapOutOfBoundsException moobe) {
+                }
+            }
+        }
+
+        return getCroppedMap(minX, minY, maxX, maxY);
+    }
+
+    public Map
+    getCroppedMap(int minX, int minY, int maxX, int maxY) {
     }
 
     /**
@@ -1015,21 +1070,6 @@ public class Map implements Cloneable {
     public TerrainSet
     getFeatureSet() {
         return featureSet;
-        /*
-        TerrainSet      features = new TerrainSet("features", "images/hexagonal/standard/medium");
-
-        features.add(new Terrain((short)0, "clear", "Clear", "hills/0.png"));
-        features.add(new Terrain((short)1, "lowhills", "Low hills", "hills/1.png"));
-        features.add(new Terrain((short)2, "highhills", "High hills", "hills/2.png"));
-        features.add(new Terrain((short)3, "foothills", "Foot hills", "hills/3.png"));
-        features.add(new Terrain((short)4, "lowmnts", "Low mountains", "hills/4.png"));
-        features.add(new Terrain((short)5, "highmnts", "High mountains", "hills/5.png"));
-        features.add(new Terrain((short)6, "marsh", "Marshland", "hills/marsh.png"));
-        features.add(new Terrain((short)7, "ice", "Ice sheet", "hills/ice.png"));
-
-        featureSet = features;
-        return features;
-        */
     }
 
     /**

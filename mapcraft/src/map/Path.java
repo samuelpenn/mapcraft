@@ -64,6 +64,8 @@ public class Path {
         public int getWidth() { return width; }
         public int getType() { return type; }
 
+        public void setX(int x) { this.x = x; }
+        public void setY(int y) { this.y = y; }
         public void setType(int type) { this.type = type; }
     }
 
@@ -135,7 +137,6 @@ public class Path {
 
             //x = x * (float)xs;
             //y = y * (float)ys;
-            System.out.println("adding path "+x+","+y);
 
             if (p1 == null) {
                 p1 = new Point2D.Float(x, y);
@@ -179,6 +180,13 @@ public class Path {
     public void
     setWidth(int width) {
         this.width = width;
+    }
+
+    public void
+    setVertexPosition(int vertex, int x, int y) {
+        Element     e = (Element)elements.elementAt(vertex);
+        e.setX(x);
+        e.setY(y);
     }
 
     public boolean

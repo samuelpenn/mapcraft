@@ -276,6 +276,7 @@ public class MapEditor extends MapViewer
             if (nearest > 0) {
                 debug("Nearest river is "+nearest);
                 map.getRiver(nearest).setHighlighted(true);
+                brush.setSelected(Brush.RIVERS, (short)nearest);
             }
             drawRivers();
             break;
@@ -297,18 +298,28 @@ public class MapEditor extends MapViewer
 
             Path    river = map.getRiver(brush.getSelected());
             debug("Adding to river ["+river.getName()+"]");
-            // Add to a current river.
-            info("Adding new element to river");
-            Path.Element    end = river.getEndPoint();
-            Path.Element    start = river.getStartPoint();
-            if (river.isAtEnd(brush.getX(), brush.getY())) {
-                debug("Next to end, so adding");
-                map.extendRiver(brush.getSelected(), brush.getX(), brush.getY());
+
+            if (brush.getButton() == Brush.LEFT) {
+                // Add to a current river.
+                info("Adding new element to river");
+                Path.Element    end = river.getEndPoint();
+                Path.Element    start = river.getStartPoint();
+                if (river.isAtEnd(brush.getX(), brush.getY())) {
+                    debug("Next to end, so adding");
+                    map.extendRiver(brush.getSelected(), brush.getX(), brush.getY());
+                    drawRivers();
+                } else if (river.isAtStart(brush.getX(), brush.getY())) {
+                    debug("Next to start, so adding");
+                    map.extendRiver(brush.getSelected(), brush.getX(), brush.getY());
+                    drawRivers();
+                }
+            } else if (brush.getButton() == Brush.MIDDLE) {
+                info("Middle button (move)");
+                int     v = river.getNearestVertex(x, y, 50);
+                river.setVertexPosition(v, x, y);
                 drawRivers();
-            } else if (river.isAtStart(brush.getX(), brush.getY())) {
-                debug("Next to start, so adding");
-                map.extendRiver(brush.getSelected(), brush.getX(), brush.getY());
-                drawRivers();
+            } else if (brush.getButton() == Brush.RIGHT) {
+                info("Right button");
             }
             break;
         default:
@@ -371,27 +382,7 @@ public class MapEditor extends MapViewer
                 y = yp/tileYSize;
             }
 
-            if (e.getButton() == e.BUTTON3) {
-                // Right mouse button
-                debug("Right mouse");
-                /*
-                try {
-                    if (map.isSite(x, y)) {
-                        Site        site = map.getSite(x, y);
-                        SiteDialog  dialog = new SiteDialog(site, frame,
-                                                    map.getThingSet(), views[5].getPath());
-
-                        site.setName(dialog.getName());
-                        site.setDescription(dialog.getDescription());
-                        paintTile(x, y);
-                    }
-                } catch (MapOutOfBoundsException oobe) {
-                    warn("Mouse click out of bounds");
-                }
-                */
-            } else {
-                applyBrush(x, y);
-            }
+            applyBrush(x, y);
         }
     }
 

@@ -15,8 +15,8 @@
     <target name="docs">
         <javadoc
             classpath="."
-            sourcepath="."
-            packagenames="uk.co.demon.bifrost.rpg.mapcraft"
+            sourcepath="src"
+            packagenames="uk.co.demon.bifrost.rpg.mapcraft.*"
             destdir="docs"
             windowtitle="Map Maker API"
         />

@@ -37,6 +37,10 @@ public class Brush {
     public static final int INSERT = 4;
     public static final int DELETE = 5;
 
+    public static final int LEFT = 1;
+    public static final int MIDDLE = 2;
+    public static final int RIGHT = 3;
+
     private int brush = TERRAIN;
     private int size = SMALL;
     private int mode = SELECT;
