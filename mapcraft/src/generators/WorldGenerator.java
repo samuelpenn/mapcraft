@@ -20,6 +20,7 @@ import net.sourceforge.mapcraft.map.*;
  */
 public class WorldGenerator {
     private Map         map = null;
+    private WorldUtils  utils = null;
     
     public
     WorldGenerator(String name, int radius) {
@@ -28,25 +29,20 @@ public class WorldGenerator {
             map.loadTerrainSet("terrain/celestia.xml");
             map.setImageDir("hexagonal/world");
             
+            utils = new WorldUtils(map);
             // Default to totally random map.
             //randomise(1, 16);
             //heightMap();
-            randomHeight();
-            colourByHeight(1, 16);
-            
-            map.save("/tmp/"+name+".map");
             
             
         } catch (MapException e) {
-            e.printStackTrace();
-        } catch (java.io.IOException e) {
             e.printStackTrace();
         }
     }
     
     protected void
-    saveImage() {
-        //MapImage        image = new MapImage();
+    save(String filename) throws java.io.IOException {
+        map.save(filename);
     }
     
     /**
@@ -190,7 +186,7 @@ public class WorldGenerator {
                 }
             }
             
-            // Random asteroid impacts.
+            // Random fills impacts.
             for (int a=0; a < 100; a++) {
                 int     x = (int)(Math.random() * map.getWidth());
                 int     y = (int)(Math.random() * map.getHeight());
@@ -199,10 +195,19 @@ public class WorldGenerator {
                 
                 //fill(x, y, map.getHeight(x, y), 20);
                 System.out.println("Filled "+fill(x, y,
-                                map.getHeight(x, y), 100));
+                                map.getHeight(x, y), 120));
                 unsetMap();
                 //raise(x, y, r+10, h/3);
                 //raise(x, y, r, -h);
+            }
+            // Random asteroid impacts.
+            for (int a=0; a < 100; a++) {
+                int     x = (int)(Math.random() * map.getWidth());
+                int     y = (int)(Math.random() * map.getHeight());
+                int     r = (int)(Math.random() * 30) + 5;
+                int     h = (int)(Math.random() * 30) + 10;
+                
+                crater(x, y, r, h);
             }
         } catch (MapOutOfBoundsException e) {
             e.printStackTrace();
@@ -317,6 +322,20 @@ public class WorldGenerator {
         return d;
     }
     
+    
+    public void
+    crater(int ox, int oy, int r, int depth) {
+        for (int y=0; y < map.getHeight(); y++) {
+            for (int x=0; x < map.getWidth(); x++) {
+                if (isValid(x, y)) {
+                    if (sphericalDistance(ox, oy, x, y) < r) {
+                        raise(x, y, -depth);
+                    }
+                }
+            }
+        }
+    }
+    
     /**
      * The distance between two points on the surface of a sphere.
      * This tries to work out what the distance will be once the
@@ -332,34 +351,41 @@ public class WorldGenerator {
     protected int
     sphericalDistance(int x0, int y0, int x1, int y1) {
         int     d = 0;
-        int     dx = 0, dy = 0;
+        double  dx = 0, dy = 0;
         int     midx = map.getWidth() / 2;
         int     midy = map.getHeight() / 2;
         double  px0, py0, px1, py1;
         
-        dy = y0 - y1;
+        dy = utils.declination(y0) - utils.declination(y1);
+        dx = utils.ra(x0, y0) - utils.ra(x1, y1); 
         
-        x0 -= midx;
-        x1 -= midx;
         
-        y0 -= midy;
-        y1 -= midy;
-        
-        y0 = (int)Math.abs(90 * (map.getHeight()/(2.0 * y0)));
-        y1 = (int)Math.abs(90 * (map.getHeight()/(2.0 * y1)));
-        
-        x0 *= Math.sin(Math.toRadians(y0));
-        x1 *= Math.sin(Math.toRadians(y1));
-        
-        d = (int)Math.sqrt((x1-x0) * (x1-x0) + (dy*dy));
+        d = (int)Math.sqrt((dx*dx) + (dy*dy));
         
         return d;
     }
     
     public static void
-    main(String[] args) {
+    main(String[] args) throws Exception {
         WorldGenerator  generator = null;
+        WorldUtils      utils = new WorldUtils(314, 157, 50);
+  /*      
+        System.out.println(utils.declination(50));
+        System.out.println(utils.declination(78));
+        System.out.println(utils.declination(100));
+        System.out.println(utils.declination(150));
         
+        System.out.println(utils.ra(150, 78));
+        System.out.println(utils.ra(150, 5));
+        System.out.println(utils.ra(150, 150));
+*/        
+
         generator = new WorldGenerator("foo", 2500);
+        
+        generator.randomHeight();
+        generator.colourByHeight(1, 16);
+        
+        generator.save("/tmp/foo.map");
+
     }
 }
