@@ -640,11 +640,18 @@ public class Map {
             for (y=0; y < set.getHeight(); y++) {
                 try {
                     Tile    tile = set.getTile(x, y);
-                    String  t, h, m, c, f;
+                    String  t="AA", h="AAA", m="A", c="A", f="A";
 
-                    t = MapXML.toBase64(tile.getTerrain(), 2);
-                    h = MapXML.toBase64(tile.getHeight()+100000, 3);
-                    m = MapXML.toBase64(tile.getHills(), 1);
+                    try {
+                        t = MapXML.toBase64(tile.getTerrain(), 2);
+                        h = MapXML.toBase64(tile.getHeight()+100000, 3);
+                        h = "AAA"; // HACK!
+                        m = MapXML.toBase64(tile.getHills(), 1);
+                    } catch (Exception e) {
+                        System.out.println("Got exception writing tile "+x+","+y);
+                        System.out.println(tile);
+                        System.exit(0);
+                    }
                     c = "A";
                     f = "A";
 
@@ -706,6 +713,11 @@ public class Map {
 
                             writer.write("        <site type=\""+site.getType()+"\" "+
                                         "x=\""+x+"\" y=\""+y+"\">\n");
+                            if (site.getX()!=0 || site.getY()!=0 || site.getRotation()!=0) {
+                                writer.write("            <placement ");
+                                writer.write("x=\""+site.getX()+"\" y=\""+site.getY()+"\"  ");
+                                writer.write("rotation=\""+site.getRotation()+"\"/>");
+                            }
                             writer.write("            <name>"+site.getName()+"</name>\n");
                             writer.write("            <description>");
                             writer.write(site.getDescription());

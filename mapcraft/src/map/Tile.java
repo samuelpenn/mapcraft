@@ -38,6 +38,21 @@ public class Tile {
     private boolean river;
 
     private Site    site;
+    
+    public String
+    toString() {
+        String      string = null;
+        
+        string = "Terrain ("+terrain+") Height ("+height+") Hills ("+hills+") ";
+        if (river) {
+            string += "(river) ";
+        }
+        if (site != null) {
+            string += "Site ["+site+"]";
+        }
+
+        return string;
+    }
 
     /**
      * Construct an empty tile, of 0m height, and the default

@@ -94,6 +94,7 @@ public class MapViewer extends JPanel {
         private int     tileHeight;
         private int     tileWidth;
         private int     tileOffset;
+        private int     fontSize;
 
         public
         ViewProperties(String path) throws Exception {
@@ -452,6 +453,10 @@ public class MapViewer extends JPanel {
         }
     }
 
+    public void
+    drawLargeGrid(Graphics2D g) {
+    }
+
 
 
     public void
@@ -497,39 +502,8 @@ public class MapViewer extends JPanel {
 
         try {
             for (y = startY; y < endY; y++) {
-                yp = y * tileYSize;
-
                 for (x = startX; x < endX; x++) {
-
-                    if (map.getTileShape() == Map.SQUARE) {
-                        xp = x * tileXSize;
-                        ypp = yp;
-                    } else {
-                        xp = x * tileXSize;
-                        ypp = yp + ((x%2 == 0)?0:tileYOffset);
-                    }
-
-
-                    short t = map.getTerrain(x, y);
-                    Image icon = iconSet.getIcon(t);
-                    g.drawImage(icon, xp, ypp, this);
-
-                    if (map.getHills(x, y) > 0) {
-                        icon = hillSet.getIcon(map.getHills(x, y));
-                        g.drawImage(icon, xp, ypp, this);
-                    }
-
-                    // Display grid if asked for.
-                    if (showGrid) {
-                        g.drawImage(outlineIcon, xp, ypp, this);
-                    }
-
-                    // If tile has a site associated with it,
-                    // display it along with its name.
-                    if (map.isSite(x, y)) {
-                        icon = siteSet.getIcon(map.getSiteMask(x, y));
-                        g.drawImage(icon, xp, ypp, this);
-                    }
+                    paintTile(x, y, g);
                 }
             }
 
@@ -565,7 +539,7 @@ public class MapViewer extends JPanel {
                     gp.append(line, true);
                     g2.draw(gp);
                 }
-                
+
                 // Horizontal lines
                 x1 = 0;
                 x2 = endX * tileXSize;
@@ -581,14 +555,25 @@ public class MapViewer extends JPanel {
             System.out.println("Failed to paint tile "+x+", "+y);
         }
     }
-
+    
     /**
      * Paint a single tile on the map. Tile is referenced by its
-     * coordinate.
+     * coordinate. Tile is painted to the graphics object of the
+     * MapViewer component.
      */
     public void
     paintTile(int x, int y) {
         Graphics    g = this.getGraphics();
+
+        paintTile(x, y, g);
+    }
+
+    /**
+     * Paint a single tile on the map. Tile is referenced by its
+     * coordinate. Tile is painted to the supplied graphics object.
+     */
+    public void
+    paintTile(int x, int y, Graphics g) {
         int         xp, yp;
 
         if (map.getTileShape() == Map.SQUARE) {
@@ -608,15 +593,20 @@ public class MapViewer extends JPanel {
                 icon = hillSet.getIcon(map.getHills(x, y));
                 g.drawImage(icon, xp, yp, this);
             }
-            
-            // Now display a river, if one is needed.
-            if (map.isRiver(x, y)) {
-                icon = riverSet.getIcon(map.getRiverMask(x, y));
-                g.drawImage(icon, xp, yp, this);
-            }
 
             if (map.isSite(x, y)) {
+                int     sx=0, sy=0, rot=0;
+
                 icon = siteSet.getIcon(map.getSiteMask(x, y));
+                sx = map.getSite(x, y).getX();
+                sy = map.getSite(x, y).getY();
+                rot = map.getSite(x, y).getRotation();
+
+                if (sx !=0 || sy !=0) {
+                    xp += (int)((iconWidth/200.0) * sx);
+                    yp += (int)((iconHeight/200.0) * sy);
+                }
+
                 g.drawImage(icon, xp, yp, this);
                 // Show name, should be configurable.
                 if (map.getType() != Map.LOCAL) {

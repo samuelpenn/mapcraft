@@ -435,6 +435,8 @@ public class MapXML {
         terrain = (short)fromBase64(data.substring(0, 2));
         height = (short)fromBase64(data.substring(2, 5));
         hills = (short)fromBase64(data.substring(5, 6));
+        
+        height -= 100000; // Baseline
 
         tile = new Tile(terrain, height, true);
         tile.setHills(hills);
@@ -614,8 +616,28 @@ public class MapXML {
 
                     name = getTextNode(node, "name");
                     description = getTextNode(node, "description");
+                    site = new Site(type, name, description);
 
-                    tileSet.getTile(x, y).setSite(new Site(type, name, description));
+                    // Now see if there's any extra placement information.
+                    Node placement = getNode(node, "placement");
+                    if (placement != null) {
+                        short     sx, sy, r;
+                        System.out.println("Got placement info");
+                        values = placement.getAttributes();
+
+                        System.out.println("Got values");
+                        sx = (short)getIntNode(values.getNamedItem("x"));
+                        System.out.println(x);
+                        sy = (short)getIntNode(values.getNamedItem("y"));
+                        System.out.println(y);
+                        r = (short)getIntNode(values.getNamedItem("rotation"));
+                        System.out.println(r);
+
+                        site.setX(sx);
+                        site.setY(sy);
+                        site.setRotation(r);
+                    }
+                    tileSet.getTile(x, y).setSite(site);
                 }
             }
             list = null;
