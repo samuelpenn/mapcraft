@@ -779,6 +779,12 @@ public class Map {
         return placeSet;
     }
 
+    
+    public Vector
+    getRivers() {
+        return rivers;
+    }
+
     public static void
     main(String args[]) {
         Map         map;

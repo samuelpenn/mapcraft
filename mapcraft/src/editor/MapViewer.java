@@ -21,6 +21,7 @@ import java.net.*;
 import java.io.*;
 
 import java.util.*;
+import java.awt.geom.Line2D;
 
 /**
  * A component which displays a Map as part of a GUI.
@@ -386,6 +387,25 @@ public class MapViewer extends JPanel {
         showRoads = show;
         paintComponent();
     }
+    
+    
+    
+    public void
+    drawRivers(Graphics2D g) {
+        int     i = 0, e = 0;
+        
+        info("Drawing all rivers");
+
+        for (i=0; i < map.getRivers().size(); i++) {
+
+            Path    path = (Path)map.getRivers().elementAt(i);
+            Shape   shape = path.getGraphicsShape(tileXSize, tileYSize, tileYOffset);
+
+            info("Drawing shape for river");
+            g.draw(shape);
+        }
+    }
+
 
 
     public void
@@ -467,6 +487,9 @@ public class MapViewer extends JPanel {
                     }
                 }
             }
+            
+            drawRivers((Graphics2D)g);
+
             // Now draw labels. Need to draw these last so that they don't
             // get overwritten by tiles. No labels are drawn for LOCAL maps.
             if (map.getType() == Map.WORLD) {
