@@ -716,6 +716,19 @@ public class TileSet implements Cloneable {
         getTile(x, y).setTerrainRotation(rotation);
     }
 
+    /**
+     * Check to see if the given tile is highlighted.
+     */
+    public boolean
+    isHighlighted(int x, int y) throws MapOutOfBoundsException {
+        return getTile(x, y).isHighlighted();
+    }
+
+    public void
+    setHighlighted(int x, int y, boolean hl) throws MapOutOfBoundsException {
+        getTile(x, y).setHighlighted(hl);
+    }
+
     public static final String BASE64 = new String("ABCDEFGHIJKLMNOPQRSTUVWXYZ"+
                                                    "abcdefghijklmnopqrstuvwxyz"+
                                                    "0123456789");

@@ -35,7 +35,7 @@ class Tile implements Cloneable {
     private short   height;
     private short   feature;
     private boolean writable;
-    private boolean river;
+    private boolean highlighted;
     private short   area;
 
     private final static short MAXTYPES = 512;
@@ -45,9 +45,6 @@ class Tile implements Cloneable {
         String      string = null;
 
         string = "Terrain ("+terrain+") Height ("+height+") Feature ("+feature+") ";
-        if (river) {
-            string += "(river) ";
-        }
 
         return string;
     }
@@ -62,7 +59,7 @@ class Tile implements Cloneable {
         feature = (short)0;
         area = (short)0;
         writable = true;
-        river = false;
+        highlighted = false;
     }
 
     /**
@@ -74,7 +71,7 @@ class Tile implements Cloneable {
         this.terrain = tile.terrain;
         this.height = tile.height;
         this.writable = tile.writable;
-        this.river = tile.river;
+        this.highlighted = tile.highlighted;
         this.feature = tile.feature;
         this.area = tile.area;
     }
@@ -85,7 +82,7 @@ class Tile implements Cloneable {
         t.terrain = terrain;
         t.height = height;
         t.writable = writable;
-        t.river = river;
+        t.highlighted = highlighted;
         t.feature = feature;
         t.area = area;
 
@@ -187,25 +184,13 @@ class Tile implements Cloneable {
     }
 
     boolean
-    isRiver() {
-        return river;
-    }
-
-    short
-    getRiverMask() {
-        return (short)0;
+    isHighlighted() {
+        return highlighted;
     }
 
     void
-    setRiverMask(short mask) {
-        this.river = true;
-    }
-
-    void
-    setRiver(boolean river) {
-        if (writable) {
-            this.river = river;
-        }
+    setHighlighted(boolean h) {
+        highlighted = h;
     }
 
     /**

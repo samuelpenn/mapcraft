@@ -27,6 +27,7 @@ public class Brush {
     public static final int HEIGHT = 5;
     public static final int AREAS = 6;
     public static final int ROADS = 7;
+    public static final int HIGHLIGHT = 8;
 
     public static final int SMALL = 1;
     public static final int MEDIUM = 2;
