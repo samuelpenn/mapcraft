@@ -20,7 +20,7 @@ import java.awt.*;
  * @version $Revision$
  */
 public class IconSet {
-    private short[]     ids;
+    private int[]       ids;
     private Image[]     icons;
     private String      name;
 
@@ -36,7 +36,7 @@ public class IconSet {
     public
     IconSet(String name) {
         this.name = name;
-        ids = new short[defaultSize];
+        ids = new int[defaultSize];
         icons = new Image[defaultSize];
 
         currentSize = 0;
@@ -50,7 +50,7 @@ public class IconSet {
         int     size = ids.length;
         int     newSize = size + growStep;
         
-        short   newIds[] = new short[newSize];
+        int     newIds[] = new int[newSize];
         Image   newIcons[] = new Image[newSize];
         
         for (int i=0; i<size; i++) {
@@ -73,7 +73,7 @@ public class IconSet {
      * @param icon  Image to use as the icon.
      */
     public void
-    add(short id, Image icon) {
+    add(int id, Image icon) {
         if (currentSize >= ids.length) {
             grow();
         }
@@ -90,7 +90,7 @@ public class IconSet {
      * @return      Image for this icon, or null if not found.
      */
     public Image
-    getIcon(short id) {
+    getIcon(int id) {
         for (int i = 0; i < ids.length; i++) {
             if (ids[i] == id) {
                 return icons[i];

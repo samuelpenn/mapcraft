@@ -119,7 +119,7 @@ import net.sourceforge.mapcraft.map.elements.Terrain;
     }
 
     public void
-    add(int id, String name, String uri, int parent) {
+    add(int id, String name, String uri, Area parent) {
         Area    a = new Area(id, name, uri, parent);
         list.add(a);
     }
@@ -221,10 +221,10 @@ import net.sourceforge.mapcraft.map.elements.Terrain;
      * @param id        Id of area to be removed.
      */
     public void
-    deleteArea(int id) {
+    deleteArea(Area area) {
         for (int i=0; i < list.size(); i++) {
-            Area area = (Area)list.get(i);
-            if (area.getId() == id) {
+            Area a = (Area)list.get(i);
+            if (area.equals(a)) {
                 list.remove(i);
                 break;
             }

@@ -16,6 +16,7 @@ import net.sourceforge.mapcraft.map.*;
 import net.sourceforge.mapcraft.map.elements.Area;
 import net.sourceforge.mapcraft.map.elements.Path;
 import net.sourceforge.mapcraft.map.elements.Thing;
+import net.sourceforge.mapcraft.map.interfaces.ITileSet;
 import net.sourceforge.mapcraft.map.tilesets.TileSet;
 
 import java.io.*;
@@ -55,6 +56,7 @@ public class MapXML {
     protected String        imagedir;
     protected String        tileShape;
 
+    public static final int    MAXTYPES = 512;
     public static final String BASE64 = new String("ABCDEFGHIJKLMNOPQRSTUVWXYZ"+
                                                    "abcdefghijklmnopqrstuvwxyz"+
                                                    "0123456789");
@@ -122,6 +124,72 @@ public class MapXML {
         }
 
         return value;
+    }
+    
+    /**
+     * Convert information from a tile on a map into a Base64 blob
+     * ready to be saved in the map's XML file format.
+     * 
+     * @param tiles     TileSet to retrieve tile from.
+     * @param x         X coordinate of tile to convert.
+     * @param y         Y coordinate of tile to convert.
+     * @return          10 character string of blob data.
+     */
+    public static String tileToBlob(ITileSet tiles, int x, int y) {
+        String  blob = null;
+        String  t="AA", h="AA", m="AA", c="A", f="A", a="AA";
+
+        try {
+            int   tmp = 0;
+            
+            tmp = tiles.getTerrain(x, y).getId();
+            tmp += tiles.getTerrainRotation(x, y)*MAXTYPES;
+            t = MapXML.toBase64(tmp, 2);
+            h = "AA"; // TODO: Implement altitude for blobs.
+            tmp = tiles.getFeature(x, y).getId();
+            tmp += tiles.getFeatureRotation(x, y)*MAXTYPES;
+            m = MapXML.toBase64(tmp, 2);
+            a = MapXML.toBase64(tiles.getArea(x, y).getId(), 2);
+            c = "A";
+            f = "A";
+        } catch (Exception e) {
+            System.out.println("tileToBlob: Could not write tile "+x+","+y+
+                               " ("+e.getMessage()+")");
+        }
+        c = "A";
+
+        blob = t + h + m + a + c + f + " ";
+        
+        return blob;
+    }
+    
+    public static void blobToTile(String blob, ITileSet tiles, int x, int y) {
+        short   terrain;
+        short   height;
+        short   hills;
+        int     area;
+
+        // Assume new format, 10 chars per blob.
+        terrain = (short)fromBase64(blob.substring(0, 2));
+        height = (short)fromBase64(blob.substring(2, 4));
+        hills = (short)fromBase64(blob.substring(4, 6));
+        area = fromBase64(blob.substring(6, 8));
+
+        height -= 100000; // Baseline
+        
+        try {
+            tiles.setTerrain(x, y, tiles.getTerrainSet().getTerrain(terrain%MAXTYPES));
+            tiles.setTerrainRotation(x, y, (short)(terrain/MAXTYPES));
+            
+            tiles.setFeature(x, y, tiles.getFeatureSet().getTerrain(hills%MAXTYPES));
+            tiles.setFeatureRotation(x, y, (short)(hills/MAXTYPES));
+    
+            tiles.setAltitude(x, y, height);
+            tiles.setArea(x, y, tiles.getAreaSet().getArea(area));
+        } catch (MapOutOfBoundsException e) {
+            System.out.println("blobToTile: Could not read tile "+x+","+y+
+                    " ("+e.getMessage()+")");            
+        }
     }
 
 
@@ -590,7 +658,7 @@ public class MapXML {
                         String  part = data.substring(i, i+blobSize);
                         //terrain = Short.valueOf(part, 36).shortValue();
 
-                        tileSet.setTileFromBlob(x, y, part);
+                        blobToTile(part, tileSet, x,y);
                     }
                 }
             }
@@ -607,9 +675,6 @@ public class MapXML {
             }
         } catch (InvalidArgumentException iae) {
             throw new XMLException("Cannot create TileSet from XML");
-        } catch (MapOutOfBoundsException mbe) {
-            System.out.println(mbe);
-            throw new XMLException("Tiles in tileset out of bounds");
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -660,9 +725,9 @@ public class MapXML {
     /**
      * Return an array of all the things in the map.
      */
-    public Vector
+    public Thing[]
     getThings(String set) throws XMLException {
-        Vector          things = new Vector();
+        ArrayList       things = new ArrayList();
         String          name, description;
         int             fontSize, importance;
         String          image;
@@ -681,7 +746,7 @@ public class MapXML {
             NodeList    list = getNodeList(xpath);
             if (list == null || list.getLength() == 0) {
                 // No things found. This is perfectly valid.
-                return things;
+                return null;
             }
 
             for (i=0; i < list.getLength(); i++) {
@@ -736,7 +801,7 @@ public class MapXML {
             throw new XMLException("Error in getting Things");
         }
 
-        return things;
+        return (Thing[])things.toArray(new Thing[1]);
     }
 
     /**
@@ -778,7 +843,8 @@ public class MapXML {
                     } else {
                         uri = name.toLowerCase().replaceAll(" ", "-");
                     }
-                    areas.add(id, name, uri, parent);
+                    // TODO: MUST add in parent link.
+                    areas.add(id, name, uri);
                 }
             }
             list = null;
@@ -795,9 +861,9 @@ public class MapXML {
      * Return all the rivers in the given tileset.
      *
      */
-    public Vector
+    public Path[]
     getPaths(String set) throws XMLException {
-        Vector          rivers = new Vector();
+        ArrayList       paths = new ArrayList();
         String          xpath = "/map/tileset[@id='"+set+"']/paths/path";
 
         if (format.equals("0.1.0")) {
@@ -813,7 +879,7 @@ public class MapXML {
                 list = getNodeList(xpath);
 
                 if (list == null || list.getLength() == 0) {
-                    return rivers;
+                    return null;
                 }
             }
 
@@ -871,7 +937,7 @@ public class MapXML {
                         path.add(type, getIntNode(values.getNamedItem("x")),
                                        getIntNode(values.getNamedItem("y")));
                     }
-                    rivers.add(path);
+                    paths.add(path);
                 }
             }
         } catch (XMLException xe) {
@@ -881,7 +947,7 @@ public class MapXML {
             throw new XMLException("Error in gettings paths");
         }
 
-        return rivers;
+        return (Path[])paths.toArray(new Path[1]);
     }
 
 

@@ -73,7 +73,7 @@ public class TerrainSet implements Cloneable {
      * @return      The Terrain object.
      */
     public Terrain
-    getTerrain(short id) {
+    getTerrain(int id) {
         Terrain     t;
         for (int i = 0; i < terrainList.size(); i++) {
             t = (Terrain)terrainList.get(i);

@@ -11,6 +11,8 @@
  */
 package net.sourceforge.mapcraft.editor;
 
+import net.sourceforge.mapcraft.map.elements.Path;
+
 
 /**
  * The Brush class provides support for a 'brush' - the concept
@@ -47,13 +49,14 @@ public class Brush {
     private int size = SMALL;
     private int mode = SELECT;
 
-    private short terrain = 1;
-    private short river = 0;
-    private short road = 0;
-    private short thing = 1;
-    private short feature = 0;
-    private short height = 0;
-    private short area = 0;
+    private int terrain = 1;
+    private int thing = 1;
+    private int feature = 0;
+    private int height = 0;
+    private int area = 0;
+    
+    private Path    road = null;
+    private Path    river = null;
 
     private int     rawX = 0;
     private int     rawY = 0;
@@ -94,17 +97,25 @@ public class Brush {
     void setButton(int button) { this.button = button; }
     void setRotation(short rotation) { this.rotation = rotation; }
 
-    short
+    Path
+    getSelectedPath() {
+        switch (brush) {
+        case RIVERS:    return river;
+        case ROADS:     return road;
+        default:
+            return null;
+        }
+    }
+    
+    int
     getSelected() {
         switch (brush) {
         case TERRAIN:   return terrain;
         case THINGS:    return thing;
         case FEATURES:  return feature;
-        case RIVERS:    return river;
         case HEIGHT:    return height;
         case AREAS:     return area;
-        case ROADS:     return road;
-        case HIGHLIGHT: return (short)1;
+        case HIGHLIGHT: return 1;
         default:
             return 0;
         }
@@ -119,7 +130,7 @@ public class Brush {
         case RIVERS:
         case ROADS:
             mode = SELECT;
-            road = river = 0;
+            road = river = null;
             break;
         default:
             break;
@@ -137,18 +148,29 @@ public class Brush {
     setMode(int mode) {
         this.mode = mode;
     }
+    
+    void
+    setSelected(int type, Path selected) {
+        switch (type) {
+        case RIVERS:
+            river = selected;
+            break;
+        case ROADS:
+            road = selected;
+            break;
+        default:
+            return;
+        }
+    }
 
     void
-    setSelected(int type, short selected) {
+    setSelected(int type, int selected) {
         switch (type) {
         case TERRAIN:
             terrain = selected;
             break;
         case THINGS:
             thing = selected;
-            break;
-        case RIVERS:
-            river = selected;
             break;
         case FEATURES:
             feature = selected;
@@ -158,9 +180,6 @@ public class Brush {
             break;
         case AREAS:
             area = selected;
-            break;
-        case ROADS:
-            road = selected;
             break;
         default:
             return;

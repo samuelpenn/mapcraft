@@ -11,8 +11,10 @@
  */
 package net.sourceforge.mapcraft.generators;
 
+import net.sourceforge.mapcraft.map.MapException;
 import net.sourceforge.mapcraft.map.MapOutOfBoundsException;
 import net.sourceforge.mapcraft.map.TerrainSet;
+import net.sourceforge.mapcraft.map.interfaces.ITileSet;
 
 /**
  * @author sam
@@ -146,7 +148,7 @@ public class TerrestrialWorld extends WorldGenerator {
      * depends on the type of world set with setWorldType().
      */
     public void
-    generate() {
+    generate() throws MapException {
         switch (worldType) {
         case SELENIAN:
             generateSelenian();
@@ -169,15 +171,15 @@ public class TerrestrialWorld extends WorldGenerator {
      * the older craters.
      */
     protected void
-    generateSelenian() {
+    generateSelenian() throws MapException {
         System.out.println("Selenian:");
         // Start with a very random height map.
         randomHeight(1000, 100);
-        
+        ITileSet        set = map.getTileSet(0);
         // Random fills impacts.
         System.out.println("Selenian: Generating flood plains");
         for (int a=0; a < 100; a++) {
-            int     y = (int)(Math.random() * map.getHeight());
+            int     y = (int)(Math.random() * set.getMapHeight());
 
             int     left = getLeft(y);
             int     right = getRight(y);
@@ -187,7 +189,7 @@ public class TerrestrialWorld extends WorldGenerator {
             int     h = (int)(Math.random() * 100) + 50;
 
             try {
-                fill(x, y, map.getHeight(x, y), 120);
+                fill(x, y, set.getAltitude(x, y), 120);
             } catch (MapOutOfBoundsException e) {
                 e.printStackTrace();
             }
@@ -198,7 +200,7 @@ public class TerrestrialWorld extends WorldGenerator {
         // Random asteroid impacts.
         System.out.println("Selenian: Generating impact craters");
         for (int a=0; a < 100; a++) {
-            int     y = (int)(Math.random() * map.getHeight());
+            int     y = (int)(Math.random() * set.getMapHeight());
             int     left = getLeft(y)+10;
             int     right = getRight(y)-10;
             if (left >= right) continue;
@@ -216,16 +218,16 @@ public class TerrestrialWorld extends WorldGenerator {
         }
         
         // Now set hills and mountains.
-        for (int y=0; y < map.getHeight(); y++) {
-            for (int x=0; x < map.getWidth(); x++) {
+        for (int y=0; y < set.getMapHeight(); y++) {
+            for (int x=0; x < set.getMapWidth(); x++) {
                 if (isValid(x, y)) {
                     try {
-                        if (map.getHeight(x, y) > 1100) {
-                            map.setFeature(x, y, (short)5);
-                        } else if (map.getHeight(x, y) > 1070) {
-                            map.setFeature(x, y, (short)4);
-                        } else if (map.getHeight(x, y) > 1040) {
-                            map.setFeature(x, y, (short)3);
+                        if (set.getAltitude(x, y) > 1100) {
+                            set.setFeature(x, y, set.getFeatureSet().getTerrain(5));
+                        } else if (set.getAltitude(x, y) > 1070) {
+                            set.setFeature(x, y, set.getFeatureSet().getTerrain(4));
+                        } else if (set.getAltitude(x, y) > 1040) {
+                            set.setFeature(x, y, set.getFeatureSet().getTerrain(3));
                         }
                     } catch (MapOutOfBoundsException e) {
                         // Ignore.
@@ -242,14 +244,14 @@ public class TerrestrialWorld extends WorldGenerator {
      * but more colourful.
      */
     protected void
-    generateHermian() {
+    generateHermian() throws MapException {
         log("generateHermian:");
         
         heightMap();
         
         log("generateHermian: Adding craters");
         for (int a=0; a < 200; a++) {
-            int     y = (int)(Math.random() * map.getHeight());
+            int     y = (int)(Math.random() * map.getTileSet(0).getMapHeight());
             int     left = getLeft(y)+10;
             int     right = getRight(y)-10;
             if (left >= right) continue;
@@ -305,18 +307,18 @@ public class TerrestrialWorld extends WorldGenerator {
      * is raised by a set amount.
      */
     public void
-    applyBulge() {
-        int     y = (int)(Math.random() * map.getHeight());
-        int     top = 0, bottom = map.getHeight();
+    applyBulge() throws MapException {
+        int     y = (int)(Math.random() * map.getTileSet(0).getMapHeight());
+        int     top = 0, bottom = map.getTileSet(0).getMapHeight();
         
-        if (y < map.getHeight()/2) {
+        if (y < map.getTileSet(0).getMapHeight()/2) {
             bottom = y;
         } else {
             top = y;
         }
         
         for (y = top; y < bottom; y++) {
-            for (int x=0; x < map.getWidth(); x++) {
+            for (int x=0; x < map.getTileSet(0).getMapWidth(); x++) {
                 if (isValid(x, y)) {
                     raise(x, y, y-top);
                 }
@@ -329,10 +331,10 @@ public class TerrestrialWorld extends WorldGenerator {
      * The trench is quite deep, and very straight.
      */
     public void
-    applyTrench() {
-        int     y = (int)(Math.random() * map.getHeight());
+    applyTrench() throws MapException {
+        int     y = (int)(Math.random() * map.getTileSet(0).getMapHeight());
         // Make it tend towards the equator.
-        y = ((map.getHeight()/2)+y)/2;
+        y = ((map.getTileSet(0).getMapHeight()/2)+y)/2;
 
         for (int x=getLeft(y); x <= getRight(y); x++) {
             raise(x, y-2, -25);

@@ -450,5 +450,12 @@ public class Path {
     public int getMaxX() { boundingBox(); return maxX; }
     public int getMaxY() { boundingBox(); return maxY; }
 
+    public boolean equals(Path path) {
+        return this.name.equals(path.getName());
+    }
+    
+    public boolean equals(String name) {
+        return this.name.equals(name);
+    }
 }
 

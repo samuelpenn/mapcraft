@@ -94,8 +94,8 @@ public class AreaDialog extends JDialog {
         }
         int     selection = 0;
         String  parentName = "";
-        if (area.getParent() > 0) {
-            parentName = set.getArea(area.getParent()).getName();
+        if (area.getParent() != null) {
+            parentName = area.getParent().getName();
         } 
         for (int i=0; i < list.size(); i++) {
             String  n = (String) list.get(i);

@@ -23,8 +23,7 @@ public class Area implements Cloneable {
     private int         id;
     private String      name;
     private String      uri;
-    private int         parent;
-
+    private Area        parent;
 
     public
     Area(int id, String name, String uri) {
@@ -34,7 +33,7 @@ public class Area implements Cloneable {
     }
 
     public
-    Area(int id, String name, String uri, int parent) {
+    Area(int id, String name, String uri, Area parent) {
         this.id = id;
         this.name = name;
         this.uri = uri;
@@ -71,7 +70,7 @@ public class Area implements Cloneable {
      * England would have 'England' as their parent.
      */
     public void
-    setParent(int parent) {
+    setParent(Area parent) {
         this.parent = parent;
     }
     
@@ -98,7 +97,7 @@ public class Area implements Cloneable {
         return name;
     }
 
-    public int
+    public Area
     getParent() {
         return parent;
     }
@@ -106,5 +105,13 @@ public class Area implements Cloneable {
     public String
     getUri() {
         return uri;
+    }
+    
+    public boolean equals(Area area) {
+        return this.name.equals(area.getName());
+    }
+    
+    public boolean equals(String name) {
+        return this.name.equals(name);
     }
 }

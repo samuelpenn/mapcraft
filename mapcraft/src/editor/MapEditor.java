@@ -178,39 +178,36 @@ public class MapEditor extends MapViewer
     public void
     applyBrush(int x, int y) {
         try {
+            int     width = 0;
+            
             switch (brush.getType()) {
             case Brush.TERRAIN:
                 switch (brush.getSize()) {
                 case Brush.MEDIUM:
                     // A medium sized brush is 3 tiles across.
-                    for (int px = x - 1; px <= x+1; px++) {
-                        for (int py = y - 1; py <= y+1; py++) {
-                            map.setTerrain(px, py, brush.getSelected());
-                            map.setTerrainRotation(px, py, brush.getRotation());
-                            paintTile(px, py);
-                        }
-                    }
+                    width = 1;
                     break;
                 case Brush.LARGE:
                     // A large sized brush is 7 tiles across.
-                    for (int px = x - 3; px <= x+3; px++) {
-                        for (int py = y - 3; py <= y+3; py++) {
-                            map.setTerrain(px, py, brush.getSelected());
-                            map.setTerrainRotation(px, py, brush.getRotation());
-                            paintTile(px, py);
-                        }
-                    }
+                    width = 3;
                     break;
                 default:
-                    map.setTerrain(x, y, brush.getSelected());
-                    map.setTerrainRotation(x, y, brush.getRotation());
-                    paintTile(x, y);
+                    width = 0;
                     break;
+                }
+                for (int px = x - width; px <= x+width; px++) {
+                    for (int py = y - width; py <= y+width; py++) {
+                        currentSet.setTerrain(px, py, 
+                                currentSet.getTerrainSet().getTerrain(brush.getSelected()));
+                        currentSet.setTerrainRotation(px, py, brush.getRotation());
+                        paintTile(px, py);
+                    }
                 }
                 break;
             case Brush.FEATURES:
-                map.setFeature(x, y, brush.getSelected());
-                map.setFeatureRotation(x, y, brush.getRotation());
+                currentSet.setFeature(x, y, 
+                        currentSet.getFeatureSet().getTerrain(brush.getSelected()));
+                currentSet.setFeatureRotation(x, y, brush.getRotation());
                 paintTile(x, y);
                 break;
             case Brush.THINGS:
@@ -218,7 +215,7 @@ public class MapEditor extends MapViewer
                 paintComponent();
                 break;
             case Brush.AREAS:
-                map.setArea(x, y, (short)brush.getSelected());
+                currentSet.setArea(x, y, currentSet.getAreaSet().getArea(brush.getSelected()));
                 paintTile(x, y);
                 break;
             case Brush.RIVERS:
@@ -229,14 +226,14 @@ public class MapEditor extends MapViewer
                 break;
             case Brush.HIGHLIGHT:
                 if (brush.getMode() == Brush.INSERT) {
-                    map.setHighlighted(x, y, true);
+                    currentSet.setHighlighted(x, y, true);
                 } else {
-                    map.setHighlighted(x, y, false);
+                    currentSet.setHighlighted(x, y, false);
                 }
                 paintTile(x, y);
                 break;
             }
-        } catch (MapOutOfBoundsException moobe) {
+        } catch (MapException moobe) {
             warn("Out of bounds!");
         }
 
@@ -256,7 +253,7 @@ public class MapEditor extends MapViewer
                 // Only set Thing if no Thing currently present.
                 thing = new Thing(brush.getSelected(), "Unnamed", "Unknown",
                                         brush.getX(), brush.getY());
-                map.addThing(thing);
+                currentSet.addThing(thing);
                 if (map.getType() == Map.WORLD) {
                     dialog = new ThingDialog(thing, frame, map.getThingSet(),
                                   views[ViewProperties.EDITICON].getPath());
@@ -267,10 +264,10 @@ public class MapEditor extends MapViewer
             }
             break;
         case Brush.DELETE:
-            int     t = map.getNearestThingIndex(brush.getX(),
+            Thing     t = map.getNearestThing(brush.getX(),
                                     brush.getY(), 100);
-            if (t >= 0) {
-                map.removeThing(t);
+            if (t != null) {
+                currentSet.removeThing(t);
             }
             break;
         case Brush.SELECT:
@@ -289,48 +286,50 @@ public class MapEditor extends MapViewer
     }
 
     private void
-    applyBrushPaths(int x, int y, short type) throws MapOutOfBoundsException {
+    applyBrushPaths(int x, int y, short type) throws MapException {
         switch (brush.getMode()) {
         case Brush.SELECT:
             info("Selecting path");
             map.unselectPaths();
-            int     nearest = 0;
+            Path    nearest = null;
             int     min = -1;
-            for (int r = 1; r <= map.getPaths().size(); r++) {
-                Path    path = (Path) map.getPath(r);
+            Path[]  paths = currentSet.getPaths();
+            for (int r = 0; r < paths.length; r++) {
+                Path    path = paths[r];
                 int     v = path.getNearestVertex(x, y, 250);
                 if (v > -1) {
                     int     d = path.getDistanceToVertex(x, y, v);
                     if (min == -1 || d < min) {
                         min = d;
-                        nearest = r;
+                        nearest = path;
                     }
                 }
             }
-            if (nearest > 0) {
+            if (nearest != null) {
                 debug("Nearest river is "+nearest);
-                map.getPath(nearest).setHighlighted(true);
-                brush.setSelected(Brush.RIVERS, (short)nearest);
+                nearest.setHighlighted(true);
+                //TODO: Fix this so apply paths works
+                //brush.setSelected(Brush.RIVERS, nearest. );
             }
             drawPaths();
             break;
         case Brush.NEW:
             info("New path");
             // Have not yet selected a river.
-            String  name = "Path "+(map.getPaths().size()+1);
+            String  name = "Path "+(currentSet.getPaths().length+1);
             info("Creating new path ["+name+"] at "+x+","+y);
-            int     id = map.addPath(name, type, Path.PLAIN,  x, y);
+            Path    path = currentSet.addPath(name, type, Path.PLAIN,  x, y);
             info("created");
-            brush.setSelected(brush.getType(), (short)id);
+            brush.setSelected(brush.getType(), path);
             brush.setMode(Brush.EDIT);
             map.unselectPaths();
-            map.selectPath(id);
+            map.selectPath(path);
             drawPaths();
             break;
         case Brush.EDIT:
             info("Edit river "+brush.getSelected());
 
-            Path    river = map.getPath(brush.getSelected());
+            Path    river = brush.getSelectedPath();
             debug("Adding to river ["+river.getName()+"]");
 
             if (brush.getButton() == Brush.LEFT) {
@@ -340,13 +339,11 @@ public class MapEditor extends MapViewer
                 Path.Element    start = river.getStartPoint();
                 if (river.isAtEnd(brush.getX(), brush.getY())) {
                     debug("Next to end, so adding");
-                    map.extendPath(brush.getSelected(), brush.getX(),
-                                   brush.getY());
+                    river.add(brush.getX(), brush.getY());
                     drawPaths();
                 } else if (river.isAtStart(brush.getX(), brush.getY())) {
                     debug("Next to start, so adding");
-                    map.extendPath(brush.getSelected(), brush.getX(),
-                                   brush.getY());
+                    river.add(brush.getX(), brush.getY());
                     drawPaths();
                 }
             } else if (brush.getButton() == Brush.MIDDLE) {
@@ -484,16 +481,13 @@ public class MapEditor extends MapViewer
                 y = yp/tileYSize;
             }
             try {
-                String  area = map.getAreaName(map.getCurrentSet(), x, y);
+                String  area = currentSet.getArea(x, y).getName();
                 String  terrain, feature;
                 String  message = null;
                 
-                int     t = map.getTerrain(map.getCurrentSet(), x, y);
-                int     f = map.getFeature(x, y);
-                
-                terrain = map.getTerrainSet().getTerrain((short)t).getName();
-                feature = map.getFeatureSet().getTerrain((short)f).getName();
-                
+                terrain = currentSet.getTerrain(x, y).getName();
+                feature = currentSet.getFeature(x, y).getName();
+
                 message = "("+x+","+y+") "+terrain+"/"+feature+" ["+area+"]";
                 application.setMessage(message);
             } catch (MapOutOfBoundsException moobe) {
@@ -542,14 +536,14 @@ public class MapEditor extends MapViewer
                 switch (ch) {
                 case '[':
                     if (brush.getType() == Brush.TERRAIN) {
-                        r = (short) (map.getTerrainRotation(x, y) - angle);
+                        r = (short) (currentSet.getTerrainRotation(x, y) - angle);
                         if (r < 0) r = (short) (360-angle);
-                        map.setTerrainRotation(x, y, r);
+                        currentSet.setTerrainRotation(x, y, r);
                         paintTile(x, y);
                     } else if (brush.getType() == Brush.FEATURES) {
-                        r = (short) (map.getFeatureRotation(x, y) - angle);
+                        r = (short) (currentSet.getFeatureRotation(x, y) - angle);
                         if (r < 0) r = (short) (360-angle);
-                        map.setFeatureRotation(x, y, r);
+                        currentSet.setFeatureRotation(x, y, r);
                         paintTile(x, y);
                     } else if (brush.getType() == Brush.THINGS && thing != null) {
                         r = (short) (thing.getRotation() - angle);
@@ -561,14 +555,14 @@ public class MapEditor extends MapViewer
                     break;
                 case ']':
                     if (brush.getType() == Brush.TERRAIN) {
-                        r = (short) (map.getTerrainRotation(x, y) + angle);
+                        r = (short) (currentSet.getTerrainRotation(x, y) + angle);
                         if (r >= 360) r = (short) 0;
-                        map.setTerrainRotation(x, y, r);
+                        currentSet.setTerrainRotation(x, y, r);
                         paintTile(x, y);
                     } else if (brush.getType() == Brush.FEATURES) {
-                        r = (short) (map.getFeatureRotation(x, y) + angle);
+                        r = (short) (currentSet.getFeatureRotation(x, y) + angle);
                         if (r >= 360) r = (short) 0;
-                        map.setFeatureRotation(x, y, r);
+                        currentSet.setFeatureRotation(x, y, r);
                         paintTile(x, y);
                     } else if (brush.getType() == Brush.THINGS && thing != null) {
                         r = (short) (thing.getRotation() + angle);
@@ -935,7 +929,7 @@ public class MapEditor extends MapViewer
                     map.cropToHighlighted();
                 } else if (dialog.isArea()) {
                     short    margin = dialog.getMargin();
-                    short    area = (short)map.getAreaByName(dialog.getSelection()).getId();
+                    Area     area = currentSet.getAreaSet().getArea(dialog.getSelection());
                     map.cropToArea(area, margin);
                 } else if (dialog.isThing()) {
                     short   radius = dialog.getRadius();
@@ -963,8 +957,8 @@ public class MapEditor extends MapViewer
     public void
     resize() {
         try {
-            ResizeDialog    dialog = new ResizeDialog(map.getWidth(),
-                                                      map.getHeight(), frame);
+            ResizeDialog    dialog = new ResizeDialog(currentSet.getMapWidth(),
+                                            currentSet.getMapHeight(), frame);
 
             if (dialog.isOkay()) {
                 int     width = dialog.getNewWidth();
@@ -982,8 +976,9 @@ public class MapEditor extends MapViewer
     public void
     rescale() {
         try {
-            RescaleDialog   dialog = new RescaleDialog(map.getScale(),
-                                    map.getWidth(), map.getHeight(), frame);
+            RescaleDialog   dialog = new RescaleDialog(currentSet.getScale(),
+                                    currentSet.getMapWidth(), 
+                                    currentSet.getMapHeight(), frame);
 
             if (dialog.isOkay()) {
                 map.rescale(dialog.getNewScale());

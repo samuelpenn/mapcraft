@@ -106,9 +106,8 @@ public class AreaSetDialog extends JDialog {
             Area    area = (Area) iter.next();
             String  name = area.getName();
             
-            if (area.getParent() > 0) {
-                String  parent = set.getArea(area.getParent()).getName();
-                name += " ("+parent+")";
+            if (area.getParent() != null) {
+                name += " ("+area.getParent().getName()+")";
             }
             array.add(name);
         }
@@ -210,8 +209,7 @@ public class AreaSetDialog extends JDialog {
             
             String  parent = dialog.getParentName();
             if (parent.length() > 0) {
-                int     id = set.getArea(parent).getId();
-                area.setParent(id);
+                area.setParent(set.getArea(parent));
             }
             set.add(area);
             // Redisplay the new data.
@@ -239,10 +237,9 @@ public class AreaSetDialog extends JDialog {
             
             String  parent = dialog.getParentName();
             if (parent.length() > 0) {
-                int     id = set.getArea(parent).getId();
-                area.setParent(id);
+                area.setParent(set.getArea(parent));
             } else {
-                area.setParent(0);
+                area.setParent(null);
             }
             // Redisplay the new data.
             list.setListData(getListData(set));
@@ -269,7 +266,7 @@ public class AreaSetDialog extends JDialog {
         if (option == JOptionPane.OK_OPTION) {
             // Do this via the Map, since it also needs to clean up any
             // parts of the map set to this area.
-            map.deleteArea((short)area.getId());
+            map.deleteArea(area);
             list.setListData(getListData(set));
         }
     }

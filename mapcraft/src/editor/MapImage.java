@@ -71,8 +71,8 @@ public class MapImage extends MapViewer {
         setView(scale);
 
         try {
-            w = map.getWidth() * tileXSize + (iconWidth - tileXSize);
-            h = map.getHeight() * tileYSize + tileYOffset;
+            w = map.getTileSet(0).getMapWidth() * tileXSize + (iconWidth - tileXSize);
+            h = map.getTileSet(0).getMapHeight() * tileYSize + tileYOffset;
 
             if (unwrap) {
                 map.unwrapWorld();

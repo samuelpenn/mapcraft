@@ -20,12 +20,9 @@ import java.awt.Toolkit;
 import java.awt.Image;
 import java.awt.image.*;
 
-import net.sourceforge.mapcraft.map.elements.Area;
-import net.sourceforge.mapcraft.map.elements.Path;
-import net.sourceforge.mapcraft.map.elements.Terrain;
-import net.sourceforge.mapcraft.map.elements.Thing;
-import net.sourceforge.mapcraft.map.tilesets.Tile;
-import net.sourceforge.mapcraft.map.tilesets.memory.TileSet;
+import net.sourceforge.mapcraft.map.interfaces.*;
+import net.sourceforge.mapcraft.map.elements.*;
+import net.sourceforge.mapcraft.map.tilesets.TileSet;
 import net.sourceforge.mapcraft.utils.Options;
 
 /**
@@ -59,10 +56,11 @@ public class MapBean implements Cloneable {
     private MapXML  xml;
 
     // Data sets
+    ITileSet        tileSets[] = null;
+    
     TerrainSet      terrainSet = null;
     TerrainSet      thingSet = null;
     TerrainSet      featureSet = null;
-    TileSet         tileSets[] = null;
     AreaSet         areaSet = null;
 
     private int     tileShape = HEXAGONAL;
@@ -104,8 +102,6 @@ public class MapBean implements Cloneable {
         featureSet = map.featureSet;
         tileSets = map.tileSets;
         areaSet = map.areaSet;
-        setPaths(map.getPaths());
-        setThings(map.getThings());
 
         tileShape = map.tileShape;
         type = map.type;
@@ -135,8 +131,8 @@ public class MapBean implements Cloneable {
 
             for (int i = 0; i < tileSets.length; i++) {
                 setCurrentSet(i);
-                setThings(xml.getThings(tileSets[i].getName()));
-                setPaths(xml.getPaths(tileSets[i].getName()));
+                getTileSet(i).setThings(xml.getThings(tileSets[i].getName()));
+                getTileSet(i).setPaths(xml.getPaths(tileSets[i].getName()));
             }
 
             this.filename = filename;
@@ -188,8 +184,9 @@ public class MapBean implements Cloneable {
         MapBean     m = null;
 
         try {
-            m = new MapBean(name, tileSets[0].getWidth(), tileSets[0].getHeight(),
-                        tileSets[0].getScale());
+            m = new MapBean(name, tileSets[0].getMapWidth(), 
+                            tileSets[0].getMapHeight(),
+                            tileSets[0].getScale());
             m.filename = "/tmp/clone.map";
             //m.tiles = (TileSet)tiles.clone();
             m.terrainSet = (TerrainSet)terrainSet.clone();
@@ -298,53 +295,20 @@ public class MapBean implements Cloneable {
     getType() { return type; }
 
     /**
-     * Get the width of the current tile set.
+     * Get the specified TileSet. The default TileSet is always zero.
+     * Each TileSet contains information on the actual map, including
+     * width, height and individual tiles.
+     * 
+     * @param set
+     * @return
      */
-    public int
-    getWidth() {
-        return getWidth(currentSet);
+    public ITileSet getTileSet(int set) throws MapException {
+        if (set < 0 || set >= tileSets.length) {
+            throw new MapException("TileSet selection out of bounds");
+        }
+        return tileSets[set];
     }
 
-    /**
-     * Get the width of the specified tile set.
-     */
-    public int
-    getWidth(int set) {
-        return tileSets[set].getWidth();
-    }
-
-    /**
-     * Get the height of the current tile set.
-     */
-    public int
-    getHeight() {
-        return getHeight(currentSet);
-    }
-
-
-    /**
-     * Get the height of the specified tile set.
-     */
-    public int
-    getHeight(int set) {
-        return tileSets[set].getHeight();
-    }
-
-    /**
-     * Get the scale of the current tile set.
-     */
-    public int
-    getScale() {
-        return tileSets[currentSet].getScale();
-    }
-
-    /**
-     * Get the scale of the specified tile set.
-     */
-    public int
-    getScale(int set) {
-        return tileSets[set].getScale();
-    }
 
     public int getCurrentSet() { return currentSet; }
 
@@ -377,163 +341,9 @@ public class MapBean implements Cloneable {
     }
 
 
-    public Tile
-    getTile(int x, int y) throws MapOutOfBoundsException  {
-        return getTile(currentSet, x, y);
-    }
-
-    /**
-     * Return the tile at the given coordinate.
-     */
-    public Tile
-    getTile(int set, int x, int y) throws MapOutOfBoundsException {
-        if (set < 0 || set >= tileSets.length) {
-            throw new MapOutOfBoundsException("No such tileset");
-        }
-        return tileSets[set].getTile(x, y);
-    }
-
-    public void
-    setTile(int set, Tile tile, int x, int y) throws MapOutOfBoundsException {
-        tileSets[set].setTile(x, y, tile);
-    }
-
-
-    public short
-    getTerrain(int x, int y) throws MapOutOfBoundsException {
-        return getTerrain(currentSet, x, y);
-    }
-
-    public short
-    getTerrain(int set, int x, int y) throws MapOutOfBoundsException {
-        return tileSets[set].getTerrain(x, y);
-    }
-
-
-    public short
-    getFeature(int x, int y) throws MapOutOfBoundsException {
-        return tileSets[currentSet].getTile(x, y).getFeature();
-    }
-
-    public void
-    setHighlighted(int x, int y, boolean hl) throws MapOutOfBoundsException {
-        tileSets[currentSet].setHighlighted(x, y, hl);
-    }
-
-    public boolean
-    isHighlighted(int x, int y) throws MapOutOfBoundsException {
-        return tileSets[currentSet].isHighlighted(x, y);
-    }
-
-    public  Vector
-    getThings() {
-        return tileSets[currentSet].getThings();
-    }
-
-    public void
-    setThings(Vector things) {
-        tileSets[currentSet].setThings(things);
-    }
-
-    public void
-    removeThing(int s) {
-        tileSets[currentSet].removeThing(s);
-    }
-
-    public void
-    addThing(Thing s) {
-        tileSets[currentSet].addThing(s);
-    }
-
-    public String[]
-    getThingNames() {
-        return tileSets[currentSet].getThingNames();
-    }
-
-    public String[]
-    getRiverNames() {
-        return tileSets[currentSet].getPathNames(Path.RIVER);
-    }
-
-    public String[]
-    getRoadNames() {
-        return tileSets[currentSet].getPathNames(Path.ROAD);
-    }
-
-
-
-    /**
-     * Set the terrain of the given tile for the currently
-     * selected TileSet.
-     *
-     * @param x     X coordinate of Tile.
-     * @param y     y coordinate of Tile.
-     * @param t     Terrain value to set Tile to.
-     *
-     * @throws MapOutOfBoundsException  Coordinates outside TileSet.
-     */
-    public void
-    setTerrain(int x, int y, short t) throws MapOutOfBoundsException {
-        setTerrain(currentSet, x, y, t);
-    }
-
-    /**
-     * Set the terrain of the given tile for the specified
-     * TileSet.
-     *
-     * @param set   Id of TileSet.
-     * @param x     X coordinate of Tile.
-     * @param y     y coordinate of Tile.
-     * @param t     Terrain value to set Tile to.
-     *
-     * @throws MapOutOfBoundsException  Coordinates outside TileSet.
-     */
-    public void
-    setTerrain(int set, int x, int y, short t) throws MapOutOfBoundsException {
-       tileSets[set].setTerrain(x, y, t);
-    }
-    
-    public void
-    setHeight(int x, int y, short h) throws MapOutOfBoundsException {
-        tileSets[currentSet].setHeight(x, y, h);
-    }
-    
-
     public Area
-    getArea(int set, int x, int y) throws MapOutOfBoundsException {
-        int a = tileSets[set].getArea(x, y);
-        return areaSet.getArea(a);
-    }
-
-    public Area
-    getArea(int x, int y) throws MapOutOfBoundsException {
-        return getArea(currentSet, x, y);
-    }
-
-    public int
-    getAreaId(int x, int y) throws MapOutOfBoundsException {
-        return tileSets[currentSet].getArea(x, y);
-    }
-
-    /**
-     * Get the descriptive name of the area of the given tile.
-     */
-    public String
-    getAreaName(int set, int x, int y) throws MapOutOfBoundsException {
-        int     a = tileSets[set].getArea(x, y);
-        Area    area = areaSet.getArea(a);
-        String  name = null;
-
-        if (area != null) {
-            name = area.getName();
-        }
-
-        return name;
-    }
-
-    public Area
-    getAreaParent(int set, int x, int y) throws MapOutOfBoundsException {
-        Area    area = getArea(set, x, y);
+    getAreaParent(int set, int x, int y) throws MapException {
+        Area    area = getTileSet(set).getArea(x, y);
         Area    parent = null;
         int     pid = 0;
 
@@ -549,7 +359,7 @@ public class MapBean implements Cloneable {
     }
 
     public Area
-    getAreaParent(int x, int y) throws MapOutOfBoundsException {
+    getAreaParent(int x, int y) throws MapException {
         return getAreaParent(currentSet, x, y);
     }
 
@@ -558,15 +368,15 @@ public class MapBean implements Cloneable {
         Area    area = areaSet.getArea(id);
         int     parent = 0;
 
-        if (area != null) {
-            parent = area.getParent();
+        if (area != null && area.getParent() != null) {
+            parent = area.getParent().getId();
         }
 
         return parent;
     }
 
     public String
-    getAreaParentName(int set, int x, int y) throws MapOutOfBoundsException {
+    getAreaParentName(int set, int x, int y) throws MapException {
         Area    parent = getAreaParent(set, x, y);
         String  name = null;
 
@@ -577,97 +387,11 @@ public class MapBean implements Cloneable {
         return name;
     }
 
-    public void
-    setArea(int set, int x, int y, short area) throws MapOutOfBoundsException {
-        tileSets[set].setArea(x, y, area);
-    }
-
-    public void
-    setArea(int x, int y, short area) throws MapOutOfBoundsException {
-        setArea(currentSet, x, y, area);
-    }
-
     public Area
     getAreaByName(String name) {
         System.out.println("Looking for ["+name+"]");
         return areaSet.getArea(name);
     }
-
-    public short
-    getHeight(int x, int y) throws MapOutOfBoundsException {
-        return tileSets[currentSet].getHeight(x, y);
-    }
-
-    public boolean
-    isWritable(int x, int y) throws MapOutOfBoundsException {
-        return tileSets[currentSet].isWritable(x, y);
-    }
-
-    public void
-    setFeature(int x, int y, short feature) throws MapOutOfBoundsException {
-        tileSets[currentSet].setFeature(x, y, feature);
-    }
-
-    public void
-    setFeatureRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
-        if (tileShape == SQUARE) {
-            rotation /= 90;
-        } else {
-            rotation /= 60;
-        }
-        tileSets[currentSet].setFeatureRotation(x, y, rotation);
-    }
-
-    public short
-    getFeatureRotation(int x, int y) throws MapOutOfBoundsException {
-        short r = tileSets[currentSet].getFeatureRotation(x, y);
-
-        if (tileShape == SQUARE) {
-            r *= 90;
-        } else {
-            r *= 60;
-        }
-        return r;
-    }
-
-    public void
-    setTerrainRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
-        if (tileShape == SQUARE) {
-            rotation /= 90;
-        } else {
-            rotation /= 60;
-        }
-        tileSets[currentSet].setTerrainRotation(x, y, rotation);
-    }
-
-    public short
-    getTerrainRotation(int x, int y) throws MapOutOfBoundsException {
-        short r = tileSets[currentSet].getTerrainRotation(x, y);
-
-        if (tileShape == SQUARE) {
-            r *= 90;
-        } else {
-            r *= 60;
-        }
-        return r;
-    }
-
-
-
-    /**
-     * Sets the scale of the map, in km per tile object.
-     * The scale should be a power of two.
-     * This merely changes the value of the scale, and does
-     * not cause any other change to the map.
-     *
-     * @param scale     Width of each tile, in km. Must be a power of two.
-     */
-    public void
-    setScale(int scale) {
-        tileSets[currentSet].setScale(scale);
-    }
-
-
 
 
 
@@ -759,14 +483,14 @@ public class MapBean implements Cloneable {
      * ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/
      */
     private void
-    writeTileSet(TileSet set, FileWriter writer) throws IOException {
+    writeTileSet(ITileSet set, FileWriter writer) throws IOException {
         int         x,y;
 
         writer.write("    <tileset id=\""+set.getName()+"\">\n");
         writer.write("        <dimensions>\n");
         writer.write("            <scale>"+set.getScale()+"</scale>\n");
-        writer.write("            <width>"+set.getWidth()+"</width>\n");
-        writer.write("            <height>"+set.getHeight()+"</height>\n");
+        writer.write("            <width>"+set.getMapWidth()+"</width>\n");
+        writer.write("            <height>"+set.getMapHeight()+"</height>\n");
         writer.write("        </dimensions>\n\n");
 
         if (set.isChild()) {
@@ -779,43 +503,21 @@ public class MapBean implements Cloneable {
 
         writer.write("        <tiles>\n");
 
-        for (x=0; x < set.getWidth(); x++) {
+        for (x=0; x < set.getMapWidth(); x++) {
             writer.write("            ");
             writer.write("<column x=\""+x+"\">");
 
             StringBuffer    terrain = new StringBuffer();
             String          tmp;
 
-            for (y=0; y < set.getHeight(); y++) {
-                try {
-                    Tile    tile = set.getTile(x, y);
-                    String  t="AA", h="AA", m="AA", c="A", f="A", a="AA";
+            for (y=0; y < set.getMapHeight(); y++) {
+                tmp = MapXML.tileToBlob(set, x, y);
 
-                    try {
-                        t = MapXML.toBase64(tile.getTerrainRaw(), 2);
-                        //h = MapXML.toBase64(tile.getHeight()+1000, 2);
-                        h = "AA"; // HACK!
-                        m = MapXML.toBase64(tile.getFeatureRaw(), 2);
-                        a = MapXML.toBase64(tile.getArea(), 2);
-                        c = "A";
-                        f = "A";
-                    } catch (Exception e) {
-                        System.out.println("Got exception writing tile "+x+","+y);
-                        System.out.println(tile);
-                        e.printStackTrace();
-                        System.exit(0);
-                    }
-                    c = "A";
-
-                    tmp = t + h + m + a + c + f + " ";
-
-                    if ((y%5)==0) {
-                        terrain.append("\n");
-                        terrain.append("                ");
-                    }
-                    terrain.append(tmp);
-                } catch (MapOutOfBoundsException e) {
+                if ((y%5)==0) {
+                    terrain.append("\n");
+                    terrain.append("                ");
                 }
+                terrain.append(tmp);
             }
             writer.write(terrain.toString());
             writer.write("\n");
@@ -836,27 +538,27 @@ public class MapBean implements Cloneable {
     public void
     writePaths(FileWriter writer) throws IOException {
         int         i = 0, e = 0;
-        Vector      rivers = getPaths();
-        Path        river = null;
+        Path[]      paths = tileSets[0].getPaths();
+        Path        path = null;
         Vector      elements;
         String[]    types = { "unknown", "start", "end", "path", "join" };
 
-        if (rivers == null || rivers.size() == 0) {
+        if (paths == null || paths.length == 0) {
             return;
         }
 
         writer.write("        <paths>\n");
-        for (i=0; i < rivers.size(); i++) {
-            river = (Path)rivers.elementAt(i);
-            writer.write("            <path name=\""+river.getName()+"\" "+
-                         "type=\""+river.getTypeAsString()+"\" style=\""+
-                         river.getStyleAsString()+"\">\n");
-            elements = river.getElements();
+        for (i=0; i < paths.length; i++) {
+            path = paths[i];
+            writer.write("            <path name=\""+path.getName()+"\" "+
+                         "type=\""+path.getTypeAsString()+"\" style=\""+
+                         path.getStyleAsString()+"\">\n");
+            elements = path.getElements();
             for (e=0; e < elements.size(); e++) {
                 Path.Element    element = (Path.Element)elements.elementAt(e);
                 int             x = element.getX();
                 int             y = element.getY();
-                int             w = river.getWidth();
+                int             w = path.getWidth();
                 int             t = element.getType();
 
                 writer.write("                ");
@@ -870,14 +572,14 @@ public class MapBean implements Cloneable {
 
     public void
     writeThings(FileWriter writer) throws IOException {
-        Vector      things = getThings();
+        Thing[]     things = tileSets[0].getThings();
         String      pad = "        ";
         int         i = 0;
 
-        if (things != null && things.size() > 0) {
+        if (things != null && things.length > 0) {
             writer.write(pad+"<things>\n");
-            for (i=0; i < things.size(); i++) {
-                Thing    thing = (Thing)things.elementAt(i);
+            for (i=0; i < things.length; i++) {
+                Thing    thing = things[i];
                 writer.write(pad+"    <thing type=\""+thing.getType()+"\" "+
                                         "x=\""+thing.getX()+
                                         "\" y=\""+thing.getY()+"\" "+
@@ -1046,74 +748,20 @@ public class MapBean implements Cloneable {
         return areaSet;
     }
 
-    /**
-     * Return a Vector of Path elements, each one representing a river.
-     */
-    public final Vector
-    getPaths() {
-        return tileSets[currentSet].getPaths();
-    }
-
-    public final void
-    setPaths(Vector paths) {
-        tileSets[currentSet].setPaths(paths);
-    }
-
-    /**
-     * Returns the river with identifier 'id'. This is the position of
-     * the river in the Vector, +1.
-     */
-    public final Path
-    getPath(int id) {
-        return tileSets[currentSet].getPath(id);
-    }
-
-
-
-
-
-    /**
-     * Create and add a new river to the map.
-     */
-    public final int
-    addPath(String name, int x, int y) {
-        return tileSets[currentSet].addPath(name, x, y);
-    }
-
-    public final int
-    addPath(String name, short type, short style, int x, int y) {
-        return tileSets[currentSet].addPath(name, type, style, x, y);
-    }
-
-
-    public final void
-    extendPath(int id, int x, int y) {
-        tileSets[0].extendPath(id, x, y);
-    }
-
     public final void
     unselectPaths() {
-        Path    path = null;
+        Path[]  paths = tileSets[0].getPaths();
         int     id = 0;
 
-        for (id=1; id <= tileSets[0].getPaths().size(); id++) {
+        for (id=1; id <= paths.length; id++) {
             System.out.println("Unselecting river "+id);
-            unselectPath(id);
+            paths[id].setHighlighted(false);
         }
     }
 
     public final void
-    unselectPath(int id) {
-        Path    river = tileSets[0].getPath(id);
-
-        river.setHighlighted(false);
-    }
-
-    public final void
-    selectPath(int id) {
-        Path river = getPath(id);
-
-        river.setHighlighted(true);
+    selectPath(Path path) {
+        path.setHighlighted(true);
     }
 
 

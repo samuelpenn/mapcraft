@@ -46,6 +46,7 @@ public class MapProcess extends Map {
 
     public void
     convert(Properties table) {
+        /*
         short       terrain = 0;
         String      value = null;
 
@@ -62,6 +63,7 @@ public class MapProcess extends Map {
                 }
             }
         }
+        */
     }
 
     public static void

@@ -23,8 +23,8 @@ import java.awt.image.*;
 
 import net.sourceforge.mapcraft.map.elements.Area;
 import net.sourceforge.mapcraft.map.elements.Thing;
-import net.sourceforge.mapcraft.map.tilesets.Tile;
-import net.sourceforge.mapcraft.map.tilesets.memory.TileSet;
+import net.sourceforge.mapcraft.map.interfaces.ITileSet;
+import net.sourceforge.mapcraft.map.tilesets.TileSet;
 import net.sourceforge.mapcraft.utils.Options;
 
 /**
@@ -109,9 +109,11 @@ public class Map extends MapBean implements Cloneable {
             for (x = 0; x < width; x++) {
                 try {
                     if (x >= s && x <= s+w) {
-                        tileSets[0].setTile(x, y, new Tile((short)1, (short)0, true));
+                        tileSets[0].setTerrain(x, y, terrainSet.getTerrain((short)1));
+                        tileSets[0].setWritable(x, y, true);
                     } else {
-                        tileSets[0].setTile(x, y, new Tile((short)0, (short)0, false));
+                        tileSets[0].setTerrain(x, y, terrainSet.getTerrain((short)0));
+                        tileSets[0].setWritable(x, y, false);
                     }
                 } catch (MapOutOfBoundsException mobe) {
                 }
@@ -147,8 +149,8 @@ public class Map extends MapBean implements Cloneable {
         
         System.out.println("Unwrapping");
 
-        width = tileSets[0].getWidth();
-        height = tileSets[0].getHeight();
+        width = tileSets[0].getMapWidth();
+        height = tileSets[0].getMapHeight();
 
         try {
             unwrapped = new TileSet("root", width, height, tileSets[0].getScale());
@@ -161,7 +163,7 @@ public class Map extends MapBean implements Cloneable {
             int     start = -1;
             for (x=0; x < width; x++) {
                 try {
-                    if (getTerrain(x, y) != 0) {
+                    if (tileSets[0].getTerrain(x, y).getId() != 0) {
                         w++;
                         if (start == -1) {
                             start = x;
@@ -175,7 +177,7 @@ public class Map extends MapBean implements Cloneable {
             for (x=0; x < width; x++) {
                 int     i = (int)(x * (1.0 * w / width));
                 try {
-                    unwrapped.setTile(x, y, tileSets[0].getTile(start + i, y));
+                    unwrapped.copy(tileSets[0], start + i, y, x, y);
                 } catch (MapOutOfBoundsException moobe) {
                     moobe.printStackTrace();
                 }
@@ -204,7 +206,8 @@ public class Map extends MapBean implements Cloneable {
         Map     m = null;
 
         try {
-            m = new Map(getName(), tileSets[0].getWidth(), tileSets[0].getHeight(),
+            m = new Map(getName(), tileSets[0].getMapWidth(), 
+                        tileSets[0].getMapHeight(),
                         tileSets[0].getScale());
             m.setFilename("/tmp/clone.map");
             m.terrainSet = (TerrainSet)terrainSet.clone();
@@ -330,13 +333,13 @@ public class Map extends MapBean implements Cloneable {
     resize(int newWidth, int newHeight, boolean atLeft, boolean atTop)
                 throws InvalidArgumentException {
 
-        TileSet     resized = null;
-        TileSet     original = tileSets[getCurrentSet()];
+        ITileSet     resized = null;
+        ITileSet     original = tileSets[getCurrentSet()];
         int         dx, dy;
 
         // Get the deltas for the changing width/height.
-        dx = newWidth - original.getWidth();
-        dy = newHeight - original.getHeight();
+        dx = newWidth - original.getMapWidth();
+        dy = newHeight - original.getMapHeight();
 
         if (dx < 0) {
             throw new InvalidArgumentException(
@@ -366,10 +369,10 @@ public class Map extends MapBean implements Cloneable {
         }
 
         int     x, y;
-        for (y = 0; y < original.getHeight(); y++) {
-            for (x = 0; x < original.getWidth(); x++) {
+        for (y = 0; y < original.getMapHeight(); y++) {
+            for (x = 0; x < original.getMapWidth(); x++) {
                 try {
-                    resized.setTile(x+xOffset, y+yOffset, original.getTile(x, y));
+                    resized.copy(original, x, y, x+xOffset, y+yOffset);
                 } catch (MapOutOfBoundsException oobe) {
                 }
             }
@@ -399,7 +402,7 @@ public class Map extends MapBean implements Cloneable {
      * each direction by the margin size.
      */
     public boolean
-    cropToArea(short area, int margin) {
+    cropToArea(Area area, int margin) {
         try {
             tileSets[getCurrentSet()].cropToArea(area, margin);
         } catch (MapOutOfBoundsException moobe) {
@@ -564,7 +567,7 @@ public class Map extends MapBean implements Cloneable {
      */
     public int
     getNearestThingIndex(int x, int y, int max) {
-        Vector  things = getThings();
+        Thing[] things = tileSets[0].getThings();
         Thing   thing = null;
         int     index = -1;
         int     sx=0, sy=0;
@@ -575,8 +578,8 @@ public class Map extends MapBean implements Cloneable {
 
         max = max * max;
 
-        for (int i = 0; i < things.size(); i++) {
-            thing = (Thing)things.elementAt(i);
+        for (int i = 0; i < things.length; i++) {
+            thing = things[i];
             sx = x - thing.getX();
             sy = y - thing.getY();
             // We're only looking for the smallest distance, so no need
@@ -603,7 +606,7 @@ public class Map extends MapBean implements Cloneable {
         int     index = getNearestThingIndex(x, y, max);
 
         if (index >= 0) {
-            thing = (Thing)getThings().elementAt(index);
+            thing = tileSets[0].getThings()[index];
         }
 
         return thing;
@@ -632,8 +635,8 @@ public class Map extends MapBean implements Cloneable {
         }
 
         // Alpha is our map, Beta is the map that is being merged from.
-        TileSet     alpha = tileSets[0];
-        TileSet     beta = merge.tileSets[0];
+        ITileSet     alpha = tileSets[0];
+        ITileSet     beta = merge.tileSets[0];
 
         if (alpha.getScale() != beta.getScale()) {
             System.out.println("Maps are not the same scale");
@@ -646,13 +649,13 @@ public class Map extends MapBean implements Cloneable {
 
         ax = alpha.getParentsXOffset();
         ay = alpha.getParentsYOffset();
-        aw = alpha.getWidth();
-        ah = alpha.getHeight();
+        aw = alpha.getMapWidth();
+        ah = alpha.getMapHeight();
 
         bx = beta.getParentsXOffset();
         by = beta.getParentsYOffset();
-        bw = beta.getWidth();
-        bh = beta.getHeight();
+        bw = beta.getMapWidth();
+        bh = beta.getMapHeight();
 
         int         dx = ax - bx;
         int         dy = ay - by;
@@ -662,6 +665,8 @@ public class Map extends MapBean implements Cloneable {
         dy = dy * alpha.getParentsScale()/alpha.getScale();
 
         System.out.println("merge: dx "+dx+" dy "+dy);
+        // TODO: Rewrite merge code for new world.
+        /*
         try {
             for (int y=0; y < bh; y++) {
                 if (y - dy < 0 || y - dy >= ah) {
@@ -700,6 +705,7 @@ public class Map extends MapBean implements Cloneable {
             e.printStackTrace();
             return false;
         }
+        */
 
         return true;
     }
@@ -722,10 +728,10 @@ public class Map extends MapBean implements Cloneable {
             int     id = area.getId();
             int     tiles = 0;
 
-            for (int x=0; x < getWidth(set); x++) {
-                for (int y=0; y < getHeight(set); y++) {
-                    Area    a = getArea(set, x, y);
-                    if (a != null && (a.getId() == id || a.getParent() == id)) {
+            for (int x=0; x < tileSets[0].getMapWidth(); x++) {
+                for (int y=0; y < tileSets[0].getMapHeight(); y++) {
+                    Area    a = tileSets[0].getArea(x, y);
+                    if (a != null && (a.getId() == id || a.getParent().equals(area))) {
                         tiles++;
                     }
                 }
@@ -768,9 +774,8 @@ public class Map extends MapBean implements Cloneable {
      * @param area      Id of area to be deleted.
      */
     public void
-    deleteArea(short area) {
-        short       parent = (short)getAreaSet().getArea(area).getParent();
-        tileSets[getCurrentSet()].changeArea(area, parent);
+    deleteArea(Area area) {
+        tileSets[getCurrentSet()].changeArea(area, area.getParent());
         
         getAreaSet().deleteArea(area);
     }

@@ -157,7 +157,7 @@ public class ThingDialog extends JDialog implements ItemListener {
     /**
      * Get the selected terrain type for this thing.
      */
-    public short
+    public int
     getType() {
         Terrain     t = (Terrain)type.getSelectedItem();
         return t.getId();

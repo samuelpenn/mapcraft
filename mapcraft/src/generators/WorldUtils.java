@@ -12,6 +12,7 @@
 package net.sourceforge.mapcraft.generators;
 
 import net.sourceforge.mapcraft.map.Map;
+import net.sourceforge.mapcraft.map.MapException;
 
 /**
  * @author sam
@@ -25,10 +26,10 @@ public class WorldUtils {
     private int         scale;
     
     public
-    WorldUtils(Map map) {
-        width = map.getWidth();
-        height = map.getHeight();
-        scale = map.getScale();
+    WorldUtils(Map map) throws MapException {
+        width = map.getTileSet(0).getMapWidth();
+        height = map.getTileSet(0).getMapHeight();
+        scale = map.getTileSet(0).getScale();
     }
     
     public

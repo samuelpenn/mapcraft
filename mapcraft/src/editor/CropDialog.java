@@ -14,6 +14,7 @@ package net.sourceforge.mapcraft.editor;
 
 import net.sourceforge.mapcraft.map.*;
 import net.sourceforge.mapcraft.map.Map;
+import net.sourceforge.mapcraft.map.elements.Path;
 
 import javax.swing.*;
 import java.awt.*;
@@ -125,7 +126,13 @@ public class CropDialog extends JDialog implements ItemListener {
     private JComboBox
     createThingCombo() {
         JComboBox   box = null;
-        String[]    labels = map.getThingNames();
+        String[]    labels = null;
+        
+        try {
+            labels = map.getTileSet(0).getThingNames();
+        } catch (MapException e) {
+            e.printStackTrace();
+        }
 
         if (labels != null) {
             box = new JComboBox(labels);
@@ -141,7 +148,13 @@ public class CropDialog extends JDialog implements ItemListener {
     private JComboBox
     createRiverCombo() {
         JComboBox   box = null;
-        String[]    labels = map.getRiverNames();
+        String[]    labels = null;
+        
+        try {
+            labels = map.getTileSet(0).getPathNames(Path.RIVER);
+        } catch (MapException e) {
+            e.printStackTrace();
+        }
 
         if (labels != null) {
             box = new JComboBox(labels);
@@ -157,7 +170,13 @@ public class CropDialog extends JDialog implements ItemListener {
     private JComboBox
     createRoadCombo() {
         JComboBox   box = null;
-        String[]    labels = map.getRoadNames();
+        String[]    labels = null;
+        
+        try {
+            labels = map.getTileSet(0).getPathNames(Path.ROAD);
+        } catch (MapException e) {
+            e.printStackTrace();
+        }
 
         if (labels != null) {
             box = new JComboBox(labels);

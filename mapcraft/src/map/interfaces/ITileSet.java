@@ -143,6 +143,9 @@ public interface ITileSet {
 
     public boolean
     isWritable(int x, int y) throws MapOutOfBoundsException;
+    
+    public void setWritable(int x, int y, boolean writable)
+                throws MapOutOfBoundsException;
 
 
     public Area
@@ -180,7 +183,7 @@ public interface ITileSet {
      * @param margin    Number of tiles to add as a margin.
      */
     public void
-    cropToArea(short area, int margin) throws MapOutOfBoundsException;
+    cropToArea(Area area, int margin) throws MapOutOfBoundsException;
 
     /**
      * Crop the tiles to the highlighted region. If nothing is highlighted,
@@ -296,5 +299,24 @@ public interface ITileSet {
      * @return              Count of number of tiles changed.
      */
     public int changeArea(Area oldArea, Area newArea);
+    
+    public void copy(int fromX, int fromY, int toX, int toY)
+                         throws MapOutOfBoundsException;
 
+    public void copy(ITileSet source, int fromX, int fromY, int toX, int toY)
+                         throws MapOutOfBoundsException;
+
+    /**
+     * Define which sets of terrain, features and areas this tileset will
+     * be based on.
+     * @param terrain
+     * @param features
+     * @param areas
+     */
+    public void setCollections(TerrainSet terrain, TerrainSet features, 
+                               AreaSet areas);
+
+    public TerrainSet getTerrainSet();
+    public TerrainSet getFeatureSet();
+    public AreaSet getAreaSet();
 }

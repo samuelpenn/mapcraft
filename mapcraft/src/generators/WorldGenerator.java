@@ -12,6 +12,7 @@
 package net.sourceforge.mapcraft.generators;
 
 import net.sourceforge.mapcraft.map.*;
+import net.sourceforge.mapcraft.map.interfaces.ITileSet;
 
 /**
  * Randomly generate a complete world.
@@ -20,6 +21,7 @@ import net.sourceforge.mapcraft.map.*;
  */
 public abstract class WorldGenerator {
     protected Map         map = null;
+    protected ITileSet    set = null;
     protected WorldUtils  utils = null;
     
     protected int         GREY = 1;
@@ -78,6 +80,7 @@ public abstract class WorldGenerator {
             map.setImageDir("hexagonal/world");
             
             utils = new WorldUtils(map);
+            set = map.getTileSet(0);
 
             worldType = 0;
         } catch (MapException e) {
@@ -103,7 +106,7 @@ public abstract class WorldGenerator {
     getLeft(int y) {
         int     left = -1;
         
-        for (int x=0; x < map.getWidth(); x++) {
+        for (int x=0; x < set.getMapWidth(); x++) {
             if (isValid(x, y)) {
                 left = x;
                 break;
@@ -122,7 +125,7 @@ public abstract class WorldGenerator {
     getRight(int y) {
         int     left = -1, right = -1;
         
-        for (int x=0; x < map.getWidth(); x++) {
+        for (int x=0; x < set.getMapWidth(); x++) {
             if (isValid(x, y) && left == -1) {
                 left = x;
             }
@@ -131,7 +134,7 @@ public abstract class WorldGenerator {
                 break;
             }
         }
-        if (right == -1) right = map.getWidth()-1;
+        if (right == -1) right = set.getMapWidth()-1;
         
         return right;
     }
@@ -146,12 +149,12 @@ public abstract class WorldGenerator {
      */
     protected void
     randomise(int min, int max) {
-        for (int x=0; x < map.getWidth(); x++) {
-            for (int y=0; y < map.getHeight(); y++) {
+        for (int x=0; x < set.getMapWidth(); x++) {
+            for (int y=0; y < set.getMapHeight(); y++) {
                 short   t = (short)(min + Math.random()*(1+max-min));
                 try {
-                    if (map.getTerrain(0, x, y) != 0) {
-                        map.setTerrain(x, y, t);
+                    if (set.getTerrain(x, y).getId() != 0) {
+                        set.setTerrain(x, y, set.getTerrainSet().getTerrain(t));
                     }
                 } catch (MapOutOfBoundsException e) {
                     
@@ -166,14 +169,14 @@ public abstract class WorldGenerator {
         short   high = -30000;
         
         try {
-            for (int x=0; x < map.getWidth(); x++) {
-                for (int y=0; y < map.getHeight(); y++) {
-                    if (map.getTerrain(0, x, y) != 0) {
-                        if (map.getHeight(x, y) < low) {
-                            low = map.getHeight(x, y);
+            for (int x=0; x < set.getMapWidth(); x++) {
+                for (int y=0; y < set.getMapHeight(); y++) {
+                    if (set.getTerrain(x, y).getId() != 0) {
+                        if (set.getAltitude(x, y) < low) {
+                            low = (short)set.getAltitude(x, y);
                         }
-                        if (map.getHeight(x, y) > high) {
-                            high = map.getHeight(x, y);
+                        if (set.getAltitude(x, y) > high) {
+                            high = (short)set.getAltitude(x, y);
                         }
                     }
                 }
@@ -185,12 +188,12 @@ public abstract class WorldGenerator {
             int     range = max - min;
             int     delta = (high - low) / range;
             
-            for (int x=0; x < map.getWidth(); x++) {
-                for (int y=0; y < map.getHeight(); y++) {
-                    if (map.getTerrain(0, x, y) != 0) {
-                        short   h = (short)(map.getHeight(x, y) - low);
+            for (int x=0; x < set.getMapWidth(); x++) {
+                for (int y=0; y < set.getMapHeight(); y++) {
+                    if (set.getTerrain(x, y).getId() != 0) {
+                        short   h = (short)(set.getAltitude(x, y) - low);
                         short   t = (short) (min + (h / delta));
-                        map.setTerrain(x, y, t);
+                        set.setTerrain(x, y, set.getTerrainSet().getTerrain(t));
                     }
                 }
             }
@@ -204,7 +207,7 @@ public abstract class WorldGenerator {
     protected boolean
     isValid(int x, int y) {
         try {
-            if (map.getTerrain(0, x, y) == 0) {
+            if (set.getTerrain(x, y).getId() == 0) {
                 return false;
             }
         } catch (MapOutOfBoundsException e) {
@@ -222,9 +225,9 @@ public abstract class WorldGenerator {
     protected void
     heightMap() {
         short     height = 1000;
-        for (int y=0; y < map.getHeight(); y++) {
-            int     left = -1, right = map.getWidth();
-            for (int x = 0; x < map.getWidth(); x++) {
+        for (int y=0; y < set.getMapHeight(); y++) {
+            int     left = -1, right = set.getMapWidth();
+            for (int x = 0; x < set.getMapWidth(); x++) {
                 if (isValid(x, y) && left == -1) {
                     left = x;
                 }
@@ -234,33 +237,33 @@ public abstract class WorldGenerator {
                 }
             }
 
-            for (int x=0; x < map.getWidth(); x++) {
+            for (int x=0; x < set.getMapWidth(); x++) {
                 try {
                     int     counted = 0;
                     int     total = 0;
                     
-                    if (map.getTerrain(0, x, y) == 0) {
+                    if (set.getTerrain(x, y).getId() == 0) {
                         // Unwritable tile.
                         continue;
                     }
                     if (left == -1) left = x;
                     
                     if (isValid(x-1, y)) {
-                        total += map.getHeight(x-1, y);
+                        total += set.getAltitude(x-1, y);
                         counted++;
                     }
                     
                     if (isValid(x, y-1)) {
-                        total += map.getHeight(x, y-1);
+                        total += set.getAltitude(x, y-1);
                         counted++;
                     }
                     if (x%2 == 0) {
                         if (isValid(x+1, y-1)) {
-                            total += map.getHeight(x+1, y-1);
+                            total += set.getAltitude(x+1, y-1);
                             counted++;
                         }
                         if (isValid(x-1, y-1)) {
-                            total += map.getHeight(x-1, y-1);
+                            total += set.getAltitude(x-1, y-1);
                             counted++;
                         }
                     }
@@ -274,13 +277,13 @@ public abstract class WorldGenerator {
                     // If we're close to the eastern edge, take into
                     // account the west edge so we don't get mismatch.
                     int     rd = right - x;
-                    height -= (height - map.getHeight(left, y))/rd;
+                    height -= (height - set.getAltitude(left, y))/rd;
                     
                     if (Math.random()<0.1) {
                         height += Math.random()*20;
                     }
                     
-                    map.setHeight(x, y, height);
+                    set.setAltitude(x, y, height);
                 } catch (MapOutOfBoundsException e) {
                     e.printStackTrace();
                 }
@@ -296,12 +299,12 @@ public abstract class WorldGenerator {
     protected void
     randomHeight(int height, int variance) {
         try {
-            for (int x=0; x < map.getWidth(); x++) {
-                for (int y=0; y < map.getHeight(); y++) {
+            for (int x=0; x < set.getMapWidth(); x++) {
+                for (int y=0; y < set.getMapHeight(); y++) {
                     if (isValid(x, y)) {
                         double h = Math.random() - Math.random();
                         h *= variance;
-                        map.setHeight(x, y, (short)(height + h));
+                        set.setAltitude(x, y, (short)(height + h));
                     }
                 }
             }
@@ -317,10 +320,10 @@ public abstract class WorldGenerator {
      */
     protected void
     unsetMap() {
-        for (int x = 0; x < map.getWidth(); x++) {
-            for (int y=0; y < map.getHeight(); y++) {
+        for (int x = 0; x < set.getMapWidth(); x++) {
+            for (int y=0; y < set.getMapHeight(); y++) {
                 try {
-                    map.setHighlighted(x, y, false);
+                    set.setHighlighted(x, y, false);
                 } catch (MapOutOfBoundsException e) {
                     // Don't care.
                 }
@@ -348,13 +351,13 @@ public abstract class WorldGenerator {
     fill(int x, int y, int height, int threshold) {
         int     count = 0;
         try {
-            if (isValid(x, y) && !map.isHighlighted(x, y)) {
-                map.setHighlighted(x, y, true);
-                if (Math.abs(height - map.getHeight(x, y)) > threshold) {
+            if (isValid(x, y) && !set.isHighlighted(x, y)) {
+                set.setHighlighted(x, y, true);
+                if (Math.abs(height - set.getAltitude(x, y)) > threshold) {
                     return 0;
                 }
-                int h = (height + map.getHeight(x, y)) / 2;
-                map.setHeight(x, y, (short)h);
+                int h = (height + set.getAltitude(x, y)) / 2;
+                set.setAltitude(x, y, (short)h);
                 //height = h;
                 count += fill(x, y-1, height, threshold-1);
                 count += fill(x, y+1, height, threshold-1);
@@ -365,10 +368,10 @@ public abstract class WorldGenerator {
                 count += fill(x-1, y+a, height, threshold-1);
                 count += fill(x+1, y+a, height, threshold-1);
                 count += 1;
-            } else if (!map.isHighlighted(x, y)) {
+            } else if (!set.isHighlighted(x, y)) {
                 int     left = getLeft(y);
                 int     right = getRight(y);
-                map.setHighlighted(x, y, true);
+                set.setHighlighted(x, y, true);
                 if (x < left) {
                     count += fill(right, y, height, threshold);
                 } else if (x > right) {
@@ -384,7 +387,7 @@ public abstract class WorldGenerator {
     protected void
     setHeight(int x, int y, int height) {
         try {
-            map.setHeight(x, y, (short) height);
+            set.setAltitude(x, y, height);
         } catch (MapOutOfBoundsException e) {
             System.out.println("Failed to set height at ["+x+","+y+"]");
         }
@@ -393,9 +396,9 @@ public abstract class WorldGenerator {
     protected void
     raise(int x, int y, int height) {
         try {
-            short       h = map.getHeight(x, y);
-            h += (short) height;
-            map.setHeight(x, y, h);
+            int       h = set.getAltitude(x, y);
+            h += height;
+            set.setAltitude(x, y, h);
         } catch (MapOutOfBoundsException e) {
             System.out.println("Failed to raise height at ["+x+","+y+"]");
         }
@@ -451,15 +454,15 @@ public abstract class WorldGenerator {
     
     public void
     crater(int ox, int oy, int r, int depth) throws MapOutOfBoundsException {
-        int     height =  map.getHeight(ox, oy) - depth;
+        int     height =  set.getAltitude(ox, oy) - depth;
 
-        for (int y=0; y < map.getHeight(); y++) {
-            for (int x=0; x < map.getWidth(); x++) {
+        for (int y=0; y < set.getMapHeight(); y++) {
+            for (int x=0; x < set.getMapWidth(); x++) {
                 if (isValid(x, y)) {
                     if (sphericalDistance(ox, oy, x, y) < r) {
                         //map.setHeight(x, y, (short)height);
                         raise(x, y, -depth);
-                        map.setFeature(x, y, (short)2);
+                        set.setFeature(x, y, set.getFeatureSet().getTerrain(2));
                     }
                 }
             }
@@ -482,8 +485,8 @@ public abstract class WorldGenerator {
     sphericalDistance(int x0, int y0, int x1, int y1) {
         int     d = 0;
         double  dx = 0, dy = 0;
-        int     midx = map.getWidth() / 2;
-        int     midy = map.getHeight() / 2;
+        int     midx = set.getMapWidth() / 2;
+        int     midy = set.getMapHeight() / 2;
         double  px0, py0, px1, py1;
         
         dy = utils.declination(y0) - utils.declination(y1);
@@ -496,7 +499,7 @@ public abstract class WorldGenerator {
     }
     
     public void
-    generate() {
+    generate() throws MapException {
         heightMap();
     }
     

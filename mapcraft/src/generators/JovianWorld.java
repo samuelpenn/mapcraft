@@ -11,6 +11,7 @@
  */
 package net.sourceforge.mapcraft.generators;
 
+import net.sourceforge.mapcraft.map.MapException;
 import net.sourceforge.mapcraft.map.MapOutOfBoundsException;
 import net.sourceforge.mapcraft.map.TerrainSet;
 
@@ -82,7 +83,7 @@ public class JovianWorld extends WorldGenerator {
     }
     
     public void
-    generate() {
+    generate() throws MapException {
         switch (worldType) {
         case JOVIAN:
         case SUPERJOVIAN:
@@ -96,9 +97,9 @@ public class JovianWorld extends WorldGenerator {
     }
     
     private void
-    generateJovian() {
+    generateJovian() throws MapException {
         int     t = 1 + (int)(Math.random()*16);
-        for (int y=0; y < map.getHeight(); y++) {
+        for (int y=0; y < map.getTileSet(0).getMapHeight(); y++) {
             if (Math.random() < 0.3 && t > 1) {
                 t-=1;
             }
@@ -108,10 +109,11 @@ public class JovianWorld extends WorldGenerator {
             if (Math.random() < 0.05) {
                 t = 1 + (int)(Math.random()*8 + Math.random()*8);
             }
-            for (int x=0; x < map.getWidth(); x++) {
+            for (int x=0; x < map.getTileSet(0).getMapWidth(); x++) {
                 if (isValid(x, y)) {
                     try {
-                        map.setTerrain(0, x, y, (short)t);
+                        map.getTileSet(0).setTerrain(x, y, 
+                                map.getTerrainSet().getTerrain(t));
                     } catch (MapOutOfBoundsException e) {
                         // Ignore.
                     }
@@ -121,7 +123,7 @@ public class JovianWorld extends WorldGenerator {
     }
     
     private void
-    generateCryoJovian() {
+    generateCryoJovian() throws MapException {
         generateJovian();
     }
 

@@ -22,7 +22,7 @@ import java.util.Properties;
  * in world area maps.
  */
 public class Thing implements Cloneable {
-    private short       type;
+    private int         type;
     private String      name;
     private String      description;
     private int         x;
@@ -60,7 +60,7 @@ public class Thing implements Cloneable {
      * description for the place.
      */
     public
-    Thing(short type, String name, String description) {
+    Thing(int type, String name, String description) {
         this.type = type;
         this.name = name;
         this.description = description;
@@ -75,7 +75,7 @@ public class Thing implements Cloneable {
      * have a name or description.
      */
     public
-    Thing(short type, short rotation) {
+    Thing(int type, short rotation) {
         this.type = type;
         this.name = "";
         this.description = "";
@@ -89,7 +89,7 @@ public class Thing implements Cloneable {
      * Full constructor for a Thing, allowing all components to be specified.
      */
     public
-    Thing(short type, String name, String description, int x, int y) {
+    Thing(int type, String name, String description, int x, int y) {
         this.type = type;
         this.name = name;
         this.description = description;
@@ -111,7 +111,7 @@ public class Thing implements Cloneable {
         return (Object)s;
     }
 
-    public short
+    public int
     getType() {
         return type;
     }
@@ -151,7 +151,7 @@ public class Thing implements Cloneable {
     isUnderlined() { return underlined; }
 
     public void
-    setType(short type) { this.type = type; }
+    setType(int type) { this.type = type; }
 
     public void
     setName(String name) { this.name = name; }

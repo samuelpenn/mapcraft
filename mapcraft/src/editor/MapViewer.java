@@ -17,6 +17,7 @@ import net.sourceforge.mapcraft.map.elements.Area;
 import net.sourceforge.mapcraft.map.elements.Path;
 import net.sourceforge.mapcraft.map.elements.Terrain;
 import net.sourceforge.mapcraft.map.elements.Thing;
+import net.sourceforge.mapcraft.map.interfaces.ITileSet;
 import net.sourceforge.mapcraft.utils.ImageUtils;
 import net.sourceforge.mapcraft.MapCraft;
 
@@ -75,6 +76,7 @@ public class MapViewer extends JPanel {
     protected ViewProperties    views[];
     protected int               view = 0;
     protected MapCraft          application;
+    protected ITileSet          currentSet = null;
 
     protected void
     log(int level, String message) {
@@ -350,7 +352,7 @@ public class MapViewer extends JPanel {
         while (iter.hasNext()) {
             Terrain t = (Terrain)iter.next();
             if (t != null) {
-                short       id = t.getId();
+                int         id = t.getId();
                 Image       icon = null;
                 Image       scaled = null;
                 int         x = views[view].getIconWidth();
@@ -489,6 +491,7 @@ public class MapViewer extends JPanel {
             System.out.println("MapViewer: readAllIcons");
             readAllIcons();
             map.setCurrentSet("root");
+            currentSet = map.getTileSet(0);
         } catch (MapException e) {
             e.printStackTrace();
         }
@@ -513,14 +516,15 @@ public class MapViewer extends JPanel {
             thingSet = readIcons("things", map.getThingSet());
 
             map.setCurrentSet("root");
+            currentSet = map.getTileSet(0);
 
             // Now work out how big we want to be. Can assume we'll
             // be placed in a scrollable widget of some sort, so don't
             // worry about screen size or anything like that.
             int realWidth, realHeight;
 
-            realWidth = tileXSize * (map.getWidth()+1);
-            realHeight = tileYSize * (map.getHeight()+1);
+            realWidth = tileXSize * (map.getTileSet(0).getMapWidth()+1);
+            realHeight = tileYSize * (map.getTileSet(0).getMapHeight()+1);
 
             setPreferredSize(new Dimension(realWidth, realHeight));
             repaint();
@@ -561,8 +565,8 @@ public class MapViewer extends JPanel {
         // worry about screen size or anything like that.
         int realWidth, realHeight;
 
-        realWidth = tileXSize * (map.getWidth()+1);
-        realHeight = tileYSize * (map.getHeight()+1);
+        realWidth = tileXSize * (currentSet.getMapWidth()+1);
+        realHeight = tileYSize * (currentSet.getMapHeight()+1);
 
         setPreferredSize(new Dimension(realWidth, realHeight));
 
@@ -688,9 +692,10 @@ public class MapViewer extends JPanel {
     public void
     drawPaths(Graphics2D g) {
         int     i = 0, e = 0;
+        Path[]  paths = currentSet.getPaths();
 
-        for (i=0; i < map.getPaths().size(); i++) {
-            Path    path = (Path)map.getPaths().elementAt(i);
+        for (i=0; i < paths.length; i++) {
+            Path    path = paths[i];
 
             if (path.isRoad() && !showRoads) {
                 continue;
@@ -772,8 +777,8 @@ public class MapViewer extends JPanel {
         // Boundary rectangle which needs to be drawn.
         int             startX = 0;
         int             startY = 0;
-        int             endX = map.getWidth();
-        int             endY = map.getHeight();
+        int             endX = currentSet.getMapWidth();
+        int             endY = currentSet.getMapHeight();
 
         // Clip area to rectangle.
         Rectangle   clip = g.getClipBounds();
@@ -785,19 +790,19 @@ public class MapViewer extends JPanel {
             endY = (int)((clip.getY()+clip.getHeight())/tileYSize) + 1;
         } else {
             startX = startY = 0;
-            endX = map.getWidth();
-            endY = map.getHeight();
+            endX = currentSet.getMapWidth();
+            endY = currentSet.getMapHeight();
         }
 
         if (startX < 0) startX = 0;
         if (startY < 0) startY = 0;
 
-        if (endX > map.getWidth()) {
-            endX = map.getWidth();
+        if (endX > currentSet.getMapWidth()) {
+            endX = currentSet.getMapWidth();
         }
 
-        if (endY > map.getHeight()) {
-            endY = map.getHeight();
+        if (endY > currentSet.getMapHeight()) {
+            endY = currentSet.getMapHeight();
         }
 
         try {
@@ -814,9 +819,9 @@ public class MapViewer extends JPanel {
             // Now draw labels. Need to draw these last so that they don't
             // get overwritten by tiles. No labels are drawn for LOCAL maps.
             if (showThings) {
-                Vector   things = map.getThings();
-                for (int i=0; i < things.size(); i++) {
-                    Thing    thing = (Thing)things.elementAt(i);
+                Thing[]   things = currentSet.getThings();
+                for (int i=0; i < things.length; i++) {
+                    Thing    thing = things[i];
                     if (thing.getX() < (100 * startX) || thing.getX() > (100 * endX)) {
                         continue;
                     }
@@ -924,7 +929,7 @@ public class MapViewer extends JPanel {
         }
 
         try {
-            short   t = map.getTerrain(x, y);
+            int     t = currentSet.getTerrain(x, y).getId();
             Image   icon = iconSet.getIcon(t);
             double  r = 0.0;
             
@@ -933,7 +938,7 @@ public class MapViewer extends JPanel {
                 return;
             }
 
-            r = Math.toRadians(map.getTerrainRotation(x, y));
+            r = Math.toRadians(currentSet.getTerrainRotation(x, y));
             if (r != 0) {
                 g2.rotate(r, xp+iconWidth/2, yp+tileYSize/2);
                 g2.drawImage(icon, xp, yp, this);
@@ -942,9 +947,9 @@ public class MapViewer extends JPanel {
                 g2.drawImage(icon, xp, yp, this);
             }
 
-            if (map.getFeature(x, y) > 0) {
-                r = Math.toRadians(map.getFeatureRotation(x, y));
-                icon = featureSet.getIcon(map.getFeature(x, y));
+            if (currentSet.getFeature(x, y) != null) {
+                r = Math.toRadians(currentSet.getFeatureRotation(x, y));
+                icon = featureSet.getIcon(currentSet.getFeature(x, y).getId());
                 g2.rotate(r, xp+tileXSize/2, yp+tileYSize/2);
                 g2.drawImage(icon, xp, yp, this);
                 g2.rotate(-r, xp+tileXSize/2, yp+tileYSize/2);
@@ -968,7 +973,7 @@ public class MapViewer extends JPanel {
             // map, and are only drawn on three sides (the neighbours will
             // draw their own border for the other three sides).
             if (showAreas && map.getTileShape() == Map.HEXAGONAL) {
-                int         area = map.getAreaId(x, y);
+                int         area = currentSet.getArea(x, y).getId();
                 int         parent;
                 int         x1, y1, x2, y2;
                 Area        pa = map.getAreaParent(x, y);
@@ -986,7 +991,7 @@ public class MapViewer extends JPanel {
 
                 // Top neighbour (only if not top row).
                 if (y > 0) {
-                    int n = map.getAreaId(x, y-1);
+                    int n = currentSet.getArea(x, y-1).getId();
                     if (area != n) {
                         if (parent == n || parent == map.getAreaParentId(n)) {
                             debug("Parent area match!");
@@ -1013,9 +1018,9 @@ public class MapViewer extends JPanel {
                     int     n = 0;
 
                     if (x%2 == 0) {
-                        n = map.getAreaId(x-1, y-1);
+                        n = currentSet.getArea(x-1, y-1).getId();
                     } else {
-                        n = map.getAreaId(x-1, y);
+                        n = currentSet.getArea(x-1, y).getId();
                     }
                     if (area != n) {
                         Point   p = getPosition(x, y);
@@ -1033,13 +1038,13 @@ public class MapViewer extends JPanel {
                 }
 
                 // Now left bottom neighbour.
-                if (x > 0 && y < map.getHeight()) {
+                if (x > 0 && y < currentSet.getMapHeight()) {
                     int     n = 0;
 
                     if (x%2 == 0) {
-                        n = map.getAreaId(x-1, y);
-                    } else if (y+1 < map.getHeight()) {
-                        n = map.getAreaId(x-1, y+1);
+                        n = currentSet.getArea(x-1, y).getId();
+                    } else if (y+1 < currentSet.getMapHeight()) {
+                        n = currentSet.getArea(x-1, y+1).getId();
                     } else {
                         // We don't want to display border along edge of map.
                         n = area;
@@ -1060,7 +1065,7 @@ public class MapViewer extends JPanel {
                 }
             }
 
-            if (map.isHighlighted(x, y)) {
+            if (currentSet.isHighlighted(x, y)) {
                 icon = effectSet.getIcon(HIGHLIGHT_ICON);
                 if (icon != null) {
                     g2.drawImage(icon, xp, yp, this);
@@ -1138,13 +1143,13 @@ public class MapViewer extends JPanel {
 
     public boolean
     cropToArea(String area, int margin) {
-        short       a = (short)map.getAreaByName(area).getId();
+        Area       a = map.getAreaByName(area);
 
         return cropToArea(a, margin);
     }
 
     public boolean
-    cropToArea(short area, int margin) {
+    cropToArea(Area area, int margin) {
         map.cropToArea(area, margin);
         setView(view);
 

@@ -11,12 +11,11 @@
  */
 package net.sourceforge.mapcraft.generators;
 
-import java.io.*;
-import java.util.Properties;
-
+import net.sourceforge.mapcraft.map.MapException;
 import net.sourceforge.mapcraft.map.MapOutOfBoundsException;
 import net.sourceforge.mapcraft.map.TerrainSet;
 import net.sourceforge.mapcraft.map.elements.Terrain;
+import net.sourceforge.mapcraft.map.interfaces.ITileSet;
 
 /**
  * @author Samuel Penn
@@ -197,7 +196,7 @@ public class GaianWorld extends WorldGenerator {
     }
     
     public void
-    generate() {
+    generate() throws MapException {
         switch (worldType) {
         case GAIAN:
             generateGaian();
@@ -248,14 +247,16 @@ public class GaianWorld extends WorldGenerator {
 
         try {
             log("munge: Find altitude range");
-            for (int x=0; x < map.getWidth(); x++) {
-                for (int y=0; y < map.getHeight(); y++) {
-                    if (map.getTerrain(0, x, y) != 0) {
-                        if (map.getHeight(x, y) < low) {
-                            low = map.getHeight(x, y);
+            ITileSet    set = map.getTileSet(0);
+            
+            for (int x=0; x < set.getMapWidth(); x++) {
+                for (int y=0; y < set.getMapHeight(); y++) {
+                    if (set.getTerrain(x, y).getId() != 0) {
+                        if (set.getAltitude(x, y) < low) {
+                            low = (short)set.getAltitude(x, y);
                         }
-                        if (map.getHeight(x, y) > high) {
-                            high = map.getHeight(x, y);
+                        if (set.getAltitude(x, y) > high) {
+                            high = (short)set.getAltitude(x, y);
                         }
                     }
                 }
@@ -267,14 +268,14 @@ public class GaianWorld extends WorldGenerator {
             
             // Fill the bucket with count of number of each height.
             log("munge: Populate height distribution bucket");
-            for (int y=0; y < map.getHeight(); y++) {
+            for (int y=0; y < set.getMapHeight(); y++) {
                 int     left = getLeft(y);
                 int     right = getRight(y);
                 
                 for (int x=left; x <= right; x++) {
-                    int h = map.getHeight(x, y) - low;
+                    int h = set.getAltitude(x, y) - low;
                     bucket[h] = bucket[h] + 1;
-                    map.setHeight(x, y, (short)h);
+                    set.setAltitude(x, y, h);
                     count++;
                 }
             }
@@ -298,17 +299,19 @@ public class GaianWorld extends WorldGenerator {
             }
 
             log("munge: Munge height map");
-            for (int y=0; y < map.getHeight(); y++) {
+            for (int y=0; y < set.getMapHeight(); y++) {
                 int     left = getLeft(y);
                 int     right = getRight(y);
                 
                 for (int x=left; x <= right; x++) {
-                    int h = map.getHeight(x, y);
-                    map.setHeight(x, y, (short)bucket[h]);
+                    int h = set.getAltitude(x, y);
+                    set.setAltitude(x, y, bucket[h]);
                 }
             }
             
         } catch (MapOutOfBoundsException e) {
+            e.printStackTrace();
+        } catch (MapException e) {
             e.printStackTrace();
         }
        
@@ -319,7 +322,7 @@ public class GaianWorld extends WorldGenerator {
      * to landmasses etc.
      */
     private void
-    landscape() {
+    landscape() throws MapException {
         short       height = 100;
         int         NUM = 20;
         int[]       hp = new int[NUM];
@@ -330,7 +333,7 @@ public class GaianWorld extends WorldGenerator {
 
         // Work out some random data points.
         for (int i=0; i < NUM; i++) {
-            yp[i] = (int)(map.getHeight() * Math.random());
+            yp[i] = (int)(map.getTileSet(0).getMapHeight() * Math.random());
             int min = getLeft(yp[i]);
             int max = getRight(yp[i]);
             xp[i] = min + (int) ((max - min) * Math.random());
@@ -340,11 +343,11 @@ public class GaianWorld extends WorldGenerator {
 
         log("landscape: Work out height of terrain");
         int     count = 1;
-        for (int y=0; y < map.getHeight(); y++) {
+        for (int y=0; y < map.getTileSet(0).getMapHeight(); y++) {
             int     left = getLeft(y);
             int     right = getRight(y);
             
-            if (y >= (count * map.getHeight()/10)) {
+            if (y >= (count * map.getTileSet(0).getMapHeight()/10)) {
                 log("landscape: "+count*10+"% complete");
                 count++;
             }
@@ -358,7 +361,7 @@ public class GaianWorld extends WorldGenerator {
                     total += hp[i] / (d+1);
                 }
                 try {
-                    map.setHeight(x, y, (short) (total+Math.random()*islands));
+                    map.getTileSet(0).setAltitude(x, y, (int)(total+Math.random()*islands));
                 } catch (MapOutOfBoundsException e) {
                     e.printStackTrace();
                 }
@@ -367,16 +370,16 @@ public class GaianWorld extends WorldGenerator {
         log("landscape: Finished");
     }
 
-    private short
-    getOceanTerrain(int x, int y) throws MapOutOfBoundsException {
+    private Terrain
+    getOceanTerrain(int x, int y) throws MapException {
         short       t = OCEAN_BASE;
-        short       h = map.getHeight(x, y);
+        int         h = map.getTileSet(0).getAltitude(x, y);
         int         latitude = y;
 
-        if (y > map.getHeight()/2) {
-            latitude = map.getHeight() - y;
+        if (y > map.getTileSet(0).getMapHeight()/2) {
+            latitude = map.getTileSet(0).getMapHeight() - y;
         }
-        latitude = (int)(90 * (latitude/(map.getHeight()/2.0)));
+        latitude = (int)(90 * (latitude/(map.getTileSet(0).getMapHeight()/2.0)));
         
         if (h > ocean-5) {
             t = OCEAN_BASE+4;
@@ -397,11 +400,11 @@ public class GaianWorld extends WorldGenerator {
         if ((latitude + Math.random()*5)< glacial) {
             Terrain     f = map.getFeatureSet().getTerrain("ice");
             if (f != null) {
-                map.setFeature(x, y, f.getId());
+                map.getTileSet(0).setFeature(x, y, f);
             }
         }
         
-        return t;
+        return map.getTerrainSet().getTerrain(t);
     }
     
     /**
@@ -436,28 +439,29 @@ public class GaianWorld extends WorldGenerator {
         return fertility * 5;
     }
     
-    private short
-    getLandTerrain(int x, int y) throws MapOutOfBoundsException {
+    private Terrain
+    getLandTerrain(int x, int y) throws MapException {
         short       t = LAND_BASE;
         int         roll = (int)(Math.random()*5);
         int         latitude = y;
+        ITileSet    set = map.getTileSet(0);
         
-        if (y > map.getHeight()/2) {
-            latitude = map.getHeight() - y;
+        if (y > set.getMapHeight()/2) {
+            latitude = set.getMapHeight() - y;
         }
-        latitude = (int)(90 * (latitude/(map.getHeight()/2.0)));
+        latitude = (int)(90 * (latitude/(set.getMapHeight()/2.0)));
         // Now make sure latitude is 0 for equator, 90 for pole.
         latitude = (90 - latitude);
         
         try {
             int     heightMod = 0;
-            if (map.getHeight(x, y) < ocean+5) {
+            if (set.getAltitude(x, y) < ocean+5) {
                 heightMod = 0;
-            } else if (map.getHeight(x, y) < ocean+10) {
+            } else if (set.getAltitude(x, y) < ocean+10) {
                 heightMod = 1;
-            } else if (map.getHeight(x, y) < ocean+15) {
+            } else if (set.getAltitude(x, y) < ocean+15) {
                 heightMod = 2;
-            } else if (map.getHeight(x, y) < ocean+25) {
+            } else if (set.getAltitude(x, y) < ocean+25) {
                 heightMod = 3;
             } else {
                 heightMod = 4;
@@ -493,52 +497,52 @@ public class GaianWorld extends WorldGenerator {
                 t = (short)(LAND_BASE + fertility);
             }
     
-            if (map.getHeight(x, y) > 105) {
-                map.setFeature(x, y, map.getFeatureSet().getTerrain("highmnts").getId());
-            } else if (map.getHeight(x, y) > 100) {
-                map.setFeature(x, y, map.getFeatureSet().getTerrain("lowmnts").getId());
+            if (set.getAltitude(x, y) > 105) {
+                set.setFeature(x, y, map.getFeatureSet().getTerrain("highmnts"));
+            } else if (set.getAltitude(x, y) > 100) {
+                set.setFeature(x, y, map.getFeatureSet().getTerrain("lowmnts"));
             }
         } catch (Exception e) {
             
         }
-        return t;
+        return map.getTerrainSet().getTerrain(t);
     }
     
     protected void
     colour() {
         try {
-            int     iceLine = (int)(map.getHeight() * (glacial/100.0));
+            ITileSet    set = map.getTileSet(0);
+            int     iceLine = (int)(set.getMapHeight() * (glacial/100.0));
 
-            for (int x=0; x < map.getWidth(); x++) {
-                for (int y=0; y < map.getHeight(); y++) {
-                    if (map.getTerrain(0, x, y) != 0) {
-                        if (map.getHeight(x, y) <= ocean) {
-                            map.setTerrain(x, y, getOceanTerrain(x, y));
+            for (int x=0; x < set.getMapWidth(); x++) {
+                for (int y=0; y < set.getMapHeight(); y++) {
+                    if (set.getTerrain(x, y).getId() != 0) {
+                        if (set.getAltitude(x, y) <= ocean) {
+                            set.setTerrain(x, y, getOceanTerrain(x, y));
                         } else {
-                            map.setTerrain(x, y, getLandTerrain(x, y));
+                            set.setTerrain(x, y, getLandTerrain(x, y));
                         }
                     }
                 }
             }            
-        } catch (MapOutOfBoundsException e) {
+        } catch (MapException e) {
             e.printStackTrace();
         }
         
     }
     
     protected void
-    generateGaian() {
+    generateGaian() throws MapException {
         landscape();
         munge();
         colour();
     }
     
     protected void
-    generateProtoGaian() {
+    generateProtoGaian() throws MapException {
         setHumidity(0);
         landscape();
         munge();
         colour();
     }
-
 }
