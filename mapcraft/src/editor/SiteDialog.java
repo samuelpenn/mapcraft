@@ -9,6 +9,8 @@ public class SiteDialog extends JDialog {
     private Site        site;
     private JTextField  name;
     private JTextField  description;
+    private JButton     okay;
+    private JButton     cancel;
     
     public String
     getName() {
@@ -19,9 +21,18 @@ public class SiteDialog extends JDialog {
         return "";
     }
     
+    public String
+    getDescription() {
+        if (description != null) {
+            return description.getText();
+        }
+        
+        return "";
+    }
+    
     public
-    SiteDialog(Site site) {
-        super();
+    SiteDialog(Site site, JFrame frame) {
+        super(frame, "Edit site", true);
         this.site = site;
         
         GridBagLayout       gridbag = new GridBagLayout();
@@ -30,10 +41,11 @@ public class SiteDialog extends JDialog {
         getContentPane().setLayout(gridbag);
 
         c.fill = GridBagConstraints.BOTH;
-        c.weightx = c.weighty = 1.0;
+        c.weightx = 1.0;
+        c.weighty = 0.0;
 
-        name = new JTextField("Unnamed", 20);
-        description = new JTextField("Unknown", 30);
+        name = new JTextField(site.getName(), 20);
+        description = new JTextField(site.getDescription(), 30);
 
         label = new JLabel("Name");
         c.gridx = 0;
@@ -55,14 +67,21 @@ public class SiteDialog extends JDialog {
         gridbag.setConstraints(description, c);
         getContentPane().add(description);
 
-
+        /*
+        c.gridy = 2;
+        c.gridx = 1;
+        c.weightx = 0.0;
+        okay = new JButton("Okay");
+        gridbag.setConstraints(okay, c);
+        getContentPane().add(okay);
+        */
         setSize(new Dimension(300,150));
         setVisible(true);
     }
-    
+
     public static void
     main(String args[]) {
         Site        site = new Site((short)1, "London", "Large city");
-        SiteDialog  dialog = new SiteDialog(site);
+        //SiteDialog  dialog = new SiteDialog(site);
     }
 }

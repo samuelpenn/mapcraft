@@ -115,6 +115,11 @@ public class MapEditor extends MapViewer
                     Site    site = new Site(brush.getSelected(), "Unnamed", "Unknown");
                     info("Applying site brush "+brush.getSelected());
                     map.getTile(x, y).setSite(site);
+                    info("Opening dialog");
+                    SiteDialog dialog = new SiteDialog(site, frame);
+                    info("Finished dialog");
+                    site.setName(dialog.getName());
+                    site.setDescription(dialog.getDescription());
                 } else {
                     // Do nothing.
                 }

@@ -92,6 +92,12 @@
         </terrain>
     </terrainset>
     <terrainset id="places" path="places">
+        <terrain id="0">
+            <name>null</name>
+            <description>Empty</description>
+            <image>hex.png</image>
+            <solid value="false"/>
+        </terrain>
         <terrain id="1">
             <name>town.village</name>
             <description>Village</description>
@@ -461,8 +467,8 @@
 
     <sites>
         <site type="2" x="21" y="44">
-            <name>Unnamed</name>
-            <description>Unknown</description>
+            <name>Sarkum</name>
+            <description>Castle</description>
         </site>
     </sites>
 </map>

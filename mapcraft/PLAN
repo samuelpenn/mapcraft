@@ -7,7 +7,7 @@ Project Plan
 *   Support scrolling map.
 *   Support terrain palette.
 *   Support named places.
-    Display labels for places.
+*   Display labels for places.
     Edit place info.
 *   Try and use PNG format graphics.
     Move source files into package directories.

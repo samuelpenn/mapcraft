@@ -99,7 +99,8 @@ public class MapViewer extends JPanel {
     /**
      * Constructor to load a map from a file and display it.
      */
-    public MapViewer(String filename) {
+    public
+    MapViewer(String filename) {
         super(true);
 
         toolkit = Toolkit.getDefaultToolkit();
@@ -188,9 +189,24 @@ public class MapViewer extends JPanel {
                         g.drawImage(icon, xp, ypp, this);
                     }
 
+                    // If tile has a site associated with it,
+                    // display it along with its name.
                     if (map.isSite(x, y)) {
                         icon = siteSet.getIcon(map.getSiteMask(x, y));
                         g.drawImage(icon, xp, ypp, this);
+                    }
+                }
+            }
+            // Now draw labels. Need to draw these last so
+            // that they don't get overwritten by tiles.
+            for (y = 0; y < map.getHeight(); y++) {
+                yp = y * tileYSize;
+                for (x = 0; x < map.getWidth(); x++) {
+                    if (map.isSite(x, y)) {
+                        // Show name, should be configurable.
+                        xp = x * tileXSize;
+                        ypp = yp + ((x%2 == 0)?0:tileYOffset);
+                        g.drawString(map.getSite(x, y).getName(), xp, ypp);
                     }
                 }
             }
@@ -225,6 +241,8 @@ public class MapViewer extends JPanel {
             if (map.isSite(x, y)) {
                 icon = siteSet.getIcon(map.getSiteMask(x, y));
                 g.drawImage(icon, xp, yp, this);
+                // Show name, should be configurable.
+                g.drawString(map.getSite(x, y).getName(), xp, yp);
             }
         } catch (Exception e) {
             System.out.println("Failed to paint tile "+x+", "+y);
