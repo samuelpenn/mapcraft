@@ -852,6 +852,16 @@ public class MapEditor extends MapViewer
         }
     }
 
+    public void
+    crop() {
+        try {
+            CropDialog  dialog = new CropDialog(map, frame);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void
     main(String args[]) {
         Options options = new Options(args);

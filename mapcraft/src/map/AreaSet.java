@@ -115,6 +115,20 @@ import java.util.*;
         return array;
     }
 
+    public String[]
+    toNameArray() {
+        String[]    names = new String[list.size()];
+        Iterator    iter = iterator();
+        int         i = 0;
+
+        while (iter.hasNext()) {
+            Area    a = (Area)iter.next();
+            names[i++] = a.getName();
+        }
+
+        return names;
+    }
+
     /**
      * Needed so that we can use the general Pane class for displaying the
      * areas. Just pretend to be terrain.

@@ -96,6 +96,7 @@ public class MapCraft implements ActionListener {
         menubar.add(new FileMenu(this));
         menubar.add(new EditMenu(this));
         menubar.add(new ViewMenu(this));
+        menubar.add(new ToolMenu(this));
         menubar.setVisible(true);
 
         window.setJMenuBar(menubar);

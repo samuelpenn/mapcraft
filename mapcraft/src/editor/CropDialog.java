@@ -13,6 +13,7 @@
 package uk.co.demon.bifrost.rpg.mapcraft.editor;
 
 import uk.co.demon.bifrost.rpg.mapcraft.map.*;
+import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -30,6 +31,7 @@ public class CropDialog extends JDialog implements ItemListener {
     private GridBagConstraints  c;
 
     private JComboBox           cropType;
+    private Map                 map;
 
 
     public void
@@ -49,6 +51,17 @@ public class CropDialog extends JDialog implements ItemListener {
         return box;
     }
 
+    private JComboBox
+    createAreaCombo() {
+        String[]    labels = null;
+        JComboBox   box = null;
+        AreaSet     areas = map.getAreaSet();
+
+        box = new JComboBox(areas.toNameArray());
+
+        return box;
+    }
+
     /**
      * Create a modal thing editor dialog. When constructor returns, all
      * the data has been set up for the thing.
@@ -59,7 +72,7 @@ public class CropDialog extends JDialog implements ItemListener {
      * @param basePath  Base path to thing icons to use in dialog.
      */
     public
-    CropDialog(Thing thing, JFrame frame) {
+    CropDialog(Map map, JFrame frame) {
         super(frame, "Crop map", true);
 
         if (frame != null) {
@@ -69,6 +82,7 @@ public class CropDialog extends JDialog implements ItemListener {
             p.translate(80, 40);
             setLocation(p);
         }
+        this.map = map;
 
         gridbag = new GridBagLayout();
         c = new GridBagConstraints();
@@ -80,6 +94,15 @@ public class CropDialog extends JDialog implements ItemListener {
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 1.0;
         c.weighty = 0.0;
+
+        add(new Label("Margin"), 0, 1, 1, 1);
+        add(new TextField(5), 1, 1, 2, 1);
+
+        add(new Label("Crop type"), 0, 0, 1, 1);
+        add(cropType = createTypeCombo(), 1, 0, 2, 1);
+
+        add(new Label("Area"), 0, 2, 1, 1);
+        add(createAreaCombo(), 1, 2, 2, 1);
 
 
         setSize(new Dimension(300, 400));

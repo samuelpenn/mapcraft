@@ -74,6 +74,8 @@ public class Actions {
     public final static String  EDIT_DELETE         = "edit.delete";
     public final static String  EDIT_INSERT         = "edit.insert";
 
+    public final static String  TOOL_CROP           = "tool.crop";
+
     public class Actor extends AbstractAction {
         private ActionListener  listener;
 
@@ -163,6 +165,9 @@ public class Actions {
             addLocal(EDIT_INSERT, "Insert", "insert");
             addLocal(EDIT_EDIT, "Edit", "edit");
             addLocal(EDIT_DELETE, "Delete", "delete");
+
+            // Tools
+            addLocal(TOOL_CROP, "Crop", "crop");
 
         }
     }

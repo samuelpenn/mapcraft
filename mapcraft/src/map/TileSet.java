@@ -622,7 +622,50 @@ public class TileSet implements Cloneable {
             if (maxY >= height) maxY = height-1;
         }
 
-        crop(minX, minY, maxX-minX + 1, maxY-minY + 1);
+        if (found) {
+            crop(minX, minY, maxX-minX + 1, maxY-minY + 1);
+        }
+    }
+
+
+    /**
+     * Crop the tiles to the highlighted region. If nothing is highlighted,
+     * then no cropping is performed.
+     */
+    public void
+    cropToHighlighted() throws MapOutOfBoundsException {
+        int     minX, minY, maxX, maxY;
+        int     x, y;
+        boolean found = false;
+
+        minX = minY = maxX = maxY = -1;
+        for (x=0; x < width; x++) {
+            for (y=0; y < height; y++) {
+                try {
+                    if (isHighlighted(x, y)) {
+                        if (!found || x < minX) {
+                            minX = x;
+                        }
+                        if (!found || x > maxX) {
+                            maxX = x;
+                        }
+                        if (!found || y < minY) {
+                            minY = y;
+                        }
+                        if (!found || y > maxY) {
+                            maxY = y;
+                        }
+                        found = true;
+                    }
+                } catch (MapOutOfBoundsException moobe) {
+                    System.out.println(moobe);
+                }
+            }
+        }
+
+        if (found) {
+            crop(minX, minY, maxX-minX + 1, maxY-minY + 1);
+        }
     }
 
     /**
