@@ -465,13 +465,19 @@ public class MapViewer extends JPanel {
     drawRivers(Graphics2D g) {
         int     i = 0, e = 0;
 
-        g.setColor(new Color(184, 253, 253));
         for (i=0; i < map.getRivers().size(); i++) {
+            debug("Drawing river "+i);
 
             Path    path = (Path)map.getRivers().elementAt(i);
             Shape   shape = path.getGraphicsShape(g, tileXSize, tileYSize, tileYOffset,
                                                   iconWidth, iconHeight);
 
+            g.setStroke(new BasicStroke(path.getWidth()));
+            if (path.isHighlighted()) {
+                g.setColor(new Color(60, 60, 255));
+            } else {
+                g.setColor(new Color(184, 253, 253));
+            }
             g.draw(shape);
         }
     }

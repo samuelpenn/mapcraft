@@ -31,6 +31,8 @@ public class Path {
 
     protected String    name;
     protected Vector    elements;
+    protected int       width;
+    protected boolean   highlighted;
 
     /**
      * Inner class which describes an element of a path.
@@ -68,6 +70,7 @@ public class Path {
     public
     Path(String name, int x, int y) {
         this.name = name;
+        this.width = 3;
 
         Element e = new Element(START, x, y);
         elements = new Vector();
@@ -80,6 +83,11 @@ public class Path {
         int         pos = elements.size();
         Element     end = (Element)elements.lastElement();
 
+        if (getNearestVertex(x, y, 3) >= 0) {
+            // If this close to an existing vertex, forget it.
+            return;
+        }
+
         if (isAtEnd(x, y) || elements.size()<2) {
             if (end.getType() == END) {
                 end.setType(PATH);
@@ -88,7 +96,7 @@ public class Path {
         } else if (isAtStart(x, y)) {
             Element     start = (Element)elements.elementAt(0);
             start.setType(PATH);
-            elements.insertElementAt(new Element(START, x, y, 1), 0);
+            elements.insertElementAt(new Element(START, x, y, 5), 0);
         }
     }
 
@@ -120,19 +128,14 @@ public class Path {
         xs = transform.getScaleX();
         ys = transform.getScaleY();
 
-        System.out.println("Scales are "+xs+","+ys);
-
         for (i=0; i < elements.size(); i++) {
             Element e = (Element)elements.elementAt(i);
-            x = (float)e.getX() * xscale + (float)iconWidth/2;
-            y = (float)e.getY() * yscale + (float)iconHeight/2;
-
-            if (e.getX()%2 == 1) {
-                y += offset;
-            }
+            x = (float)e.getX() * (float)(xscale/100.0);
+            y = (float)e.getY() * (float)(yscale/100.0);
 
             //x = x * (float)xs;
             //y = y * (float)ys;
+            System.out.println("adding path "+x+","+y);
 
             if (p1 == null) {
                 p1 = new Point2D.Float(x, y);
@@ -165,6 +168,28 @@ public class Path {
         this.name = name;
     }
 
+    /**
+     * Return the basic width of the path.
+     */
+    public int
+    getWidth() {
+        return width;
+    }
+
+    public void
+    setWidth(int width) {
+        this.width = width;
+    }
+
+    public boolean
+    isHighlighted() {
+        return highlighted;
+    }
+
+    public void
+    setHighlighted(boolean highlighted) {
+        this.highlighted = highlighted;
+    }
 
     /**
      * Returns a Vector of all the elements in this path. The Vector
@@ -201,8 +226,9 @@ public class Path {
 
     public boolean
     isAtEnd(int x, int y) {
-        Element     e = (Element)elements.lastElement();
-        if (Map.isNextTo(x, y, e.getX(), e.getY())) {
+        int     v = getNearestVertex(x, y, 250);
+
+        if ((v != -1) && (v+1 == elements.size())) {
             return true;
         }
 
@@ -211,12 +237,59 @@ public class Path {
 
     public boolean
     isAtStart(int x, int y) {
-        Element     e = (Element)elements.elementAt(0);
-        if (Map.isNextTo(x, y, e.getX(), e.getY())) {
+        int     v = getNearestVertex(x, y, 250);
+
+        if (v == 0) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Return the index of the the vertex nearest the given point,
+     * or -1 if no vertex is within the maximum distance given.
+     */
+    public int
+    getNearestVertex(int x, int y, int m) {
+        int     index = -1;
+        long    dx, dy, d, max;
+        long    min = -1;
+
+        // Quicker if we work with squares of distances.
+        max = m * m;
+
+        for (int i = 0; i < elements.size(); i++) {
+            Element     e = (Element)elements.elementAt(i);
+
+            dx = e.getX() - x;
+            dy = e.getY() - y;
+            d = (dx * dx) + (dy * dy);
+            if (d <= max) {
+                if (min == -1 || d < min) {
+                    min = d;
+                    index = i;
+                }
+            }
+        }
+        System.out.println("Nearest vertex is "+index+" at "+min);
+
+        return index;
+    }
+
+    /**
+     * Returns the distance to the given vertex.
+     */
+    public int
+    getDistanceToVertex(int x, int y, int v) {
+        Element     e = (Element)elements.elementAt(v);
+        int         dx, dy, d;
+
+        dx = e.getX() - x;
+        dy = e.getY() - y;
+        d = (int)Math.sqrt((dx * dx)+(dy * dy));
+
+        return d;
     }
 
 }

@@ -1077,7 +1077,7 @@ public class Map implements Cloneable {
     addRiver(String name, int x, int y) throws MapOutOfBoundsException {
         Path    path = new Path(name, x, y);
 
-        tileSets[0].getTile(x, y).setRiver(true);
+        //tileSets[0].getTile(x, y).setRiver(true);
         rivers.add(path);
 
         return rivers.size();
@@ -1087,8 +1087,33 @@ public class Map implements Cloneable {
     extendRiver(int id, int x, int y) throws MapOutOfBoundsException {
         Path    river = getRiver(id);
 
-        tileSets[0].getTile(x, y).setRiver(true);
+        //tileSets[0].getTile(x, y).setRiver(true);
         river.add(x, y);
+    }
+
+    public void
+    unselectRivers() {
+        Path    river = null;
+        int     id = 0;
+
+        for (id=1; id <= rivers.size(); id++) {
+            System.out.println("Unselecting river "+id);
+            unselectRiver(id);
+        }
+    }
+
+    public void
+    unselectRiver(int id) {
+        Path    river = getRiver(id);
+
+        river.setHighlighted(false);
+    }
+
+    public void
+    selectRiver(int id) {
+        Path river = getRiver(id);
+
+        river.setHighlighted(true);
     }
 
     /**

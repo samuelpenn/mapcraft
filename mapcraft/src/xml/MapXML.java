@@ -773,6 +773,7 @@ public class MapXML {
                             type = Path.START;
                             path = new Path(name, getIntNode(values.getNamedItem("x")),
                                                   getIntNode(values.getNamedItem("y")));
+                            path.setWidth(getIntNode(values.getNamedItem("width")));
                             continue;
                         } else if (child.getNodeName().equals("end")) {
                             type = Path.END;

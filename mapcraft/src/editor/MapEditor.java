@@ -250,8 +250,11 @@ public class MapEditor extends MapViewer
                     // Have not yet selected a river.
                     String  name = "River "+(map.getRivers().size()+1);
                     info("Creating new river ["+name+"] at "+x+","+y);
-                    int     id = map.addRiver(name, x, y);
+                    int     id = map.addRiver(name, brush.getX(), brush.getY());
+                    info("created");
                     brush.setSelected(Brush.RIVERS, (short)id);
+                    map.unselectRivers();
+                    map.selectRiver(id);
                     drawRivers();
                 } else if (map.isRiver(x, y)) {
                     debug("There is already a river here");
@@ -262,13 +265,13 @@ public class MapEditor extends MapViewer
                     info("Adding new element to river");
                     Path.Element    end = river.getEndPoint();
                     Path.Element    start = river.getStartPoint();
-                    if (map.isNextTo(end.getX(), end.getY(), x, y)) {
+                    if (river.isAtEnd(brush.getX(), brush.getY())) {
                         debug("Next to end, so adding");
-                        map.extendRiver(brush.getSelected(), x, y);
+                        map.extendRiver(brush.getSelected(), brush.getX(), brush.getY());
                         drawRivers();
-                    } else if (map.isNextTo(start.getX(), start.getY(), x, y)) {
+                    } else if (river.isAtStart(brush.getX(), brush.getY())) {
                         debug("Next to start, so adding");
-                        map.extendRiver(brush.getSelected(), x, y);
+                        map.extendRiver(brush.getSelected(), brush.getX(), brush.getY());
                         drawRivers();
                     }
                 }
