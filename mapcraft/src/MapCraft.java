@@ -94,6 +94,7 @@ public class MapCraft implements ActionListener {
 
         menubar = new JMenuBar();
         menubar.add(new FileMenu(this));
+        menubar.add(new EditMenu(this));
         menubar.add(new ViewMenu(this));
         menubar.setVisible(true);
 
@@ -183,6 +184,12 @@ public class MapCraft implements ActionListener {
         toolbar.add(createToolbarButton(Actions.EDIT_TERRAIN));
         toolbar.add(createToolbarButton(Actions.EDIT_FEATURES));
         toolbar.add(createToolbarButton(Actions.EDIT_RIVERS));
+        
+        toolbar.addSeparator();
+
+        toolbar.add(createToolbarButton(Actions.EDIT_SMALL));
+        toolbar.add(createToolbarButton(Actions.EDIT_MEDIUM));
+        toolbar.add(createToolbarButton(Actions.EDIT_LARGE));
 
         return this.toolbar;
     }

@@ -19,7 +19,7 @@ package uk.co.demon.bifrost.rpg.mapcraft.editor;
  * is painted to, and a selection, which is the type of object
  * painted.
  */
-class Brush {
+public class Brush {
     public static final int NULL = 0;
     public static final int TERRAIN = 1;
     public static final int SITES = 2;
@@ -27,8 +27,13 @@ class Brush {
     public static final int HILLS = 4;
     public static final int HEIGHT = 5;
     public static final int FEATURES = 6;
+    
+    public static final int SMALL = 1;
+    public static final int MEDIUM = 2;
+    public static final int LARGE = 4;
 
     private int brush = TERRAIN;
+    private int size = SMALL;
 
     private short terrain = 1;
     private short river = 1;
@@ -43,6 +48,11 @@ class Brush {
     int
     getType() {
         return brush;
+    }
+    
+    int
+    getSize() {
+        return size;
     }
 
     short
@@ -63,6 +73,13 @@ class Brush {
     void
     setType(int type) {
         this.brush = type;
+    }
+    
+    void
+    setSize(int size) {
+        if (size == SMALL || size == MEDIUM || size == LARGE) {
+            this.size = size;
+        }
     }
 
     void

@@ -57,6 +57,9 @@ public class Actions {
     public final static String  EDIT_TERRAIN        = "edit.terrain";
     public final static String  EDIT_FEATURES       = "edit.features";
     public final static String  EDIT_RIVERS         = "edit.rivers";
+    public final static String  EDIT_SMALL          = "edit.small";
+    public final static String  EDIT_MEDIUM         = "edit.medium";
+    public final static String  EDIT_LARGE          = "edit.large";
 
     public class Actor extends AbstractAction {
         private ActionListener  listener;
@@ -129,6 +132,11 @@ public class Actions {
             addLocal(EDIT_TERRAIN, "Terrain Brush", "terrain");
             addLocal(EDIT_FEATURES, "Features Brush", "features");
             addLocal(EDIT_RIVERS, "Rivers Brush", "rivers");
+            
+            // Brushes
+            addLocal(EDIT_SMALL,"Small brush", "small-brush");
+            addLocal(EDIT_MEDIUM, "Medium brush", "medium-brush");
+            addLocal(EDIT_LARGE, "Large brush", "large-brush");
 
         }
     }

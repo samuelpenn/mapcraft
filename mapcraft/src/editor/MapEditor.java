@@ -121,7 +121,29 @@ public class MapEditor extends MapViewer
             switch (brush.getType()) {
             case Brush.TERRAIN:
                 info("Applying terrain brush "+brush.getSelected());
-                map.setTerrain(x, y, brush.getSelected());
+                switch (brush.getSize()) {
+                case Brush.MEDIUM:
+                    // A medium sized brush is 3 tiles across.
+                    for (int px = x - 1; px <= x+1; px++) {
+                        for (int py = y - 1; py <= y+1; py++) {
+                            map.setTerrain(px, py, brush.getSelected());
+                            paintTile(px, py);
+                        }
+                    }
+                    break;
+                case Brush.LARGE:
+                    // A large sized brush is 7 tiles across.
+                    for (int px = x - 3; px <= x+3; px++) {
+                        for (int py = y - 3; py <= y+3; py++) {
+                            map.setTerrain(px, py, brush.getSelected());
+                            paintTile(px, py);
+                        }
+                    }
+                    break;
+                default:
+                    map.setTerrain(x, y, brush.getSelected());
+                    break;
+                }
                 break;
             case Brush.FEATURES:
                 info("Applying feature brush");
@@ -155,6 +177,11 @@ public class MapEditor extends MapViewer
         }
 
         paintTile(x, y);
+    }
+    
+    public void
+    setBrushSize(int size) {
+        brush.setSize(size);
     }
 
 
