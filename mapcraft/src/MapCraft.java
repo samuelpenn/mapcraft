@@ -209,7 +209,7 @@ public class MapCraft implements ActionListener {
         return this.toolbar;
     }
 
-    
+
     public void
     actionPerformed(ActionEvent e) {
         System.out.println("ACTION ["+e.getActionCommand()+"]");

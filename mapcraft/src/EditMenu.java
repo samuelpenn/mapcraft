@@ -50,6 +50,11 @@ public class EditMenu extends JMenu implements ActionListener {
         addItem(Actions.EDIT_MEDIUM);
         addItem(Actions.EDIT_LARGE);
 
+        addItem(Actions.EDIT_TERRAIN);
+        addItem(Actions.EDIT_HILLS);
+        addItem(Actions.EDIT_FEATURES);
+        addItem(Actions.EDIT_AREAS);
+
     }
 
 
@@ -79,6 +84,16 @@ public class EditMenu extends JMenu implements ActionListener {
             application.getEditor().setBrushSize(Brush.MEDIUM);
         } else if (cmd.equals(Actions.EDIT_LARGE)) {
             application.getEditor().setBrushSize(Brush.LARGE);
+        } else if (cmd.equals(Actions.EDIT_RIVERS)) {
+            application.getEditor().setBrushType(Brush.RIVERS);
+        } else if (cmd.equals(Actions.EDIT_TERRAIN)) {
+            application.getEditor().setBrushType(Brush.TERRAIN);
+        } else if (cmd.equals(Actions.EDIT_FEATURES)) {
+            application.getEditor().setBrushType(Brush.FEATURES);
+        } else if (cmd.equals(Actions.EDIT_HILLS)) {
+            application.getEditor().setBrushType(Brush.HILLS);
+        } else if (cmd.equals(Actions.EDIT_AREAS)) {
+            application.getEditor().setBrushType(Brush.AREAS);
         }
     }
 

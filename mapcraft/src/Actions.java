@@ -139,7 +139,7 @@ public class Actions {
             addLocal(EDIT_SELECT, "Select", "select");
             addLocal(EDIT_TERRAIN, "Terrain Brush", "terrain");
             addLocal(EDIT_FEATURES, "Features Brush", "features");
-            addLocal(EDIT_FEATURES, "Area Brush", "terrain");
+            addLocal(EDIT_AREAS, "Area Brush", "terrain");
             addLocal(EDIT_RIVERS, "Rivers Brush", "rivers");
             addLocal(EDIT_HILLS, "Hills brush", "hills");
 

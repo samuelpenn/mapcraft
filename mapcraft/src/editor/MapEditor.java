@@ -252,10 +252,24 @@ public class MapEditor extends MapViewer
 
         paintTile(x, y);
     }
-    
+
+    /**
+     * Set the size of the brush.
+     */
     public void
     setBrushSize(int size) {
         brush.setSize(size);
+    }
+
+    /**
+     * Set the type of the brush. This defines whether we are painting
+     * terrain, sites, rivers, hills etc. Allowable brush types are
+     * defined in the Brush class.
+     */
+    public void
+    setBrushType(int type) {
+        debug("Setting brush type to be "+type);
+        brush.setType(type);
     }
 
 
