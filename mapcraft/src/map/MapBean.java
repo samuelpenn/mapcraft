@@ -691,7 +691,8 @@ public class MapBean implements Cloneable {
             Area    a = (Area)iter.next();
 
             writer.write("        <area id=\""+a.getId()+"\" name=\"");
-            writer.write(a.getName()+"\"/>\n");
+            writer.write(a.getName()+"\" ");
+            writer.write("uri=\""+a.getUri()+"\"/>\n");
         }
         writer.write("    </areas>\n");
     }

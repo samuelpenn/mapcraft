@@ -20,6 +20,7 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 /**
  * Implements a GUI dialog for controlling merging of two maps.
@@ -136,7 +137,7 @@ public class MergeDialog extends JDialog  {
 									}
 								 });
 
-        setSize(new Dimension(300, 350));
+        setSize(new Dimension(350, 350));
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -162,11 +163,11 @@ public class MergeDialog extends JDialog  {
 			try {
 				otherMap = new Map(filename);
 				mergeMap.setText(filename);
-				
+				/*
 				areas = otherMap.getAreaSet().toNameArray();
 				otherAreas = new JList(areas);
 				add(new JScrollPane(otherAreas), 3, 5, 2, 4);
-				
+				*/
 			} catch (MapException e) {
 				JOptionPane.showMessageDialog(null, e.getMessage(),
 						"Error loading map",
@@ -200,6 +201,34 @@ public class MergeDialog extends JDialog  {
     public boolean
     isOkay() {
         return isOkay;
+    }
+    
+    /**
+     * Get the map which we should merge from.
+     * 
+     * @return      Map object to merge from.
+     */
+    public Map
+    getMergeMap() {
+        return otherMap;
+    }
+    
+    /**
+     * Get list of all locked areas as an array of strings. Each item in the
+     * array contains the name of an area which has been locked.
+     * Locked areas should not be updated during the merge.
+     * @return
+     */
+    public String[]
+    getLockedAreas() {
+        ArrayList       array = new ArrayList();
+        int[]           selection = ourAreas.getSelectedIndices();
+        
+        for (int i=0; i < selection.length; i++) {
+            
+        }
+        
+        return (String[])array.toArray(new String[1]);
     }
 
     public static void

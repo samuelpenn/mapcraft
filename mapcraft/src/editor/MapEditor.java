@@ -886,7 +886,9 @@ public class MapEditor extends MapViewer
     merge() {
         try {
             MergeDialog dialog = new MergeDialog(map, frame);
-            map.merge(new Map(""));
+            if (dialog.isOkay()) {
+                map.merge(dialog.getMergeMap());
+            }
         } catch (MapException e) {
             e.printStackTrace();
         }
