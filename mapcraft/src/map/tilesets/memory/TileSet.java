@@ -10,12 +10,14 @@
  * $Date$
  */
 
-package net.sourceforge.mapcraft.map.tilesets;
+package net.sourceforge.mapcraft.map.tilesets.memory;
 
-import java.util.Vector;
+import java.util.*;
 
 import net.sourceforge.mapcraft.map.*;
 import net.sourceforge.mapcraft.map.elements.*;
+import net.sourceforge.mapcraft.map.tilesets.AbstractTileSet;
+
 
 /**
  * Defines a set of tiles for use in a map. The set is a two
@@ -25,43 +27,11 @@ import net.sourceforge.mapcraft.map.elements.*;
  * @version $Revision$
  */
 public class TileSet extends AbstractTileSet implements Cloneable {
+    
 
-    protected Tile[][]  tiles;
+    protected ArrayList    paths = null;
+    protected ArrayList    things = null;
     
-    private int[][]     terrain;
-    private int[][]     feature;
-    private short[][]   height;
-    private boolean[][] writable;
-
-    protected Vector    rivers = null;
-    protected Vector    things = null;
-    
-    // This mask is used for rotated terrain and features.
-    private static final int    MASK = 100000;
-    
-    protected int terrain(int x, int y) {
-        return terrain[y][x]%MASK;
-    }
-    
-    protected int feature(int x, int y) {
-        return feature[y][x]%MASK;
-    }
-    
-    protected int height(int x, int y) {
-        return height[y][x];
-    }
-    
-    protected int terrainRotation(int x, int y) {
-        return terrain[y][x] / MASK;
-    }
-    
-    protected int featureRotation(int x, int y) {
-        return feature[y][x] / MASK;
-    }
-    
-    protected boolean writable(int x, int y) {
-        return writable[y][x];
-    }
 
     /**
      * Create a new, empty, TileSet of the specified width and height.
@@ -93,20 +63,10 @@ public class TileSet extends AbstractTileSet implements Cloneable {
         this.mapHeight = height;
         this.mapScale = scale;
 
-        rivers = new Vector();
-        things = new Vector();
+        paths = new ArrayList();
+        things = new ArrayList();
         
-        this.terrain = new int[mapHeight][mapWidth];
-        this.feature = new int[mapHeight][mapWidth];
-        this.height = new short[mapHeight][mapWidth];
-        this.writable = new boolean[mapHeight][mapWidth];
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                this.writable[y][x] = true;
-                this.terrain[y][x] = 1;
-            }
-        }
+        tiles = new Tiles(width, height);
     }
 
     /**
@@ -120,17 +80,9 @@ public class TileSet extends AbstractTileSet implements Cloneable {
         try {
             ts = new TileSet(mapName, mapWidth, mapHeight, mapScale);
 
-            ts.terrain = new int[mapHeight][mapWidth];
-            ts.feature = new int[mapHeight][mapWidth];
-            ts.height = new short[mapHeight][mapWidth];
-            ts.writable = new boolean[mapHeight][mapWidth];
-            
             for (int y = 0; y < mapHeight; y++) {
                 for (int x = 0; x < mapWidth; x++) {
-                    ts.terrain[y][x] = terrain[y][x];
-                    ts.feature[y][x] = feature[y][x];
-                    ts.height[y][x] = height[y][x];
-                    ts.writable[y][x] = writable[y][x];
+                    ts.tiles.copyFrom(tiles, x, y, x, y);
                 }
             }
         } catch (InvalidArgumentException e) {
@@ -151,10 +103,10 @@ public class TileSet extends AbstractTileSet implements Cloneable {
      * needed is the original crop top-left coordinates, in order to work
      * out how far to translate everything.
      */
-    private void
+    protected void
     cropAllThings(int x, int y) {
         Thing       thing = null;
-        Vector      list = new Vector();
+        ArrayList   list = new ArrayList();
 
         if (things == null) {
             // Nothing to do.
@@ -169,7 +121,7 @@ public class TileSet extends AbstractTileSet implements Cloneable {
         for (int i=0; i < things.size(); i++) {
             boolean     okay = true;
 
-            thing = (Thing)things.elementAt(i);
+            thing = (Thing)things.get(i);
             thing.setPosition(thing.getX()-x, thing.getY()-y);
 
             System.out.println(thing);
@@ -184,7 +136,7 @@ public class TileSet extends AbstractTileSet implements Cloneable {
             }
         }
 
-        setThings(list);
+        things = list;
     }
 
     /**
@@ -192,28 +144,28 @@ public class TileSet extends AbstractTileSet implements Cloneable {
      * Removal of paths that don't fit on the new map is not currently
      * supported.
      */
-    private void
+    protected void
     cropAllPaths(int x, int y) {
         Path        path = null;
-        Vector      list = new Vector();
+        ArrayList   list = new ArrayList();
         // Translation coords are in tiles. Things are positioned in
-        // hundreths of a tile.
+        // hundredths of a tile.
         x *= 100;
         y *= 100;
 
-        if (rivers == null) {
+        if (paths == null) {
             // Nothing to do.
             return;
         }
 
-        for (int i=0; i < rivers.size(); i++) {
+        for (int i=0; i < paths.size(); i++) {
             boolean     okay = true;
 
-            path = (Path)rivers.elementAt(i);
+            path = (Path)paths.get(i);
             path.move(0-x, 0-y);
 
-            if (path.getMinX() > width * 100) okay = false;
-            if (path.getMinY() > height * 100) okay = false;
+            if (path.getMinX() > mapWidth * 100) okay = false;
+            if (path.getMinY() > mapHeight * 100) okay = false;
             if (path.getMaxX() < 0) okay = false;
             if (path.getMaxY() < 0) okay = false;
 
@@ -222,14 +174,14 @@ public class TileSet extends AbstractTileSet implements Cloneable {
             }
         }
 
-        setPaths(list);
+        paths = list;
    }
 
     /**
      * Crop this TileSet to the given size. The width and height must both
      * be positive - if not, a MapOutOfBoundsException is thrown.
      */
-    void
+    public void
     crop(int x, int y, int w, int h) throws MapOutOfBoundsException {
 
         // X-coordinate must be even. This is because of the strange
@@ -239,13 +191,11 @@ public class TileSet extends AbstractTileSet implements Cloneable {
             w+=1;
         }
 
-        System.out.println("Cropping "+x+","+y+","+w+","+h);
-
-        int     oldScale = scale;
+        int     oldScale = mapScale;
         if (isChild()) {
-            oldScale = parent.getScale();
+            oldScale = getParentsScale();
         }
-        parent = new Parent(oldScale, x, y);
+        setParent(oldScale, x, y);
 
         // Perform sanity checks.
         checkBounds(x, y);
@@ -253,15 +203,15 @@ public class TileSet extends AbstractTileSet implements Cloneable {
         if (w < 1 || h < 1) {
             throw new MapOutOfBoundsException("Crop size must be positive");
         }
-        Tile[][]    cropped = new Tile[h][w];
+        Tiles       cropped = new Tiles(w, h);
         for (int ix=0; ix < w; ix++) {
             for (int iy=0; iy < h; iy++) {
-                cropped[iy][ix] = tiles[y+iy][x+ix];
+                cropped.copyFrom(tiles, x+ix, y+iy, ix, iy);
             }
         }
         tiles = cropped;
-        width = w;
-        height = h;
+        mapWidth = w;
+        mapHeight = h;
 
         cropAllThings(x, y);
         cropAllPaths(x, y);
@@ -270,7 +220,7 @@ public class TileSet extends AbstractTileSet implements Cloneable {
     private void
     scaleAllThings(double factor) {
         for (int i=0; i < things.size(); i++) {
-            Thing   thing = (Thing)things.elementAt(i);
+            Thing   thing = (Thing)things.get(i);
 
             thing.setX((int)(thing.getX()*factor));
             thing.setY((int)(thing.getY()*factor));
@@ -280,12 +230,12 @@ public class TileSet extends AbstractTileSet implements Cloneable {
     private void
     scaleAllPaths(double factor) {
         Path        path = null;
-        Vector      list = new Vector();
+        ArrayList   list = new ArrayList();
 
-        for (int i=0; i < rivers.size(); i++) {
+        for (int i=0; i < paths.size(); i++) {
             boolean     okay = true;
 
-            path = (Path)rivers.elementAt(i);
+            path = (Path)paths.get(i);
             path.scale(factor);
 
             if (okay) {
@@ -293,7 +243,7 @@ public class TileSet extends AbstractTileSet implements Cloneable {
             }
         }
 
-        setPaths(list);
+        setPaths((Path[])list.toArray(new Path[1]));
     }
 
     /**
@@ -301,140 +251,89 @@ public class TileSet extends AbstractTileSet implements Cloneable {
      * of tiles is changed to reflect the new scale. If changing to a smaller
      * scale, then the number of tiles is increased.
      */
-    boolean
+    public void
     rescale(int newScale) {
-        double  factor = (double)scale / (double)newScale;
+        double  factor = (double)mapScale / (double)newScale;
 
-        if (newScale == scale) {
+        if (newScale == mapScale) {
             // Trivial case.
-            return true;
+            return;
         }
 
         int x = 0, y = 0;
         if (isChild()) {
-            x = parent.getXOffset();
-            y = parent.getYOffset();
+            x = getParentsXOffset();
+            y = getParentsYOffset();
         }
-        parent = new Parent(scale, x, y);
+        setParent(mapScale, x, y);
 
         scaleAllThings(factor);
         scaleAllPaths(factor);
 
-        if (newScale > scale) {
-            return scaleLarger(newScale);
+        if (newScale > mapScale) {
+            scaleLarger(newScale);
+        } else if (newScale < mapScale) {
+            scaleSmaller(newScale);
         }
-
-        if (newScale < scale) {
-            return scaleSmaller(newScale);
-        }
-        return true;
+        return;
     }
 
-    private boolean
+    protected void
     scaleLarger(int newScale) {
-        return false;
+        return;
     }
 
     /**
      * The new scale is smaller than current scale, so the map will get
      * bigger.
      */
-    private boolean
+    protected void
     scaleSmaller(int newScale) {
-        System.out.println("scaleSmaller: "+scale+" -> "+newScale);
-        if (scale%newScale != 0) {
+        System.out.println("scaleSmaller: "+mapScale+" -> "+newScale);
+        if (mapScale%newScale != 0) {
             // Can only cope with exact multiples.
-            //return false;
+            // return 0;
         }
 
-        double      factor = scale / newScale;
-        int         newWidth = (width * scale)/newScale;
-        int         newHeight = (height * scale)/newScale;
+        double      factor = mapScale / newScale;
+        int         newWidth = (mapWidth * mapScale)/newScale;
+        int         newHeight = (mapHeight * mapScale)/newScale;
 
         System.out.println("New width x height = "+newWidth+"x"+newHeight);
 
-        Tile[][]    scaled = new Tile[newHeight][newWidth];
+        Tiles    scaled = new Tiles(newWidth, newHeight);
 
         // top and bottom take care of the gaps caused by hexes at
         // the top and bottom edges of the map.
         for (int x=0; x < newWidth; x++) {
-            boolean     xIsEven = (((x * scale)/newScale)%2 == 0);
-            int         ox = (x * newScale)/scale;
+            boolean     xIsEven = (((x * mapScale)/newScale)%2 == 0);
+            int         ox = (x * newScale)/mapScale;
 
-            int         top = (int)(0.5 + (0.5 * scale / newScale));
-            int         bottom = (int)(0.5 * scale / newScale);
+            int         top = (int)(0.5 + (0.5 * mapScale / newScale));
+            int         bottom = (int)(0.5 * mapScale / newScale);
 
             if (xIsEven) {
                 for (int y = newHeight - bottom; y < newHeight; y++) {
-                    scaled[y][x] = new Tile(tiles[height-1][ox]);
+                    scaled.copyFrom(tiles, ox, mapHeight-1, x, y);
                 }
             } else {
                 for (int y = 0; y < top; y++) {
-                    scaled[y][x] = new Tile(tiles[0][ox]);
+                    scaled.copyFrom(tiles, ox, 0, x, y);
                 }
             }
             for (int y = 0; y < newHeight; y++) {
-                int     oy = (y * newScale)/scale;
-                scaled[y][x] = new Tile(tiles[oy][ox]);
+                int     oy = (y * newScale)/mapScale;
+                scaled.copyFrom(tiles, ox, oy, x, y);
             }
         }
-        width = newWidth;
-        height = newHeight;
+        mapWidth = newWidth;
+        mapHeight = newHeight;
         tiles = scaled;
-        scale = newScale;
+        mapScale = newScale;
 
-        return true;
+        return;
     }
 
-    /**
-     * Throw an exception if the provided coordinates are outside of the
-     * map boundary.
-     *
-     * @param x    X coordinate of point to check.
-     * @param y    Y coordinate of point to check.
-     */
-    private void
-    checkBounds(int x, int y) throws MapOutOfBoundsException {
-        if (x >= width || x < 0) {
-            throw new MapOutOfBoundsException("Tile x:"+x+" out of map bounds");
-        }
-        if (y >= height || y < 0) {
-            throw new MapOutOfBoundsException("Tile y:"+y+" out of map bounds");
-        }
-    }
-
-    public void
-    setTile(int x, int y, short terrain) throws MapOutOfBoundsException {
-        checkBounds(x, y);
-
-        try {
-            if (tiles[y][x] == null) {
-                tiles[y][x] =  new Tile(terrain, (short)0, true);
-            } else {
-                tiles[y][x].setTerrain(terrain);
-            }
-        } catch (ArrayIndexOutOfBoundsException abe) {
-            throw new MapOutOfBoundsException("Tile x:"+x+", y:"+y+" out of map bounds");
-        }
-    }
-
-    /**
-     * Set the given tile to be equal to the provided tile.
-     *
-     * @param x     X coordinate of tile to set.
-     * @param y     Y coordinate of tile to set.
-     * @param tile  Tile to set tile to.
-     */
-    public void
-    setTile(int x, int y, Tile tile) throws MapOutOfBoundsException {
-        checkBounds(x, y);
-
-        try {
-            tiles[y][x] = tile;
-        } catch (ArrayIndexOutOfBoundsException abe) {
-            throw new MapOutOfBoundsException("Tile x:"+x+", y:"+y+" out of map bounds");
-        }
-    }
 
     /**
      * Set a given tile according to information in a blob.
@@ -505,101 +404,12 @@ public class TileSet extends AbstractTileSet implements Cloneable {
         return blob.toString();
     }
 
-    public Tile
-    getTile(int x, int y) throws MapOutOfBoundsException {
-        if (x < 0 || x >= width) {
-            throw new MapOutOfBoundsException("Tile x:"+x+" out of map bounds");
-        }
-        if (y < 0 || y >= height) {
-            throw new MapOutOfBoundsException("Tile y:"+y+" out of map bounds");
-        }
-
-        return tiles[y][x];
-    }
 
 
-    public void
-    setTerrain(int x, int y, short t) throws MapOutOfBoundsException {
-        checkBounds(x, y);
-
-        tiles[y][x].setTerrain(t);
-    }
-
-    public void
-    setHeight(int x, int y, short h) throws MapOutOfBoundsException {
-        checkBounds(x, y);
-
-        tiles[y][x].setHeight(h);
-    }
-
-    public String getName() { return name; }
-    public int getHeight() { return height; }
-    public int getWidth() { return width; }
-    public int getScale() { return scale; }
-
-    /**
-     * Set the scale for the TileSet. The scale change does
-     * not perform any resizing of the TileSet.
-     *
-     * @param scale     Scale, in km, to set TileSet to.
-     */
-    public void
-    setScale(int scale) {
-        this.scale = scale;
-    }
 
 
-    /**
-     * Get the terrain id for the particular tile.
-     *
-     * @param x     X coordinate of the tile.
-     * @param y     Y coordinate of the tile.
-     *
-     * @return      Id of the terrain for this tile.
-     */
-    public short
-    getTerrain(int x, int y) throws MapOutOfBoundsException {
-        return getTile(x, y).getTerrain();
-    }
-
-    /**
-     * Get the height (in metres) for the particular tile.
-     *
-     * @param x     X coordinate of the tile.
-     * @param y     Y coordinate of the tile.
-     *
-     * @return      Id of the terrain for this tile.
-     */
-    public short
-    getHeight(int x, int y) throws MapOutOfBoundsException {
-        return getTile(x, y).getHeight();
-    }
-
-    public boolean
-    isWritable(int x, int y) throws MapOutOfBoundsException {
-        return getTile(x, y).isWritable();
-    }
 
 
-    public short
-    getArea(int x, int y) throws MapOutOfBoundsException {
-        return getTile(x, y).getArea();
-    }
-
-    public void
-    setArea(int x, int y, short area) throws MapOutOfBoundsException {
-        getTile(x, y).setArea(area);
-    }
-
-    public short
-    getFeature(int x, int y) throws MapOutOfBoundsException {
-        return getTile(x, y).getFeature();
-    }
-
-    public void
-    setFeature(int x, int y, short feature) throws MapOutOfBoundsException {
-        getTile(x, y).setFeature(feature);
-    }
 
     /**
      * Crop the tiles to the given area. The map is searched for all tiles
@@ -614,32 +424,28 @@ public class TileSet extends AbstractTileSet implements Cloneable {
      * @param margin    Number of tiles to add as a margin.
      */
     public void
-    cropToArea(short area, int margin) throws MapOutOfBoundsException {
+    cropToArea(Area area, int margin) throws MapOutOfBoundsException {
         int     minX, minY, maxX, maxY;
         int     x, y;
         boolean found = false;
 
         minX = minY = maxX = maxY = -1;
-        for (x=0; x < width; x++) {
-            for (y=0; y < height; y++) {
-                try {
-                    if (getArea(x, y) == area) {
-                        if (!found || x < minX) {
-                            minX = x;
-                        }
-                        if (!found || x > maxX) {
-                            maxX = x;
-                        }
-                        if (!found || y < minY) {
-                            minY = y;
-                        }
-                        if (!found || y > maxY) {
-                            maxY = y;
-                        }
-                        found = true;
+        for (x=0; x < mapWidth; x++) {
+            for (y=0; y < mapHeight; y++) {
+                if (tiles.area(x, y) == area) {
+                    if (!found || x < minX) {
+                        minX = x;
                     }
-                } catch (MapOutOfBoundsException moobe) {
-                    System.out.println(moobe);
+                    if (!found || x > maxX) {
+                        maxX = x;
+                    }
+                    if (!found || y < minY) {
+                        minY = y;
+                    }
+                    if (!found || y > maxY) {
+                        maxY = y;
+                    }
+                    found = true;
                 }
             }
         }
@@ -652,8 +458,8 @@ public class TileSet extends AbstractTileSet implements Cloneable {
 
             if (minX < 0) minX = 0;
             if (minY < 0) minY = 0;
-            if (maxX >= width) maxX = width-1;
-            if (maxY >= height) maxY = height-1;
+            if (maxX >= mapWidth) maxX = mapWidth-1;
+            if (maxY >= mapHeight) maxY = mapHeight-1;
         }
 
         if (found) {
@@ -673,26 +479,22 @@ public class TileSet extends AbstractTileSet implements Cloneable {
         boolean found = false;
 
         minX = minY = maxX = maxY = -1;
-        for (x=0; x < width; x++) {
-            for (y=0; y < height; y++) {
-                try {
-                    if (isHighlighted(x, y)) {
-                        if (!found || x < minX) {
-                            minX = x;
-                        }
-                        if (!found || x > maxX) {
-                            maxX = x;
-                        }
-                        if (!found || y < minY) {
-                            minY = y;
-                        }
-                        if (!found || y > maxY) {
-                            maxY = y;
-                        }
-                        found = true;
+        for (x=0; x < mapWidth; x++) {
+            for (y=0; y < mapHeight; y++) {
+                if (tiles.highlighted(x, y)) {
+                    if (!found || x < minX) {
+                        minX = x;
                     }
-                } catch (MapOutOfBoundsException moobe) {
-                    System.out.println(moobe);
+                    if (!found || x > maxX) {
+                        maxX = x;
+                    }
+                    if (!found || y < minY) {
+                        minY = y;
+                    }
+                    if (!found || y > maxY) {
+                        maxY = y;
+                    }
+                    found = true;
                 }
             }
         }
@@ -721,8 +523,8 @@ public class TileSet extends AbstractTileSet implements Cloneable {
 
         if (minX < 0) minX = 0;
         if (minY < 0) minY = 0;
-        if (maxX >= width) maxX = width - 1;
-        if (maxY >= height) maxY = height - 1;
+        if (maxX >= mapWidth) maxX = mapWidth - 1;
+        if (maxY >= mapHeight) maxY = mapHeight - 1;
 
         crop(minX, minY, maxX-minX + 1, maxY-minY + 1);
     }
@@ -742,33 +544,20 @@ public class TileSet extends AbstractTileSet implements Cloneable {
 
         if (minX < 0) minX = 0;
         if (minY < 0) minY = 0;
-        if (maxX >= width) maxX = width - 1;
-        if (maxY >= height) maxY = height - 1;
+        if (maxX >= mapWidth) maxX = mapWidth - 1;
+        if (maxY >= mapHeight) maxY = mapHeight - 1;
 
         crop(minX, minY, maxX-minX + 1, maxY-minY + 1);
     }
 
-    /**
-     * Replace all the rivers with the new set of rivers.
-     */
-    void
-    setPaths(Vector rivers) {
-        this.rivers = rivers;
+
+
+    public Path[] getPaths() {
+        return (Path[])paths.toArray(new Path[1]);
     }
 
-    void
-    setThings(Vector things) {
-        this.things = things;
-    }
-
-    Vector
-    getPaths() {
-        return rivers;
-    }
-
-    Vector
-    getThings() {
-        return things;
+    public Thing[] getThings() {
+        return (Thing[])things.toArray(new Thing[1]);
     }
 
     /**
@@ -788,7 +577,7 @@ public class TileSet extends AbstractTileSet implements Cloneable {
         String[]    names = new String[things.size()];
 
         for (int i=0; i < things.size(); i++) {
-            names[i] = ((Thing)things.elementAt(i)).getName();
+            names[i] = ((Thing)things.get(i)).getName();
         }
 
         return names;
@@ -799,7 +588,7 @@ public class TileSet extends AbstractTileSet implements Cloneable {
         Thing       thing = null;
 
         for (int i=0; i < things.size(); i++) {
-            thing = (Thing)things.elementAt(i);
+            thing = (Thing)things.get(i);
 
             if (thing.getName().equals(name)) {
                 return thing;
@@ -820,10 +609,10 @@ public class TileSet extends AbstractTileSet implements Cloneable {
         int         count = 0;
 
         if (type == 0) {
-            count = rivers.size();
+            count = paths.size();
         } else {
-            for (int i = 0; i < rivers.size(); i++) {
-                Path    path = (Path)rivers.elementAt(i);
+            for (int i = 0; i < paths.size(); i++) {
+                Path    path = (Path)paths.get(i);
                 if (path.getType() == type) {
                     count++;
                 }
@@ -834,8 +623,8 @@ public class TileSet extends AbstractTileSet implements Cloneable {
         }
 
         names = new String[count];
-        for (int i = 0, j = 0; i < rivers.size(); i++) {
-            Path        path = (Path)rivers.elementAt(i);
+        for (int i = 0, j = 0; i < paths.size(); i++) {
+            Path        path = (Path)paths.get(i);
             if (type == 0 || path.getType() == type) {
                 names[j++] = path.getName();
             }
@@ -849,20 +638,20 @@ public class TileSet extends AbstractTileSet implements Cloneable {
         Path        path;
 
         id--;
-        if (id > rivers.size()) {
+        if (id > paths.size()) {
             return null;
         }
-        path = (Path)rivers.elementAt(id);
+        path = (Path)paths.get(id);
 
         return path;
     }
 
-    Path
+    public Path
     getPath(String name) {
         Path        path;
 
-        for (int i = 0; i < rivers.size(); i++) {
-            path = (Path)rivers.elementAt(i);
+        for (int i = 0; i < paths.size(); i++) {
+            path = (Path)paths.get(i);
 
             if (path.getName().equals(name)) {
                 return path;
@@ -875,70 +664,45 @@ public class TileSet extends AbstractTileSet implements Cloneable {
     /**
      * Create and add a new river or road to the map.
      */
-    int
-    addPath(String name, int x, int y) {
-        rivers.add(new Path(name, x, y));
-
-        return rivers.size();
-    }
-
-    int
+    public Path
     addPath(String name, short type, short style, int x, int y) {
-        rivers.add(new Path(name, type, style, x, y));
+        Path    path = new Path(name, type, style, x, y); 
+        paths.add(path);
 
-        return rivers.size();
+        return path;
     }
 
 
-    void
-    extendPath(int id, int x, int y) {
-        Path    river = getPath(id);
-
-        river.add(x, y);
+    public void
+    removeThing(Thing thing) {
+        things.remove(thing);
     }
 
-    void
-    removeThing(int id) {
-        things.remove(id);
-    }
-
-    void
+    public void
     addThing(Thing thing) {
         things.add(thing);
     }
-
-    public short
-    getFeatureRotation(int x, int y) throws MapOutOfBoundsException {
-        return getTile(x, y).getFeatureRotation();
+    
+    public void setThings(Thing[] things) {
+        this.things = new ArrayList();
+        
+        if (things != null) {
+            for(int i=0; i < things.length; i++) {
+                this.things.add(things[i]);
+            }
+        }
     }
 
-    public void
-    setFeatureRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
-        getTile(x, y).setFeatureRotation(rotation);
+    public void setPaths(Path[] paths) {
+        this.paths = new ArrayList();
+        
+        if (paths != null) {
+            for(int i=0; i < paths.length; i++) {
+                this.paths.add(paths[i]);
+            }
+        }
     }
 
-    public short
-    getTerrainRotation(int x, int y) throws MapOutOfBoundsException {
-        return getTile(x, y).getTerrainRotation();
-    }
-
-    public void
-    setTerrainRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
-        getTile(x, y).setTerrainRotation(rotation);
-    }
-
-    /**
-     * Check to see if the given tile is highlighted.
-     */
-    public boolean
-    isHighlighted(int x, int y) throws MapOutOfBoundsException {
-        return getTile(x, y).isHighlighted();
-    }
-
-    public void
-    setHighlighted(int x, int y, boolean hl) throws MapOutOfBoundsException {
-        getTile(x, y).setHighlighted(hl);
-    }
 
     public static final String BASE64 = new String("ABCDEFGHIJKLMNOPQRSTUVWXYZ"+
                                                    "abcdefghijklmnopqrstuvwxyz"+
@@ -992,88 +756,21 @@ public class TileSet extends AbstractTileSet implements Cloneable {
      * @param oldArea       Area to be found and changed.
      * @param newArea       Area to set to, or zero to delete.
      */
-    public void
-    changeArea(short oldArea, short newArea) {
-        System.out.println("changeArea: "+oldArea+" -> "+newArea);
-        if (oldArea == 0) {
-            // Do nothing.
-            return;
-        }
-        for (int x=0; x < width; x++) {
-            for (int y=0; y < height; y++) {
-                try {
-                    if (getArea(x, y) == oldArea) {
-                        setArea(x, y, newArea);
+    public int
+    changeArea(Area oldArea, Area newArea) {
+        int     count = 0;
+        
+        if (oldArea != null) {
+            for (int x=0; x < mapWidth; x++) {
+                for (int y=0; y < mapHeight; y++) {
+                    if (tiles.area(x, y) == oldArea) {
+                        tiles.setArea(x, y, newArea);
+                        count++;
                     }
-                } catch (MapOutOfBoundsException e) {
                 }
             }
         }
+        return count;
     }
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#setTerrain(int, int, net.sourceforge.mapcraft.map.elements.Terrain)
-     */
-    public void setTerrain(int x, int y, Terrain terrain) throws MapOutOfBoundsException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#getMapHeight()
-     */
-    public int getMapHeight() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#getMapWidth()
-     */
-    public int getMapWidth() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#setFeature(int, int, net.sourceforge.mapcraft.map.elements.Terrain)
-     */
-    public void setFeature(int x, int y, Terrain feature) throws MapOutOfBoundsException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#setPaths(net.sourceforge.mapcraft.map.elements.Path[])
-     */
-    public void setPaths(Path[] paths) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#setThings(net.sourceforge.mapcraft.map.elements.Thing[])
-     */
-    public void setThings(Thing[] things) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#removeThing(net.sourceforge.mapcraft.map.elements.Thing)
-     */
-    public void removeThing(Thing thing) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /* (non-Javadoc)
-     * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#changeArea(net.sourceforge.mapcraft.map.elements.Area, net.sourceforge.mapcraft.map.elements.Area)
-     */
-    public int changeArea(Area oldArea, Area newArea) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
 }
 

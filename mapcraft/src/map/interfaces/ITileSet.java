@@ -104,7 +104,7 @@ public interface ITileSet {
     
     
     public void
-    setHeight(int x, int y, short h) throws MapOutOfBoundsException;
+    setAltitude(int x, int y, int h) throws MapOutOfBoundsException;
 
     public String getName();
     public int getMapHeight();
@@ -121,12 +121,12 @@ public interface ITileSet {
 
 
     /**
-     * Get the terrain id for the particular tile.
+     * Get the terrain type for the particular tile.
      *
      * @param x     X coordinate of the tile.
      * @param y     Y coordinate of the tile.
      *
-     * @return      Id of the terrain for this tile.
+     * @return      Terrain for this tile.
      */
     public Terrain getTerrain(int x, int y) throws MapOutOfBoundsException;
 
@@ -139,19 +139,19 @@ public interface ITileSet {
      * @return      Id of the terrain for this tile.
      */
     public int
-    getHeight(int x, int y) throws MapOutOfBoundsException;
+    getAltitude(int x, int y) throws MapOutOfBoundsException;
 
     public boolean
     isWritable(int x, int y) throws MapOutOfBoundsException;
 
 
-    public int
+    public Area
     getArea(int x, int y) throws MapOutOfBoundsException;
 
     public void
-    setArea(int x, int y, short area) throws MapOutOfBoundsException;
+    setArea(int x, int y, Area area) throws MapOutOfBoundsException;
 
-    public short
+    public Terrain
     getFeature(int x, int y) throws MapOutOfBoundsException;
 
     /**

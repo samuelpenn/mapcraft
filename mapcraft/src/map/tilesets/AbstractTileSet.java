@@ -26,6 +26,8 @@ public abstract class AbstractTileSet implements ITileSet {
     protected int         mapHeight = 0;
     protected int         mapWidth = 0;
     protected String      mapName = null;
+    
+    protected ITiles      tiles = null;
 
     /**
      * The Parent class keeps track of the parent of this tileSet. If this
@@ -88,18 +90,6 @@ public abstract class AbstractTileSet implements ITileSet {
         }
         return parent.getYOffset();
     }
-
-    // Following are internal methods to be implemented by sub classes.
-    // None of them throw exceptions or do any bounds checking of parameters,
-    // they assume that the caller is implemented correctly.
-    
-    protected abstract int terrain(int x, int y);
-    protected abstract int height(int x, int y);
-    protected abstract int feature(int x, int y);
-    protected abstract int terrainRotation(int x, int y);
-    protected abstract int featureRotation(int x, int y);
-    
-    
     
 
 
@@ -155,12 +145,120 @@ public abstract class AbstractTileSet implements ITileSet {
             throw new MapOutOfBoundsException("Coordinates are outside map");
         }
     }
+    
+    
+    public void setTerrain(int x, int y, Terrain terrain) 
+                throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        tiles.setTerrain(x, y, terrain);
+    }
+    
+    public Terrain getTerrain(int x, int y) throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        return tiles.terrain(x, y);
+    }
+    
+    public void setFeature(int x, int y, Terrain feature) 
+                throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        tiles.setFeature(x, y, feature);
+    }
+    
+    public Terrain getFeature(int x, int y) throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        return tiles.feature(x, y);
+    }
+    
+    public void setAltitude(int x, int y, int h) 
+                throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        tiles.setAltitude(x, y, h);
+    }
 
+    
+    public int getAltitude(int x, int y) throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        return tiles.altitude(x, y);
+    }
+    
+    public void setArea(int x, int y, Area area) 
+                throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        tiles.setArea(x, y, area);
+    }
+    
+    public Area getArea(int x, int y) throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        return tiles.area(x, y);
+    }
+    
+    public void setWritable(int x, int y, boolean writable)
+                throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        tiles.setWritable(x, y, writable);
+    }
+    
+    public boolean isWritable(int x, int y) throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        return tiles.writable(x, y);
+    }
+    
+    public void setHighlighted(int x, int y, boolean highlighted)
+                throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        tiles.setHighlighted(x, y, highlighted);
+    }
+    
+    public boolean isHighlighted(int x, int y) throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        return tiles.highlighted(x, y);
+    }
+    
+    
+    
+    public short
+    getFeatureRotation(int x, int y) throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        return tiles.featureRotation(x, y);
+    }
+
+    public void
+    setFeatureRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        tiles.setFeatureRotation(x, y, rotation);
+    }
+
+    public short
+    getTerrainRotation(int x, int y) throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        return tiles.terrainRotation(x, y);
+    }
+
+    public void
+    setTerrainRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
+        checkBounds(x, y);
+        tiles.setTerrainRotation(x, y, rotation);
+    }
+
+    
+
+    protected void
+    cropAllThings(int x, int y) {
+        return;
+    }
+    
+    protected void
+    cropAllPaths(int x, int y) {
+        return;
+    }
+    
+    
     
     /**
      * @see net.sourceforge.mapcraft.map.interfaces.ITileSet#crop(int, int, int, int)
      */
-    public void crop(int x, int y, int width, int height)
+    protected void 
+    crop(ITiles cropped, int x, int y, int width, int height)
             throws MapOutOfBoundsException {
 
         // X-coordinate must be even. This is because of the strange
@@ -182,15 +280,14 @@ public abstract class AbstractTileSet implements ITileSet {
         if (width < 1 || height < 1) {
             throw new MapOutOfBoundsException("Crop size must be positive");
         }
-        Tile[][]    cropped = new Tile[height][width];
         for (int ix=0; ix < width; ix++) {
             for (int iy=0; iy < height; iy++) {
-                cropped[iy][ix] = tiles[y+iy][x+ix];
+                cropped.copyFrom(tiles, x+ix, y+iy, ix, iy);
             }
         }
         tiles = cropped;
-        width = w;
-        height = h;
+        mapWidth = width;
+        mapHeight = height;
 
         cropAllThings(x, y);
         cropAllPaths(x, y);

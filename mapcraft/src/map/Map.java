@@ -24,7 +24,7 @@ import java.awt.image.*;
 import net.sourceforge.mapcraft.map.elements.Area;
 import net.sourceforge.mapcraft.map.elements.Thing;
 import net.sourceforge.mapcraft.map.tilesets.Tile;
-import net.sourceforge.mapcraft.map.tilesets.TileSet;
+import net.sourceforge.mapcraft.map.tilesets.memory.TileSet;
 import net.sourceforge.mapcraft.utils.Options;
 
 /**
