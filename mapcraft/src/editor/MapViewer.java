@@ -396,6 +396,23 @@ public class MapViewer extends JPanel {
     }
 
     /**
+     * Set whether the map should show area borders.
+     */
+    public void
+    setShowAreas(boolean show) {
+        showAreas = show;
+        paintComponent();
+    }
+
+    /**
+     * Is the map displaying area borders?
+     */
+    public boolean
+    isShowAreas() {
+        return showAreas;
+    }
+
+    /**
      * Is the map currently displaying hills?
      */
     public boolean
@@ -469,6 +486,9 @@ public class MapViewer extends JPanel {
 
     public void
     paintComponent() {
+        if (this.getGraphics() == null) {
+            return;
+        }
         paintComponent(this.getGraphics());
     }
 
@@ -521,11 +541,13 @@ public class MapViewer extends JPanel {
                 }
             }
 
-            drawRivers((Graphics2D)g);
+            if (showRivers) {
+                drawRivers((Graphics2D)g);
+            }
 
             // Now draw labels. Need to draw these last so that they don't
             // get overwritten by tiles. No labels are drawn for LOCAL maps.
-            if (map.getType() == Map.WORLD) {
+            if (map.getType() == Map.WORLD && showSites) {
                 for (y = startY; y < endY; y++) {
                     yp = y * tileYSize;
                     for (x = startX; x < endX; x++) {
@@ -711,7 +733,7 @@ public class MapViewer extends JPanel {
                 }
             }
 
-            if (map.isSite(x, y)) {
+            if (showSites && map.isSite(x, y)) {
                 int     sx=0, sy=0, rot=0;
 
                 icon = siteSet.getIcon(map.getSiteMask(x, y));

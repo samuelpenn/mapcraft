@@ -136,6 +136,9 @@ public class MapImage extends MapViewer {
             properties.setProperty("path.images", System.getProperty("user.dir")+"/images");
 
             map = new MapImage(properties, filename);
+            map.setShowSites(false);
+            map.setShowAreas(false);
+            map.setShowLargeGrid(false);
             map.saveImage("foo.jpg", 0);
         } catch (Exception e) {
             e.printStackTrace();
