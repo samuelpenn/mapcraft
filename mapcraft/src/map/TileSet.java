@@ -218,6 +218,11 @@ public class TileSet implements Cloneable {
             path = (Path)rivers.elementAt(i);
             path.move(0-x, 0-y);
 
+            if (path.getMinX() > width * 100) okay = false;
+            if (path.getMinY() > height * 100) okay = false;
+            if (path.getMaxX() < 0) okay = false;
+            if (path.getMaxY() < 0) okay = false;
+
             if (okay) {
                 list.add(path);
             }

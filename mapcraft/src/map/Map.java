@@ -257,7 +257,7 @@ public class Map extends MapBean implements Cloneable {
      *                  otherwise inserted/removed on the top.
      */
     public void
-    resize(int newWidth, int newHeight, boolean atRight, boolean atBottom)
+    resize(int newWidth, int newHeight, boolean atLeft, boolean atTop)
                 throws InvalidArgumentException {
 
         TileSet     resized = null;
@@ -286,10 +286,10 @@ public class Map extends MapBean implements Cloneable {
 
         int     xOffset = 0;
         int     yOffset = 0;
-        if (atRight) {
+        if (atLeft) {
             xOffset = dx;
         }
-        if (!atBottom) {
+        if (atTop) {
             yOffset = dy;
         }
 
