@@ -253,6 +253,7 @@ public class Map implements Cloneable {
             terrainSet = xml.getTerrainSet("basic");
             thingSet = xml.getTerrainSet("things");
             featureSet = xml.getTerrainSet("features");
+            setImageDir(xml.getImageDir());
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <map>
     <header>
-        <name>Terrain</name>
+        <name>Hexagonal World Map</name>
         <author>Samuel Penn</author>
         <id>hexterrain.0</id>
         <parent>none</parent>
@@ -12,10 +12,11 @@
         <type>World</type>
         <shape>Hexagonal</shape>
         <imagedir>hexagonal/standard</imagedir>
-        <format>0.0.3</format>
+        <format>0.1.0</format>
     </header>
     
-    <!-- Icons for terrain -->
+
+    <!-- Standard terrain set -->
     <terrainset id="basic" path=".">
         <terrain id="0">
             <name>null</name>
@@ -84,22 +85,120 @@
             <solid value="false"/>
         </terrain>
     </terrainset>
-
-    <!-- Icons for places -->
-    <terrainset id="places" path="places">
+    <!-- Things -->
+    <terrainset id="things" path="things">
         <terrain id="0">
             <name>null</name>
             <description>Empty</description>
             <image>clear.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="11">
+        <terrain id="1">
+            <name>settlement.village</name>
+            <description>Village</description>
+            <image>village.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="2">
+            <name>settlement.town</name>
+            <description>Town</description>
+            <image>town.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="3">
+            <name>castle.keep</name>
+            <description>Keep</description>
+            <image>keep.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="4">
             <name>castle.castle</name>
             <description>Castle</description>
             <image>castle.png</image>
             <solid value="false"/>
         </terrain>
+        <terrain id="5">
+            <name>misc.ruins</name>
+            <description>Ruins</description>
+            <image>ruins.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="6">
+            <name>misc.mines</name>
+            <description>Mines</description>
+            <image>mine.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="7">
+            <name>misc.label</name>
+            <description>Label</description>
+            <image>label.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="8">
+            <name>misc.peak</name>
+            <description>Peak</description>
+            <image>peak.png</image>
+            <solid value="false"/>
+        </terrain>
     </terrainset>
+    <!-- Features -->
+    <terrainset id="features" path="features">
+        <terrain id="0">
+            <name>clear</name>
+            <description>Clear</description>
+            <image>clear.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="1">
+            <name>lowhills</name>
+            <description>Low hills</description>
+            <image>lowhills.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="2">
+            <name>highhills</name>
+            <description>High hills</description>
+            <image>highhills.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="3">
+            <name>foothills</name>
+            <description>Foot hills</description>
+            <image>foothills.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="4">
+            <name>lowmnts</name>
+            <description>Low mountains</description>
+            <image>lowmnts.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="5">
+            <name>highmnts</name>
+            <description>High mountains</description>
+            <image>highmnts.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="6">
+            <name>marsh</name>
+            <description>Marshland</description>
+            <image>marsh.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="7">
+            <name>ice</name>
+            <description>Ice sheet</description>
+            <image>ice.png</image>
+            <solid value="false"/>
+        </terrain>
+    </terrainset>
+
+
+
+
+
+
 
     <tileset id="root">
         <dimensions>

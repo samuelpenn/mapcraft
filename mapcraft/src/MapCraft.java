@@ -245,7 +245,6 @@ public class MapCraft implements ActionListener {
             int         height = options.getInt("-height");
             int         scale = options.getInt("-scale");
             String      terrain = options.getString("-terrain");
-            String      imagedir = options.getString("-images");
             boolean     square = options.isOption("-square");
             boolean     local = options.isOption("-local");
 
@@ -257,11 +256,6 @@ public class MapCraft implements ActionListener {
                 }
                 if (local) {
                     newmap.setType(Map.LOCAL);
-                }
-                if (imagedir != null) {
-                    newmap.setImageDir(imagedir);
-                } else {
-                    newmap.setImageDir(".");
                 }
                 newmap.loadTerrainSet(terrain);
                 newmap.save(name+".map");

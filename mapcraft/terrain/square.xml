@@ -13,7 +13,7 @@
         <type>Local</type>
         <shape>Square</shape>
         <imagedir>square</imagedir>
-        <format>0.0.2</format>
+        <format>0.1.0</format>
     </header>
 
     <terrainset id="basic" path=".">
@@ -68,7 +68,7 @@
 
     </terrainset>
 
-    <terrainset id="places" path="features">
+    <terrainset id="features" path="features">
         <terrain id="0">
             <name>blank</name>
             <description>Nothing</description>
@@ -87,90 +87,93 @@
             <image>vert-bars.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="10">
+        <terrain id="3">
             <name>column.small</name>
             <description>Small column</description>
             <image>column-small.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="11">
+        <terrain id="4">
             <name>column.medium</name>
             <description>Medium column</description>
             <image>column-medium.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="12">
+        <terrain id="5">
             <name>column.large</name>
             <description>Large column</description>
             <image>column-large.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="20">
+        <terrain id="6">
             <name>door.north</name>
             <description>Door north</description>
             <image>door-north.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="21">
+        <terrain id="7">
             <name>door.east</name>
             <description>Door east</description>
             <image>door-east.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="22">
+        <terrain id="8">
             <name>door.south</name>
             <description>Door south</description>
             <image>door-south.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="23">
+        <terrain id="9">
             <name>door.west</name>
             <description>Door west</description>
             <image>door-west.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="30">
+        <terrain id="10">
             <name>furniture.barrel</name>
             <description>Wooden barrel</description>
             <image>barrel.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="31">
+        <terrain id="11">
             <name>furniture.table</name>
             <description>Table</description>
             <image>table-ns.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="32">
+        <terrain id="12">
             <name>furniture.table</name>
             <description>Table</description>
             <image>table-ew.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="33">
+        <terrain id="13">
             <name>furniture.bed1</name>
             <description>Bed</description>
             <image>bed-top.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="34">
+        <terrain id="14">
             <name>furniture.bed2</name>
             <description>Bed</description>
             <image>bed-bottom.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="35">
+        <terrain id="15">
             <name>misc.rubble</name>
             <description>Rubble</description>
             <image>rubble.png</image>
             <solid value="false"/>
         </terrain>
-        <terrain id="36">
+        <terrain id="16">
             <name>misc.rubble2</name>
             <description>Rubble 2</description>
             <image>rubble2.png</image>
             <solid value="false"/>
         </terrain>
+    </terrainset>
+
+    <terrainset id="things" path="things">
     </terrainset>
 
     <tileset id="root">
