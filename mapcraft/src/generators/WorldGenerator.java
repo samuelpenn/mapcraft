@@ -18,22 +18,22 @@ import net.sourceforge.mapcraft.map.*;
  * 
  * @author Samuel Penn
  */
-public class WorldGenerator {
-    private Map         map = null;
-    private WorldUtils  utils = null;
+public abstract class WorldGenerator {
+    protected Map         map = null;
+    protected WorldUtils  utils = null;
     
-    private int         GREY = 1;
-    private int         YELLOW = 16;
-    private int         RED = 32;
+    protected int         GREY = 1;
+    protected int         YELLOW = 16;
+    protected int         RED = 32;
     
     // Types of worlds.
-    private static final int    SELENIAN = 1;
-    private static final int    HERMIAN = 2;
-    private static final int    AREAN = 3;
+    public static final int    SELENIAN = 1;
+    public static final int    HERMIAN = 2;
+    public static final int    AREAN = 3;
     
-    private int         worldType = SELENIAN;
+    protected int         worldType = SELENIAN;
     
-    private String
+    protected String
     toColour(int c) {
         if (c < 0) c = 0;
         if (c > 255) c = 255;
@@ -46,7 +46,7 @@ public class WorldGenerator {
         return string;
     }
     
-    private String
+    protected String
     toColour(int r, int g, int b) {
         String  red = toColour(r); 
         String  green = toColour(g);
@@ -58,88 +58,21 @@ public class WorldGenerator {
     public
     WorldGenerator(String name, int radius) {
         try {
-            map = new Map(name, radius, 50);
+            map = new Map(name, radius, 75);
             map.loadTerrainSet("terrain/celestia.xml");
             map.setImageDir("hexagonal/world");
             
             utils = new WorldUtils(map);
-            // Default to totally random map.
-            //randomise(1, 16);
-            //heightMap();
-            setWorldType(HERMIAN);
+
+            worldType = 0;
         } catch (MapException e) {
             e.printStackTrace();
         }
     }
     
-    /**
-     * Define the terrain types for Moon-like Selenian worlds.
-     * These tend to consist of greys, with no real colour.
-     */
-    private void
-    setupSelenian() {
-        TerrainSet      ts = map.getTerrainSet();
-
-        for (int i = 1; i < 17; i++) {
-            String      tag = "grey."+i;
-            int         c = 50 + i*12;
-            String      colour = toColour(c, c, c);
-            ts.add((short)(GREY+i-1), tag, tag, colour);
-        }
-    }
+    public abstract void
+    setWorldType(int worldType);
     
-    /**
-     * Define the terrain types for Mercury-like Hermian worlds.
-     * These tend to have reddish orange uplands with yellow or
-     * white plains.
-     */
-    private void
-    setupHermian() {
-        TerrainSet      ts = map.getTerrainSet();
-        
-        for (int i = 1; i < 17; i++) {
-            String      tag = "hermian."+i;
-            String      colour = toColour(i*15, i*(i-1), 2*i*(i-8));
-            colour = toColour(255 - (i*12), 255 - (i*17), 200 - (i*25));
-            ts.add((short)(GREY+i-1), tag, tag, colour);
-        }
-    }
-    
-    /**
-     * Setup Mars-like worlds.
-     */
-    private void
-    setupArean() {
-        TerrainSet      ts = map.getTerrainSet();
-
-        for (int i = 1; i < 17; i++) {
-            String      tag = "red."+i;
-            String      colour = toColour(i*12, 0, 0);
-            ts.add((short)(RED+i-1), tag, tag, colour);
-        }
-
-        for (int i = 1; i < 17; i++) {
-            String      tag = "yellow."+i;
-            String      colour = toColour(i*12, i*15, 0);
-            ts.add((short)(YELLOW+i-1), tag, tag, colour);
-        }
-    }
-    
-    public void
-    setWorldType(int worldType) {
-        this.worldType = worldType;
-        switch (worldType) {
-        case SELENIAN:
-            setupSelenian();
-            break;
-        case HERMIAN:
-            setupHermian();
-            break;
-        case AREAN:
-            setupArean();
-            break;
-        }
-    }
     
     protected void
     save(String filename) throws java.io.IOException {
@@ -224,11 +157,26 @@ public class WorldGenerator {
         return true;
     }
     
+    /**
+     * Generates a random height map for the world, trying to
+     * smooth out changes in the height. Any given tile will tend
+     * to have a similar height to surrounding tiles.
+     */
     protected void
     heightMap() {
         short     height = 1000;
         for (int y=0; y < map.getHeight(); y++) {
-            int     left = -1;
+            int     left = -1, right = map.getWidth();
+            for (int x = 0; x < map.getWidth(); x++) {
+                if (isValid(x, y) && left == -1) {
+                    left = x;
+                }
+                if (!isValid(x, y) && left > -1) {
+                    right = x;
+                    break;
+                }
+            }
+
             for (int x=0; x < map.getWidth(); x++) {
                 try {
                     int     counted = 0;
@@ -260,10 +208,16 @@ public class WorldGenerator {
                         }
                     }
 
+                    // Generate random height, based on surrounding tiles.
                     if (counted > 0) {
                         height = (short) (0.5 + (total / counted));
                         height += (short)(0.5+(Math.random()-Math.random())*20);
                     }
+                    
+                    // If we're close to the eastern edge, take into
+                    // account the west edge so we don't get mismatch.
+                    int     rd = right - x;
+                    height -= (height - map.getHeight(left, y))/rd;
                     
                     map.setHeight(x, y, height);
                 } catch (MapOutOfBoundsException e) {
@@ -273,6 +227,11 @@ public class WorldGenerator {
         }
     }
 
+    /**
+     * Generate a random height map for the world. Each tile is
+     * considered independently of the surrounding tiles, so it
+     * is truly without structure, and not realistic.
+     */
     protected void
     randomHeight() {
         int     height = 1000;
@@ -466,6 +425,11 @@ public class WorldGenerator {
         return d;
     }
     
+    public void
+    generate() {
+        heightMap();
+    }
+    
     public static void
     main(String[] args) throws Exception {
         WorldGenerator  generator = null;
@@ -481,10 +445,12 @@ public class WorldGenerator {
         System.out.println(utils.ra(150, 150));
 */        
 
-        generator = new WorldGenerator("foo", 2500);
+        generator = new TerrestrialWorld("foo", 2500);
+        generator.setWorldType(HERMIAN);
+        generator.generate();
         
-        generator.randomHeight();
-        generator.colourByHeight(1, 16);
+        //generator.randomHeight();
+        //generator.colourByHeight(1, 16);
         
         generator.save("/tmp/foo.map");
 
