@@ -81,6 +81,49 @@ public class MapViewer extends JPanel {
     protected void error(String message) { log(1, message); }
     protected void fatal(String message) { log(0, message); }
 
+    protected class HexFilter extends RGBImageFilter {
+        private int     width;
+        private int     height;
+        private int     h;
+        private double  SQRTHREE;
+
+        public
+        HexFilter(int width, int height) {
+            this.width = width;
+            this.height = height;
+
+            canFilterIndexColorModel = true;
+
+            SQRTHREE = Math.sqrt(3);
+            h = (int)((SQRTHREE/4)*width);
+            System.out.println(SQRTHREE);
+        }
+
+        public int
+        filterRGB(int x, int y, int rgb) {
+            int     dx = x;
+            int     dy = y;
+
+            if (y > h*2) {
+                return 0;
+            }
+
+            if (x > width/2) {
+                dx = width - x;
+            }
+            if (y > h) {
+                dy = (h*2) - y;
+            }
+
+            int  a = (int)(SQRTHREE*dx);
+            if ((h-dy) > a) {
+                rgb = 0;
+            }
+
+            return rgb;
+        }
+
+    }
 
     /**
      * Inner class which holds properties of each view on the image.
@@ -101,11 +144,10 @@ public class MapViewer extends JPanel {
         private int     fontSize;
 
         public
-        ViewProperties(String path) throws Exception {
+        ViewProperties(String basePath, String baseFile) throws Exception {
             FileInputStream     input = null;
-            String              file = path+"/icons.properties";
+            String              file = basePath+"/"+baseFile+".properties";
 
-            this.path = path;
             properties = new Properties();
 
             try {
@@ -114,13 +156,17 @@ public class MapViewer extends JPanel {
 
                 viewName = (String)properties.get("view.name");
                 viewShape = (String)properties.get("view.shape");
+                path = basePath + "/" + (String)properties.get("icon.path");
 
                 iconHeight = (int)Integer.parseInt((String)properties.get("icon.height"));
                 iconWidth = (int)Integer.parseInt((String)properties.get("icon.width"));
 
-                tileHeight = (int)Integer.parseInt((String)properties.get("tile.height"));
-                tileWidth = (int)Integer.parseInt((String)properties.get("tile.width"));
-                tileOffset = (int)Integer.parseInt((String)properties.get("tile.offset"));
+                tileHeight = (int)(Math.sqrt(3.0)/2.0 * iconWidth);
+                tileWidth = (int)(iconWidth * 3.0/4.0);
+                tileOffset = (int)(tileHeight/2.0);
+
+                System.out.println("ViewProperties["+baseFile+"] "+iconWidth+"x"+iconHeight+
+                                   " "+tileWidth+"x"+tileHeight+", +"+tileOffset);
 
             } catch (Exception e) {
                 System.out.println("Cannot load properties from file ["+file+"]");
@@ -193,6 +239,8 @@ public class MapViewer extends JPanel {
     readIcons(String name, TerrainSet set) {
         IconSet     iconSet = new IconSet(name);
         Iterator    iter = set.iterator();
+        HexFilter   filter = new HexFilter(views[view].getIconWidth(),
+                                           views[view].getIconHeight());
 
         if (iter == null || !iter.hasNext()) {
             warn("No iterator");
@@ -208,6 +256,12 @@ public class MapViewer extends JPanel {
                 //debug("Loading icon ["+path+"]");
                 Image   icon = toolkit.getImage(path);
                 toolkit.prepareImage(icon, -1, -1, this);
+
+                Image scaled = icon.getScaledInstance(views[view].getIconWidth(),
+                                                      views[view].getIconHeight(),
+                                                      Image.SCALE_SMOOTH);
+
+                icon = createImage(new FilteredImageSource(scaled.getSource(), filter));
                 iconSet.add(id, icon);
             }
         }
@@ -225,9 +279,9 @@ public class MapViewer extends JPanel {
     }
 
     private ViewProperties
-    getNewViewProperties(String path) {
+    getNewViewProperties(String path, String zoom) {
         try {
-            return new ViewProperties(path);
+            return new ViewProperties(path, zoom);
         } catch (Exception e) {
             return (ViewProperties) null;
         }
@@ -252,16 +306,15 @@ public class MapViewer extends JPanel {
             map = new Map(filename);
             path = path + "/"+map.getImageDir();
 
-            views = new ViewProperties[8];
-            views[0] = getNewViewProperties(path+"/usmall");
-            views[1] = getNewViewProperties(path+"/xxsmall");
-            views[2] = getNewViewProperties(path+"/xsmall");
-            views[3] = getNewViewProperties(path+"/small");
-            views[4] = getNewViewProperties(path+"/medium");
-            views[5] = getNewViewProperties(path+"/large");
-            views[6] = getNewViewProperties(path+"/xlarge");
-            views[7] = getNewViewProperties(path+"/xxlarge");
-            setView(4);
+            views = new ViewProperties[7];
+            views[0] = getNewViewProperties(path, "xxsmall");
+            views[1] = getNewViewProperties(path, "xsmall");
+            views[2] = getNewViewProperties(path, "small");
+            views[3] = getNewViewProperties(path, "medium");
+            views[4] = getNewViewProperties(path, "large");
+            views[5] = getNewViewProperties(path, "xlarge");
+            views[6] = getNewViewProperties(path, "xxlarge");
+            setView(3);
 
             readAllIcons();
 

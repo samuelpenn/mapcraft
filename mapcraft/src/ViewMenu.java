@@ -54,7 +54,6 @@ public class ViewMenu extends JMenu implements ActionListener {
         addItem(Actions.VIEW_ZOOMOUT);
 
         zoom = new JMenu("Zoom");
-        addItem(zoom, Actions.VIEW_USMALL);
         addItem(zoom, Actions.VIEW_XXSMALL);
         addItem(zoom, Actions.VIEW_XSMALL);
         addItem(zoom, Actions.VIEW_SMALL);
@@ -91,22 +90,20 @@ public class ViewMenu extends JMenu implements ActionListener {
 
         System.out.println("VIEWMENU ["+cmd+"]");
 
-        if (cmd.equals(Actions.VIEW_USMALL)) {
+        if (cmd.equals(Actions.VIEW_XXSMALL)) {
             application.getEditor().setView(0);
-        } else if (cmd.equals(Actions.VIEW_XXSMALL)) {
-            application.getEditor().setView(1);
         } else if (cmd.equals(Actions.VIEW_XSMALL)) {
-            application.getEditor().setView(2);
+            application.getEditor().setView(1);
         } else if (cmd.equals(Actions.VIEW_SMALL)) {
-            application.getEditor().setView(3);
+            application.getEditor().setView(2);
         } else if (cmd.equals(Actions.VIEW_MEDIUM)) {
-            application.getEditor().setView(4);
+            application.getEditor().setView(3);
         } else if (cmd.equals(Actions.VIEW_LARGE)) {
-            application.getEditor().setView(5);
+            application.getEditor().setView(4);
         } else if (cmd.equals(Actions.VIEW_XLARGE)) {
-            application.getEditor().setView(6);
+            application.getEditor().setView(5);
         } else if (cmd.equals(Actions.VIEW_XXLARGE)) {
-            application.getEditor().setView(7);
+            application.getEditor().setView(6);
         } else if (cmd.equals(Actions.VIEW_ZOOMIN)) {
             application.getEditor().zoomIn();
         } else if (cmd.equals(Actions.VIEW_ZOOMOUT)) {

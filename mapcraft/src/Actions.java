@@ -133,7 +133,6 @@ public class Actions {
             addLocal(VIEW_GRID, "Toggle grid", "grid");
             addLocal(VIEW_LARGEGRID, "Toggle rulers", "biggrid");
 
-            add(VIEW_USMALL, "u-Small");
             add(VIEW_XXSMALL, "XX-Small");
             add(VIEW_XSMALL, "X-Small");
             add(VIEW_SMALL, "Small");
