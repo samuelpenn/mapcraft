@@ -24,10 +24,23 @@ public class Site implements Cloneable {
     private short       type;
     private String      name;
     private String      description;
-
-    // Sub-hex placement.
     private int         x;
     private int         y;
+    private int         fontSize = MEDIUM;
+    private int         importance = NORMAL;
+    private boolean     bold;
+    private boolean     italic;
+    private boolean     underlined;
+
+
+    public static final int   SMALL = 1;  // 8pt
+    public static final int   MEDIUM = 2; // 12pt
+    public static final int   LARGE = 3;  // 16pt
+    public static final int   HUGE = 4;   // 24pt
+
+    public static final int   LOW = 1;
+    public static final int   NORMAL = 2;
+    public static final int   HIGH = 3;
 
     public String
     toString() {
@@ -101,6 +114,25 @@ public class Site implements Cloneable {
         return description;
     }
 
+    public int
+    getFontSize() {
+        return fontSize;
+    }
+
+    public int
+    getImportance() {
+        return importance;
+    }
+
+    public boolean
+    isBold()  { return bold; }
+
+    public boolean
+    isItalic() { return italic; }
+
+    public boolean
+    isUnderlined() { return underlined; }
+
     public void
     setType(short type) { this.type = type; }
 
@@ -109,6 +141,46 @@ public class Site implements Cloneable {
 
     public void
     setDescription(String description) { this.description = description; }
+
+    /**
+     * Set the font size for the label. Font size is one of SMALL, MEDIUM,
+     * LARGE and HUGE. Font size scales according to the scale of the map,
+     * so it does not represent any particular point size.
+     */
+    public void
+    setFontSize(int fontSize) {
+        if (fontSize >= SMALL && fontSize <= HUGE) {
+            this.fontSize = fontSize;
+        }
+    }
+
+    /**
+     * Set the importance of this site. Sites of LOW importance are not
+     * displayed when the map is zoomed out. HIGH importance sites are
+     * always displayed, regardless of zoom factor. NORMAL importance
+     * falls somewhere inbetween.
+     */
+    public void
+    setImportance(int importance) {
+        if (importance >= LOW && importance <= HIGH) {
+            this.importance = importance;
+        }
+    }
+
+    public void
+    setBold(boolean bold) {
+        this.bold = bold;
+    }
+
+    public void
+    setItalic(boolean italic) {
+        this.italic = italic;
+    }
+
+    public void
+    setUnderlined(boolean underlined) {
+        this.underlined = underlined;
+    }
 
     /**
      * The X position of the site within a tile. Possible values range

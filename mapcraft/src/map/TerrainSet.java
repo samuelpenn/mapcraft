@@ -23,16 +23,32 @@ public class TerrainSet implements Cloneable {
     protected ArrayList     terrainList;
     protected String        id;
     protected String        path;
+    protected String        basePath;
 
     public
     TerrainSet(String id, String path) {
         this.id = id;
         this.path = path;
+        this.basePath = ".";
         terrainList = new ArrayList();
     }
-    
+
+    public
+    TerrainSet(String id, String basePath, String path) {
+        this.id = id;
+        this.path = path;
+        this.basePath = basePath;
+        terrainList = new ArrayList();
+    }
+
     public String getId() { return id; }
     public String getPath() { return path; }
+    public String getBasePath() { return basePath; }
+
+    public void
+    setBasePath(String basePath) {
+        this.basePath = basePath;
+    }
 
     /**
      * Get terrain identified by its id.

@@ -90,7 +90,7 @@ public class EditMenu extends JMenu implements ActionListener {
         } else if (cmd.equals(Actions.EDIT_TERRAIN)) {
             application.getEditor().setBrushType(Brush.TERRAIN);
         } else if (cmd.equals(Actions.EDIT_FEATURES)) {
-            application.getEditor().setBrushType(Brush.FEATURES);
+            application.getEditor().setBrushType(Brush.SITES);
         } else if (cmd.equals(Actions.EDIT_HILLS)) {
             application.getEditor().setBrushType(Brush.HILLS);
         } else if (cmd.equals(Actions.EDIT_AREAS)) {

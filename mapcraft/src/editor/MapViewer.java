@@ -111,7 +111,6 @@ public class MapViewer extends JPanel {
             try {
                 input = new FileInputStream(file);
                 properties.load(input);
-                System.out.println("Loaded properties");
 
                 viewName = (String)properties.get("view.name");
                 viewShape = (String)properties.get("view.shape");

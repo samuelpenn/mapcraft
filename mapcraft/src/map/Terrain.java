@@ -48,4 +48,9 @@ public class Terrain implements Cloneable {
 
         return (Object)t;
     }
+
+    public String
+    toString() {
+        return description;
+    }
 }

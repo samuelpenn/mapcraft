@@ -236,7 +236,6 @@ public class MapEditor extends MapViewer
                         if (s >= 0) {
                             map.removeSite(s);
                         }
-                        map.getTile(x, y).setSite((Site)null);
                     } else {
                         // Only set site if no site currently present.
                         Site    site = new Site(brush.getSelected(), "Unnamed", "Unknown",
@@ -244,10 +243,10 @@ public class MapEditor extends MapViewer
                         info("Applying site brush "+brush.getSelected());
                         map.addSite(site);
                         info("Opening dialog");
-                        SiteDialog dialog = new SiteDialog(site, frame);
+                        SiteDialog dialog = new SiteDialog(site, frame,
+                                        map.getPlaceSet(), views[5].getPath());
                         info("Finished dialog");
-                        site.setName(dialog.getName());
-                        site.setDescription(dialog.getDescription());
+                        dialog.getSite();
                     }
                     break;
                 case MouseEvent.BUTTON2:
@@ -354,7 +353,8 @@ public class MapEditor extends MapViewer
                 try {
                     if (map.isSite(x, y)) {
                         Site        site = map.getSite(x, y);
-                        SiteDialog  dialog = new SiteDialog(site, frame);
+                        SiteDialog  dialog = new SiteDialog(site, frame,
+                                                    map.getPlaceSet(), views[5].getPath());
 
                         site.setName(dialog.getName());
                         site.setDescription(dialog.getDescription());
