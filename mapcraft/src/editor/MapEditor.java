@@ -189,6 +189,7 @@ public class MapEditor extends MapViewer
                     for (int px = x - 1; px <= x+1; px++) {
                         for (int py = y - 1; py <= y+1; py++) {
                             map.setTerrain(px, py, brush.getSelected());
+                            map.setTerrainRotation(px, py, brush.getRotation());
                             paintTile(px, py);
                         }
                     }
@@ -198,31 +199,36 @@ public class MapEditor extends MapViewer
                     for (int px = x - 3; px <= x+3; px++) {
                         for (int py = y - 3; py <= y+3; py++) {
                             map.setTerrain(px, py, brush.getSelected());
+                            map.setTerrainRotation(px, py, brush.getRotation());
                             paintTile(px, py);
                         }
                     }
                     break;
                 default:
                     map.setTerrain(x, y, brush.getSelected());
+                    map.setTerrainRotation(x, y, brush.getRotation());
                     paintTile(x, y);
                     break;
                 }
                 break;
             case Brush.FEATURES:
                 map.getTile(x, y).setFeature(brush.getSelected());
+                map.setFeatureRotation(x, y, brush.getRotation());
                 paintTile(x, y);
                 break;
             case Brush.THINGS:
                 switch (brush.getButton()) {
                 case MouseEvent.BUTTON1:
                     if (brush.getSelected() == 0) {
-                        int     s = map.getNearestThingIndex(brush.getX(), brush.getY(), 100);
+                        int     s = map.getNearestThingIndex(brush.getX(),
+                                                    brush.getY(), 100);
                         if (s >= 0) {
                             map.removeThing(s);
                         }
                     } else {
                         // Only set Thing if no Thing currently present.
-                        Thing   thing = new Thing(brush.getSelected(), "Unnamed", "Unknown",
+                        Thing   thing = new Thing(brush.getSelected(),
+                                                "Unnamed", "Unknown",
                                                 brush.getX(), brush.getY());
                         map.addThing(thing);
                         ThingDialog dialog = new ThingDialog(thing, frame,
@@ -469,20 +475,44 @@ public class MapEditor extends MapViewer
                     r = 3;
                     break;
                 }
-                debug("Brush type = "+brush.getType());
-                if (brush.getType() == Brush.TERRAIN) {
-                    map.setTerrainRotation(x, y, (short)(r * angle));
-                } else {
-                    map.setFeatureRotation(x, y, (short)(r * angle));
+                if (r > -1) {
+                    debug("Brush type = "+brush.getType());
+                    if (brush.getType() == Brush.TERRAIN) {
+                        map.setTerrainRotation(x, y, (short)(r * angle));
+                    } else {
+                        map.setFeatureRotation(x, y, (short)(r * angle));
+                    }
+                    paintTile(x, y);
                 }
-                paintTile(x, y);
 
                 switch (ch) {
                 case '[':
                     System.out.println("Anti-clockwise");
+                    if (brush.getType() == Brush.TERRAIN) {
+                        r = (short) (map.getTerrainRotation(x, y) - angle);
+                        if (r < 0) r = (short) (360-angle);
+                        map.setTerrainRotation(x, y, r);
+                    } else if (brush.getType() == Brush.FEATURES) {
+                        r = (short) (map.getFeatureRotation(x, y) - angle);
+                        if (r < 0) r = (short) (360-angle);
+                        map.setFeatureRotation(x, y, r);
+                    }
+                    brush.setRotation(r);
+                    paintTile(x, y);
                     break;
                 case ']':
                     System.out.println("Clockwise");
+                    if (brush.getType() == Brush.TERRAIN) {
+                        r = (short) (map.getTerrainRotation(x, y) + angle);
+                        if (r >= 360) r = (short) (angle);
+                        map.setTerrainRotation(x, y, r);
+                    } else if (brush.getType() == Brush.FEATURES) {
+                        r = (short) (map.getFeatureRotation(x, y) + angle);
+                        if (r >= 360) r = (short) (angle);
+                        map.setFeatureRotation(x, y, r);
+                    }
+                    brush.setRotation(r);
+                    paintTile(x, y);
                     break;
                 }
             } catch (MapOutOfBoundsException moobe) {

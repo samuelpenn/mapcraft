@@ -55,7 +55,7 @@ public class Brush {
     private int     rawX = 0;
     private int     rawY = 0;
     private int     button = 1;
-    private int     rotation = 0;
+    private short   rotation = 0;
 
     private int     lastMouseX = 0;
     private int     lastMouseY = 0;
@@ -84,12 +84,12 @@ public class Brush {
     int getX() { return rawX; }
     int getY() { return rawY; }
     int getButton() { return button; }
-    int getRotation() { return rotation; }
+    short getRotation() { return rotation; }
 
     void setX(int x) { this.rawX = x; }
     void setY(int y) { this.rawY = y; }
     void setButton(int button) { this.button = button; }
-    void setRotation(int rotation) { this.rotation = rotation; }
+    void setRotation(short rotation) { this.rotation = rotation; }
 
     short
     getSelected() {
@@ -108,6 +108,7 @@ public class Brush {
     void
     setType(int type) {
         this.brush = type;
+        rotation = 0;
 
         switch (brush) {
         case RIVERS:
@@ -155,6 +156,7 @@ public class Brush {
         default:
             return;
         }
+        rotation = 0;
     }
 
     public void
