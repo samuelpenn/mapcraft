@@ -16,13 +16,13 @@ import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.*;
 import java.awt.image.*;
 import java.net.*;
 import java.io.*;
 
 import java.util.*;
 import java.awt.geom.Line2D;
+import java.awt.geom.GeneralPath;
 
 import com.sun.image.codec.jpeg.*;
 
@@ -665,14 +665,30 @@ public class MapViewer extends JPanel {
             if (showAreas && map.getTileShape() == Map.HEXAGONAL) {
                 Graphics2D  g2 = (Graphics2D)g;
                 int         area = map.getTile(x, y).getArea();
+                int         parent;
                 int         x1, y1, x2, y2;
+                Area        pa = map.getAreaParent(x, y);
+
+                if (pa != null) {
+                    parent = pa.getId();
+                } else {
+                    // Area type doesn't have a parent, so make sure it
+                    // doesn't match to anything.
+                    parent = -1;
+                }
 
                 g2.setColor(Color.RED);
                 g2.setStroke(new BasicStroke((float)(0.5 * view)));
 
                 // Top neighbour (only if not top row).
                 if (y > 0) {
-                    if (area != map.getTile(x, y-1).getArea()) {
+                    int n = map.getTile(x, y-1).getArea();
+                    if (area != n) {
+                        if (parent == n || parent == map.getAreaParentId(n)) {
+                            debug("Parent area match!");
+                            g2.setColor(Color.ORANGE);
+                        }
+
                         Point   p = getPosition(x, y);
 
                         x1 = (int)p.getX() + (int)(iconWidth * 0.3);
@@ -685,6 +701,7 @@ public class MapViewer extends JPanel {
                         g2.draw(gp);
                     }
                 }
+                g2.setColor(Color.RED);
 
                 // Now left top neighbour. For hexagonal maps, this is
                 // complicated by the uneven columns.
@@ -739,7 +756,8 @@ public class MapViewer extends JPanel {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Failed to paint tile "+x+", "+y);
+            System.out.println("Failed to paint tile "+x+", "+y+" ("+e+")");
+            e.printStackTrace();
         }
     }
 

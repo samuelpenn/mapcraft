@@ -608,10 +608,31 @@ public class Map implements Cloneable {
     getAreaParent(int set, int x, int y) throws MapOutOfBoundsException {
         Area    area = getArea(set, x, y);
         Area    parent = null;
-        int     pid = area.getParent();
+        int     pid = 0;
+
+        if (area != null) {
+            area.getParent();
+        }
 
         if (pid > 0) {
             parent = areaSet.getArea(pid);
+        }
+
+        return parent;
+    }
+
+    public Area
+    getAreaParent(int x, int y) throws MapOutOfBoundsException {
+        return getAreaParent(currentSet, x, y);
+    }
+
+    public int
+    getAreaParentId(int id) {
+        Area    area = areaSet.getArea(id);
+        int     parent = 0;
+
+        if (area != null) {
+            parent = area.getParent();
         }
 
         return parent;
