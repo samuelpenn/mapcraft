@@ -10,16 +10,16 @@
             <date>$Date$</date>
         </cvsinfo>
         
-        <style>default</style>
+        <style>default</style>    
+        <footer href="footer.inc"/>
     </header>
-
+    
     <links>
         <link href="http://www.bifrost.demon.co.uk/index.html">bifrost</link>
-        <link href="http://sourceforge.org/projects/mapcraft">sourceforge</link>
+        <link href="http://sourceforge.net/projects/mapcraft">sourceforge</link>
         <link uri="screenshots">screenshots</link>
         <link uri="features">features</link>
         <link uri="documentation">documentation</link>
-        <link href="http://cvs.sourceforge.net/viewcvs.py/mapcraft/">webcvs</link>
     </links>
 
     <sidebar>
@@ -45,8 +45,10 @@
         <title>Sourceforge</title>
         
         <p>
-            Mapcraft is hosted by Sourceforge.
+            Mapcraft is a SourceForge project. See the main project page
+            for reporting bugs, downloading latest releases.
         </p>
+        
     </sidebar>
     
     <sidebar>
@@ -60,7 +62,7 @@
     </sidebar>
 
     <body>
-        <sect1>
+        <sect1>            
             <p>
                 <e>Mapcraft</e> is designed to create and edit tile based
                 maps for use in pen and paper roleplaying games. The

@@ -14,7 +14,7 @@
         <delete dir="tmp" quiet="true"/>
     </target>
 
-    <target name="html" depends="css">
+    <target name="html" depends="css,icons">
         <xslt basedir="src" destdir="${target.dir}" extension=".html"
               classpathref="lib.path"
               includes="**/*.page" style="/home/sam/src/web/pagexml/xsl/page.xsl">
@@ -22,6 +22,15 @@
               <param name="ant-target-dir" expression="${target.dir}"/>
               <param name="ant-tmp-dir" expression="${tmp.dir}"/>
         </xslt>
+    </target>
+    
+    <target name="icons">
+        <mkdir dir="${target.dir}/images"/>
+        <copy todir="${target.dir}/images">
+            <fileset dir="src/images">
+                <include name="*.png"/>
+            </fileset>
+        </copy>
     </target>
     
     <target name="css">

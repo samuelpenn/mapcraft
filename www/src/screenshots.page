@@ -11,6 +11,7 @@
         </cvsinfo>
 
         <style>default</style>
+        <footer href="footer.inc"/>
     </header>
 
     <links>

@@ -7,7 +7,7 @@ body {
 h1 {
     font-size: xx-large;
     background-color: #604090;
-    color: #40f000;
+    color: #ffff99;
     line-height: 100%;
     margin: 0mm;
     padding: 0mm;
@@ -22,7 +22,7 @@ div.links {
 
 div.links a {
     text-align: center;
-    color: #40f000;
+    color: #ffffbb;
     padding-left: 2mm;
     padding-right: 2mm;
     margin-right: 2mm;
