@@ -37,23 +37,32 @@ tiles rather than the default hexagonal ones.
 
 To view one of the sample maps, run the program as follows:
 
-./run MapEditor -load maps/harn.map
+./mapcraft -load maps/Harn.map
 or
-./run MapEditor -load maps/gargun.map -images images/square
+./mapcraft -load maps/Euressa.map
+or
+./mapcraft -load maps/gargun.map
 
 To create a new map:
 
-./run MapEditor -create mymap -width 200 -height 150 \
-                -scale 25 -terrain terrain/hexagonal.xml
+./mapcraft -create mymap -width 200 -height 150 \
+           -scale 25 -terrain terrain/hexagonal.xml
 
-./run MapEditor -create mymap -width 200 -height 150 \
-                -scale 1 -terrain terrain/square.xml \
-                -square -local
+./mapcraft -create mymap -width 200 -height 150 \
+           -scale 1 -terrain terrain/square.xml \
+           -square -local
 
 Everything else you'll have to figure out for yourself.
 
 
 RELEASE HISTORY
+
+Current
+    Better GUI frontend.
+    Zooming.
+    Support for hills.
+    Beginnings of river support.
+    Support for square tile maps.
 
 Version 0.1
 
