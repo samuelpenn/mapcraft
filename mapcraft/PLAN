@@ -1,4 +1,3 @@
-
 Project Plan
 
 0.1 (Basics)
@@ -15,45 +14,60 @@ Project Plan
 *   Produce correct headers/id for new/saved maps.
 
 0.2 (Basics extra)
-    Support rivers as vectors.
-    Support roads as vectors.
-    Support map cropping and linking to submaps.
-    Support rescale facility (up and down).
-*   Resize boundaries of a map.
-    Names for rivers and roads.
-    Fancy coastlines.
+*   Support of named areas (setting tiles only).
+*   Resize boundaries of a map (cmd line).
 *   Hex overlay of map.
 *   Hills support.
-    Subhex placement of sites.
 *   Faster display - precrop tile display etc.
 *   Toolbar support for brush types.
 *   Support square tiles for indoor maps.
+*   Support printing to image file. (0.3)
+*   Support for multiple display resolutions. (0.3)
+*   Brush size options. (0.8)
+*   File load/save inferface. (0.6)
+*   Toolbar for common features. (0.6)
+*   Wrapper class to provide GUI framework. (0.6)
+
+0.2.1
+    Support rivers as vectors, inc graphical editing.
+    Support roads as vectors, inc graphical editing.
+    Feedback in a status bar to say what editing.
+
+0.2.2
+    Support map cropping and linking to submaps.
+    Support rescale facility (up and down).
+    Editing subhex placement of sites.
+    Resize of site labels depending on tile size.
+    Fix display issues with area editing.
 
 0.3 (Printing support)
-*   Support for multiple display resolutions.
-    Support printing to image file.
+    Link to yagsbook encyclopedia.
     Support map cropping on image print.
+    Interface to pull out areas around named sites.
+
+0.3.1
     Show A3/A4 crop areas on map as grid.
     Orientation and style of map labels.
+    Auto-print overlapped image tiles to A3/A4 size.
 
 0.4 (Finish standard features)
-    Height palette.
+    Height palette. 2D display only.
     Contours.
-    Support of named areas.
-    Random village names? Based on dictionary.
+    Fancy coastlines.
+    Names for rivers and roads displayed on map.
+    Creating/editing areas in GUI.
     Should be able to support full Harn map.
 
 0.5 (Support for worlds)
-    Full world maps.
+    Full world maps (inc 2D sphere support).
+    Longitude/latitude calculation.
     Output to xplanet texture format.
 
 0.6 (UI design considerations)
     Map creation dialogs.
-*   File load/save inferface.
-*   Toolbar for common features.
     Map properties dialog/editor.
     GUI interface to map resize and cropping.
-*   Wrapper class to provide GUI framework.
+    Drop down palette menus from toolbar.
 
 0.7 (Web support)
     Output of web image maps (hrefs to places only).
@@ -64,7 +78,6 @@ Project Plan
     Anti-aliase on rescale.
     Diff support for scaled children.
     Fill option.
-    Brush size options.
 
 0.9 (Optimisation)
     Any necessary speed enhancements.
@@ -88,3 +101,4 @@ Project Plan
     Variable coast masks for nicer display.
     Links into yagsbook for inline display of maps.
     Output SVG
+    Random village names? Based on dictionary.
