@@ -1,7 +1,28 @@
-
+/*
+ * Copyright (C) 2002 Samuel Penn, sam@bifrost.demon.co.uk
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2,
+ * or (at your option) any later version. See the file COPYING.
+ */
 package uk.co.demon.bifrost.utils;
 
 
+/**
+ * Provides an API for handling command line options passed
+ * to a class. Use as follows:
+ *
+ * public static void main(String args[]) {
+ *     Options options = new Options(args);
+ *     if (options.isOption("-version")) {
+ *         System.out.println("Version 0.1");
+ *     }
+ *     if (options.isOption("-echo")) {
+ *         System.out.println(options.getString("-echo"));
+ *     }
+ * }
+ */
 public class Options {
     String[]	args = null;
     int			count = 0;

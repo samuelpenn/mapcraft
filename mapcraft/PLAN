@@ -22,7 +22,7 @@ Project Plan
     Resize boundaries of a map.
     Names for rivers and roads.
     Fancy coastlines.
-    Hex overlay of map.
+*   Hex overlay of map.
     Hills support.
     Subhex placement of sites.
     Faster display - precrop hex display etc.

@@ -1,0 +1,50 @@
+
+MAPCRAFT, Version 0.1
+
+Copyright (C) 2002 Samuel Penn, sam@bifrost.demon.co.uk
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2,
+or (at your option) any later version. See the file COPYING.
+
+
+WHAT IS IT?
+
+Mapcraft is a Java application for creating and editing maps
+for use in a roleplaying game. The style of maps generated
+are hex based maps, in a style similar to that used for the
+large scale Harn maps.
+
+Currently, it is in the very early stages of development,
+but it can be used to create and save maps. The maps are
+saved in an XML file format, so can be exported to other
+programs using a bit of XML.
+
+Currently, there is very little documentation, it's somewhat
+slow, and needs a lot of extra features before it becomes
+really useful. See the PLAN for a list of planned features.
+
+RUNNING
+
+To view one of the sample maps, run the program as follows:
+
+./run MapEditor -load maps/harn.map
+
+To create a new map:
+
+./run MapEditor -create mymap -width 200 -height 150 \
+                -scale 25 -terrain terrain.xml
+
+Everything else you'll have to figure out for yourself.
+
+
+RELEASE HISTORY
+
+Version 0.1
+
+    Display and edit a map.
+    Create and edit sites (towns, castles etc).
+    Save a map.
+    Terrain and site palette.
+    Hex grid display.
