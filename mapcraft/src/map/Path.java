@@ -318,6 +318,18 @@ public class Path {
         }
     }
 
+    public void
+    scale(double factor) {
+        int     index = -1;
+
+        for (int i = 0; i < elements.size(); i++) {
+            Element     e = (Element)elements.elementAt(i);
+
+            e.setX((int)(e.getX() * factor));
+            e.setY((int)(e.getY() * factor));
+        }
+    }
+
     private void
     boundingBox() {
         int     index = -1;

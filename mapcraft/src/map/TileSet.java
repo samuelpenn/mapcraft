@@ -186,6 +186,34 @@ public class TileSet implements Cloneable {
         cropAllRivers(x, y);
     }
 
+    private void
+    scaleAllThings(double factor) {
+        for (int i=0; i < things.size(); i++) {
+            Thing   thing = (Thing)things.elementAt(i);
+
+            thing.setX((int)(thing.getX()*factor));
+            thing.setY((int)(thing.getY()*factor));
+        }
+    }
+
+    private void
+    scaleAllRivers(double factor) {
+        Path        path = null;
+        Vector      list = new Vector();
+
+        for (int i=0; i < rivers.size(); i++) {
+            boolean     okay = true;
+
+            path = (Path)rivers.elementAt(i);
+            path.scale(factor);
+
+            if (okay) {
+                list.add(path);
+            }
+        }
+
+        setRivers(list);
+    }
 
     /**
      * Rescale the map. The scale of the tiles is changed, and, the number
@@ -194,10 +222,15 @@ public class TileSet implements Cloneable {
      */
     boolean
     rescale(int newScale) {
+        double  factor = (double)scale / (double)newScale;
+
         if (newScale == scale) {
             // Trivial case.
             return true;
         }
+
+        scaleAllThings(factor);
+        scaleAllRivers(factor);
 
         if (newScale > scale) {
             return scaleLarger(newScale);

@@ -717,8 +717,11 @@ public class MapViewer extends JPanel {
 
                     if (x%2 == 0) {
                         n = map.getTile(x-1, y).getArea();
-                    } else {
+                    } else if (y+1 < map.getHeight()) {
                         n = map.getTile(x-1, y+1).getArea();
+                    } else {
+                        // We don't want to display border along edge of map.
+                        n = area;
                     }
                     if (area != n) {
                         Point   p = getPosition(x, y);
