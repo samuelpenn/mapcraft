@@ -48,6 +48,31 @@
             </fileset>
         </jar>
     </target>
+    
+    <target name="xjar" depends="build">
+        <jar jarfile="${jar.file}">
+
+            <fileset dir="${build.dir}">
+                <include name="**/*.class"/>
+            </fileset>
+
+            <fileset dir="${icons.dir}">
+                <include name="**/*.png"/>
+                <include name="**/*.gif"/>
+                <exclude name="**/.xvpics/*"/>
+            </fileset>
+
+            <fileset dir="${images.dir}">
+                <include name="**/*.properties"/>
+                <include name="**/*.png"/>
+                <exclude name="**/.xvpics/*"/>
+            </fileset>
+
+            <fileset dir="${terrain.dir}">
+                <include name="*.xml"/>
+            </fileset>
+        </jar>
+    </target>
 
     <target name="docs">
         <mkdir dir="${docs.dir}"/>

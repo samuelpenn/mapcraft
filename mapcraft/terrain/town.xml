@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+
+<map>
+    <header>
+        <name>Terrain Set</name>
+        <author>Samuel Penn</author>
+        <id>terrain.0</id>
+        <parent>none</parent>
+        <cvs>
+            <version>$Revision$</version>
+            <date>$Date$</date>
+        </cvs>
+        <type>Local</type>
+        <shape>Square</shape>
+        <imagedir>square/town</imagedir>
+        <format>0.2.0</format>
+    </header>
+
+    <terrainset id="basic" path="terrain">
+       <terrain id="0">
+            <name>null</name>
+            <description>Unchartable</description>
+            <image>null.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="1">
+            <name>clear.clear</name>
+            <description>Clear</description>
+            <image>clear.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="2">
+            <name>water.water</name>
+            <description>Water</description>
+            <image>water.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="3">
+            <name>clear.grass</name>
+            <description>Grass</description>
+            <image>grass.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="4">
+            <name>clear.sand</name>
+            <description>Sand</description>
+            <image>sand.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="5">
+            <name>solid.stone</name>
+            <description>Rock wall</description>
+            <image>rock-wall.png</image>
+            <solid value="true"/>
+        </terrain>
+        <terrain id="6">
+            <name>clear.rock</name>
+            <description>Rock floor</description>
+            <image>rock.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="7">
+            <name>clear.dirt</name>
+            <description>Dirt</description>
+            <image>dirt.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="8">
+            <name>solid.dirt</name>
+            <description>Dirt wall</description>
+            <image>dirt-wall.png</image>
+            <solid value="true"/>
+        </terrain>
+
+    </terrainset>
+
+    <terrainset id="features" path="features">
+        <terrain id="0">
+            <name>blank</name>
+            <description>Nothing</description>
+            <image>empty.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="1">
+            <name>wall.wood-n</name>
+            <description>Wooden wall</description>
+            <image>wall-wood-n.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="2">
+            <name>wall.wood-nw</name>
+            <description>Wooden walls</description>
+            <image>wall-wood-nw.png</image>
+            <solid value="false"/>
+        </terrain>
+    </terrainset>
+
+    <terrainset id="things" path="things">
+        <terrain id="0">
+            <name>Cottage</name>
+            <description>Peasant cottage</description>
+            <image>cottage.png</image>
+            <solid value="false"/>
+        </terrain>
+    </terrainset>
+
+    <tileset id="root">
+        <dimensions>
+            <scale>1</scale>
+            <width>1</width>
+            <height>1</height>
+        </dimensions>
+
+        <tiles>
+            <tile x="0" y="0" terrain="0" />
+        </tiles>
+    </tileset>
+</map>

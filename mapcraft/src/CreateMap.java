@@ -27,7 +27,6 @@ import java.util.*;
 
 import uk.co.demon.bifrost.utils.Options;
 
-
 public class CreateMap extends JDialog implements ActionListener {
     private JFrame      window;
     private MapCraft    application;
