@@ -1180,7 +1180,7 @@ public class Map implements Cloneable {
             } else if (options.isOption("-zoomout")) {
                 String  filename = options.getString("-zoomout");
                 map = new Map(filename);
-                map.rescaleMap(200);
+                map.rescaleMap(125);
                 map.save("new.map");
             } else if (options.isOption("-euressa")) {
                 // Change a 25km map to 250km map (16x10).
@@ -1191,7 +1191,7 @@ public class Map implements Cloneable {
                 map.resize(176, 88, true, true);
                 map.save("new.map");
             } else if (options.isOption("-world")) {
-                map = new Map("Earth", 6400, 100);
+                map = new Map("Earth", 6400, 125);
                 map.loadTerrainSet("terrain/hexagonal.xml");
                 map.setImageDir("hexagonal/standard");
                 map.save("earth.map");
