@@ -5,11 +5,10 @@
 #
 # Version: $Revision$
 
-XALAN_HOME=/usr/share/java/xalan
 MAPCRAFT_JAR=mapcraft.jar
-export XALAN_HOME MAPCRAFT_JAR
+export MAPCRAFT_JAR
 
-CLASSPATH=$XALAN_HOME/xalan.jar:$XALAN_HOME/xercesImpl.jar:$MAPCRAFT_JAR
+CLASSPATH=$MAPCRAFT_JAR
 export CLASSPATH
 
 java -Xmx1024m net.sourceforge.mapcraft.MapCraft $*

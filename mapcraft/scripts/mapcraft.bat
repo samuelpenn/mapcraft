@@ -10,14 +10,8 @@ rem Date:    $Date$
 rem Author:  Samuel Penn
 
 
-set XALAN_HOME=C:\share\libs
-
 set MAPCRAFT_JAR=mapcraft.jar
-
-
-set CLASSPATH=%XALAN_HOME%\xalan.jar;%XALAN_HOME%\xercesImpl.jar;%MAPCRAFT_JAR%
-
-
+set CLASSPATH=%MAPCRAFT_JAR%
 
 java -Xmx1024m net.sourceforge.mapcraft.MapCraft %*
 
