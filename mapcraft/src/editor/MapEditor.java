@@ -932,6 +932,7 @@ public class MapEditor extends MapViewer
 
             if (dialog.isOkay()) {
                 map.rescale(dialog.getNewScale());
+                setView(view);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -330,37 +330,41 @@ public class MapViewer extends JPanel {
         while (iter.hasNext()) {
             Terrain t = (Terrain)iter.next();
             if (t != null) {
-                short   id = t.getId();
-                String  path = views[view].getPath()+"/"+t.getImagePath();
-                URL     url = MapViewer.class.getResource(path);
-                Image   icon = toolkit.getImage(url);
-                Image   scaled = null;
-                int     x = -1, y = -1;
-
-                if (set.isAnySize()) {
-                    while (x == -1 || y == -1) {
-                        prepareImage(icon);
-                        x = icon.getWidth(this);
-                        y = icon.getHeight(this);
+                try {
+                    short   id = t.getId();
+                    String  path = views[view].getPath()+"/"+t.getImagePath();
+                    URL     url = MapViewer.class.getResource(path);
+                    Image   icon = toolkit.getImage(url);
+                    Image   scaled = null;
+                    int     x = -1, y = -1;
+    
+                    if (set.isAnySize()) {
+                        while (x == -1 || y == -1) {
+                            prepareImage(icon);
+                            x = icon.getWidth(this);
+                            y = icon.getHeight(this);
+                        }
+                        x = (x * views[view].getIconWidth())/96;
+                        y = (y * views[view].getIconHeight())/96;
+    
+                    } else {
+                        x = views[view].getIconWidth();
+                        y = views[view].getIconHeight();
                     }
-                    x = (x * views[view].getIconWidth())/96;
-                    y = (y * views[view].getIconHeight())/96;
-
-                } else {
-                    x = views[view].getIconWidth();
-                    y = views[view].getIconHeight();
-                }
-                scaled = icon.getScaledInstance(x, y, Image.SCALE_SMOOTH);
-
-                if (views[view].isHexagonal() && !set.isAnySize()) {
-                    int  h = (int)((Math.sqrt(3)/2)*x);
-                    filter = new HexFilter(x, h);
-                    icon = createImage(new FilteredImageSource(scaled.getSource(), filter));
-                    iconSet.add(id, icon);
-                    prepareImage(icon);
-                } else {
-                    iconSet.add(id, scaled);
-                    prepareImage(scaled);
+                    scaled = icon.getScaledInstance(x, y, Image.SCALE_SMOOTH);
+    
+                    if (views[view].isHexagonal() && !set.isAnySize()) {
+                        int  h = (int)((Math.sqrt(3)/2)*x);
+                        filter = new HexFilter(x, h);
+                        icon = createImage(new FilteredImageSource(scaled.getSource(), filter));
+                        iconSet.add(id, icon);
+                        prepareImage(icon);
+                    } else {
+                        iconSet.add(id, scaled);
+                        prepareImage(scaled);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -485,6 +489,7 @@ public class MapViewer extends JPanel {
             realHeight = tileYSize * (map.getHeight()+1);
 
             setPreferredSize(new Dimension(realWidth, realHeight));
+            repaint();
         } catch (MapException e) {
             e.printStackTrace();
         }
@@ -1073,7 +1078,7 @@ public class MapViewer extends JPanel {
     public boolean
     cropToArea(short area, int margin) {
         map.cropToArea(area, margin);
-        paintComponent();
+        setView(view);
 
         return true;
     }
@@ -1081,7 +1086,7 @@ public class MapViewer extends JPanel {
     public boolean
     cropToThing(String thing, int radius) {
         map.cropToThing(thing, (short)radius);
-        paintComponent();
+        setView(view);
 
         return true;
     }
@@ -1089,7 +1094,7 @@ public class MapViewer extends JPanel {
     public boolean
     rescale(int newScale) {
         map.rescale(newScale);
-        paintComponent();
+        setView(view);
 
         return true;
     }

@@ -347,6 +347,7 @@ public class TileSet implements Cloneable {
      */
     private boolean
     scaleSmaller(int newScale) {
+        System.out.println("scaleSmaller: "+scale+" -> "+newScale);
         if (scale%newScale != 0) {
             // Can only cope with exact multiples.
             //return false;
@@ -355,19 +356,23 @@ public class TileSet implements Cloneable {
         double      factor = scale / newScale;
         int         newWidth = (width * scale)/newScale;
         int         newHeight = (height * scale)/newScale;
+        
+        System.out.println("New width x height = "+newWidth+"x"+newHeight);
 
         Tile[][]    scaled = new Tile[newHeight][newWidth];
 
-        for (int x=0;  x < newWidth; x++) {
+        // top and bottom take care of the gaps caused by hexes at
+        // the top and bottom edges of the map.
+        for (int x=0; x < newWidth; x++) {
             boolean     xIsEven = (((x * scale)/newScale)%2 == 0);
             int         ox = (x * newScale)/scale;
 
             int         top = (int)(0.5 + (0.5 * scale / newScale));
             int         bottom = (int)(0.5 * scale / newScale);
-
+            
             if (xIsEven) {
                 for (int y = newHeight - bottom; y < newHeight; y++) {
-                    scaled[y][x] = new Tile(tiles[height-1][x]);
+                    scaled[y][x] = new Tile(tiles[height-1][ox]);
                 }
             } else {
                 for (int y = 0; y < top; y++) {

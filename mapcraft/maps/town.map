@@ -316,8 +316,8 @@
                 ADAAABAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA ADAAABAAAA 
                 ADAAABAAAA ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA 
                 ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA 
-                ADAAABAAAA ADAAAAAAAA ADAAABAAAA ADAAAAAAAA ADAAAAAAAA 
-                ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA ADAAABAAAA 
+                ADAAABAAAA ADAAAAAAAA ADAAABAAAA ADAAAAAAAA AGAAAAAAAA 
+                AGAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA ADAAABAAAA 
                 ADAAABAAAA ADAAABAAAA ADAAABAAAA ADAAABAAAA ADAAAAAAAA 
                 ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA ADAAABAAAA 
                 ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA 
@@ -332,8 +332,8 @@
                 ADAAABAAAA ADAAABAAAA ADAAABAAAA ADAAABAAAA ADAAABAAAA 
                 ADAAABAAAA ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA 
                 ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA ADAAABAAAA 
-                ADAAABAAAA ADAAAAAAAA ADAAABAAAA ADAAAAAAAA ADAAAAAAAA 
-                ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAAAAAAA 
+                ADAAABAAAA ADAAAAAAAA ADAAABAAAA AGAAAAAAAA AGAAAAAAAA 
+                AGAAAAAAAA AGAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAAAAAAA 
                 ADAAABAAAA ADAAABAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA 
                 ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA ADAAABAAAA 
                 ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA 
@@ -348,8 +348,8 @@
                 ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAAAAAAA ADAAAAAAAA 
                 ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA ADAAAAAAAA 
                 ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA ADAAABAAAA 
-                ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAAAAAAA ADAAAAAAAA 
-                ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA 
+                ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAAAAAAA AGAAAAAAAA 
+                AGAAAAAAAA AGAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA 
                 ADAAAAAAAA ADAAABAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA 
                 ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAAAAAAA ADAAABAAAA 
                 ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA 
@@ -365,7 +365,7 @@
                 ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA ADAAAAAAAA 
                 ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAABAAAA ADAAAAAAAA 
                 ADAAAAAAAA ADAAABAAAA ADAAABAAAA ADAAAAAAAA ADAAAAAAAA 
-                ADAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAAAAAAA ADAAABAAAA 
+                AGAAAAAAAA ADAAAAAAAA ADAAABAAAA ADAAAAAAAA ADAAABAAAA 
                 ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA 
                 ADAAABAAAA ADAAABAAAA ADAAABAAAA ADAAAAAAAA ADAAAAAAAA 
                 ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA 
@@ -1752,6 +1752,60 @@
                 ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA ADAAAAAAAA 
             </column>
         </tiles>
+        <paths>
+            <path name="Path 1" type="road" style="plain">
+                <start x="1106" y="2359" width="6"/>
+                <path x="1131" y="2396" width="3"/>
+                <path x="1171" y="2450" width="3"/>
+                <path x="1246" y="2506" width="3"/>
+                <path x="1309" y="2550" width="3"/>
+                <path x="1368" y="2609" width="3"/>
+                <path x="1431" y="2653" width="3"/>
+                <path x="1528" y="2703" width="3"/>
+                <path x="1568" y="2753" width="3"/>
+                <path x="1562" y="2843" width="3"/>
+                <path x="1568" y="2959" width="3"/>
+                <path x="1593" y="3040" width="3"/>
+                <path x="1665" y="3087" width="3"/>
+                <path x="1806" y="3171" width="3"/>
+                <path x="1884" y="3225" width="3"/>
+                <path x="1981" y="3265" width="3"/>
+                <path x="2071" y="3309" width="3"/>
+                <path x="2159" y="3368" width="3"/>
+                <path x="2275" y="3428" width="3"/>
+                <path x="2390" y="3471" width="3"/>
+                <path x="2593" y="3515" width="3"/>
+                <path x="2728" y="3509" width="3"/>
+                <path x="2903" y="3493" width="3"/>
+                <path x="2990" y="3446" width="3"/>
+                <path x="3062" y="3378" width="3"/>
+                <path x="3112" y="3271" width="3"/>
+                <path x="3128" y="3168" width="3"/>
+                <path x="3171" y="3056" width="3"/>
+                <path x="3265" y="2950" width="3"/>
+                <path x="3390" y="2918" width="3"/>
+                <path x="3587" y="2900" width="3"/>
+                <path x="3690" y="2900" width="3"/>
+                <path x="3784" y="2859" width="3"/>
+                <path x="3903" y="2831" width="3"/>
+                <path x="4031" y="2812" width="3"/>
+                <path x="4131" y="2812" width="3"/>
+                <path x="4200" y="2818" width="3"/>
+                <path x="4231" y="2887" width="3"/>
+                <path x="4237" y="2968" width="3"/>
+                <path x="4234" y="3056" width="3"/>
+                <path x="4265" y="3134" width="3"/>
+                <path x="4287" y="3215" width="3"/>
+                <path x="4315" y="3287" width="3"/>
+                <path x="4315" y="3390" width="3"/>
+                <path x="4318" y="3475" width="3"/>
+                <path x="4350" y="3534" width="3"/>
+                <path x="4381" y="3587" width="3"/>
+                <path x="4384" y="3631" width="3"/>
+                <end x="4384" y="3650" width="3"/>
+            </path>
+
+        </paths>
         <things>
             <thing type="1" x="4191" y="3189" rotation="240">
                 <name>Unnamed</name>
@@ -1838,6 +1892,24 @@
                 <importance>3</importance>
             </thing>
             <thing type="1" x="4227" y="2737" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="1100" y="2343" rotation="330">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="1365" y="2443" rotation="60">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="1112" y="2668" rotation="210">
                 <name>Unnamed</name>
                 <description>Unknown</description>
                 <font>2</font>

@@ -62,10 +62,10 @@ Project Plan
 
 0.3 (Install/build support)
     Work out exact (minimal) build dependencies.
-    Work out exact (minimal) run dependencies.
-    Load everything (including terrain info) from jar file.
+*   Work out exact (minimal) run dependencies.
+*   Load everything (including terrain info) from jar file.
     Generic UNIX run script that doesn't assume my own environment.
-    Maybe think about MS Windows script.
+*   Maybe think about MS Windows script.
     Gentoo ebuild
     
 0.4 (Rescale/merge support in GUI)

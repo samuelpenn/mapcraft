@@ -264,6 +264,24 @@ public class MapCraft implements ActionListener {
         } else if (cmd.equals("createmap.cancel")) {
         }
     }
+    
+    private static void
+    print(String msg) {
+        System.out.println(msg);
+    }
+    
+    /**
+     * Print out a message detailing command line usage.
+     */
+    private static void
+    usage() {
+        print("Mapcraft 0.3pre");
+        print("Usage:");
+        print("mapcraft -help");
+        print("mapcraft -load <filename>");
+        print("mapcraft -create <name> -width <w> -height <h> -scale <s>");
+        print("         -terrain <terrain_file> [-square] [-local]"); 
+    }
 
     public static void
     main(String args[]) {
@@ -271,6 +289,11 @@ public class MapCraft implements ActionListener {
         Options         options = new Options(args);
         String          mapfile = null;
         Properties      properties = new Properties();
+        
+        if (options.isOption("-help")) {
+            usage();
+            System.exit(0);
+        }
 
         if (options.isOption("-map")) {
             Map.main(args);
@@ -279,7 +302,8 @@ public class MapCraft implements ActionListener {
 
         if (options.isOption("-rundir")) {
             properties.setProperty("path.run", options.getString("-rundir"));
-            properties.setProperty("path.images", options.getString("-rundir")+"/images");
+            properties.setProperty("path.images",
+                                 options.getString("-rundir")+"/images");
         } else {
             properties.setProperty("path.run", System.getProperty("user.dir"));
             properties.setProperty("path.images", "");
@@ -316,14 +340,13 @@ public class MapCraft implements ActionListener {
             System.exit(0);
         }
 
-
-        
         if (options.isOption("-load")) {
             mapfile = options.getString("-load");
         }
 
         if (options.isOption("-imagedir")) {
-            properties.setProperty("path.images", options.getString("-imagedir"));
+            properties.setProperty("path.images",
+                        options.getString("-imagedir"));
         }
 
         boolean     crop = false;
@@ -384,9 +407,6 @@ public class MapCraft implements ActionListener {
             if (mergeMap != null) {
                 map.merge(mergeMap);
             }
-
         }
-
-
     }
 }
