@@ -70,10 +70,10 @@ public class Map implements Cloneable {
     private int     currentSet = 0;
 
     // Legacy
-    private Tile    tiles[][];
-    private int     width = 0;
-    private int     height = 0;
-    private int     scale = 0;
+    //private Tile    tiles[][];
+    //private int     width = 0;
+    //private int     height = 0;
+    //private int     scale = 0;
 
     // Constants
     public static final int SQUARE = 1;
@@ -283,7 +283,8 @@ public class Map implements Cloneable {
         Map     m = null;
 
         try {
-            m = new Map(name, width, height, scale);
+            m = new Map(name, tileSets[0].getWidth(), tileSets[0].getHeight(),
+                        tileSets[0].getScale());
             m.filename = "/tmp/clone.map";
             //m.tiles = (TileSet)tiles.clone();
             m.terrainSet = (TerrainSet)terrainSet.clone();
@@ -387,7 +388,7 @@ public class Map implements Cloneable {
     getHeight() {
         return getHeight(currentSet);
     }
-    
+
 
     /**
      * Get the height of the specified tile set.
@@ -593,61 +594,13 @@ public class Map implements Cloneable {
     }
 
     public short
-    getHeight(int x, int y) {
-        if (x < 0 || x >= width) {
-            return 0;
-        }
-        if (y < 0 || y >= height) {
-            return 0;
-        }
-        return tiles[y][x].getHeight();
+    getHeight(int x, int y) throws MapOutOfBoundsException {
+        return tileSets[currentSet].getHeight(x, y);
     }
 
     public boolean
-    isWritable(int x, int y) {
-        if (x < 0 || x >= width) {
-            return false;
-        }
-        if (y < 0 || y >= height) {
-            return false;
-        }
-        return tiles[y][x].isWritable();
-    }
-
-
-    /**
-     * Set the terrain of the map to be all one value.
-     * Also initialises the Tile array. Should be called
-     * for new maps if a load() isn't being done.
-     *
-     * @param terrain   Terrain value to set map to.
-     */
-    public void
-    setBackground(short t) {
-        int x, y;
-
-        for (y = 0; y < height; y++) {
-            for (x = 0; x < width; x++) {
-                if (tiles[y][x] == null) {
-                    tiles[y][x] = new Tile();
-                }
-                tiles[y][x].setTerrain(t);
-            }
-        }
-    }
-
-    public void
-    setRandom() {
-        int x, y;
-
-        for (y = 0; y < height; y++) {
-            for (x = 0; x < width; x++) {
-                if (tiles[y][x] == null) {
-                    tiles[y][x] = new Tile();
-                }
-                tiles[y][x].setTerrain((short)(Math.random()*4));
-            }
-        }
+    isWritable(int x, int y) throws MapOutOfBoundsException {
+        return tileSets[currentSet].isWritable(x, y);
     }
 
 
@@ -661,62 +614,14 @@ public class Map implements Cloneable {
      */
     public void
     setScale(int scale) {
-        this.scale = scale;
+        tileSets[currentSet].setScale(scale);
     }
 
     public void
     rescale(int set, int newScale) {
         tileSets[set].rescale(newScale);
-        setScale(newScale);
-        width = (tileSets[set].getWidth());
-        height = (tileSets[set].getHeight());
     }
 
-    /**
-     * Rescales the map. The width and height of the map is
-     * changed to fit the current data into the new scale.
-     * It should anti-aliase the result if resolution is
-     * increasing, but currently this isn't supported.
-     */
-    public void
-    rescaleMap(int newScale) throws InvalidArgumentException {
-        int         h, w; // Height and width of new map.
-        int         x, y; // Iterators.
-
-        TileSet     rescaled = null;
-        TileSet     original = tileSets[0];
-
-        System.out.println("rescaleMap: "+newScale);
-        System.out.println("Old scale: "+scale+" geom "+getWidth()+"x"+getHeight());
-
-        if (newScale == scale) {
-            // Trivial.
-            return;
-        } else if (newScale > getScale()) {
-            // Every X hexes merges into a single hex.
-            w = (getWidth()*getScale())/newScale;
-            h = (getHeight()*getScale())/newScale;
-
-            rescaled = new TileSet("root", w, h, newScale);
-            for (x = 0; x < w; x++) {
-                for (y = 0; y < h; y++) {
-                    try {
-                        rescaled.setTile(x, y,
-                                original.getTile((x*newScale)/getScale(),
-                                                 (y*newScale)/getScale()));
-                    } catch (MapOutOfBoundsException oobe) {
-                    }
-                }
-            }
-        } else {
-            throw new InvalidArgumentException("Scale not supported");
-        }
-
-
-
-        tileSets[0] = rescaled;
-        setScale(newScale);
-    }
 
     /**
      * Resize the map. The width and height of the map is changed,
@@ -1348,16 +1253,11 @@ public class Map implements Cloneable {
                 map = new Map(filename);
                 map.resize(w, h, false, false);
                 map.save("resized.map");
-            } else if (options.isOption("-zoomout")) {
-                String  filename = options.getString("-zoomout");
-                map = new Map(filename);
-                map.rescaleMap(125);
-                map.save("new.map");
             } else if (options.isOption("-euressa")) {
                 // Change a 25km map to 250km map (16x10).
                 // Change to world map, of size 176x88.
                 map = new Map("maps/Euressa.map");
-                map.rescaleMap(250);
+                //map.rescaleMap(250);
                 map.resize(91, 28, false, false);
                 map.resize(176, 88, true, true);
                 map.save("new.map");

@@ -402,6 +402,11 @@ public class TileSet implements Cloneable {
         return getTile(x, y).getHeight();
     }
 
+    public boolean
+    isWritable(int x, int y) throws MapOutOfBoundsException {
+        return getTile(x, y).isWritable();
+    }
+
     /**
      * @deprecated;
      */
