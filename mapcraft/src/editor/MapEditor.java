@@ -417,6 +417,11 @@ public class MapEditor extends MapViewer
 
             applyBrush(x, y);
         }
+
+        public void
+        mouseMoved(MouseEvent e) {
+            brush.setLastMousePosition(e.getX(), e.getY());
+        }
     }
 
     public class
@@ -426,29 +431,55 @@ public class MapEditor extends MapViewer
             System.out.println("Pressed!");
             int     key = e.getKeyCode();
             char    ch = e.getKeyChar();
+            int     x, y;
 
-            switch (key) {
-            case KeyEvent.VK_NUMPAD8:
-                System.out.println("0 degrees");
-                break;
-            case KeyEvent.VK_NUMPAD2:
-                System.out.println("180 degrees");
-                break;
-            case KeyEvent.VK_NUMPAD4:
-                System.out.println("90 degrees");
-                break;
-            case KeyEvent.VK_NUMPAD6:
-                System.out.println("270 degrees");
-                break;
+            if (map.getTileShape() == Map.SQUARE) {
+                x = brush.getLastMouseX()/tileXSize;
+                y = brush.getLastMouseY()/tileYSize;
+            } else {
+                x = brush.getLastMouseX()/tileXSize;
+                int yp = brush.getLastMouseY();
+
+                if (x%2 != 0) {
+                    yp -= tileYOffset;
+                }
+                y = yp/tileYSize;
             }
 
-            switch (ch) {
-            case '[':
-                System.out.println("Anti-clockwise");
-                break;
-            case ']':
-                System.out.println("Clockwise");
-                break;
+            try {
+                switch (key) {
+                case KeyEvent.VK_NUMPAD8:
+                    System.out.println("0 degrees");
+                    map.setRotation(x, y, (short)0);
+                    paintTile(x, y);
+                    break;
+                case KeyEvent.VK_NUMPAD2:
+                    System.out.println("180 degrees");
+                    map.setRotation(x, y, (short)180);
+                    paintTile(x, y);
+                    break;
+                case KeyEvent.VK_NUMPAD4:
+                    System.out.println("90 degrees");
+                    map.setRotation(x, y, (short)90);
+                    paintTile(x, y);
+                    break;
+                case KeyEvent.VK_NUMPAD6:
+                    System.out.println("270 degrees");
+                    map.setRotation(x, y, (short)270);
+                    paintTile(x, y);
+                    break;
+                }
+
+                switch (ch) {
+                case '[':
+                    System.out.println("Anti-clockwise");
+                    break;
+                case ']':
+                    System.out.println("Clockwise");
+                    break;
+                }
+            } catch (MapOutOfBoundsException moobe) {
+                error("keyPressed: Map out of bounds ("+x+","+y+")");
             }
         }
 

@@ -55,6 +55,10 @@ public class Brush {
     private int     rawX = 0;
     private int     rawY = 0;
     private int     button = 1;
+    private int     rotation = 0;
+
+    private int     lastMouseX = 0;
+    private int     lastMouseY = 0;
 
     Brush() {
         brush = TERRAIN;
@@ -80,10 +84,12 @@ public class Brush {
     int getX() { return rawX; }
     int getY() { return rawY; }
     int getButton() { return button; }
+    int getRotation() { return rotation; }
 
     void setX(int x) { this.rawX = x; }
     void setY(int y) { this.rawY = y; }
     void setButton(int button) { this.button = button; }
+    void setRotation(int rotation) { this.rotation = rotation; }
 
     short
     getSelected() {
@@ -150,4 +156,16 @@ public class Brush {
             return;
         }
     }
+
+    public void
+    setLastMousePosition(int x, int y) {
+        lastMouseX = x;
+        lastMouseY = y;
+    }
+
+    public int
+    getLastMouseX() { return lastMouseX; }
+
+    public int
+    getLastMouseY() { return lastMouseY; }
 }

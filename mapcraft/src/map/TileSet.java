@@ -645,6 +645,15 @@ public class TileSet implements Cloneable {
         things.add(thing);
     }
 
+    public short
+    getRotation(int x, int y) throws MapOutOfBoundsException {
+        return getTile(x, y).getRotation();
+    }
+
+    public void
+    setRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
+        getTile(x, y).setRotation(rotation);
+    }
 
 }
 

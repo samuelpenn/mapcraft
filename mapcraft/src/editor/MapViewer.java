@@ -736,8 +736,12 @@ public class MapViewer extends JPanel {
             g.drawImage(icon, xp, yp, this);
 
             if (map.getFeature(x, y) > 0) {
+                Graphics2D  g2 = (Graphics2D)g;
+                double      r = Math.toRadians(map.getRotation(x, y));
                 icon = featureSet.getIcon(map.getFeature(x, y));
-                g.drawImage(icon, xp, yp, this);
+                g2.rotate(r, xp+tileXSize/2, yp+tileYSize/2);
+                g2.drawImage(icon, xp, yp, this);
+                g2.rotate(-r, xp+tileXSize/2, yp+tileYSize/2);
             }
 
             // Area borders should be drawn if the neighbouring tiles belong
@@ -871,7 +875,7 @@ public class MapViewer extends JPanel {
     public void
     paintThing(Thing thing, Graphics g) {
         int     x=0, y=0;
-        int     fontSize = 10;
+        int     fontSize = 12;
         Image   icon = thingSet.getIcon(thing.getType());
 
         // If scale is too large, and thing not importance enough,

@@ -482,7 +482,7 @@ public class MapXML {
         height -= 100000; // Baseline
 
         tile = new Tile(terrain, height, (terrain!=0));
-        tile.setFeature(hills);
+        tile.setFeatureRotated(hills);
         tile.setArea((short)area);
 
         return tile;

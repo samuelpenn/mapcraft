@@ -41,7 +41,7 @@ Project Plan
 *   Support rivers as vectors, inc graphical editing.
     Support roads as vectors, inc graphical editing.
     Properties on sites.
-    Rotation for tiles and features.
+*   Rotation for tiles and features.
 
 0.2.3
     Support GUI map cropping and linking to submaps.

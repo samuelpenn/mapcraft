@@ -676,6 +676,18 @@ public class Map implements Cloneable {
         return tileSets[currentSet].isWritable(x, y);
     }
 
+    public void
+    setRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
+        tileSets[currentSet].setRotation(x, y, rotation);
+    }
+
+    public short
+    getRotation(int x, int y) throws MapOutOfBoundsException {
+        return tileSets[currentSet].getRotation(x, y);
+    }
+
+
+
 
     /**
      * Sets the scale of the map, in km per tile object.
@@ -912,7 +924,7 @@ public class Map implements Cloneable {
                         t = MapXML.toBase64(tile.getTerrain(), 2);
                         h = MapXML.toBase64(tile.getHeight()+1000, 2);
                         h = "AA"; // HACK!
-                        m = MapXML.toBase64(tile.getFeature(), 2);
+                        m = MapXML.toBase64(tile.getFeatureRotated(), 2);
                         a = MapXML.toBase64(tile.getArea(), 2);
                         c = "A";
                         f = "A";
