@@ -37,7 +37,7 @@ import uk.co.demon.bifrost.utils.Options;
  * @author  Samuel Penn
  * @version $Revision$
  */
-public class Map {
+public class Map implements Cloneable {
     // Basic indentity fields.
     private String  filename;
     private String  name;
@@ -135,6 +135,20 @@ public class Map {
         }
     }
 
+
+    public Object
+    clone() throws CloneNotSupportedException {
+        Map     m = null;
+
+        try {
+            m = new Map(name, width, height, scale);
+            m.filename = "/tmp/clone.map";
+        } catch (MapException e) {
+        }
+
+        return (Object)m;
+    }
+
     public void
     loadTerrainSet(String filename) {
         MapXML  xml;
@@ -151,14 +165,14 @@ public class Map {
     public String getName() { return name; }
 
     public String getFilename() { return filename; }
-    
+
     public String getImageDir() { return imagedir; }
-    
+
     public void
     setImageDir(String imagedir) {
         this.imagedir = imagedir;
     }
-    
+
     /**
      * Get the shape of the tiles - either SQUARE or HEXAGONAL.
      */

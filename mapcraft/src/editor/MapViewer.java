@@ -620,6 +620,13 @@ public class MapViewer extends JPanel {
     }
 
     /**
+     * Convert the map to an Image, ready for saving to disc.
+     */
+    public Image
+    toImage() {
+    }
+
+    /**
      * Main method for use when testing.
      */
     public static void
