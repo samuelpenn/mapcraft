@@ -15,7 +15,7 @@
     </header>
 
     <links>
-        <link uri="index">home</link>
+        <link uri="../index">home</link>
         <link uri="../documentation">documentation</link>
         <link uri="user">user</link>
     </links>
@@ -26,11 +26,6 @@
         <p>
             API documentation is generated using Javadocs. It is
             automatically generated as part of the build process.
-        </p>
-        
-        <p>
-            <link href="documentation/api/index.html"
-                  name="Javadoc API documentation"/>
         </p>
     </sidebar>
     
