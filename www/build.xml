@@ -26,9 +26,17 @@
     
     <target name="icons">
         <mkdir dir="${target.dir}/images"/>
+        <mkdir dir="${target.dir}/graphics"/>
+        
         <copy todir="${target.dir}/images">
             <fileset dir="src/images">
                 <include name="*.png"/>
+            </fileset>
+        </copy>
+        
+        <copy todir="${target.dir}/graphics">
+            <fileset dir="src/graphics">
+                <include name="*"/>
             </fileset>
         </copy>
     </target>

@@ -88,12 +88,17 @@ div.sect5 h5 {
     left: 10mm;
 }
 
-div.sidebar {
+
+div.sidebars {
     float: right;
     width: 45mm;
-    margin-right: 0mm;
-    margin-bottom: 5mm;
+    margin: 0mm;
     clear: both;
+}
+
+div.sidebar {
+    margin-right: 0mm;
+    margin-bottom: 3mm;
     background-color: #ddbbff;
 }
 
@@ -108,5 +113,13 @@ div.sidebar h6 {
 div.sidebar p {
     font-size: small;
     margin-top: 0mm;
-    margin-bottom: 5mm;
+    margin-bottom: 3mm;
+}
+
+img {
+    border-style: none;
+}
+
+img.inline {
+    float: right;
 }

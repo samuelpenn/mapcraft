@@ -1,4 +1,8 @@
 <?xml version="1.0"?>
+<!--
+    XML Source for HTML.
+    Use pagexml stylesheets to render.
+ -->
 <page>
     <header>
         <title>Mapcraft</title>
@@ -62,7 +66,10 @@
     </sidebar>
 
     <body>
-        <sect1>            
+        <sect1>
+            <image href="graphics/world.jpg" width="128" height="128"
+                   alt="Picture of globe"/>
+
             <p>
                 <e>Mapcraft</e> is designed to create and edit tile based
                 maps for use in pen and paper roleplaying games. The
