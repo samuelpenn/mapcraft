@@ -53,6 +53,8 @@
             </classpath>
             <test name="uk.co.demon.bifrost.rpg.mapcraft.map.MapTest"
                   todir="${tests.dir}"/>
+            <test name="uk.co.demon.bifrost.rpg.mapcraft.map.TileSetTest"
+                  todir="${tests.dir}"/>
         </junit>
 
         <junitreport todir="${reports.dir}">

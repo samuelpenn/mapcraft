@@ -1,11 +1,10 @@
-
 /*
  * Copyright (C) 2002 Samuel Penn, sam@bifrost.demon.co.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2,
- * or (at your option) any later version. See the file COPYING.
+ * as published by the Free Software Foundation; version 2.
+ * See the file COPYING.
  *
  * $Revision$
  * $Date$
@@ -32,6 +31,10 @@ public class MapTest extends TestCase {
         filename = "test.map";
     }
 
+    /**
+     * Make sure that it is possible to create a new map from scratch.
+     * A Hexagonal world map is created, and saved to a file.
+     */
     public void
     testCreate() {
         try {
@@ -45,6 +48,10 @@ public class MapTest extends TestCase {
         Assert.assertTrue(true);
     }
 
+    /**
+     * Try to load the map created and saved in the previous test.
+     * If this works, then the file format is probably sane.
+     */
     public void
     testLoad() {
         try {

@@ -260,12 +260,20 @@ public class Path {
         this.width = width;
     }
 
+    /**
+     * Get the number of path elements in this path.
+     */
+    public int
+    getSize() {
+        return elements.size();
+    }
+
     public void
     setVertexPosition(int vertex, int x, int y) {
         if (vertex < 0 || vertex >= elements.size()) {
             return;
         }
-        
+
         Element     e = (Element)elements.elementAt(vertex);
 
         if (e != null) {

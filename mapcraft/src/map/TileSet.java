@@ -3,8 +3,8 @@
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2,
- * or (at your option) any later version. See the file COPYING.
+ * as published by the Free Software Foundation; version 2.
+ * See the file COPYING.
  *
  * $Revision$
  * $Date$
@@ -112,6 +112,9 @@ public class TileSet implements Cloneable {
         this.height = height;
         this.scale = scale;
 
+        rivers = new Vector();
+        things = new Vector();
+
         System.out.println("Creating tileset of "+width+"x"+height);
         this.tiles = new Tile[height][width];
         int     x, y;
@@ -159,6 +162,11 @@ public class TileSet implements Cloneable {
         Thing       thing = null;
         Vector      list = new Vector();
 
+        if (things == null) {
+            // Nothing to do.
+            return;
+        }
+
         // Translation coords are in tiles. Things are positioned in
         // hundreths of a tile.
         x *= 100;
@@ -185,14 +193,24 @@ public class TileSet implements Cloneable {
         setThings(list);
     }
 
+    /**
+     * Translate all paths (rivers, roads) to match the new origin.
+     * Removal of paths that don't fit on the new map is not currently
+     * supported.
+     */
     private void
     cropAllPaths(int x, int y) {
         Path        path = null;
         Vector      list = new Vector();
-         // Translation coords are in tiles. Things are positioned in
+        // Translation coords are in tiles. Things are positioned in
         // hundreths of a tile.
         x *= 100;
         y *= 100;
+
+        if (rivers == null) {
+            // Nothing to do.
+            return;
+        }
 
         for (int i=0; i < rivers.size(); i++) {
             boolean     okay = true;
@@ -593,7 +611,7 @@ public class TileSet implements Cloneable {
     }
 
     /**
-     * Create and add a new river to the map.
+     * Create and add a new river or road to the map.
      */
     int
     addPath(String name, int x, int y) {
