@@ -147,6 +147,7 @@ public class MapBean implements Cloneable {
         } catch (MapException mape) {
             throw mape;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new MapException("Failed to load map ("+e.getMessage()+")");
         }
     }

@@ -540,7 +540,7 @@ public class MapXML {
             blobSize = 8;
         }
 
-        name = getTextNode(id, ".");
+        name = getTextNode(id);
         scale = getIntNode(node, "dimensions/scale");
         width = getIntNode(node, "dimensions/width");
         height = getIntNode(node, "dimensions/height");
