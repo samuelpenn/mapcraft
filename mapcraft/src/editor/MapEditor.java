@@ -28,7 +28,6 @@ public class MapEditor extends MapViewer
 
     private Brush       brush = new Brush();
 
-
     /**
      * Event handler for the terrain palette. Provides logic for
      * when an item in the terrain palette (terrainPane) is selected.
@@ -284,7 +283,8 @@ public class MapEditor extends MapViewer
     public
     MapEditor(String filename) {
         super(filename);
-        
+
+
         this.setSize(new Dimension(2000, 1200));
         JScrollPane scrollPane = new JScrollPane(this,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -294,6 +294,14 @@ public class MapEditor extends MapViewer
         frame.getContentPane().add(scrollPane);
         frame.setSize(new Dimension(640,400));
         frame.setVisible(true);
+
+        // Close the application if the window is closed.
+        frame.addWindowListener(new WindowAdapter() {
+                public void
+                windowClosing(WindowEvent e) {
+                    System.exit(0);
+                }
+            });
 
         addMouseMotionListener(new MouseMotionHandler());
         addMouseListener(new MouseHandler());
@@ -425,7 +433,17 @@ public class MapEditor extends MapViewer
         MenuViewListener    listener = new MenuViewListener();
 
         menu.setMnemonic(KeyEvent.VK_V);
-
+        item = new JCheckBoxMenuItem("Show grid", true);
+        item.addItemListener(new ItemListener() {
+                public void
+                itemStateChanged(ItemEvent e) {
+                    boolean s = (e.getStateChange() == ItemEvent.SELECTED);
+                    setShowGrid(s);
+                }
+            });
+        //item.setAction(handler.getShowGridAction());
+        menu.add(item);
+/*
         menu.add(createItem(new JCheckBoxMenuItem("Show grid", true),
                             "showGrid", listener), KeyEvent.VK_G);
         menu.add(createItem(new JCheckBoxMenuItem("Show sites", true),
@@ -434,7 +452,7 @@ public class MapEditor extends MapViewer
                             "showHills", listener), KeyEvent.VK_H);
         menu.add(createItem(new JCheckBoxMenuItem("Show coasts", true),
                             "showCoasts", listener), KeyEvent.VK_C);
-
+*/
         return menu;
     }
 

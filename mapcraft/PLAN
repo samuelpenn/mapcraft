@@ -10,7 +10,7 @@ Project Plan
 *   Display labels for places.
     Edit place info.
 *   Try and use PNG format graphics.
-    Move source files into package directories.
+*   Move source files into package directories.
 *   Fix bugs in cursor position.
 *   Produce correct headers/id for new/saved maps.
 
