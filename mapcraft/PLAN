@@ -26,7 +26,7 @@ Project Plan
     Hills support.
     Subhex placement of sites.
 *   Faster display - precrop tile display etc.
-    Toolbar support for brush types.
+*   Toolbar support for brush types.
 *   Support square tiles for indoor maps.
 
 0.3 (Printing support)
@@ -49,11 +49,11 @@ Project Plan
 
 0.6 (UI design considerations)
     Map creation dialogs.
-    File load/save inferface.
-    Toolbar for common features.
+*   File load/save inferface.
+*   Toolbar for common features.
     Map properties dialog/editor.
     GUI interface to map resize and cropping.
-    Wrapper class to provide GUI framework.
+*   Wrapper class to provide GUI framework.
 
 0.7 (Web support)
     Output of web image maps (hrefs to places only).
