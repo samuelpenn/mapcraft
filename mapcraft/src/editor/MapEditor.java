@@ -153,13 +153,18 @@ public class MapEditor extends MapViewer
             int     x,y;
             int     yp;
 
-            x = e.getX()/tileXSize;
-            yp = e.getY();
+            if (map.getTileShape() == Map.SQUARE) {
+                x = e.getX()/tileXSize;
+                y = e.getY()/tileYSize;
+            } else {
+                x = e.getX()/tileXSize;
+                yp = e.getY();
 
-            if (x%2 != 0) {
-                yp -= tileYOffset;
+                if (x%2 != 0) {
+                    yp -= tileYOffset;
+                }
+                y = yp/tileYSize;
             }
-            y = yp/tileYSize;
 
             if (e.getButton() == e.BUTTON1) {
                 // Left mouse button
@@ -198,13 +203,18 @@ public class MapEditor extends MapViewer
                 return;
             }
 
-            x = e.getX()/tileXSize;
-            yp = e.getY();
+            if (map.getTileShape() == Map.SQUARE) {
+                x = e.getX()/tileXSize;
+                y = e.getY()/tileYSize;
+            } else {
+                x = e.getX()/tileXSize;
+                yp = e.getY();
 
-            if (x%2 != 0) {
-                yp -= tileYOffset;
+                if (x%2 != 0) {
+                    yp -= tileYOffset;
+                }
+                y = yp/tileYSize;
             }
-            y = yp/tileYSize;
 
             applyBrush(x, y);
         }
