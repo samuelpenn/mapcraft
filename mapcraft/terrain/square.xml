@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<map>
+    <header>
+        <name>Terrain Set</name>
+        <author>Samuel Penn</author>
+        <id>terrain.0</id>
+        <parent>none</parent>
+        <cvs>
+            <version>$Revision$</version>
+            <date>$Date$</date>
+        </cvs>
+        <format>0.0.2</format>
+        <shape>Square</shape>
+    </header>
+
+    <terrainset id="basic" path="">
+        <terrain id="0">
+            <name>null</name>
+            <description>Unchartable</description>
+            <image>null.png</image>
+            <solid value="false"/>
+        </terrain>
+
+        <terrain id="1">
+            <name>water.water</name>
+            <description>Water</description>
+            <image>water.png</image>
+            <solid value="false"/>
+        </terrain>
+
+        <terrain id="10">
+            <name>clear.clear</name>
+            <description>Clear</description>
+            <image>clear.png</image>
+            <solid value="false"/>
+        </terrain>
+
+        <terrain id="11">
+            <name>clear.grass</name>
+            <description>Grass</description>
+            <image>grass.png</image>
+            <solid value="false"/>
+        </terrain>
+
+        <terrain id="12">
+            <name>clear.sand</name>
+            <description>Sand</description>
+            <image>sand.png</image>
+            <solid value="false"/>
+        </terrain>
+
+        <terrain id="20">
+            <name>solid.stone</name>
+            <description>Stone</description>
+            <image>stone.png</image>
+            <solid value="true"/>
+        </terrain>
+
+    </terrainset>
+
+    <terrainset id="places" path="places">
+    </terrainset>
+
+    <tileset id="root">
+        <dimensions>
+            <scale>1</scale>
+            <width>1</width>
+            <height>1</height>
+        </dimensions>
+
+        <tiles>
+            <tile x="0" y="0" terrain="0" />
+        </tiles>
+    </tileset>
+</map>
