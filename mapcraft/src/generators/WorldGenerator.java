@@ -131,6 +131,7 @@ public abstract class WorldGenerator {
                 break;
             }
         }
+        if (right == -1) right = map.getWidth()-1;
         
         return right;
     }
@@ -266,7 +267,7 @@ public abstract class WorldGenerator {
 
                     // Generate random height, based on surrounding tiles.
                     if (counted > 0) {
-                        height = (short) (0.5 + (total / counted));
+                        height = (short) (0.5 + ((1.0 * total) / (1.0 * counted)));
                         height += (short)(0.5+(Math.random()-Math.random())*20);
                     }
                     
@@ -274,6 +275,10 @@ public abstract class WorldGenerator {
                     // account the west edge so we don't get mismatch.
                     int     rd = right - x;
                     height -= (height - map.getHeight(left, y))/rd;
+                    
+                    if (Math.random()<0.1) {
+                        height += Math.random()*20;
+                    }
                     
                     map.setHeight(x, y, height);
                 } catch (MapOutOfBoundsException e) {
@@ -510,14 +515,18 @@ public abstract class WorldGenerator {
         System.out.println(utils.ra(150, 150));
 */        
 
-        generator = new TerrestrialWorld("foo", 2500, 50);
+        generator = new GaianWorld("foo", 2500, 100);
+        //generator = new TerrestrialWorld("foo", 2500, 50);
         //generator = new JovianWorld("foo", 2500, 50);
         //generator.setWorldType(SELENIAN);
         //generator.setWorldType(HERMIAN);
         //generator.setWorldType(AREAN);
         //generator.setWorldType(JOVIAN);
-        generator.setWorldType(PELAGIC);
+        //generator.setWorldType(PELAGIC);
+        generator.setWorldType(GAIAN);
         generator.generate();
+        
+        System.out.println(generator.map.getTerrainSet().size());
         
         //generator.randomHeight();
         //generator.colourByHeight(1, 16);

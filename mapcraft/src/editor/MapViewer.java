@@ -334,7 +334,7 @@ public class MapViewer extends JPanel {
         Iterator    iter = set.iterator();
         HexFilter   filter = new HexFilter(views[view].getIconWidth(),
                                            views[view].getIconHeight());
-
+        
         if (iter == null || !iter.hasNext()) {
             warn("No iterator");
             return null;
@@ -351,6 +351,11 @@ public class MapViewer extends JPanel {
                 Image       scaled = null;
                 int         x = views[view].getIconWidth();
                 int         y = views[view].getIconHeight();
+                
+                if (name.equals("things")) {
+                    x *= 1.5;
+                    y *= 1.5;
+                }
 
                 try {
                     if (t.getImagePath().startsWith("#")) {
@@ -477,11 +482,13 @@ public class MapViewer extends JPanel {
             views[4] = getNewViewProperties(path, "xlarge");
             setView(2);
 
+            System.out.println("MapViewer: readAllIcons");
             readAllIcons();
             map.setCurrentSet("root");
         } catch (MapException e) {
             e.printStackTrace();
         }
+        System.out.println("MapViewer: Finished");
     }
 
 
@@ -722,10 +729,15 @@ public class MapViewer extends JPanel {
 
     public void
     paintComponent() {
-        if (this.getGraphics() == null) {
-            return;
+        Graphics2D      g = (Graphics2D) this.getGraphics();
+
+        if (isDisplayable()) {
+            if (g == null || !(g instanceof Graphics2D)) {
+                System.out.println("ERROR: paintComponent: Invalid graphics object");
+                return;
+            }
+            paintComponent(g);
         }
-        paintComponent(this.getGraphics());
     }
 
     /**
@@ -742,6 +754,15 @@ public class MapViewer extends JPanel {
         if (map == null) {
             // Nothing to do.
             return;
+        }
+        
+        if (g == null) {
+            System.out.println("ERROR: paintComponent: Graphics object is null");
+            return;
+        }
+        
+        if (!(g instanceof Graphics2D)) {
+            System.out.println("ERROR: paintComponent: Do not have Graphics2D");
         }
 
         // Boundary rectangle which needs to be drawn.
@@ -843,7 +864,12 @@ public class MapViewer extends JPanel {
      */
     public void
     paintTile(int x, int y) {
-        Graphics    g = this.getGraphics();
+        Graphics2D    g = (Graphics2D)this.getGraphics();
+        
+        if (g == null) {
+            System.out.println("ERROR: paintTile: Cannot obtain graphics object");
+            return;
+        }
 
         paintTile(x, y, g);
     }
@@ -879,7 +905,12 @@ public class MapViewer extends JPanel {
     paintTile(int x, int y, Graphics g) {
         int         xp, yp;
         Graphics2D  g2 = (Graphics2D)g;
-
+        
+        if (g2 == null) {
+            System.out.println("g2 is NULL");
+            System.exit(0);
+        }
+        
         if (map.getTileShape() == Map.SQUARE) {
             xp = x * tileXSize;
             yp = y * tileYSize;
@@ -892,6 +923,11 @@ public class MapViewer extends JPanel {
             short   t = map.getTerrain(x, y);
             Image   icon = iconSet.getIcon(t);
             double  r = 0.0;
+            
+            if (icon == null) {
+                System.out.println("ERROR: Icon is null for icon "+t);
+                return;
+            }
 
             r = Math.toRadians(map.getTerrainRotation(x, y));
             if (r != 0) {
@@ -899,7 +935,7 @@ public class MapViewer extends JPanel {
                 g2.drawImage(icon, xp, yp, this);
                 g2.rotate(-r, xp+iconWidth/2, yp+tileYSize/2);
             } else {
-                g.drawImage(icon, xp, yp, this);
+                g2.drawImage(icon, xp, yp, this);
             }
 
             if (map.getFeature(x, y) > 0) {

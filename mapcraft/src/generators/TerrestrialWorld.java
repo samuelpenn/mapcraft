@@ -60,11 +60,11 @@ public class TerrestrialWorld extends WorldGenerator {
         TerrainSet      ts = map.getTerrainSet();
         
         log("setupHermian: ...");
-        log("are we okay?");
+
         if (ts == null) {
             log("setupHermian: Null terrain set");
         }
-        log("Hello");
+
         int     r = 11 + (int)(Math.random()*3); // 12
         int     g = 15 + (int)(Math.random()*4); // 17
         int     b = 20 + (int)(Math.random()*10); // 25

@@ -42,6 +42,7 @@ public class MapImage extends MapViewer {
     public
     MapImage(Properties properties, String filename) {
         super(properties, filename);
+        System.out.println("MapImage: Finished");
     }
 
     private void
@@ -68,11 +69,8 @@ public class MapImage extends MapViewer {
         Graphics2D      graphics = null;
         int             w, h;
 
+        System.out.println("toImage: About to set view");
         setView(scale);
-        try {
-            Thread.sleep(1000);
-        } catch (Exception ie) {
-        }
 
         try {
             w = map.getWidth() * tileXSize + (iconWidth - tileXSize);
@@ -84,7 +82,12 @@ public class MapImage extends MapViewer {
             image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
             System.out.println("Painting image...");
             clearToWhite(image);
-            paintComponent(image.createGraphics());
+            graphics = image.createGraphics();
+            if (graphics == null) {
+                System.out.println("NULL Graphics object");
+                System.exit(0);
+            }
+            paintComponent(graphics);
             System.out.println("...finished painting");
 
         } catch (Exception e) {
@@ -132,6 +135,9 @@ public class MapImage extends MapViewer {
         BufferedImage   image = null;
         Image           texture = null;
         int             crop = 16;
+        
+        int             width = 1024;
+        int             height = 512;
 
         System.out.println("Saving image as ["+filename+"]");
 
@@ -140,8 +146,8 @@ public class MapImage extends MapViewer {
             System.out.println("Original image is "+image.getWidth()+
                                "x"+image.getHeight());
             
-            int     w = 2048 + crop * 2;
-            int     h = 1024 + crop * 2;
+            int     w = width + crop * 2;
+            int     h = height + crop * 2;
             texture = image.getScaledInstance(w, h, Image.SCALE_SMOOTH);
 
             // Need to crop the image, to remove 'half hexes'.
@@ -210,6 +216,8 @@ public class MapImage extends MapViewer {
             properties.setProperty("path.images", "");
 
             map = new MapImage(properties, filename);
+            Thread.sleep(2000);
+            System.out.println("Instantiated MapImage");
 
             if (options.isOption("-thing")) {
                 String  thing = options.getString("-thing");
@@ -236,6 +244,8 @@ public class MapImage extends MapViewer {
             map.setShowLargeGrid(false);
             map.setShowFeatures(true);
             if (celestia) {
+                System.out.println("About to save celestia");
+                scale = 1;
                 map.saveCelestia(outfile, scale, unwrap);
             } else {
                 map.saveImage(outfile, scale, unwrap);
