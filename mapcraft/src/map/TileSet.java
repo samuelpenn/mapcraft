@@ -89,7 +89,7 @@ public class TileSet implements Cloneable {
      */
     void
     crop(int x, int y, int w, int h) throws MapOutOfBoundsException {
-
+        System.out.println("Cropping "+x+","+y+","+w+","+h);
         // Perform sanity checks.
         checkBounds(x, y);
         checkBounds(x + w, y + h);
@@ -103,6 +103,8 @@ public class TileSet implements Cloneable {
             }
         }
         tiles = cropped;
+        width = w;
+        height = h;
     }
 
     private void
@@ -251,6 +253,62 @@ public class TileSet implements Cloneable {
     public void
     setFeature(int x, int y, short feature) throws MapOutOfBoundsException {
         getTile(x, y).setFeature(feature);
+    }
+    /**
+     * Crop the tiles to the given area. The map is searched for all tiles
+     * which match the area, and a rectangle is formed which encloses all
+     * these tiles. The rectangle will then be grown in each direction by
+     * the size of the margin, if it is positive.
+     *
+     * The margin will not take the cropped area out beyond the edges of
+     * the original map.
+     *
+     * @param area      Area id to be cropped to.
+     * @param margin    Number of tiles to add as a margin.
+     */
+    public void
+    cropToArea(short area, int margin) throws MapOutOfBoundsException {
+        int     minX, minY, maxX, maxY;
+        int     x, y;
+        boolean found = false;
+
+        minX = minY = maxX = maxY = -1;
+        for (x=0; x < width; x++) {
+            for (y=0; y < height; y++) {
+                try {
+                    if (getArea(x, y) == area) {
+                        if (!found || x < minX) {
+                            minX = x;
+                        }
+                        if (!found || x > maxX) {
+                            maxX = x;
+                        }
+                        if (!found || y < minY) {
+                            minY = y;
+                        }
+                        if (!found || y > maxY) {
+                            maxY = y;
+                        }
+                        found = true;
+                    }
+                } catch (MapOutOfBoundsException moobe) {
+                }
+            }
+        }
+
+        if (margin > 0) {
+            minX -= margin;
+            minY -= margin;
+            maxX += margin;
+            maxY += margin;
+
+            if (minX < 0) minX = 0;
+            if (minY < 0) minY = 0;
+            if (maxX >= width) maxX = width-1;
+            if (maxY >= height) maxY = height-1;
+        }
+
+        crop(minX, minY, maxX-minX + 1, maxY-minY + 1);
     }
 }
 

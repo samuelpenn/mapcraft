@@ -43,7 +43,7 @@ public class Map implements Cloneable {
     private String  name;
     private String  version;
     private String  date;
-    
+
     private String  author;
     private String  id;
     private String  parent;
@@ -87,6 +87,30 @@ public class Map implements Cloneable {
      */
     public
     Map(Map map) {
+        filename = map.filename;
+        name = map.name;
+        version = map.version;
+        date = map.date;
+        author = map.author;
+        id = map.id;
+        parent = map.parent;
+        format = map.format;
+        imagedir = map.imagedir;
+        xml = null;
+
+        terrainSet = map.terrainSet;
+        thingSet = map.thingSet;
+        featureSet = map.featureSet;
+        tileSets = map.tileSets;
+        areaSet = map.areaSet;
+        rivers = map.rivers;
+        things = map.things;
+
+        tileShape = map.tileShape;
+        type = map.type;
+
+        currentSetName = map.currentSetName;
+        currentSet = map.currentSet;
     }
 
     /**
@@ -251,14 +275,6 @@ public class Map implements Cloneable {
         } catch (Exception e) {
             throw new MapException("Failed to load map ("+e.getMessage()+")");
         }
-    }
-
-    /**
-     * Create a new map object based on the provided one, but cropped to
-     * the given size.
-     */
-    public
-    Map(Map map, int x, int y, int width, int height) {
     }
 
 
@@ -545,14 +561,30 @@ public class Map implements Cloneable {
     }
 
     public Area
-    getArea(int x, int y) throws MapOutOfBoundsException {
-        int a = tileSets[currentSet].getArea(x, y);
+    getArea(int set, int x, int y) throws MapOutOfBoundsException {
+        int a = tileSets[set].getArea(x, y);
         return areaSet.getArea(a);
+    }
+
+    public Area
+    getArea(int x, int y) throws MapOutOfBoundsException {
+        return getArea(currentSet, x, y);
+    }
+
+    public void
+    setArea(int set, int x, int y, short area) throws MapOutOfBoundsException {
+        tileSets[set].setArea(x, y, area);
     }
 
     public void
     setArea(int x, int y, short area) throws MapOutOfBoundsException {
-        tileSets[currentSet].setArea(x, y, area);
+        setArea(currentSet, x, y, area);
+    }
+
+    public Area
+    getAreaByName(String name) {
+        System.out.println("Looking for ["+name+"]");
+        return areaSet.getArea(name);
     }
 
     public short
@@ -735,50 +767,38 @@ public class Map implements Cloneable {
 
     }
 
-    public void
-    cropToArea(short area) {
-        Map     map = null;
-        int     minX, minY, maxX, maxY;
-        int     x, y;
-        boolean found = false;
-
-        minX = minY = maxX = maxY = -1;
-        for (x=0; x < map.getWidth(); x++) {
-            for (y=0; y < map.getHeight(); y++) {
-                try {
-                    if (getArea(x, y).getId() == area) {
-                        if (!found || x < minX) {
-                            minX = x;
-                        }
-                        if (!found || x > maxX) {
-                            maxX = x;
-                        }
-                        if (!found || y < minY) {
-                            minY = y;
-                        }
-                        if (!found || y > maxY) {
-                            maxY = y;
-                        }
-                        found = true;
-                    }
-                } catch (MapOutOfBoundsException moobe) {
-                }
-            }
+    /**
+     * Crop the specified tileset to the given rectangle.
+     */
+    public boolean
+    crop(int set, int x, int y, int w, int h) {
+        try {
+            tileSets[set].crop(x, y, w, h);
+        } catch (MapOutOfBoundsException moobe) {
+            return false;
         }
+
+        return true;
     }
 
     /**
-     * Returns a new Map object, which is a cropped subset of
-     * the current map object. The scale of the new object is
-     * identical to the scale of the current Map.
+     * Crop the specified tileset to the given area. A rectangle is
+     * calculated to surround all tiles which match the given area.
+     * If a positive margin is specified, the rectangle is grown in
+     * each direction by the margin size.
      */
-    public Map
-    submap(String newName, int xoff, int yoff, int w, int h) throws MapException {
-        Map     submap = new Map(newName, w, h, this.scale);
-        int     x, y;
+    public boolean
+    cropToArea(int set, short area, int margin) {
+        try {
+            System.out.println("Cropping to area "+area+" with margin "+margin);
+            tileSets[set].cropToArea(area, margin);
+        } catch (MapOutOfBoundsException moobe) {
+            return false;
+        }
 
-        return submap;
+        return true;
     }
+
 
 
     private void

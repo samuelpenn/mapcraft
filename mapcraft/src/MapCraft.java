@@ -171,9 +171,14 @@ public class MapCraft implements ActionListener {
         }
     }
 
-    public MapCraft
+    public void
     crop(int x, int y, int w, int h) {
-        return this;
+        editor.crop(x, y, w, h);
+    }
+
+    public void
+    cropToArea(String area, int margin) {
+        editor.cropToArea(area, margin);
     }
 
     private JButton
@@ -298,7 +303,11 @@ public class MapCraft implements ActionListener {
         }
 
         boolean     crop = false;
+        boolean     area = false;
+
         int         x=0, y=0, w=0, h=0;
+        String      areaName = null;
+        int         margin = 0;
         if (options.isOption("-crop")) {
             x = options.getInt("-x");
             y = options.getInt("-y");
@@ -308,16 +317,25 @@ public class MapCraft implements ActionListener {
             crop = true;
         }
 
+        if (options.isOption("-area")) {
+            areaName = options.getString("-area");
+            if (options.isOption("-margin")) {
+                margin = options.getInt("-margin");
+            }
+
+            area = true;
+        }
+
         if (mapfile == null) {
             map = new MapCraft(properties);
         } else {
             map = new MapCraft(properties, mapfile);
-            /*
             if (crop) {
-                MapCraft     newMap = map.crop(x, y, w, h);
-                newMap.editor.saveImage("my.jpg");
+                map.crop(x, y, w, h);
             }
-            */
+            if (area) {
+                map.cropToArea(areaName, margin);
+            }
         }
 
 

@@ -114,7 +114,7 @@ public class MapViewer extends JPanel {
 
                 viewName = (String)properties.get("view.name");
                 viewShape = (String)properties.get("view.shape");
-                
+
                 iconHeight = (int)Integer.parseInt((String)properties.get("icon.height"));
                 iconWidth = (int)Integer.parseInt((String)properties.get("icon.width"));
 
@@ -205,7 +205,7 @@ public class MapViewer extends JPanel {
             if (t != null) {
                 short   id = t.getId();
                 String  path = views[view].getPath()+"/"+t.getImagePath();
-                debug("Loading icon ["+path+"]");
+                //debug("Loading icon ["+path+"]");
                 Image   icon = toolkit.getImage(path);
                 toolkit.prepareImage(icon, -1, -1, this);
                 iconSet.add(id, icon);
@@ -466,8 +466,6 @@ public class MapViewer extends JPanel {
         int     i = 0, e = 0;
 
         for (i=0; i < map.getRivers().size(); i++) {
-            debug("Drawing river "+i);
-
             Path    path = (Path)map.getRivers().elementAt(i);
             Shape   shape = path.getGraphicsShape(g, tileXSize, tileYSize, tileYOffset,
                                                   iconWidth, iconHeight);

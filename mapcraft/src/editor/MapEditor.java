@@ -711,47 +711,36 @@ public class MapEditor extends MapViewer
         return menu;
     }
 
+    public boolean
+    crop(int x, int y, int w, int h) {
+        map.crop(map.getCurrentSet(), x, y, w, h);
+        paintComponent();
+
+        return true;
+    }
+
+    public boolean
+    cropToArea(String area, int margin) {
+        short       a = (short)map.getAreaByName(area).getId();
+
+        return cropToArea(a, margin);
+    }
+
+    public boolean
+    cropToArea(short area, int margin) {
+        map.cropToArea(map.getCurrentSet(), area, margin);
+        paintComponent();
+
+        return true;
+    }
+
 
     public static void
     main(String args[]) {
         Options options = new Options(args);
         MapEditor   editor = null;
         Map         map = null;
-/*
-        try {
-            options = new Options(args);
 
-            if (options.isOption("-create")) {
-                int width = options.getInt("-width");
-                int height = options.getInt("-height");
-                int scale = options.getInt("-scale");
-                String name = options.getString("-create");
-                String terrain = options.getString("-terrain");
-                boolean square = options.isOption("-square");
-                boolean local = options.isOption("-local");
-
-
-                System.out.println("Creating map "+name+" "+width+"x"+height);
-                map = new Map(name, width, height, scale);
-                if (square) map.setTileShape(Map.SQUARE);
-                if (local) map.setType(Map.LOCAL);
-                map.loadTerrainSet(terrain);
-                map.save(name+".map");
-            } else if (options.isOption("-load")) {
-                String  images = "images";
-
-                if (options.isOption("-images")) {
-                    images = options.getString("-images");
-                }
-                editor = new MapEditor(options.getString("-load"), images);
-            } else if (options.isOption("-rewrite")) {
-                map = new Map(options.getString("-rewrite"));
-                map.save("new.map");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-*/
     }
 
 }

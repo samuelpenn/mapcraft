@@ -54,6 +54,27 @@ import java.util.*;
     }
 
     public Area
+    getArea(String name) {
+        Iterator    it = list.iterator();
+        Area        a = null;
+        boolean     found = false;
+
+        while (it.hasNext()) {
+            a = (Area)it.next();
+            if (a.getName().equalsIgnoreCase(name)) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            a = null;
+        }
+
+        return a;
+    }
+
+    public Area
     getArea(int id) {
         Iterator    it = list.iterator();
         Area        a = null;
