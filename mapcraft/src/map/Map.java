@@ -110,17 +110,19 @@ public class Map implements Cloneable {
 
         int     y, x;
         for (y = 0; y < height; y++) {
-            // y is travel along the surface
-            double  prop = Math.abs((height / 2.0) - y) / (height / 2.0);
-            double  angle = 90.0 * prop;
+            // y is the index vertically across the 'flat' map surface.
+            // The proportion of the distance y gives the proportion of angle
+            // traversed around the world.
+            double  angle = (180.0 * (y+0.5)) / height;
 
             // t is the radius of the world, in 'tiles'.
             double  t = radius / scale;
             double  r = t * Math.sin(Math.toRadians(angle));
-            int     w = width - (int) (2.0 * r * Math.PI);
 
             // w is the width of the world at this point.
-            int     s = (width/2) - (w/2);
+            int     w = (int) Math.round(2.0 * r * Math.PI);
+
+            int     s = (int) Math.round((width/2.0) - (w/2.0));
 
             System.out.println("["+y+"] angle "+(int)angle+" r "+r+" w "+w+" s "+s);
             for (x = 0; x < width; x++) {
@@ -134,16 +136,50 @@ public class Map implements Cloneable {
                 }
             }
 
-/*
-            int     rs = (int)(radius/scale * radius/scale);
-            double  h = Math.abs((y - (height*Math.PI)/2.0));
-            double  r = Math.sqrt(rs-(h * h));
-            int     w = (int) (2.0 * r * Math.PI);
-
-            System.out.println("["+y+"] w = "+w);
-            */
         }
 
+    }
+
+    public void
+    unwrapWorld() {
+        int         y, x;
+        int         width, height;
+        TileSet     unwrapped = null;
+
+        width = tileSets[0].getWidth();
+        height = tileSets[0].getHeight();
+
+        try {
+            unwrapped = new TileSet("root", width, height, tileSets[0].getScale());
+        } catch (InvalidArgumentException ie) {
+        }
+
+        for (y=0; y < height; y++) {
+            int     w = 0;
+            int     start = -1;
+            for (x=0; x < width; x++) {
+                try {
+                    if (getTerrain(x, y) != 0) {
+                        w++;
+                        if (start == -1) {
+                            start = x;
+                        }
+                    }
+                } catch (MapOutOfBoundsException me) {
+                }
+            }
+            // w now holds number of 'real' tiles in this row.
+            System.out.println("["+y+"] width ["+w+"] start ["+start+"]");
+            for (x=0; x < width; x++) {
+                int     i = (int)(x * (1.0 * w / width));
+                try {
+                    unwrapped.setTile(x, y, tileSets[0].getTile(start + i, y));
+                } catch (MapOutOfBoundsException moobe) {
+                }
+            }
+        }
+
+        tileSets[0] = unwrapped;
     }
 
 
@@ -1143,7 +1179,7 @@ public class Map implements Cloneable {
             } else if (options.isOption("-zoomout")) {
                 String  filename = options.getString("-zoomout");
                 map = new Map(filename);
-                map.rescaleMap(250);
+                map.rescaleMap(200);
                 map.save("new.map");
             } else if (options.isOption("-euressa")) {
                 // Change a 25km map to 250km map (16x10).

@@ -72,7 +72,7 @@ public class MapImage extends MapViewer {
      * @param scale     Scale to display at, from 0 (xx-small), 3 (medium), 6 (xxlarge)
      */
     public BufferedImage
-    toImage(int scale) {
+    toImage(int scale, boolean unwrap) {
         BufferedImage   image = null;
         Graphics2D      graphics = null;
         int             w, h;
@@ -84,6 +84,9 @@ public class MapImage extends MapViewer {
             w = map.getWidth() * tileXSize;
             h = map.getHeight() * tileYSize;
 
+            if (unwrap) {
+                map.unwrapWorld();
+            }
             image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
             System.out.println("Painting image...");
             paintComponent(image.createGraphics());
@@ -98,14 +101,14 @@ public class MapImage extends MapViewer {
     }
 
     public void
-    saveImage(String filename, int scale) {
+    saveImage(String filename, int scale, boolean unwrap) {
         OutputStream    out = null;
         BufferedImage   image = null;
 
         System.out.println("Saving image as ["+filename+"]");
 
         try {
-            image = toImage(scale);
+            image = toImage(scale, unwrap);
 
             File file = new File(filename);
 
@@ -129,7 +132,7 @@ public class MapImage extends MapViewer {
     main(String args[]) {
         try {
             MapImage    map = null;
-            String      filename = "planet.map";
+            String      filename = "earth.map";
             Properties  properties = new Properties();
 
             properties.setProperty("path.run", System.getProperty("user.dir"));
@@ -139,7 +142,7 @@ public class MapImage extends MapViewer {
             map.setShowSites(false);
             map.setShowAreas(false);
             map.setShowLargeGrid(false);
-            map.saveImage("xplanet.jpg", 0);
+            map.saveImage("xplanet.jpg", 0, true);
         } catch (Exception e) {
             e.printStackTrace();
         }

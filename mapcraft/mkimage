@@ -4,9 +4,9 @@ export CLASSPATH=$CLASSPATH:build:src
 
 export MAPCRAFTDIR=`pwd`
 
-java uk.co.demon.bifrost.rpg.mapcraft.editor.MapImage 
-#java uk.co.demon.bifrost.rpg.mapcraft.map.Map -zoomout maps/Euressa.map
-#java uk.co.demon.bifrost.rpg.mapcraft.map.Map -resize new.map -width 176 -height 88
+#java uk.co.demon.bifrost.rpg.mapcraft.editor.MapImage 
+java uk.co.demon.bifrost.rpg.mapcraft.map.Map -zoomout maps/Euressa.map
+#java uk.co.demon.bifrost.rpg.mapcraft.map.Map -resize maps/Euressa.map -width 21 -height 12
 
-java uk.co.demon.bifrost.rpg.mapcraft.map.Map -world
+#java uk.co.demon.bifrost.rpg.mapcraft.map.Map -world
 #java uk.co.demon.bifrost.rpg.mapcraft.map.Map -euressa
