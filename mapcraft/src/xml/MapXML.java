@@ -580,33 +580,6 @@ public class MapXML {
                 tileSet.setParent(parentScale, parentX, parentY);
             } catch (XMLException pxmle) {
             }
-
-            // Now, get data on rivers. Since river data is a lot
-            // less, we don't use blobs for rivers.
-            /*
-            System.out.println("Reading river data...");
-            NodeList    rivers = getNodeList(node, "rivers/river");
-
-            if (rivers != null) {
-                for (int r=0; r < rivers.getLength(); r++) {
-                    Node            river = rivers.item(r);
-                    Node            value;
-                    NamedNodeMap    values;
-
-                    if (river != null) {
-                        int     x = 0, y = 0;
-                        short   mask = 0;
-
-                        values = river.getAttributes();
-                        x = getIntNode(values.getNamedItem("x"));
-                        y = getIntNode(values.getNamedItem("y"));
-                        mask = (short)getIntNode(values.getNamedItem("mask"));
-                        tileSet.setRiverMask(x, y, mask);
-                    }
-                }
-            }
-            */
-
         } catch (InvalidArgumentException iae) {
             throw new XMLException("Cannot create TileSet from XML");
         } catch (MapOutOfBoundsException mbe) {
@@ -796,9 +769,9 @@ public class MapXML {
      *
      */
     public Vector
-    getRivers(String set) throws XMLException {
-        Vector      rivers = new Vector();
-        String          xpath = "/map/tileset[@id='"+set+"']/rivers/river";
+    getPaths(String set) throws XMLException {
+        Vector          rivers = new Vector();
+        String          xpath = "/map/tileset[@id='"+set+"']/paths/path";
 
         if (format.equals("0.1.0")) {
             warning("Old format river elements");
@@ -808,10 +781,16 @@ public class MapXML {
         try {
             NodeList    list = getNodeList(xpath);
             if (list == null || list.getLength() == 0) {
-                return rivers;
+                // Try again, with the 0.2.0 format for rivers.
+                xpath = "/map/tileset[@id='"+set+"']/rivers/river";
+                list = getNodeList(xpath);
+
+                if (list == null || list.getLength() == 0) {
+                    return rivers;
+                }
             }
 
-            // For each <river> in the document
+            // For each <path> in the document
             for (int i=0; i < list.getLength(); i++) {
                 Node            node = list.item(i);
                 NamedNodeMap    values = null;
@@ -820,9 +799,22 @@ public class MapXML {
 
                 if (node != null) {
                     values = node.getAttributes();
-                    String name = getTextNode(values.getNamedItem("name"));
+                    String  name = getTextNode(values.getNamedItem("name"));
+                    String  ptype, style;
 
-                    System.out.println("Adding river ["+name+"]");
+                    try {
+                        ptype = getTextNode(values.getNamedItem("type"));
+                    } catch (Exception e1) {
+                        ptype = "river";
+                    }
+
+                    try {
+                        style = getTextNode(values.getNamedItem("style"));
+                    } catch (Exception e2) {
+                        style = "plain";
+                    }
+
+                    System.out.println("Adding "+ptype+" ["+name+"/"+style+"]");
 
                     // Now get each path element in turn. First should be a <start/>
                     child = node.getFirstChild();
@@ -840,6 +832,8 @@ public class MapXML {
                             path = new Path(name, getIntNode(values.getNamedItem("x")),
                                                   getIntNode(values.getNamedItem("y")));
                             path.setWidth(getIntNode(values.getNamedItem("width")));
+                            path.setType(ptype);
+                            path.setStyle(style);
                             continue;
                         } else if (child.getNodeName().equals("end")) {
                             type = Path.END;
@@ -859,7 +853,7 @@ public class MapXML {
             throw xe;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new XMLException("Error in gettings rivers");
+            throw new XMLException("Error in gettings paths");
         }
 
         return rivers;
@@ -870,7 +864,7 @@ public class MapXML {
     public static void
     testEncoding(int v, int w) {
         String e = MapXML.toBase64(v, w);
-        
+
         System.out.println("("+v+","+w+") = "+e+" = "+fromBase64(e));
     }
 

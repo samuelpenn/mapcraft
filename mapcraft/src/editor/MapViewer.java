@@ -565,16 +565,16 @@ public class MapViewer extends JPanel {
     }
 
     public void
-    drawRivers() {
-        drawRivers((Graphics2D)this.getGraphics());
+    drawPaths() {
+        drawPaths((Graphics2D)this.getGraphics());
     }
 
     public void
-    drawRivers(Graphics2D g) {
+    drawPaths(Graphics2D g) {
         int     i = 0, e = 0;
 
-        for (i=0; i < map.getRivers().size(); i++) {
-            Path    path = (Path)map.getRivers().elementAt(i);
+        for (i=0; i < map.getPaths().size(); i++) {
+            Path    path = (Path)map.getPaths().elementAt(i);
             Shape   shape = path.getGraphicsShape(g, tileXSize, tileYSize, tileYOffset,
                                                   iconWidth, iconHeight);
 
@@ -652,7 +652,7 @@ public class MapViewer extends JPanel {
             }
 
             if (showRivers) {
-                drawRivers((Graphics2D)g);
+                drawPaths((Graphics2D)g);
             }
 
             // Now draw labels. Need to draw these last so that they don't

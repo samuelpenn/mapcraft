@@ -225,7 +225,7 @@ public class MapEditor extends MapViewer
                 paintTile(x, y);
                 break;
             case Brush.RIVERS:
-                applyBrushRivers(brush.getX(), brush.getY());
+                applyBrushPaths(brush.getX(), brush.getY());
                 break;
             }
         } catch (MapOutOfBoundsException moobe) {
@@ -281,15 +281,15 @@ public class MapEditor extends MapViewer
     }
 
     private void
-    applyBrushRivers(int x, int y) throws MapOutOfBoundsException {
+    applyBrushPaths(int x, int y) throws MapOutOfBoundsException {
         switch (brush.getMode()) {
         case Brush.SELECT:
             info("Selecting river");
-            map.unselectRivers();
+            map.unselectPaths();
             int     nearest = 0;
             int     min = -1;
-            for (int r = 1; r <= map.getRivers().size(); r++) {
-                Path    river = (Path) map.getRiver(r);
+            for (int r = 1; r <= map.getPaths().size(); r++) {
+                Path    river = (Path) map.getPath(r);
                 int     v = river.getNearestVertex(x, y, 250);
                 if (v > -1) {
                     int     d = river.getDistanceToVertex(x, y, v);
@@ -301,28 +301,28 @@ public class MapEditor extends MapViewer
             }
             if (nearest > 0) {
                 debug("Nearest river is "+nearest);
-                map.getRiver(nearest).setHighlighted(true);
+                map.getPath(nearest).setHighlighted(true);
                 brush.setSelected(Brush.RIVERS, (short)nearest);
             }
-            drawRivers();
+            drawPaths();
             break;
         case Brush.NEW:
             info("New river");
             // Have not yet selected a river.
-            String  name = "River "+(map.getRivers().size()+1);
+            String  name = "River "+(map.getPaths().size()+1);
             info("Creating new river ["+name+"] at "+x+","+y);
-            int     id = map.addRiver(name, x, y);
+            int     id = map.addPath(name, x, y);
             info("created");
             brush.setSelected(Brush.RIVERS, (short)id);
             brush.setMode(Brush.EDIT);
-            map.unselectRivers();
-            map.selectRiver(id);
-            drawRivers();
+            map.unselectPaths();
+            map.selectPath(id);
+            drawPaths();
             break;
         case Brush.EDIT:
             info("Edit river "+brush.getSelected());
 
-            Path    river = map.getRiver(brush.getSelected());
+            Path    river = map.getPath(brush.getSelected());
             debug("Adding to river ["+river.getName()+"]");
 
             if (brush.getButton() == Brush.LEFT) {
@@ -332,18 +332,18 @@ public class MapEditor extends MapViewer
                 Path.Element    start = river.getStartPoint();
                 if (river.isAtEnd(brush.getX(), brush.getY())) {
                     debug("Next to end, so adding");
-                    map.extendRiver(brush.getSelected(), brush.getX(), brush.getY());
-                    drawRivers();
+                    map.extendPath(brush.getSelected(), brush.getX(), brush.getY());
+                    drawPaths();
                 } else if (river.isAtStart(brush.getX(), brush.getY())) {
                     debug("Next to start, so adding");
-                    map.extendRiver(brush.getSelected(), brush.getX(), brush.getY());
-                    drawRivers();
+                    map.extendPath(brush.getSelected(), brush.getX(), brush.getY());
+                    drawPaths();
                 }
             } else if (brush.getButton() == Brush.MIDDLE) {
                 info("Middle button (move)");
                 int     v = river.getNearestVertex(x, y, 50);
                 river.setVertexPosition(v, x, y);
-                drawRivers();
+                drawPaths();
             } else if (brush.getButton() == Brush.RIGHT) {
                 info("Right button");
             }

@@ -27,15 +27,22 @@ public class Path {
     public static final short   END = 2;
     public static final short   PATH = 3;
     public static final short   JOIN = 4;
-    
+
+    public static final short   RIVER = 1;
+    public static final short   ROAD = 2;
+
+    public static final short   PLAIN = 1;
 
     protected String    name;
     protected Vector    elements;
     protected int       width;
-    protected boolean   highlighted;
+    protected short     type;
+    protected short     style;
 
+    protected boolean   highlighted;
     private boolean     dirty = true;
     private int         minX, minY, maxX, maxY;
+
 
     /**
      * Inner class which describes an element of a path.
@@ -77,9 +84,77 @@ public class Path {
         this.name = name;
         this.width = 3;
 
+        this.type = RIVER;
+        this.style = PLAIN;
+
         Element e = new Element(START, x, y);
         elements = new Vector();
         elements.add(e);
+    }
+
+    public
+    Path(String name, short type, short style, int x, int y) {
+        this.name = name;
+        this.width = 3;
+        this.type = type;
+        this.style = style;
+
+        Element e = new Element(START, x, y);
+        elements = new Vector();
+        elements.add(e);
+    }
+
+    public short
+    getType() {
+        return type;
+    }
+
+    public short
+    getStyle() {
+        return style;
+    }
+
+    public String
+    getTypeAsString() {
+        switch (type) {
+        case RIVER:
+            return "river";
+        case ROAD:
+            return "road";
+        }
+
+        return "unknown";
+    }
+
+    public String
+    getStyleAsString() {
+        return "plain";
+    }
+
+    public void
+    setType(short type) {
+        this.type = type;
+    }
+
+    public void
+    setType(String string) {
+        if (string.equals("river")) {
+            type = RIVER;
+        } else if (string.equals("road")) {
+            type = ROAD;
+        } else {
+            type = RIVER;
+        }
+    }
+
+    public void
+    setStyle(short style) {
+        this.style = style;
+    }
+
+    public void
+    setStyle(String value) {
+        style = PLAIN;
     }
 
 
@@ -187,9 +262,16 @@ public class Path {
 
     public void
     setVertexPosition(int vertex, int x, int y) {
+        if (vertex < 0 || vertex >= elements.size()) {
+            return;
+        }
+        
         Element     e = (Element)elements.elementAt(vertex);
-        e.setX(x);
-        e.setY(y);
+
+        if (e != null) {
+            e.setX(x);
+            e.setY(y);
+        }
     }
 
     public boolean

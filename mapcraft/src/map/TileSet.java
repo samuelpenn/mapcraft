@@ -31,7 +31,6 @@ public class TileSet implements Cloneable {
     protected Tile[][]  tiles;
 
     protected Vector    rivers = null;
-    protected Vector    roads = null;
     protected Vector    things = null;
 
     private Parent      parent = null;
@@ -187,7 +186,7 @@ public class TileSet implements Cloneable {
     }
 
     private void
-    cropAllRivers(int x, int y) {
+    cropAllPaths(int x, int y) {
         Path        path = null;
         Vector      list = new Vector();
          // Translation coords are in tiles. Things are positioned in
@@ -206,7 +205,7 @@ public class TileSet implements Cloneable {
             }
         }
 
-        setRivers(list);
+        setPaths(list);
    }
 
     /**
@@ -248,7 +247,7 @@ public class TileSet implements Cloneable {
         height = h;
 
         cropAllThings(x, y);
-        cropAllRivers(x, y);
+        cropAllPaths(x, y);
     }
 
     private void
@@ -262,7 +261,7 @@ public class TileSet implements Cloneable {
     }
 
     private void
-    scaleAllRivers(double factor) {
+    scaleAllPaths(double factor) {
         Path        path = null;
         Vector      list = new Vector();
 
@@ -277,7 +276,7 @@ public class TileSet implements Cloneable {
             }
         }
 
-        setRivers(list);
+        setPaths(list);
     }
 
     /**
@@ -302,7 +301,7 @@ public class TileSet implements Cloneable {
         parent = new Parent(scale, x, y);
 
         scaleAllThings(factor);
-        scaleAllRivers(factor);
+        scaleAllPaths(factor);
 
         if (newScale > scale) {
             return scaleLarger(newScale);
@@ -479,29 +478,6 @@ public class TileSet implements Cloneable {
         return getTile(x, y).isWritable();
     }
 
-    /**
-     * @deprecated;
-     */
-    public boolean
-    isRiver(int x, int y) throws MapOutOfBoundsException {
-        return getTile(x, y).isRiver();
-    }
-
-    /**
-     * @deprecated
-     */
-    public short
-    getRiverMask(int x, int y) throws MapOutOfBoundsException {
-        return getTile(x, y).getRiverMask();
-    }
-
-    /**
-     * @deprecated
-     */
-    public void
-    setRiverMask(int x, int y, short mask) throws MapOutOfBoundsException {
-        getTile(x, y).setRiverMask(mask);
-    }
 
     public short
     getArea(int x, int y) throws MapOutOfBoundsException {
@@ -584,13 +560,8 @@ public class TileSet implements Cloneable {
      * Replace all the rivers with the new set of rivers.
      */
     void
-    setRivers(Vector rivers) {
+    setPaths(Vector rivers) {
         this.rivers = rivers;
-    }
-
-    void
-    setRoads(Vector roads) {
-        this.roads = roads;
     }
 
     void
@@ -599,13 +570,8 @@ public class TileSet implements Cloneable {
     }
 
     Vector
-    getRivers() {
+    getPaths() {
         return rivers;
-    }
-
-    Vector
-    getRoads() {
-        return roads;
     }
 
     Vector
@@ -614,7 +580,7 @@ public class TileSet implements Cloneable {
     }
 
     Path
-    getRiver(int id) {
+    getPath(int id) {
         Path        path;
 
         id--;
@@ -630,7 +596,7 @@ public class TileSet implements Cloneable {
      * Create and add a new river to the map.
      */
     int
-    addRiver(String name, int x, int y) throws MapOutOfBoundsException {
+    addPath(String name, int x, int y) {
         Path    path = new Path(name, x, y);
 
         //tileSets[0].getTile(x, y).setRiver(true);
@@ -640,33 +606,10 @@ public class TileSet implements Cloneable {
     }
 
     void
-    extendRiver(int id, int x, int y) throws MapOutOfBoundsException {
-        Path    river = getRiver(id);
+    extendPath(int id, int x, int y) {
+        Path    river = getPath(id);
 
         river.add(x, y);
-    }
-
-    Path
-    getRoad(int id) {
-        if (--id > roads.size()) {
-            return null;
-        }
-        return (Path)roads.elementAt(id);
-    }
-
-    int
-    addRoad(String name, int x, int y) {
-        roads.add(new Path(name, x, y));
-        return roads.size();
-    }
-
-    void
-    extendRoad(int id, int x, int y) {
-        Path    road = getRoad(id);
-
-        if (road != null) {
-            road.add(x, y);
-        }
     }
 
     void

@@ -95,7 +95,7 @@ public class Map implements Cloneable {
         featureSet = map.featureSet;
         tileSets = map.tileSets;
         areaSet = map.areaSet;
-        setRivers(map.getRivers());
+        setPaths(map.getPaths());
         setThings(map.getThings());
 
         tileShape = map.tileShape;
@@ -258,7 +258,7 @@ public class Map implements Cloneable {
             for (int i = 0; i < tileSets.length; i++) {
                 setCurrentSet(i);
                 setThings(xml.getThings(tileSets[i].getName()));
-                setRivers(xml.getRivers(tileSets[i].getName()));
+                setPaths(xml.getPaths(tileSets[i].getName()));
             }
 
             this.filename = filename;
@@ -484,38 +484,6 @@ public class Map implements Cloneable {
         return tileSets[set].getTerrain(x, y);
     }
 
-
-    /**
-     * @deprecated
-     */
-    public boolean
-    isRiver(int x, int y) throws MapOutOfBoundsException {
-        return isRiver(currentSet, x, y);
-    }
-
-    /**
-     * @deprecated
-     */
-    public boolean
-    isRiver(int set, int x, int y) throws MapOutOfBoundsException {
-        return tileSets[set].isRiver(x, y);
-    }
-
-    /**
-     * @deprecated
-     */
-    public short
-    getRiverMask(int x, int y) throws MapOutOfBoundsException {
-        return getRiverMask(currentSet, x, y);
-    }
-
-    /**
-     * @deprecated
-     */
-    public short
-    getRiverMask(int set, int x, int y) throws MapOutOfBoundsException {
-        return tileSets[set].getRiverMask(x, y);
-    }
 
     public short
     getFeature(int x, int y) throws MapOutOfBoundsException {
@@ -894,7 +862,7 @@ public class Map implements Cloneable {
             writer.write("        <shape>Hexagonal</shape>\n");
         }
         writer.write("        <imagedir>"+imagedir+"</imagedir>\n");
-        writer.write("        <format>0.2.0</format>\n");
+        writer.write("        <format>0.2.1</format>\n");
         writer.write("    </header>\n");
     }
 
@@ -982,7 +950,7 @@ public class Map implements Cloneable {
         writer.write("        </tiles>\n");
 
         // Now write out the rivers for this set.
-        writeRivers(writer);
+        writePaths(writer);
         // ... and the things.
         writeThings(writer);
 
@@ -991,9 +959,9 @@ public class Map implements Cloneable {
     }
 
     public void
-    writeRivers(FileWriter writer) throws IOException {
+    writePaths(FileWriter writer) throws IOException {
         int         i = 0, e = 0;
-        Vector      rivers = getRivers();
+        Vector      rivers = getPaths();
         Path        river = null;
         Vector      elements;
         String[]    types = { "unknown", "start", "end", "path", "join" };
@@ -1002,10 +970,12 @@ public class Map implements Cloneable {
             return;
         }
 
-        writer.write("        <rivers>\n");
+        writer.write("        <paths>\n");
         for (i=0; i < rivers.size(); i++) {
             river = (Path)rivers.elementAt(i);
-            writer.write("            <river name=\""+river.getName()+"\">\n");
+            writer.write("            <path name=\""+river.getName()+"\" "+
+                         "type=\""+river.getTypeAsString()+"\" style=\""+
+                         river.getStyleAsString()+"\">\n");
             elements = river.getElements();
             for (e=0; e < elements.size(); e++) {
                 Path.Element    element = (Path.Element)elements.elementAt(e);
@@ -1017,9 +987,9 @@ public class Map implements Cloneable {
                 writer.write("                ");
                 writer.write("<"+types[t]+" x=\""+x+"\" y=\""+y+"\" width=\""+w+"\"/>\n");
             }
-            writer.write("            </river>\n\n");
+            writer.write("            </path>\n\n");
         }
-        writer.write("        </rivers>\n");
+        writer.write("        </paths>\n");
 
     }
 
@@ -1203,13 +1173,13 @@ public class Map implements Cloneable {
      * Return a Vector of Path elements, each one representing a river.
      */
     public Vector
-    getRivers() {
-        return tileSets[currentSet].getRivers();
+    getPaths() {
+        return tileSets[currentSet].getPaths();
     }
 
     public void
-    setRivers(Vector rivers) {
-        tileSets[currentSet].setRivers(rivers);
+    setPaths(Vector paths) {
+        tileSets[currentSet].setPaths(paths);
     }
 
     /**
@@ -1217,60 +1187,48 @@ public class Map implements Cloneable {
      * the river in the Vector, +1.
      */
     public Path
-    getRiver(int id) {
-        return tileSets[currentSet].getRiver(id);
+    getPath(int id) {
+        return tileSets[currentSet].getPath(id);
     }
 
-    public Vector
-    getRoads() {
-        return tileSets[currentSet].getRoads();
-    }
 
-    public void
-    setRoads(Vector roads) {
-        tileSets[currentSet].setRoads(roads);
-    }
 
-    public Path
-    getRoad(int id) {
-        return tileSets[currentSet].getRoad(id);
-    }
 
 
     /**
      * Create and add a new river to the map.
      */
     public int
-    addRiver(String name, int x, int y) throws MapOutOfBoundsException {
-        return tileSets[0].addRiver(name, x, y);
+    addPath(String name, int x, int y) {
+        return tileSets[0].addPath(name, x, y);
     }
 
     public void
-    extendRiver(int id, int x, int y) throws MapOutOfBoundsException {
-        tileSets[0].extendRiver(id, x, y);
+    extendPath(int id, int x, int y) {
+        tileSets[0].extendPath(id, x, y);
     }
 
     public void
-    unselectRivers() {
-        Path    river = null;
+    unselectPaths() {
+        Path    path = null;
         int     id = 0;
 
-        for (id=1; id <= tileSets[0].getRivers().size(); id++) {
+        for (id=1; id <= tileSets[0].getPaths().size(); id++) {
             System.out.println("Unselecting river "+id);
-            unselectRiver(id);
+            unselectPath(id);
         }
     }
 
     public void
-    unselectRiver(int id) {
-        Path    river = tileSets[0].getRiver(id);
+    unselectPath(int id) {
+        Path    river = tileSets[0].getPath(id);
 
         river.setHighlighted(false);
     }
 
     public void
-    selectRiver(int id) {
-        Path river = getRiver(id);
+    selectPath(int id) {
+        Path river = getPath(id);
 
         river.setHighlighted(true);
     }
