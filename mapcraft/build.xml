@@ -42,6 +42,10 @@
                 <include name="**/*.png"/>
                 <exclude name="**/.xvpics/*"/>
             </fileset>
+
+            <fileset dir="${terrain.dir}">
+                <include name="*.xml"/>
+            </fileset>
         </jar>
     </target>
 
