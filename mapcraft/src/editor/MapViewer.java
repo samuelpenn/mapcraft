@@ -22,8 +22,9 @@ public class MapViewer extends JPanel {
     protected int         x_offset;
     protected int         y_offset;
     protected String      tileSize = "medium";
-    protected int         tileXSize = 41;
+    protected int         tileXSize = 30;
     protected int         tileYSize = 35;
+    protected int         tileYOffset = 20;
     
     protected Toolkit     toolkit = null;
     protected Image[]     icons = null;
@@ -98,17 +99,21 @@ public class MapViewer extends JPanel {
     paintComponent(Graphics g) {
         super.paintComponent(g);
         int             x, y;
-        int             xp, yp;
+        int             xp, yp, ypp;
 
         try {
             for (y = 0; y < map.getHeight(); y++) {
+                yp = y * tileYSize;
+
                 for (x = 0; x < map.getWidth(); x++) {
+
                     xp = x * tileXSize;
-                    yp = y * tileYSize;
+                    ypp = yp + ((x%2 == 0)?0:tileYOffset);
+
 
                     short t = map.getTerrain(x, y);
                     Image icon = iconSet.getIcon(t);
-                    g.drawImage(icon, xp, yp, this);
+                    g.drawImage(icon, xp, ypp, this);
                 }
             }
         } catch (Exception e) {
@@ -126,7 +131,7 @@ public class MapViewer extends JPanel {
         int         xp, yp;
 
         xp = x * tileXSize;
-        yp = y * tileYSize;
+        yp = y * tileYSize + ((x%2 == 0)?0:tileYOffset);
 
         try {
             short   t = map.getTerrain(x, y);

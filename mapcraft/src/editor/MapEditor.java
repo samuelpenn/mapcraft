@@ -111,14 +111,14 @@ public class MapEditor extends MapViewer implements ActionListener {
             if (command.equals("load")) {
                 // Load a map file.
                 try {
-                    map.load("map.cart");
+                    map.load("kanday.map");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else if (command.equals("save")) {
                 // Save current map file.
                 try {
-                    map.save("map.cart");
+                    map.save("kanday.map");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -192,10 +192,14 @@ public class MapEditor extends MapViewer implements ActionListener {
             terrainSelected = 1;
         } else if (option.equals("Sea")) {
             terrainSelected = 2;
-        } else if (option.equals("Plains")) {
+        } else if (option.equals("Cropland")) {
             terrainSelected = 3;
         } else if (option.equals("Woods")) {
             terrainSelected = 4;
+        } else if (option.equals("Heath")) {
+            terrainSelected = 5;
+        } else if (option.equals("Marsh")) {
+            terrainSelected = 6;
         }
     }
 
@@ -300,11 +304,17 @@ public class MapEditor extends MapViewer implements ActionListener {
         menu.add(item = new JMenuItem("Sea"));
         item.setActionCommand("2");
         item.addActionListener(listener);
-        menu.add(item = new JMenuItem("Plains"));
+        menu.add(item = new JMenuItem("Cropland"));
         item.setActionCommand("3");
         item.addActionListener(listener);
         menu.add(item = new JMenuItem("Woods"));
         item.setActionCommand("4");
+        item.addActionListener(listener);
+        menu.add(item = new JMenuItem("Heath"));
+        item.setActionCommand("5");
+        item.addActionListener(listener);
+        menu.add(item = new JMenuItem("Marsh"));
+        item.setActionCommand("6");
         item.addActionListener(listener);
 
         return menu;
