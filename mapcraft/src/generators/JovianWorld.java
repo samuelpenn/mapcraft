@@ -51,13 +51,13 @@ public class JovianWorld extends WorldGenerator {
     setupJovian() {
         TerrainSet      ts = map.getTerrainSet();
 
-        int     r = 10 + (int)(Math.random()*5); // 12
-        int     g = 10 + (int)(Math.random()*5); // 12
-        int     b = 10 + (int)(Math.random()*5); // 12
+        int     r = 6 + (int)(Math.random()*5); // 8
+        int     g = 6 + (int)(Math.random()*5); // 8
+        int     b = 4 + (int)(Math.random()*3); // 6
 
         for (int i = 1; i < 17; i++) {
-            String      tag = "grey."+i;
-            String      colour = toColour(50+i*r, 50+i*g, 50+i*b);
+            String      tag = "jovian."+i;
+            String      colour = toColour(75+i*r, 50+i*g, 25+i*b);
 
             ts.add((short)(GREY+i-1), tag, tag, colour);
         }        
@@ -67,13 +67,13 @@ public class JovianWorld extends WorldGenerator {
     setupCryoJovian() {
         TerrainSet      ts = map.getTerrainSet();
 
-        int     r =  9 + (int)(Math.random()*5); // 12
-        int     g =  9 + (int)(Math.random()*5); // 12
-        int     b = 12 + (int)(Math.random()*5); // 12
+        int     r = 3 + (int)(Math.random()*3); // 12
+        int     g = 5 + (int)(Math.random()*5); // 12
+        int     b = 6 + (int)(Math.random()*5); // 12
 
         for (int i = 1; i < 17; i++) {
-            String      tag = "grey."+i;
-            String      colour = toColour(50+i*r, 50+i*g, 50+i*b);
+            String      tag = "cryo."+i;
+            String      colour = toColour(10+i*r, 50+i*g, 75+i*b);
 
             ts.add((short)(GREY+i-1), tag, tag, colour);
         }        

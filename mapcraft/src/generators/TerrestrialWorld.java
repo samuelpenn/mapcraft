@@ -22,8 +22,10 @@ import net.sourceforge.mapcraft.map.TerrainSet;
  */
 public class TerrestrialWorld extends WorldGenerator {
     public
-    TerrestrialWorld(String name, int radius,int scale) {
+    TerrestrialWorld(String name, int radius, int scale) {
         super(name, radius, scale);
+        System.out.println("Creating TerrestrialWorld ["+name+
+                           "] of "+radius+"km");
     }
     /**
      * Define the terrain types for Moon-like Selenian worlds.
@@ -33,6 +35,8 @@ public class TerrestrialWorld extends WorldGenerator {
     setupSelenian() {
         TerrainSet      ts = map.getTerrainSet();
 
+        System.out.println("setupSelenian:");
+        
         int     r = 11 + (int)(Math.random()*3); // 12
         int     g = 11 + (int)(Math.random()*3); // 12
         int     b = 11 + (int)(Math.random()*3); // 12
@@ -43,6 +47,7 @@ public class TerrestrialWorld extends WorldGenerator {
 
             ts.add((short)(GREY+i-1), tag, tag, colour);
         }
+        
     }
     
     /**
@@ -54,6 +59,12 @@ public class TerrestrialWorld extends WorldGenerator {
     setupHermian() {
         TerrainSet      ts = map.getTerrainSet();
         
+        log("setupHermian: ...");
+        log("are we okay?");
+        if (ts == null) {
+            log("setupHermian: Null terrain set");
+        }
+        log("Hello");
         int     r = 11 + (int)(Math.random()*3); // 12
         int     g = 15 + (int)(Math.random()*4); // 17
         int     b = 20 + (int)(Math.random()*10); // 25
@@ -62,6 +73,7 @@ public class TerrestrialWorld extends WorldGenerator {
             String      tag = "hermian."+i;
             String      colour = null;
 
+            log("setupHermian: Add terrain "+tag);
             colour = toColour(255 - (i*r), 255 - (i*g), 200 - (i*b));
             ts.add((short)(GREY+i-1), tag, tag, colour);
         }
@@ -73,6 +85,8 @@ public class TerrestrialWorld extends WorldGenerator {
     private void
     setupArean() {
         TerrainSet      ts = map.getTerrainSet();
+        
+        System.out.println("setupArean:");
 
         for (int i = 1; i < 17; i++) {
             String      tag = "red."+i;
@@ -88,8 +102,26 @@ public class TerrestrialWorld extends WorldGenerator {
     }
     
     /**
+     * Pelagic worlds are wet greenhouse worlds, with a huge
+     * world ocean, no land, and very high temperatures and
+     * pressure.
+     */
+    private void
+    setupPelagic() {
+        TerrainSet      ts = map.getTerrainSet();
+        
+        System.out.println("setupPelagic:");
+        
+        for (int i=1; i < 17; i++) {
+            String      tag = "ocean."+i;
+            String      colour = toColour(100+i*2, 150+i*3, 200+i*3);
+            ts.add((short)(GREY+i-1), tag, tag, colour);
+        }
+    }
+    
+    /**
      * Set the type of the world. Possible values are SELENIAN,
-     * HERMIAN and AREAN.
+     * HERMIAN, PELAGIC and AREAN.
      */
     public void
     setWorldType(int worldType) {
@@ -103,6 +135,9 @@ public class TerrestrialWorld extends WorldGenerator {
             break;
         case AREAN:
             setupArean();
+            break;
+        case PELAGIC:
+            setupPelagic();
             break;
         }
     }
@@ -122,6 +157,9 @@ public class TerrestrialWorld extends WorldGenerator {
             break;
         case AREAN:
             generateArean();
+            break;
+        case PELAGIC:
+            generatePelagic();
             break;
         }        
     }
@@ -206,8 +244,11 @@ public class TerrestrialWorld extends WorldGenerator {
      */
     protected void
     generateHermian() {
+        log("generateHermian:");
+        
         heightMap();
         
+        log("generateHermian: Adding craters");
         for (int a=0; a < 200; a++) {
             int     y = (int)(Math.random() * map.getHeight());
             int     left = getLeft(y)+10;
@@ -222,11 +263,20 @@ public class TerrestrialWorld extends WorldGenerator {
                     crater(x, y, r, h);
                 }
             } catch (MapOutOfBoundsException e) {
-                // Ignore.
+                log("generateHermian: Exception ("+e.getMessage()+")");
             }
         }
         applySpecialEffects();
         colourByHeight(1, 16);
+    }
+    
+    /**
+     * Generate a world ocean. There are no structural details on
+     * this world, just a single world spanning ocean.
+     */
+    protected void
+    generatePelagic() {
+        randomise(1, 16);
     }
     
     /**

@@ -31,14 +31,22 @@ public abstract class WorldGenerator {
     public static final int    HERMIAN = 2;
     public static final int    AREAN = 3;
     public static final int    VENUSIAN = 4;
-    public static final int    GAIAN = 5;
+    public static final int    PELAGIC = 5;
     
     public static final int    JOVIAN = 10;
     public static final int    CRYOJOVIAN = 11;
     public static final int    SUPERJOVIAN = 12;
     public static final int    MACROJOVIAN = 13;
     
+    public static final int    GAIAN = 20;
+    public static final int    PROTOGAIAN = 21;
+
     protected int         worldType = SELENIAN;
+    
+    protected void
+    log(String message) {
+        System.out.println(message);
+    }
     
     protected String
     toColour(int c) {
@@ -502,12 +510,13 @@ public abstract class WorldGenerator {
         System.out.println(utils.ra(150, 150));
 */        
 
-        //generator = new TerrestrialWorld("foo", 2500, 50);
-        generator = new JovianWorld("foo", 2500, 50);
+        generator = new TerrestrialWorld("foo", 2500, 50);
+        //generator = new JovianWorld("foo", 2500, 50);
         //generator.setWorldType(SELENIAN);
         //generator.setWorldType(HERMIAN);
         //generator.setWorldType(AREAN);
-        generator.setWorldType(JOVIAN);
+        //generator.setWorldType(JOVIAN);
+        generator.setWorldType(PELAGIC);
         generator.generate();
         
         //generator.randomHeight();
