@@ -241,7 +241,7 @@ public class MapViewer extends JPanel {
          * hexagons will overlap each other.
          */
         public int getTileWidth() { return tileWidth; }
-        
+
         /**
          * Vertical offset of odd numbered columns. Zero for square maps,
          * positive (downwards offset) for hexagonal maps. Normally equal
@@ -804,7 +804,7 @@ public class MapViewer extends JPanel {
             // map, and are only drawn on three sides (the neighbours will
             // draw their own border for the other three sides).
             if (showAreas && map.getTileShape() == Map.HEXAGONAL) {
-                int         area = map.getTile(x, y).getArea();
+                int         area = map.getAreaId(x, y);
                 int         parent;
                 int         x1, y1, x2, y2;
                 Area        pa = map.getAreaParent(x, y);
@@ -822,7 +822,7 @@ public class MapViewer extends JPanel {
 
                 // Top neighbour (only if not top row).
                 if (y > 0) {
-                    int n = map.getTile(x, y-1).getArea();
+                    int n = map.getAreaId(x, y-1);
                     if (area != n) {
                         if (parent == n || parent == map.getAreaParentId(n)) {
                             debug("Parent area match!");
@@ -849,9 +849,9 @@ public class MapViewer extends JPanel {
                     int     n = 0;
 
                     if (x%2 == 0) {
-                        n = map.getTile(x-1, y-1).getArea();
+                        n = map.getAreaId(x-1, y-1);
                     } else {
-                        n = map.getTile(x-1, y).getArea();
+                        n = map.getAreaId(x-1, y);
                     }
                     if (area != n) {
                         Point   p = getPosition(x, y);
@@ -873,9 +873,9 @@ public class MapViewer extends JPanel {
                     int     n = 0;
 
                     if (x%2 == 0) {
-                        n = map.getTile(x-1, y).getArea();
+                        n = map.getAreaId(x-1, y);
                     } else if (y+1 < map.getHeight()) {
-                        n = map.getTile(x-1, y+1).getArea();
+                        n = map.getAreaId(x-1, y+1);
                     } else {
                         // We don't want to display border along edge of map.
                         n = area;

@@ -3,8 +3,8 @@
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2,
- * or (at your option) any later version. See the file COPYING.
+ * as published by the Free Software Foundation; version 2.
+ * See the file COPYING.
  *
  * $Revision$
  * $Date$
@@ -476,6 +476,11 @@ public class MapBean implements Cloneable {
         return getArea(currentSet, x, y);
     }
 
+    public int
+    getAreaId(int x, int y) throws MapOutOfBoundsException {
+        return tileSets[currentSet].getArea(x, y);
+    }
+
     /**
      * Get the descriptive name of the area of the given tile.
      */
@@ -562,6 +567,11 @@ public class MapBean implements Cloneable {
     public boolean
     isWritable(int x, int y) throws MapOutOfBoundsException {
         return tileSets[currentSet].isWritable(x, y);
+    }
+
+    public void
+    setFeature(int x, int y, short feature) throws MapOutOfBoundsException {
+        tileSets[currentSet].setFeature(x, y, feature);
     }
 
     public void

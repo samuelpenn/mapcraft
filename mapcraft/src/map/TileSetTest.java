@@ -20,7 +20,7 @@ public class TileSetTest extends TestCase {
     public void
     setUp() {
         width = 100;
-        height = 100;
+        height = 80;
         scale = 25;
 
         name = "Test";
@@ -32,13 +32,29 @@ public class TileSetTest extends TestCase {
     public void
     testCreate() {
         TileSet     set = null;
-
+        int         x, y;
         try {
             set = new TileSet(name, width, height, scale);
+
+            for (x = 0; x < width; x++) {
+                for (y = 0; y < height; y++) {
+                    set.setTerrain(x, y, (short)4);
+                    set.setFeature(x, y, (short)7);
+                    set.setHeight(x, y, (short)40);
+                }
+            }
+            for (x = 0; x < width; x++) {
+                for (y = 0; y < height; y++) {
+                    assertEquals("Corrupted terrain type", (short)4, set.getTerrain(x, y));
+                    assertEquals("Corrupted feature type", (short)7, set.getFeature(x, y));
+                    assertEquals("Corrupted height", (short)40, set.getHeight(x, y));
+                }
+            }
+        } catch (MapOutOfBoundsException moobe) {
+            fail("Map bounds is unexpected size");
         } catch (Exception e) {
-            fail(e.getMessage());
+            fail("Unexpected exception: "+e.getMessage());
         }
-        Assert.assertTrue(true);
     }
 
     /**
@@ -59,7 +75,6 @@ public class TileSetTest extends TestCase {
         } catch (Exception e) {
             fail("Unexpected exception: "+e.getMessage());
         }
-        Assert.assertTrue(true);
     }
 
     /**
@@ -91,4 +106,38 @@ public class TileSetTest extends TestCase {
             fail("Unexpected exception: "+e.getMessage());
         }
     }
+
+    /**
+     * Test the binary blob conversion.
+     */
+     public void
+     testBlobs() {
+        TileSet     set = null;
+        int         x = 5, y = 5;
+        String      blob;
+
+        short       terrain = 150;
+        short       feature = 219;
+        short       terrainRot = 1;
+        short       featureRot = 2;
+        short       height = 2000;
+
+        try {
+            set = new TileSet(name, width, height, scale);
+            set.setTerrain(x, y, terrain);
+            set.setTerrainRotation(x, y, terrainRot);
+            set.setFeature(x, y, feature);
+            set.setFeatureRotation(x, y, featureRot);
+            set.setHeight(x, y, height);
+
+            blob = set.getTileAsBlob(x, y);
+            set.setTileFromBlob(x, y, blob);
+            assertEquals("Terrain not preserved", terrain, set.getTerrain(x, y));
+            assertEquals("Terrain rotation not preserved", terrainRot, set.getTerrainRotation(x, y));
+            assertEquals("Feature not preserved", feature, set.getFeature(x, y));
+            assertEquals("Feature rotation not preserved", featureRot, set.getFeatureRotation(x, y));
+        } catch (Exception e) {
+            fail("Unexpected exception: "+e.getMessage());
+        }
+     }
 }

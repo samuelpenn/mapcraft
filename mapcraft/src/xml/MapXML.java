@@ -472,36 +472,6 @@ public class MapXML {
         return set;
     }
 
-    protected Tile
-    getTileFromBlob(String data) {
-        Tile    tile = null;
-        short   terrain;
-        short   height;
-        short   hills;
-        int     area;
-
-        if (format.startsWith("0.0.")) {
-            // Old 0.0.X format file, 8 chars per blob.
-            terrain = (short)fromBase64(data.substring(0, 2));
-            height = (short)fromBase64(data.substring(2, 5));
-            hills = (short)fromBase64(data.substring(5, 6));
-            area = fromBase64(data.substring(7, 8));
-        } else {
-            // New format, 12 chars per blob.
-            terrain = (short)fromBase64(data.substring(0, 2));
-            height = (short)fromBase64(data.substring(2, 4));
-            hills = (short)fromBase64(data.substring(4, 6));
-            area = fromBase64(data.substring(6, 8));
-        }
-
-        height -= 100000; // Baseline
-
-        tile = new Tile(terrain, height, (terrain!=0));
-        tile.setFeature(hills);
-        tile.setArea((short)area);
-
-        return tile;
-    }
 
     protected TileSet
     getTileSet(Node node) throws XMLException {
@@ -564,7 +534,7 @@ public class MapXML {
                         String  part = data.substring(i, i+blobSize);
                         //terrain = Short.valueOf(part, 36).shortValue();
 
-                        tileSet.setTile(x, y, getTileFromBlob(part));
+                        tileSet.setTileFromBlob(x, y, part);
                     }
                 }
             }

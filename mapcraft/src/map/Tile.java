@@ -3,8 +3,8 @@
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2,
- * or (at your option) any later version. See the file COPYING.
+ * as published by the Free Software Foundation; version 2.
+ * See the file COPYING.
  *
  * $Revision$
  * $Date$
@@ -30,7 +30,7 @@ package uk.co.demon.bifrost.rpg.mapcraft.map;
  * @author  Samuel Penn (sam@bifrost.demon.co.uk)
  * @version $Revision$
  */
-public class Tile implements Cloneable {
+class Tile implements Cloneable {
     private short   terrain;
     private short   height;
     private short   feature;
@@ -56,7 +56,7 @@ public class Tile implements Cloneable {
      * Construct an empty tile, of 0m height, and the default
      * terrain type (normally ocean).
      */
-    public Tile() {
+    Tile() {
         terrain = (short)1;
         height = (short)0;
         feature = (short)0;
@@ -70,7 +70,7 @@ public class Tile implements Cloneable {
      *
      * @param tile  The Tile to be copied.
      */
-    public Tile(Tile tile) {
+    Tile(Tile tile) {
         this.terrain = tile.terrain;
         this.height = tile.height;
         this.writable = tile.writable;
@@ -99,7 +99,6 @@ public class Tile implements Cloneable {
      * @param height    Height of the tile, in metres.
      * @param writable  If false, tile is 'off-map'.
      */
-    public
     Tile(short terrain, short height, boolean writable) {
         this.terrain = terrain;
         this.height = height;
@@ -111,93 +110,98 @@ public class Tile implements Cloneable {
      * The Tile does not know what the terrain represents, it
      * is just an identifier.
      */
-    public void
+    void
     setTerrain(short t) {
         if (writable) {
             this.terrain = t;
         }
     }
 
-    public void
+    void
     setTerrainRotation(short r) {
         this.terrain = (short) ((terrain%MAXTYPES) + MAXTYPES*r);
     }
 
-    public short
+    short
     getTerrain() {
         return (short)(terrain%MAXTYPES);
     }
 
-    public short
+    short
     getTerrainRotation() {
         return (short)(terrain/MAXTYPES);
     }
 
-    public short
+    short
     getTerrainRaw() {
         return terrain;
     }
 
-    public void
+    void
     setHeight(short h) {
         if (writable) {
             this.height = h;
         }
     }
 
-    public short
+    short
     getHeight() {
         return height;
     }
 
-    public short
+    short
     getFeature() {
         return (short)(feature%MAXTYPES);
     }
 
-    public void
+    void
     setFeature(short feature) {
         if (writable) {
             this.feature = feature;
         }
     }
 
-    public short
+    short
     getFeatureRaw() {
         return feature;
     }
 
-    public void
+    void
     setFeatureRotation(short r) {
         this.feature = (short) ((feature%MAXTYPES) + MAXTYPES*r);
     }
 
-    public short
+    /**
+     * Return the rotation of the feature on this tile. The rotation is
+     * given as the number of sides it has been rotated through, so 0-3
+     * for a square tile, or 0-5 for a hexagonal tile.
+     */
+    short
     getFeatureRotation() {
         return (short)(feature/MAXTYPES);
     }
 
-    public boolean
+    boolean
     isWritable() {
         return writable;
     }
 
-    public boolean
+    boolean
     isRiver() {
         return river;
     }
 
-    public short
+    short
     getRiverMask() {
         return (short)0;
     }
 
-    public void
+    void
     setRiverMask(short mask) {
         this.river = true;
     }
 
-    public void
+    void
     setRiver(boolean river) {
         if (writable) {
             this.river = river;
@@ -207,7 +211,7 @@ public class Tile implements Cloneable {
     /**
      * Return the id of the area for this tile.
      */
-    public short
+    short
     getArea() {
         return area;
     }
@@ -215,7 +219,7 @@ public class Tile implements Cloneable {
     /**
      * Set the id of the area for this tile.
      */
-    public void
+    void
     setArea(short area) {
         if (writable) {
             this.area = area;

@@ -211,7 +211,7 @@ public class MapEditor extends MapViewer
                 }
                 break;
             case Brush.FEATURES:
-                map.getTile(x, y).setFeature(brush.getSelected());
+                map.setFeature(x, y, brush.getSelected());
                 map.setFeatureRotation(x, y, brush.getRotation());
                 paintTile(x, y);
                 break;
@@ -220,7 +220,7 @@ public class MapEditor extends MapViewer
                 paintComponent();
                 break;
             case Brush.AREAS:
-                map.getTile(x, y).setArea((short)brush.getSelected());
+                map.setArea(x, y, (short)brush.getSelected());
                 paintTile(x, y);
                 break;
             case Brush.RIVERS:

@@ -421,6 +421,57 @@ public class TileSet implements Cloneable {
         }
     }
 
+    public void
+    setTileFromBlob(int x, int y, String blob) throws MapOutOfBoundsException {
+        Tile    tile = null;
+        short   terrain;
+        short   height;
+        short   hills;
+        int     area;
+
+        if (blob.length() == 8) {
+            // Old 0.0.X format file, 8 chars per blob.
+            terrain = (short)fromBase64(blob.substring(0, 2));
+            height = (short)fromBase64(blob.substring(2, 5));
+            hills = (short)fromBase64(blob.substring(5, 6));
+            area = fromBase64(blob.substring(7, 8));
+        } else {
+            // New format, 12 chars per blob.
+            terrain = (short)fromBase64(blob.substring(0, 2));
+            height = (short)fromBase64(blob.substring(2, 4));
+            hills = (short)fromBase64(blob.substring(4, 6));
+            area = fromBase64(blob.substring(6, 8));
+        }
+
+        height -= 100000; // Baseline
+
+        tile = new Tile(terrain, height, (terrain!=0));
+        tile.setFeature(hills);
+        tile.setArea((short)area);
+
+        setTile(x, y, tile);
+    }
+
+    public String
+    getTileAsBlob(int x, int y) throws MapOutOfBoundsException {
+        StringBuffer    blob = new StringBuffer();
+        Tile            tile = null;
+
+        tile = tiles[y][x];
+
+        // Set the terrain data.
+        blob.append(toBase64(tile.getTerrainRaw(), 2));
+        // Set height data.
+        // blob.append(toBase64(tile.getHeight()+1000, 2));
+        blob.append("AA");
+        blob.append(toBase64(tile.getFeatureRaw(), 2));
+        blob.append(toBase64(tile.getArea(), 2));
+        blob.append("A"); // Coasts
+        blob.append("A"); // Flags
+
+        return blob.toString();
+    }
+
     public Tile
     getTile(int x, int y) throws MapOutOfBoundsException {
         if (x < 0 || x >= width) {
@@ -429,7 +480,7 @@ public class TileSet implements Cloneable {
         if (y < 0 || y >= height) {
             throw new MapOutOfBoundsException("Tile y:"+y+" out of map bounds");
         }
-        
+
         return tiles[y][x];
     }
 
@@ -663,6 +714,50 @@ public class TileSet implements Cloneable {
     public void
     setTerrainRotation(int x, int y, short rotation) throws MapOutOfBoundsException {
         getTile(x, y).setTerrainRotation(rotation);
+    }
+
+    public static final String BASE64 = new String("ABCDEFGHIJKLMNOPQRSTUVWXYZ"+
+                                                   "abcdefghijklmnopqrstuvwxyz"+
+                                                   "0123456789");
+
+    /**
+     * Convert an integer into its Base64 representation as a string
+     * of the specified width. If the resulting string is too short,
+     * then it is padded with 'A' (0).
+     */
+    public static String
+    toBase64(int value, int width) {
+        String  result = "";
+
+        while (value > 0) {
+            int     digit = value % 64;
+            value /= 64; // Integer division.
+
+            result = BASE64.substring(digit, digit+1) + result;
+        }
+
+        while (result.length() < width) {
+            result = "A"+result;
+        }
+
+        return result;
+    }
+
+    /**
+     * Convert a Base64 string into an integer.
+     */
+    public static int
+    fromBase64(String base64) {
+        int         value = 0;
+        int         i = 0;
+        int         c = 0;
+
+        for (i = 0; i < base64.length(); i++) {
+            c = BASE64.indexOf(base64.substring(i, i+1));
+            value += c * (int)Math.pow(64, base64.length() - i -1);
+        }
+
+        return value;
     }
 
 }
