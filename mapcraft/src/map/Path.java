@@ -10,7 +10,7 @@
  * $Date$
  */
 
-package uk.co.demon.bifrost.rpg.mapcraft.map;
+package net.sourceforge.mapcraft.map;
 
 import java.util.*;
 

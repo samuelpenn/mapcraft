@@ -10,7 +10,7 @@
  * $Revision$
  * $Date$
  */
-package uk.co.demon.bifrost.rpg.mapcraft.editor;
+package net.sourceforge.mapcraft.editor;
 
 import java.awt.*;
 import java.awt.image.*;
@@ -19,7 +19,7 @@ import java.util.*;
 
 import com.sun.image.codec.jpeg.*;
 
-import uk.co.demon.bifrost.rpg.mapcraft.utils.Options;
+import net.sourceforge.mapcraft.utils.Options;
 
 /**
  * A version of the MapViewer class which is designed for generating

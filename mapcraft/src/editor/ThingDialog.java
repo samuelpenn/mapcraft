@@ -10,9 +10,9 @@
  * $Date$
  */
 
-package uk.co.demon.bifrost.rpg.mapcraft.editor;
+package net.sourceforge.mapcraft.editor;
 
-import uk.co.demon.bifrost.rpg.mapcraft.map.*;
+import net.sourceforge.mapcraft.map.*;
 
 import javax.swing.*;
 import javax.swing.table.*;

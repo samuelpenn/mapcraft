@@ -19,5 +19,5 @@ set CLASSPATH=%XALAN_HOME%\xalan.jar;%XALAN_HOME%\xercesImpl.jar;%MAPCRAFT_JAR%
 
 
 
-java -Xmx1024m uk.co.demon.bifrost.rpg.mapcraft.MapCraft %*
+java -Xmx1024m net.sourceforge.mapcraft.MapCraft %*
 

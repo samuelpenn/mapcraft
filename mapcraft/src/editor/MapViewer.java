@@ -9,11 +9,11 @@
  * $Revision$
  * $Date$
  */
-package uk.co.demon.bifrost.rpg.mapcraft.editor;
+package net.sourceforge.mapcraft.editor;
 
-import uk.co.demon.bifrost.rpg.mapcraft.map.*;
-import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
-import uk.co.demon.bifrost.rpg.mapcraft.MapCraft;
+import net.sourceforge.mapcraft.map.*;
+import net.sourceforge.mapcraft.map.Map;
+import net.sourceforge.mapcraft.MapCraft;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,6 +83,15 @@ public class MapViewer extends JPanel {
     protected void error(String message) { log(1, message); }
     protected void fatal(String message) { log(0, message); }
 
+    /**
+     * Image filter which turns a rectangle into a hexagon.
+     * Filters on an image, forcing any pixels outside the hexagonal region
+     * to be transparent. The visible hexagon will be in to the top left
+     * hand corner of the image, which often results in the bottom part of
+     * a rectangular image being blank.
+     * 
+     * @author Samuel Penn.
+     */
     protected class HexFilter extends RGBImageFilter {
         private int     width;
         private int     height;

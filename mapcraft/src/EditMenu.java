@@ -11,12 +11,12 @@
  * $Date$
  */
 
-package uk.co.demon.bifrost.rpg.mapcraft;
+package net.sourceforge.mapcraft;
 
 import javax.swing.*;
 import java.awt.event.*;
 
-import uk.co.demon.bifrost.rpg.mapcraft.editor.*;
+import net.sourceforge.mapcraft.editor.*;
 
 /**
  * Create and handle the Edit menu in the main application window.

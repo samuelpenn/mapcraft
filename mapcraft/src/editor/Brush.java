@@ -9,7 +9,7 @@
  * $Revision$
  * $Date$
  */
-package uk.co.demon.bifrost.rpg.mapcraft.editor;
+package net.sourceforge.mapcraft.editor;
 
 
 /**

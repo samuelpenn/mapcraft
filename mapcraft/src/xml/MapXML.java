@@ -10,9 +10,9 @@
  * $Date$
  */
 
-package uk.co.demon.bifrost.rpg.mapcraft.xml;
+package net.sourceforge.mapcraft.xml;
 
-import uk.co.demon.bifrost.rpg.mapcraft.map.*;
+import net.sourceforge.mapcraft.map.*;
 import java.io.*;
 import java.util.*;
 import java.net.*;
@@ -133,7 +133,7 @@ public class MapXML {
         try {
             load(filename);
         } catch (IOException ioe) {
-            throw new MapException("Cannot load XML document");
+            throw new MapException("Cannot load XML document ["+filename+"]");
         } catch (XMLException xmle) {
             throw new MapException("Cannot parse XML data ("+xmle.getMessage()+")");
         }

@@ -1,3 +1,10 @@
+<!--
+    Ant build file for Mapcraft.
+
+    Version: $ Revision: 1.1 $
+    Date:    $ Date: 2004/06/03 18:57:23 $
+    Author:  Samuel Penn
+-->
 
 <project name="MapCraft" default="jar" basedir=".">
 
@@ -87,7 +94,7 @@
         <javadoc
             classpath="."
             sourcepath="${src.dir}"
-            packagenames="uk.co.demon.bifrost.rpg.mapcraft.*"
+            packagenames="net.sourceforge.mapcraft.*"
             destdir="${docs.dir}"
             windowtitle="Map Maker API"
         />
@@ -103,9 +110,9 @@
                 <pathelement location="${build.dir}"/>
                 <pathelement path="${java.class.path}"/>
             </classpath>
-            <test name="uk.co.demon.bifrost.rpg.mapcraft.map.MapTest"
+            <test name="net.sourceforge.mapcraft.map.MapTest"
                   todir="${tests.dir}"/>
-            <test name="uk.co.demon.bifrost.rpg.mapcraft.map.TileSetTest"
+            <test name="net.sourceforge.mapcraft.map.TileSetTest"
                   todir="${tests.dir}"/>
         </junit>
 

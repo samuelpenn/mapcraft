@@ -10,11 +10,11 @@
  * $Date$
  */
 
-package uk.co.demon.bifrost.rpg.mapcraft.editor;
+package net.sourceforge.mapcraft.editor;
 
-import uk.co.demon.bifrost.rpg.mapcraft.map.*;
-import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
-import uk.co.demon.bifrost.rpg.mapcraft.utils.MapFileFilter;
+import net.sourceforge.mapcraft.map.*;
+import net.sourceforge.mapcraft.map.Map;
+import net.sourceforge.mapcraft.utils.MapFileFilter;
 
 import javax.swing.*;
 

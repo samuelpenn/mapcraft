@@ -67,6 +67,7 @@ Project Plan
     Generic UNIX run script that doesn't assume my own environment.
 *   Maybe think about MS Windows script.
     Gentoo ebuild
+*   Change packages to be net.sourceforge rather than uk.co.demon.bifrost
     
 0.4 (Rescale/merge support in GUI)
     Support GUI rescale facility (up and down).

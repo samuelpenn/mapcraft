@@ -1755,54 +1755,54 @@
         <paths>
             <path name="Path 1" type="road" style="plain">
                 <start x="1106" y="2359" width="6"/>
-                <path x="1131" y="2396" width="3"/>
-                <path x="1171" y="2450" width="3"/>
-                <path x="1246" y="2506" width="3"/>
-                <path x="1309" y="2550" width="3"/>
-                <path x="1368" y="2609" width="3"/>
-                <path x="1431" y="2653" width="3"/>
-                <path x="1528" y="2703" width="3"/>
-                <path x="1568" y="2753" width="3"/>
-                <path x="1562" y="2843" width="3"/>
-                <path x="1568" y="2959" width="3"/>
-                <path x="1593" y="3040" width="3"/>
-                <path x="1665" y="3087" width="3"/>
-                <path x="1806" y="3171" width="3"/>
-                <path x="1884" y="3225" width="3"/>
-                <path x="1981" y="3265" width="3"/>
-                <path x="2071" y="3309" width="3"/>
-                <path x="2159" y="3368" width="3"/>
-                <path x="2275" y="3428" width="3"/>
-                <path x="2390" y="3471" width="3"/>
-                <path x="2593" y="3515" width="3"/>
-                <path x="2728" y="3509" width="3"/>
-                <path x="2903" y="3493" width="3"/>
-                <path x="2990" y="3446" width="3"/>
-                <path x="3062" y="3378" width="3"/>
-                <path x="3112" y="3271" width="3"/>
-                <path x="3128" y="3168" width="3"/>
-                <path x="3171" y="3056" width="3"/>
-                <path x="3265" y="2950" width="3"/>
-                <path x="3390" y="2918" width="3"/>
-                <path x="3587" y="2900" width="3"/>
-                <path x="3690" y="2900" width="3"/>
-                <path x="3784" y="2859" width="3"/>
-                <path x="3903" y="2831" width="3"/>
-                <path x="4031" y="2812" width="3"/>
-                <path x="4131" y="2812" width="3"/>
-                <path x="4200" y="2818" width="3"/>
-                <path x="4231" y="2887" width="3"/>
-                <path x="4237" y="2968" width="3"/>
-                <path x="4234" y="3056" width="3"/>
-                <path x="4265" y="3134" width="3"/>
-                <path x="4287" y="3215" width="3"/>
-                <path x="4315" y="3287" width="3"/>
-                <path x="4315" y="3390" width="3"/>
-                <path x="4318" y="3475" width="3"/>
-                <path x="4350" y="3534" width="3"/>
-                <path x="4381" y="3587" width="3"/>
-                <path x="4384" y="3631" width="3"/>
-                <end x="4384" y="3650" width="3"/>
+                <path x="1131" y="2396" width="6"/>
+                <path x="1171" y="2450" width="6"/>
+                <path x="1246" y="2506" width="6"/>
+                <path x="1309" y="2550" width="6"/>
+                <path x="1368" y="2609" width="6"/>
+                <path x="1431" y="2653" width="6"/>
+                <path x="1528" y="2703" width="6"/>
+                <path x="1568" y="2753" width="6"/>
+                <path x="1562" y="2843" width="6"/>
+                <path x="1568" y="2959" width="6"/>
+                <path x="1593" y="3040" width="6"/>
+                <path x="1665" y="3087" width="6"/>
+                <path x="1806" y="3171" width="6"/>
+                <path x="1884" y="3225" width="6"/>
+                <path x="1981" y="3265" width="6"/>
+                <path x="2071" y="3309" width="6"/>
+                <path x="2159" y="3368" width="6"/>
+                <path x="2275" y="3428" width="6"/>
+                <path x="2390" y="3471" width="6"/>
+                <path x="2593" y="3515" width="6"/>
+                <path x="2728" y="3509" width="6"/>
+                <path x="2903" y="3493" width="6"/>
+                <path x="2990" y="3446" width="6"/>
+                <path x="3062" y="3378" width="6"/>
+                <path x="3112" y="3271" width="6"/>
+                <path x="3128" y="3168" width="6"/>
+                <path x="3171" y="3056" width="6"/>
+                <path x="3265" y="2950" width="6"/>
+                <path x="3390" y="2918" width="6"/>
+                <path x="3587" y="2900" width="6"/>
+                <path x="3690" y="2900" width="6"/>
+                <path x="3784" y="2859" width="6"/>
+                <path x="3903" y="2831" width="6"/>
+                <path x="4031" y="2812" width="6"/>
+                <path x="4131" y="2812" width="6"/>
+                <path x="4200" y="2818" width="6"/>
+                <path x="4231" y="2887" width="6"/>
+                <path x="4237" y="2968" width="6"/>
+                <path x="4234" y="3056" width="6"/>
+                <path x="4265" y="3134" width="6"/>
+                <path x="4287" y="3215" width="6"/>
+                <path x="4315" y="3287" width="6"/>
+                <path x="4315" y="3390" width="6"/>
+                <path x="4318" y="3475" width="6"/>
+                <path x="4350" y="3534" width="6"/>
+                <path x="4381" y="3587" width="6"/>
+                <path x="4384" y="3631" width="6"/>
+                <end x="4384" y="3650" width="6"/>
             </path>
 
         </paths>
@@ -1910,6 +1910,102 @@
                 <importance>3</importance>
             </thing>
             <thing type="1" x="1112" y="2668" rotation="210">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5068" y="3065" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5212" y="3062" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="5350" y="3059" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4931" y="3053" rotation="0">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="3978" y="2590" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4096" y="2584" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4215" y="2590" rotation="180">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4453" y="2656" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4446" y="2784" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4437" y="2893" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4596" y="2653" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4596" y="2781" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="1" x="4581" y="2890" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="4506" y="2896" rotation="90">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="2" x="4518" y="2665" rotation="270">
+                <name>Unnamed</name>
+                <description>Unknown</description>
+                <font>2</font>
+                <importance>3</importance>
+            </thing>
+            <thing type="3" x="4118" y="2890" rotation="270">
                 <name>Unnamed</name>
                 <description>Unknown</description>
                 <font>2</font>

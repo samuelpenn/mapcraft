@@ -6,7 +6,7 @@
  * as published by the Free Software Foundation; either version 2,
  * or (at your option) any later version. See the file COPYING.
  */
-package uk.co.demon.bifrost.rpg.mapcraft.utils;
+package net.sourceforge.mapcraft.utils;
 
 /**
  * Provides an API for handling command line options passed

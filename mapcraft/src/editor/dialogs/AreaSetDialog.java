@@ -9,7 +9,7 @@
  * $Revision$
  * $Date$
  */
-package uk.co.demon.bifrost.rpg.mapcraft.editor.dialogs;
+package net.sourceforge.mapcraft.editor.dialogs;
 
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import uk.co.demon.bifrost.rpg.mapcraft.map.*;
+import net.sourceforge.mapcraft.map.*;
 
 /**
  * Displays a list of all the areas in the map's AreaSet. Allows the user

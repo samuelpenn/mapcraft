@@ -10,10 +10,10 @@
  * $Date$
  */
 
-package uk.co.demon.bifrost.rpg.mapcraft;
+package net.sourceforge.mapcraft;
 
-import uk.co.demon.bifrost.rpg.mapcraft.editor.*;
-import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
+import net.sourceforge.mapcraft.editor.*;
+import net.sourceforge.mapcraft.map.Map;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -21,8 +21,8 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 
-import uk.co.demon.bifrost.rpg.mapcraft.utils.Options;
-import uk.co.demon.bifrost.rpg.mapcraft.xml.SanityCheck;
+import net.sourceforge.mapcraft.utils.Options;
+import net.sourceforge.mapcraft.xml.SanityCheck;
 
 /**
  * The top level object for the application. This handles command line

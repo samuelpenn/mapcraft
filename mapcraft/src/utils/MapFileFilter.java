@@ -9,11 +9,11 @@
  * $Revision$
  * $Date$
  */
-package uk.co.demon.bifrost.rpg.mapcraft.utils;
+package net.sourceforge.mapcraft.utils;
 
 import javax.swing.filechooser.FileFilter;
 
-import uk.co.demon.bifrost.rpg.mapcraft.MapCraft;
+import net.sourceforge.mapcraft.MapCraft;
 
 import java.io.*;
 

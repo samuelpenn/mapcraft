@@ -10,11 +10,11 @@
  * $Date$
  */
 
-package uk.co.demon.bifrost.rpg.mapcraft.editor;
+package net.sourceforge.mapcraft.editor;
 
-import uk.co.demon.bifrost.rpg.mapcraft.editor.dialogs.AreaSetDialog;
-import uk.co.demon.bifrost.rpg.mapcraft.map.*;
-import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
+import net.sourceforge.mapcraft.editor.dialogs.AreaSetDialog;
+import net.sourceforge.mapcraft.map.*;
+import net.sourceforge.mapcraft.map.Map;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -23,7 +23,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 
-import uk.co.demon.bifrost.rpg.mapcraft.utils.Options;
+import net.sourceforge.mapcraft.utils.Options;
 
 
 public class MapEditor extends MapViewer

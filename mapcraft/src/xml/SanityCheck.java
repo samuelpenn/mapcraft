@@ -9,7 +9,7 @@
  * $Revision$
  * $Date$
  */
-package uk.co.demon.bifrost.rpg.mapcraft.xml;
+package net.sourceforge.mapcraft.xml;
 
 import java.io.*;
 

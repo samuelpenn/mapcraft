@@ -11,14 +11,14 @@
  * $Date$
  */
 
-package uk.co.demon.bifrost.rpg.mapcraft;
+package net.sourceforge.mapcraft;
 
 import javax.swing.*;
 import java.awt.event.*;
 import java.net.*;
 
-import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
-import uk.co.demon.bifrost.rpg.mapcraft.utils.MapFileFilter;
+import net.sourceforge.mapcraft.map.Map;
+import net.sourceforge.mapcraft.utils.MapFileFilter;
 
 public class FileMenu extends JMenu implements ActionListener {
     Actions     actions = new Actions(null);

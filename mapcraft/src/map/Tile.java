@@ -9,7 +9,7 @@
  * $Revision$
  * $Date$
  */
-package uk.co.demon.bifrost.rpg.mapcraft.map;
+package net.sourceforge.mapcraft.map;
 
 /**
  * Represents a single tile on a map. A tile is a square

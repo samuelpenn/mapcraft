@@ -9,9 +9,9 @@
  * $Revision$
  * $Date$
  */
-package uk.co.demon.bifrost.rpg.mapcraft.map;
+package net.sourceforge.mapcraft.map;
 
-import uk.co.demon.bifrost.rpg.mapcraft.xml.*;
+import net.sourceforge.mapcraft.xml.*;
 
 import java.io.*;
 import java.net.URL;
@@ -21,7 +21,7 @@ import java.awt.Toolkit;
 import java.awt.Image;
 import java.awt.image.*;
 
-import uk.co.demon.bifrost.rpg.mapcraft.utils.Options;
+import net.sourceforge.mapcraft.utils.Options;
 
 /**
  * A class object which describes a region as one or more maps.

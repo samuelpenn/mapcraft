@@ -9,14 +9,14 @@
  * $Revision$
  * $Date$
  */
-package uk.co.demon.bifrost.rpg.mapcraft.editor.dialogs;
+package net.sourceforge.mapcraft.editor.dialogs;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-import uk.co.demon.bifrost.rpg.mapcraft.map.*;
+import net.sourceforge.mapcraft.map.*;
 
 /**
  * Dialog for creating or editing a named area.
