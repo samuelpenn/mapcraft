@@ -39,7 +39,7 @@ Project Plan
 
 0.2.2
 *   Support rivers as vectors, inc graphical editing.
-    Support roads as vectors, inc graphical editing.
+*   Support roads as vectors, inc graphical editing.
 *   Properties on sites.
 *   Rotation for tiles and features.
 *   Rotation for Things (0.4).
