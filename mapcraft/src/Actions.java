@@ -30,32 +30,41 @@ import java.util.*;
  */
 public class Actions {
     private static Hashtable    actions;
-    private String              path="icons/toolbarButtonGraphics/";
+    private String              path="icons/toolbar/";
     private ActionListener      globalListener;
     
-    public final static String  FILE_NEW        = "file.new";
-    public final static String  FILE_OPEN       = "file.open";
-    public final static String  FILE_SAVE       = "file.save";
-    public final static String  FILE_SAVEAS     = "file.saveas";
-    public final static String  FILE_PRINT      = "file.print";
-    public final static String  FILE_EXIT       = "file.exit";
+    public final static String  FILE_NEW            = "file.new";
+    public final static String  FILE_OPEN           = "file.open";
+    public final static String  FILE_SAVE           = "file.save";
+    public final static String  FILE_SAVEAS         = "file.saveas";
+    public final static String  FILE_PRINT          = "file.print";
+    public final static String  FILE_EXIT           = "file.exit";
     
-    public final static String  VIEW_ZOOMIN     = "view.zoomin";
-    public final static String  VIEW_ZOOMOUT    = "view.zoomout";
-    public final static String  VIEW_XXSMALL    = "view.xxsmall";
-    public final static String  VIEW_XSMALL     = "view.xsmall";
-    public final static String  VIEW_SMALL      = "view.small";
-    public final static String  VIEW_MEDIUM     = "view.medium";
-    public final static String  VIEW_LARGE      = "view.large";
-    public final static String  VIEW_XLARGE     = "view.xlarge";
-    public final static String  VIEW_XXLARGE    = "view.xxlarges";
+    public final static String  VIEW_ZOOMIN         = "view.zoomin";
+    public final static String  VIEW_ZOOMOUT        = "view.zoomout";
+    public final static String  VIEW_XXSMALL        = "view.xxsmall";
+    public final static String  VIEW_XSMALL         = "view.xsmall";
+    public final static String  VIEW_SMALL          = "view.small";
+    public final static String  VIEW_MEDIUM         = "view.medium";
+    public final static String  VIEW_LARGE          = "view.large";
+    public final static String  VIEW_XLARGE         = "view.xlarge";
+    public final static String  VIEW_XXLARGE        = "view.xxlarges";
+    public final static String  VIEW_SHOWTERRAIN    = "view.showterrain";
+    public final static String  VIEW_SHOWFEATURES   = "view.showfeatures";
+    public final static String  VIEW_GRID           = "view.grid";
     
-    public final static String  EDIT_TERRAIN    = "edit.terrain";
-    public final static String  EDIT_FEATURES   = "edit.features";
-    public final static String  EDIT_RIVERS     = "edit.rivers";
+    public final static String  EDIT_TERRAIN        = "edit.terrain";
+    public final static String  EDIT_FEATURES       = "edit.features";
+    public final static String  EDIT_RIVERS         = "edit.rivers";
 
     public class Actor extends AbstractAction {
         private ActionListener  listener;
+        
+        public
+        Actor(String name, String label) {
+            putValue(Action.NAME, label);
+            putValue(Action.ACTION_COMMAND_KEY, name);
+        }
 
         public
         Actor(String name, String label, String image) {
@@ -102,12 +111,30 @@ public class Actions {
             // View actions
             add(VIEW_ZOOMIN, "Zoom in", "general/ZoomIn");
             add(VIEW_ZOOMOUT, "Zoom out", "general/ZoomOut");
+            addLocal(VIEW_SHOWTERRAIN, "Terrain palette", "terrain");
+            addLocal(VIEW_SHOWFEATURES, "Feature palette", "features");
+            addLocal(VIEW_GRID, "Toggle grid", "grid");
+            
+            add(VIEW_XXSMALL, "XX-Small");
+            add(VIEW_XSMALL, "X-Small");
+            add(VIEW_SMALL, "Small");
+            add(VIEW_MEDIUM, "Medium");
+            add(VIEW_LARGE, "Large");
+            add(VIEW_XLARGE, "X-Large");
+            add(VIEW_XXLARGE, "XX-Large");
 
             // Palettes
             addLocal(EDIT_TERRAIN, "Terrain Brush", "terrain");
             addLocal(EDIT_FEATURES, "Features Brush", "features");
             addLocal(EDIT_RIVERS, "Rivers Brush", "rivers");
+
         }
+    }
+    
+    private void
+    add(String name, String label) {
+        Action      action = new Actor(name, label);
+        actions.put(name, action);
     }
 
     private void

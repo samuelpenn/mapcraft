@@ -41,13 +41,13 @@ public class MapCraft implements ActionListener {
     // Global vars
     private Properties  properties;
 
-    
+
     protected void
     shutdown() {
         System.exit(0);
     }
 
-    
+
     public
     MapCraft(Properties properties, String map) {
         this.properties = properties;
@@ -62,12 +62,21 @@ public class MapCraft implements ActionListener {
 
         setupWindows();
     }
-    
 
-    public void
+
+    private void
     setupWindows() {
+        Toolkit     toolkit = Toolkit.getDefaultToolkit();
+        Dimension   screen = toolkit.getScreenSize();
+        int         width, height;
+
         window = new JFrame("Map Craft");
-//        editor = new MapEditor("maps/rivers.map", "images");
+
+        width = (int)screen.getWidth()/2;
+        height = (int)screen.getHeight()/2;
+
+        window.setSize(new Dimension(width, height));
+        window.setLocationRelativeTo(null); // Centre on screen.
 
         scrollpane = new JScrollPane(editor,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -82,16 +91,19 @@ public class MapCraft implements ActionListener {
             });
         window.getContentPane().setLayout(new BorderLayout());
         window.getContentPane().add(createToolbar(), BorderLayout.NORTH);
-//        window.getContentPane().add(scrollpane, BorderLayout.CENTER);
-
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
 
         menubar = new JMenuBar();
         menubar.add(new FileMenu(this));
+        menubar.add(new ViewMenu(this));
         menubar.setVisible(true);
 
         window.setJMenuBar(menubar);
         window.setVisible(true);
+    }
+    
+    public MapEditor
+    getEditor() {
+        return editor;
     }
 
 
@@ -133,6 +145,7 @@ public class MapCraft implements ActionListener {
 
         toolbar.add(createToolbarButton(Actions.VIEW_ZOOMIN));
         toolbar.add(createToolbarButton(Actions.VIEW_ZOOMOUT));
+        toolbar.add(createToolbarButton(Actions.VIEW_GRID));
 
         toolbar.addSeparator();
 

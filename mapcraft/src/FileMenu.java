@@ -117,7 +117,7 @@ public class FileMenu extends JMenu implements ActionListener {
             String filename = chooser.getSelectedFile().getName();
 
             System.out.println("Opening file ["+filename+"]");
-            application.load(filename, "images");
+            application.load(filename);
         }
 
     }

@@ -294,6 +294,20 @@ public class MapViewer extends JPanel {
             e.printStackTrace();
         }
     }
+    
+    public void
+    zoomIn() {
+        if (view < 6) {
+            setView(view+1);
+        }
+    }
+
+    public void
+    zoomOut() {
+        if (view > 0) {
+            setView(view-1);
+        }
+    }
 
     public void
     setView(int view) {
