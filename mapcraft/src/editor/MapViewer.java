@@ -339,8 +339,8 @@ public class MapViewer extends JPanel {
             warn("No iterator");
             return null;
         }
-        JFrame      f = new JFrame("Processing");
-        f.setVisible(true);
+        //JFrame      f = new JFrame("Processing");
+        //f.setVisible(true);
 
         iconSet = new IconSet(map.getName());
         while (iter.hasNext()) {
@@ -356,7 +356,7 @@ public class MapViewer extends JPanel {
                     if (t.getImagePath().startsWith("#")) {
                         // If the path is #rrggbb, then create a plain
                         // image of that colour.
-                        ImageUtils  iu = new ImageUtils(f);
+                        ImageUtils  iu = new ImageUtils();
                         icon = iu.createImage(x, y, t.getImagePath());
                     } else {
                         String  path = views[view].getPath()+"/"+t.getImagePath();
@@ -391,8 +391,8 @@ public class MapViewer extends JPanel {
                 }
             }
         }
-        f.setVisible(false);
-        f.dispose();
+        //f.setVisible(false);
+        //f.dispose();
         iconSet.prepareImages(this);
 
         return iconSet;

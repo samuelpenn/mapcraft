@@ -69,10 +69,8 @@ public class MapEditor extends MapViewer
                 index = last;
             }
 
-            System.out.println("TerrainPalette: "+index);
             Terrain ta[] = map.getTerrainSet().toArray();
             brush.setSelected(Brush.TERRAIN, ta[index].getId());
-            System.out.println("Terrain selected: "+brush.getSelected());
 
             brush.setType(Brush.TERRAIN);
         }
@@ -101,10 +99,8 @@ public class MapEditor extends MapViewer
                 index = last;
             }
 
-            System.out.println("ThingPalette: "+index);
             Terrain ta[] = map.getThingSet().toArray();
             brush.setSelected(type, ta[index].getId());
-            System.out.println("Thing selected: "+brush.getSelected());
 
             brush.setType(type);
         }
@@ -133,9 +129,7 @@ public class MapEditor extends MapViewer
                 index = last;
             }
 
-            System.out.println("FeaturePalette: "+index);
             brush.setSelected(type, (short)index);
-            System.out.println("Feature selected: "+brush.getSelected());
 
             brush.setType(type);
         }

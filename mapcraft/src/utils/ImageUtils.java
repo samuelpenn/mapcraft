@@ -12,6 +12,7 @@
 package net.sourceforge.mapcraft.utils;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.net.URL;
 
 import net.sourceforge.mapcraft.editor.Pane;
@@ -24,6 +25,16 @@ import net.sourceforge.mapcraft.editor.Pane;
 public class ImageUtils {
     private Component   component = null;
     private String      resourcePath = null;
+    
+    public
+    ImageUtils() {
+        this.resourcePath = "";
+    }
+
+    public
+    ImageUtils(String path) {
+        this.resourcePath = path+"/";
+    }
     
     public
     ImageUtils(Component component) {
@@ -45,9 +56,17 @@ public class ImageUtils {
      * 
      * @return          Created image.
      */
-    public Image
+    public BufferedImage
     createImage(int width, int height) {
-        return component.createImage(width, height);
+        BufferedImage       image = null;
+        
+        image = new BufferedImage(width, height, 
+                                  BufferedImage.TYPE_INT_RGB);
+        return image;
+        /*
+        return image.getScaledInstance(width, height, 
+                                       BufferedImage.SCALE_FAST);
+        */
     }
     
     /**
@@ -63,9 +82,9 @@ public class ImageUtils {
      */
     public Image
     createImage(int width, int height, String colour) {
-        Image       image = createImage(width, height);
-        Graphics    g = image.getGraphics();
-        int         red=0, green=0, blue=0, alpha=255;
+        BufferedImage   image = createImage(width, height);
+        Graphics        g = image.createGraphics();
+        int             red=0, green=0, blue=0, alpha=255;
         
         if (colour.startsWith("#")) {
             colour = colour.substring(1);
