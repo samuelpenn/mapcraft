@@ -555,7 +555,7 @@ public class MapXML {
         try {
             // First, create an empty tileset.
             tileSet = new TileSet(name, width, height, scale);
-
+            System.out.println("Created tileset");
             // Next, populate the tiles with data from the XML.
             NodeList    columns = getNodeList(node, "tiles/column");
             if (columns == null) {

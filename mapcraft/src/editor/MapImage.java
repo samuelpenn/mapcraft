@@ -136,8 +136,8 @@ public class MapImage extends MapViewer {
         Image           texture = null;
         int             crop = 16;
         
-        int             width = 1024;
-        int             height = 512;
+        int             width = 2048;
+        int             height = 1024;
 
         System.out.println("Saving image as ["+filename+"]");
 

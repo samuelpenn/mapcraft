@@ -82,6 +82,19 @@ public class TerrainSet implements Cloneable {
 
         return null;
     }
+    
+    public Terrain
+    getTerrain(String name) {
+        Terrain     t;
+        for (int i = 0; i < terrainList.size(); i++) {
+            t = (Terrain)terrainList.get(i);
+            if (t.getName().equals(name)) {
+                return t;
+            }
+        }
+
+        return null;        
+    }
 
     public Terrain[]
     toArray() {
