@@ -37,6 +37,7 @@ Project Plan
     Support map cropping and linking to submaps.
     Support rescale facility (up and down).
     Editing subhex placement of sites.
+    Multiple sites per hex.
     Resize of site labels depending on tile size.
     Fix display issues with area editing.
 

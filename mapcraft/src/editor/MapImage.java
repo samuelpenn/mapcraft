@@ -129,7 +129,7 @@ public class MapImage extends MapViewer {
     main(String args[]) {
         try {
             MapImage    map = null;
-            String      filename = "maps/Euressa.map";
+            String      filename = "planet.map";
             Properties  properties = new Properties();
 
             properties.setProperty("path.run", System.getProperty("user.dir"));
@@ -139,7 +139,7 @@ public class MapImage extends MapViewer {
             map.setShowSites(false);
             map.setShowAreas(false);
             map.setShowLargeGrid(false);
-            map.saveImage("foo.jpg", 0);
+            map.saveImage("xplanet.jpg", 0);
         } catch (Exception e) {
             e.printStackTrace();
         }

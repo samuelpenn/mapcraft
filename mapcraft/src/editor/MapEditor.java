@@ -403,7 +403,7 @@ public class MapEditor extends MapViewer
             info("ActionEvent: Menu edit."+command);
 
             if (command.equals("double")) {
-                map.rescaleMap(map.getScale()/2);
+                //map.rescaleMap(map.getScale()/2);
             }
         }
     }
