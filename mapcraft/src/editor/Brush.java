@@ -33,8 +33,13 @@ public class Brush {
     public static final int MEDIUM = 2;
     public static final int LARGE = 4;
 
+    public static final int NEW = 1;
+    public static final int MOVE = 2;
+    public static final int EDIT = 3;
+
     private int brush = TERRAIN;
     private int size = SMALL;
+    private int mode = NEW;
 
     private short terrain = 1;
     private short river = 0;

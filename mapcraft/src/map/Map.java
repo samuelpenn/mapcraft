@@ -59,6 +59,7 @@ public class Map implements Cloneable {
     TileSet         tileSets[] = null;
     AreaSet         areaSet = null;
     Vector          rivers = null;
+    Vector          sites = null;
 
     private int     tileShape = HEXAGONAL;
     private int     type = WORLD;
@@ -201,7 +202,7 @@ public class Map implements Cloneable {
             placeSet = xml.getTerrainSet("places");
             areaSet = xml.getAreas();
 
-            xml.getSites(tileSets[0]);
+            sites = xml.getSites();
             rivers = xml.getRivers();
 
             this.filename = filename;
@@ -439,13 +440,13 @@ public class Map implements Cloneable {
     getRiverMask(int set, int x, int y) throws MapOutOfBoundsException {
         return tileSets[set].getRiverMask(x, y);
     }
-    
+
     public short
     getHills(int x, int y) throws MapOutOfBoundsException {
         return tileSets[0].getTile(x, y).getHills();
     }
 
-    
+
     public boolean
     isSite(int x, int y) throws MapOutOfBoundsException {
         return (tileSets[0].getTile(x, y).getSite() != null);
@@ -455,10 +456,15 @@ public class Map implements Cloneable {
     getSiteMask(int x, int y) throws MapOutOfBoundsException {
         return tileSets[0].getTile(x, y).getSite().getType();
     }
-    
+
     public Site
     getSite(int x, int y) throws MapOutOfBoundsException {
         return tileSets[0].getTile(x, y).getSite();
+    }
+
+    public  Vector
+    getSites() {
+        return sites;
     }
 
     /**
@@ -621,7 +627,7 @@ public class Map implements Cloneable {
         tileSets[0] = rescaled;
         setScale(newScale);
     }
-    
+
     /**
      * Resize the map. The width and height of the map is changed,
      * with blank columns and rows being added as necessary.
@@ -759,7 +765,7 @@ public class Map implements Cloneable {
             writer.write("        <shape>Hexagonal</shape>\n");
         }
         writer.write("        <imagedir>"+imagedir+"</imagedir>\n");
-        writer.write("        <format>0.0.4</format>\n");
+        writer.write("        <format>0.0.5</format>\n");
         writer.write("    </header>\n");
     }
 
@@ -901,36 +907,24 @@ public class Map implements Cloneable {
         // Now go through each of the tilesets in turn.
         for (i=0; i < tileSets.length; i++) {
             writeTileSet(tileSets[i], writer);
-
-            // Find all the sites that need to be output and saved.
-            writer.write("    <sites>\n");
-            for (x=0; x < tileSets[i].getWidth(); x++) {
-                for (y=0; y < tileSets[i].getHeight(); y++) {
-                    try {
-                        if (isSite(x, y)) {
-                            Site site = getSite(x, y);
-
-                            writer.write("        <site type=\""+site.getType()+"\" "+
-                                        "x=\""+x+"\" y=\""+y+"\">\n");
-                            if (site.getX()!=0 || site.getY()!=0 || site.getRotation()!=0) {
-                                writer.write("            <placement ");
-                                writer.write("x=\""+site.getX()+"\" y=\""+site.getY()+"\"  ");
-                                writer.write("rotation=\""+site.getRotation()+"\"/>");
-                            }
-                            writer.write("            <name>"+site.getName()+"</name>\n");
-                            writer.write("            <description>");
-                            writer.write(site.getDescription());
-                            writer.write("</description>\n");
-
-                            writer.write("        </site>\n");
-
-                        }
-                    } catch (MapOutOfBoundsException e) {
-                    }
-                }
-            }
         }
-        writer.write("    </sites>\n");
+
+        if (sites.size() > 0) {
+            writer.write("    <sites>\n");
+            for (i=0; i < sites.size(); i++) {
+                Site    site = (Site)sites.elementAt(i);
+                writer.write("        <site type=\""+site.getType()+"\" "+
+                                        "x=\""+site.getX()+
+                                        "\" y=\""+site.getY()+"\">\n");
+                writer.write("            <name>"+site.getName()+"</name>\n");
+                writer.write("            <description>");
+                writer.write(site.getDescription());
+                writer.write("</description>\n");
+
+                writer.write("        </site>\n");
+            }
+            writer.write("    </sites>\n");
+        }
 
         writeAreaSet(writer);
         writeRivers(writer);

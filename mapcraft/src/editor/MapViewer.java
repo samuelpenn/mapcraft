@@ -112,7 +112,7 @@ public class MapViewer extends JPanel {
                 input = new FileInputStream(file);
                 properties.load(input);
                 System.out.println("Loaded properties");
-                
+
                 viewName = (String)properties.get("view.name");
                 viewShape = (String)properties.get("view.shape");
                 
@@ -128,12 +128,12 @@ public class MapViewer extends JPanel {
                 throw e;
             }
         }
-        
+
         public String
         toString() {
             return viewName + " ("+iconWidth+"x"+iconHeight+")";
         }
-        
+
         public String getPath() { return path; }
 
         /**
@@ -141,12 +141,12 @@ public class MapViewer extends JPanel {
          * size of the icons, such as 'Small' or 'Medium'.
          */
         public String getName() { return viewName; }
-        
+
         /**
          * The shape used by the icons, either 'Square' or 'Hexagonal'.
          */
         public String getShape() { return viewShape; }
-        
+
         /**
          * The actual physical height of each icon, in pixels.
          */
@@ -162,7 +162,7 @@ public class MapViewer extends JPanel {
          * icon height. For hexagonal maps, it may be different.
          */
         public int getTileHeight() { return tileHeight; }
-        
+
         /**
          * The width of a tile. For square maps, this is identical to the
          * icon width. For hexagonal maps, it is smaller, since columns of
@@ -223,7 +223,7 @@ public class MapViewer extends JPanel {
         siteSet = readIcons("sites", map.getPlaceSet());
         hillSet = readIcons("hills", map.getHillSet());
     }
-    
+
     private ViewProperties
     getNewViewProperties(String path) {
         try {
@@ -241,11 +241,11 @@ public class MapViewer extends JPanel {
         super(true);
 
         toolkit = Toolkit.getDefaultToolkit();
-        
+
         debug("Image path = "+properties.getProperty("path.images"));
 
         this.properties = properties;
-        
+
         String path = properties.getProperty("path.images", "images");
 
         try {
@@ -549,6 +549,21 @@ public class MapViewer extends JPanel {
             // Now draw labels. Need to draw these last so that they don't
             // get overwritten by tiles. No labels are drawn for LOCAL maps.
             if (map.getType() == Map.WORLD && showSites) {
+                Vector   sites = map.getSites();
+                debug("Drawing all sites: "+sites.size());
+                for (int i=0; i < sites.size(); i++) {
+                    Site    site = (Site)sites.elementAt(i);
+                    debug("Paint site "+i+",  "+site.getX()+", "+site.getY());
+                    if (site.getX() < (100 * startX) || site.getX() > (100 * endX)) {
+                        continue;
+                    }
+                    if (site.getY() < (100 * startY) || site.getY() > (100 * endY)) {
+                        continue;
+                    }
+                    paintSite(site, g);
+
+                }
+
                 for (y = startY; y < endY; y++) {
                     yp = y * tileYSize;
                     for (x = startX; x < endX; x++) {
@@ -733,31 +748,28 @@ public class MapViewer extends JPanel {
                     }
                 }
             }
-
-            if (showSites && map.isSite(x, y)) {
-                int     sx=0, sy=0, rot=0;
-
-                icon = siteSet.getIcon(map.getSiteMask(x, y));
-                sx = map.getSite(x, y).getX();
-                sy = map.getSite(x, y).getY();
-                rot = map.getSite(x, y).getRotation();
-
-                if (sx !=0 || sy !=0) {
-                    xp += (int)((iconWidth/200.0) * sx);
-                    yp += (int)((iconHeight/200.0) * sy);
-                }
-
-                g.drawImage(icon, xp, yp, this);
-                // Show name, should be configurable.
-                if (map.getType() != Map.LOCAL) {
-                    g.drawString(map.getSite(x, y).getName(), xp, yp);
-                }
-            }
         } catch (Exception e) {
             System.out.println("Failed to paint tile "+x+", "+y);
         }
-
     }
+
+    public void
+    paintSite(Site site, Graphics g) {
+        int     x=0, y=0;
+        Image   icon = siteSet.getIcon(site.getType());
+
+        debug("paintSite: ["+site.getName()+"]");
+
+        x = site.getX() * tileXSize / 100;
+        y = site.getY() * tileYSize / 100;
+
+        g.drawImage(icon, x, y, this);
+        // Show name, should be configurable.
+        if (map.getType() != Map.LOCAL) {
+            g.drawString(site.getName(), x, y);
+        }
+    }
+
 
 
     /**

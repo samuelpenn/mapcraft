@@ -26,15 +26,15 @@ public class Site implements Cloneable {
     private String      description;
 
     // Sub-hex placement.
-    private short       sx;
-    private short       sy;
+    private short       x;
+    private short       y;
     private short       rotation;
 
     public String
     toString() {
         String      string;
 
-        string = "Type ("+type+") Name ("+name+") X ("+sx+") Y ("+sy+") R ("+rotation+")";
+        string = "Type ("+type+") Name ("+name+") X ("+x+") Y ("+y+") R ("+rotation+")";
 
         return string;
     }
@@ -48,8 +48,8 @@ public class Site implements Cloneable {
         this.type = type;
         this.name = name;
         this.description = description;
-        this.sx = 0;
-        this.sy = 0;
+        this.x = 0;
+        this.y = 0;
         this.rotation = 0;
     }
 
@@ -62,8 +62,8 @@ public class Site implements Cloneable {
         this.type = type;
         this.name = "";
         this.description = "";
-        this.sx = 0;
-        this.sy = 0;
+        this.x = 0;
+        this.y = 0;
         this.rotation = (short)(rotation%360);
     }
 
@@ -75,22 +75,17 @@ public class Site implements Cloneable {
         this.type = type;
         this.name = name;
         this.description = description;
-        this.sx = x;
-        this.sy = y;
+        this.x = x;
+        this.y = y;
         this.rotation = (short)(rotation%360);
-
-        if (sx < -100) sx = -100;
-        if (sy < -100) sy = -100;
-        if (sx > +100) sx = +100;
-        if (sy > +100) sy = +100;
     }
 
     public Object
     clone() throws CloneNotSupportedException {
         Site    s = new Site(type, name, description);
 
-        s.sx = sx;
-        s.sy = sy;
+        s.x = x;
+        s.y = y;
         s.rotation = rotation;
 
         return (Object)s;
@@ -113,27 +108,27 @@ public class Site implements Cloneable {
 
     public void
     setType(short type) { this.type = type; }
-    
+
     public void
     setName(String name) { this.name = name; }
-    
+
     public void
     setDescription(String description) { this.description = description; }
-    
+
     /**
      * The X position of the site within a tile. Possible values range
      * from -100 to +100, with the default being zero.
      */
     public short
-    getX() { return sx; }
-    
+    getX() { return x; }
+
     /**
      * The Y position of the site within a tile. Possible values range
      * from -100 to +100, with the default being zero.
      */
     public short
-    getY() { return sy; }
-    
+    getY() { return y; }
+
     /**
      * The rotation of the image for this site, in degrees clockwise.
      */
@@ -142,12 +137,12 @@ public class Site implements Cloneable {
 
     public void
     setX(short x) {
-        this.sx = x;
+        this.x = x;
     }
 
     public void
     setY(short y) {
-        this.sy = y;
+        this.y = y;
     }
     
     public void

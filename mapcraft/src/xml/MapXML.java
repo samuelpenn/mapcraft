@@ -52,7 +52,7 @@ public class MapXML {
     protected String        format, type;
     protected String        imagedir;
     protected String        tileShape;
-    
+
     public static final String BASE64 = new String("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
 
     public static final String SQUARE = "Square";
@@ -64,7 +64,7 @@ public class MapXML {
     public
     MapXML() {
     }
-    
+
     /**
      * Convert an integer into its Base64 representation as a string
      * of the specified width. If the resulting string is too short,
@@ -87,7 +87,7 @@ public class MapXML {
 
         return result;
     }
-    
+
     /**
      * Convert a Base64 string into an integer.
      */
@@ -518,7 +518,7 @@ public class MapXML {
             // less, we don't use blobs for rivers.
             System.out.println("Reading river data...");
             NodeList    rivers = getNodeList(node, "rivers/river");
-            
+
             if (rivers != null) {
                 for (int r=0; r < rivers.getLength(); r++) {
                     Node            river = rivers.item(r);
@@ -594,9 +594,9 @@ public class MapXML {
     /**
      * Return an array of all the sites in the map.
      */
-    public void
-    getSites(TileSet tileSet) throws XMLException {
-        Site[]          sites = null;
+    public Vector
+    getSites() throws XMLException {
+        Vector          sites = new Vector();
         String          name, description;
         String          image;
         String          path;
@@ -609,15 +609,16 @@ public class MapXML {
             NodeList    list = getNodeList("/map/sites/site");
             if (list == null || list.getLength() == 0) {
                 // No sites found. This is perfectly valid.
-                return;
+                return sites;
             }
+            System.out.println("Found "+list.getLength()+"sites to load");
 
             for (i=0; i < list.getLength(); i++) {
                 Node        node = list.item(i);
                 Site        site = null;
 
-
                 if (node != null) {
+                    System.out.println("Loading site "+i);
                     values = node.getAttributes();
                     type = (short)getIntNode(values.getNamedItem("type"));
                     x = getIntNode(values.getNamedItem("x"));
@@ -625,28 +626,8 @@ public class MapXML {
 
                     name = getTextNode(node, "name");
                     description = getTextNode(node, "description");
-                    site = new Site(type, name, description);
-
-                    // Now see if there's any extra placement information.
-                    Node placement = getNode(node, "placement");
-                    if (placement != null) {
-                        short     sx, sy, r;
-                        System.out.println("Got placement info");
-                        values = placement.getAttributes();
-
-                        System.out.println("Got values");
-                        sx = (short)getIntNode(values.getNamedItem("x"));
-                        System.out.println(x);
-                        sy = (short)getIntNode(values.getNamedItem("y"));
-                        System.out.println(y);
-                        r = (short)getIntNode(values.getNamedItem("rotation"));
-                        System.out.println(r);
-
-                        site.setX(sx);
-                        site.setY(sy);
-                        site.setRotation(r);
-                    }
-                    tileSet.getTile(x, y).setSite(site);
+                    site = new Site(type, name, description, (short)x, (short)y, (short)0);
+                    sites.add(site);
                 }
             }
             list = null;
@@ -656,7 +637,7 @@ public class MapXML {
             throw new XMLException("Error in getting Sites");
         }
 
-        return;
+        return sites;
     }
 
     /**
