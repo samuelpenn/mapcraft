@@ -45,11 +45,12 @@ public class MutableMap extends Map {
      * @param y         Y coordinate of top side of crop window.
      * @param w         Width of the crop window.
      * @param h         Height of the crop window.
-     */
+     *
     public void
     crop(int set, int x, int y, int w, int h) throws MapOutOfBoundsException {
         tileSets[set].crop(x, y, w, h);
     }
+    */
 
     /**
      * Crop the map to the given area. The map is searched for all tiles
@@ -63,7 +64,7 @@ public class MutableMap extends Map {
      * @param set       TileSet to be cropped.
      * @param area      Area id to be cropped to.
      * @param margin    Number of tiles to add as a margin.
-     */
+     *
     public void
     cropToArea(int set, short area, int margin) throws MapOutOfBoundsException {
         int     minX, minY, maxX, maxY;
@@ -108,7 +109,7 @@ public class MutableMap extends Map {
 
         crop(set, minX, minY, maxX-minX, maxY-minY);
     }
-
+*/
 
     public void
     cropToThing(int set, int thing) {

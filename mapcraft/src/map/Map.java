@@ -59,8 +59,8 @@ public class Map implements Cloneable {
     TerrainSet      featureSet = null;
     TileSet         tileSets[] = null;
     AreaSet         areaSet = null;
-    Vector          rivers = null;
-    Vector          things = null;
+    //Vector          rivers = null;
+    //Vector          things = null;
 
     private int     tileShape = HEXAGONAL;
     private int     type = WORLD;
@@ -103,8 +103,8 @@ public class Map implements Cloneable {
         featureSet = map.featureSet;
         tileSets = map.tileSets;
         areaSet = map.areaSet;
-        rivers = map.rivers;
-        things = map.things;
+        setRivers(map.getRivers());
+        setThings(map.getThings());
 
         tileShape = map.tileShape;
         type = map.type;
@@ -251,8 +251,8 @@ public class Map implements Cloneable {
             featureSet = xml.getTerrainSet("features");
             areaSet = xml.getAreas();
 
-            things = xml.getThings();
-            rivers = xml.getRivers();
+            setThings(xml.getThings());
+            setRivers(xml.getRivers());
 
             this.filename = filename;
             this.name = xml.getName();
@@ -516,17 +516,22 @@ public class Map implements Cloneable {
 
     public  Vector
     getThings() {
-        return things;
+        return tileSets[0].getThings();
+    }
+
+    public void
+    setThings(Vector things) {
+        tileSets[0].setThings(things);
     }
 
     public void
     removeThing(int s) {
-        things.remove(s);
+        tileSets[0].removeThing(s);
     }
 
     public void
     addThing(Thing s) {
-        things.add(s);
+        tileSets[0].addThing(s);
     }
 
     /**
@@ -948,6 +953,7 @@ public class Map implements Cloneable {
     public void
     writeRivers(FileWriter writer) throws IOException {
         int         i = 0, e = 0;
+        Vector      rivers = getRivers();
         Path        river = null;
         Vector      elements;
         String[]    types = { "unknown", "start", "end", "path", "join" };
@@ -1014,6 +1020,7 @@ public class Map implements Cloneable {
             writeTileSet(tileSets[i], writer);
         }
 
+        Vector      things = getThings();
         if (things != null && things.size() > 0) {
             writer.write("    <things>\n");
             for (i=0; i < things.size(); i++) {
@@ -1134,7 +1141,12 @@ public class Map implements Cloneable {
      */
     public Vector
     getRivers() {
-        return rivers;
+        return tileSets[0].getRivers();
+    }
+
+    public void
+    setRivers(Vector rivers) {
+        tileSets[0].setRivers(rivers);
     }
 
     /**
@@ -1143,15 +1155,7 @@ public class Map implements Cloneable {
      */
     public Path
     getRiver(int id) {
-        Path        path;
-
-        id--;
-        if (id > rivers.size()) {
-            return null;
-        }
-        path = (Path)rivers.elementAt(id);
-
-        return path;
+        return tileSets[0].getRiver(id);
     }
 
 
@@ -1160,20 +1164,12 @@ public class Map implements Cloneable {
      */
     public int
     addRiver(String name, int x, int y) throws MapOutOfBoundsException {
-        Path    path = new Path(name, x, y);
-
-        //tileSets[0].getTile(x, y).setRiver(true);
-        rivers.add(path);
-
-        return rivers.size();
+        return tileSets[0].addRiver(name, x, y);
     }
 
     public void
     extendRiver(int id, int x, int y) throws MapOutOfBoundsException {
-        Path    river = getRiver(id);
-
-        //tileSets[0].getTile(x, y).setRiver(true);
-        river.add(x, y);
+        tileSets[0].extendRiver(id, x, y);
     }
 
     public void
@@ -1181,7 +1177,7 @@ public class Map implements Cloneable {
         Path    river = null;
         int     id = 0;
 
-        for (id=1; id <= rivers.size(); id++) {
+        for (id=1; id <= tileSets[0].getRivers().size(); id++) {
             System.out.println("Unselecting river "+id);
             unselectRiver(id);
         }
@@ -1189,7 +1185,7 @@ public class Map implements Cloneable {
 
     public void
     unselectRiver(int id) {
-        Path    river = getRiver(id);
+        Path    river = tileSets[0].getRiver(id);
 
         river.setHighlighted(false);
     }
@@ -1264,6 +1260,7 @@ public class Map implements Cloneable {
      */
     public int
     getNearestThingIndex(int x, int y, int max) {
+        Vector  things = getThings();
         Thing   thing = null;
         int     index = -1;
         int     sx=0, sy=0;
@@ -1302,7 +1299,7 @@ public class Map implements Cloneable {
         int     index = getNearestThingIndex(x, y, max);
 
         if (index >= 0) {
-            thing = (Thing)things.elementAt(index);
+            thing = (Thing)getThings().elementAt(index);
         }
 
         return thing;

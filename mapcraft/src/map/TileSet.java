@@ -12,6 +12,7 @@
 
 package uk.co.demon.bifrost.rpg.mapcraft.map;
 
+import java.util.Vector;
 import uk.co.demon.bifrost.rpg.mapcraft.map.*;
 
 /**
@@ -28,6 +29,9 @@ public class TileSet implements Cloneable {
     protected int       scale;
 
     protected Tile[][]  tiles;
+
+    protected Vector    rivers = null;
+    protected Vector    things = null;
 
     public
     TileSet(String name, int width, int height, int scale)
@@ -84,6 +88,46 @@ public class TileSet implements Cloneable {
     }
 
     /**
+     * After the tileset has been cropped, translate all the things to their
+     * new correct position, and remove any things which are not in the
+     * cropped area.
+     *
+     * This should be called after the tiles have been cropped, all that is
+     * needed is the original crop top-left coordinates, in order to work
+     * out how far to translate everything.
+     */
+    private void
+    cropAllThings(int x, int y) {
+        Thing       thing = null;
+        Vector      list = new Vector();
+
+        // Translation coords are in tiles. Things are positioned in
+        // hundreths of a tile.
+        x *= 100;
+        y *= 100;
+
+        for (int i=0; i < things.size(); i++) {
+            boolean     okay = true;
+
+            thing = (Thing)things.elementAt(i);
+            thing.setPosition(thing.getX()-x, thing.getY()-y);
+
+            System.out.println(thing);
+
+            if (thing.getX() < 0) okay = false;
+            if (thing.getY() < 0) okay = false;
+            if (thing.getX() > width * 100) okay = false;
+            if (thing.getY() > height * 100) okay = false;
+
+            if (okay) {
+                list.add(thing);
+            }
+        }
+
+        setThings(list);
+    }
+
+    /**
      * Crop this TileSet to the given size. The width and height must both
      * be positive - if not, a MapOutOfBoundsException is thrown.
      */
@@ -105,6 +149,8 @@ public class TileSet implements Cloneable {
         tiles = cropped;
         width = w;
         height = h;
+
+        cropAllThings(x, y);
     }
 
     private void
@@ -162,7 +208,7 @@ public class TileSet implements Cloneable {
         return tiles[y][x];
     }
 
-    
+
     public void
     setTerrain(int x, int y, short t) throws MapOutOfBoundsException {
         checkBounds(x, y);
@@ -219,17 +265,26 @@ public class TileSet implements Cloneable {
     getHeight(int x, int y) throws MapOutOfBoundsException {
         return getTile(x, y).getHeight();
     }
-    
+
+    /**
+     * @deprecated;
+     */
     public boolean
     isRiver(int x, int y) throws MapOutOfBoundsException {
         return getTile(x, y).isRiver();
     }
 
+    /**
+     * @deprecated
+     */
     public short
     getRiverMask(int x, int y) throws MapOutOfBoundsException {
         return getTile(x, y).getRiverMask();
     }
 
+    /**
+     * @deprecated
+     */
     public void
     setRiverMask(int x, int y, short mask) throws MapOutOfBoundsException {
         getTile(x, y).setRiverMask(mask);
@@ -310,5 +365,73 @@ public class TileSet implements Cloneable {
 
         crop(minX, minY, maxX-minX + 1, maxY-minY + 1);
     }
+
+    /**
+     * Replace all the rivers with the new set of rivers.
+     */
+    void
+    setRivers(Vector rivers) {
+        this.rivers = rivers;
+    }
+
+    void
+    setThings(Vector things) {
+        this.things = things;
+    }
+
+    Vector
+    getRivers() {
+        return rivers;
+    }
+
+    Vector
+    getThings() {
+        return things;
+    }
+
+    Path
+    getRiver(int id) {
+        Path        path;
+
+        id--;
+        if (id > rivers.size()) {
+            return null;
+        }
+        path = (Path)rivers.elementAt(id);
+
+        return path;
+    }
+
+    /**
+     * Create and add a new river to the map.
+     */
+    int
+    addRiver(String name, int x, int y) throws MapOutOfBoundsException {
+        Path    path = new Path(name, x, y);
+
+        //tileSets[0].getTile(x, y).setRiver(true);
+        rivers.add(path);
+
+        return rivers.size();
+    }
+
+    void
+    extendRiver(int id, int x, int y) throws MapOutOfBoundsException {
+        Path    river = getRiver(id);
+
+        river.add(x, y);
+    }
+
+    void
+    removeThing(int id) {
+        things.remove(id);
+    }
+
+    void
+    addThing(Thing thing) {
+        things.add(thing);
+    }
+
+
 }
 
