@@ -264,6 +264,7 @@ public class MapXML {
         try {
             node = XPathAPI.selectSingleNode(root, xpath);
         } catch (TransformerException te) {
+            te.printStackTrace();
             throw new XMLException("Cannot find node");
         }
 
@@ -323,6 +324,7 @@ public class MapXML {
 
             text = getTextNode(node);
         } catch (TransformerException te) {
+            te.printStackTrace();
             throw new XMLException("Cannot find node \""+xpath+"\"");
         }
 
