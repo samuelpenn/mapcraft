@@ -15,12 +15,12 @@
     </header>
 
     <links>
-        <link uri="http://www.bifrost.demon.co.uk/index.html">bifrost</link>
-        <link uri="http://sourceforge.org/projects/mapcraft">sourceforge</link>
+        <link href="http://www.bifrost.demon.co.uk/index.html">bifrost</link>
+        <link href="http://sourceforge.org/projects/mapcraft">sourceforge</link>
         <link uri="/comp/index">screenshots</link>
         <link uri="/links">features</link>
         <link uri="/documentation">documentation</link>
-        <link uri="/rss.xml">webcvs</link>
+        <link href="http://cvs.sourceforge.net/viewcvs.py/mapcraft/">webcvs</link>
         <link uri="/rss.xml">xml</link>
     </links>
 
@@ -55,7 +55,9 @@
         <title>Author</title>
         
         <p>
-            The author of this software is Samuel Penn.
+            The author of this software is
+            <link href="http://www.bifrost.demon.co.uk/samuelpenn.html"
+                  name="Samuel Penn"/>.
         </p>
     </sidebar>
 
