@@ -42,6 +42,7 @@ Project Plan
     Support roads as vectors, inc graphical editing.
     Properties on sites.
 *   Rotation for tiles and features.
+    Rotation on hexagonal maps as well as square maps.
 
 0.2.3
     Support GUI map cropping and linking to submaps.
