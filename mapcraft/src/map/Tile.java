@@ -1,4 +1,4 @@
-package uk.co.demon.bifrost.rpg.xmlmap;
+package uk.co.demon.bifrost.rpg.mapcraft.map;
 
 /**
  * Represents a single tile on a map. A tile is a square

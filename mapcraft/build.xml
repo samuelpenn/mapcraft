@@ -1,18 +1,25 @@
 
-<project name="MapMaker" default="all" basedir=".">
+<project name="MapCraft" default="all" basedir=".">
 
-<target name="all">
-    <javac srcdir="." destdir="."/>
-</target>
+    <target name="all">
+        <copy todir="build">
+            <fileset dir="src"/>
+        </copy>
+        <javac srcdir="build" destdir="build"/>
+        <jar basedir="build" jarfile="mapcraft.jar"
+             manifest="MANIFEST.MF"
+             excludes="**/*.java"
+        />
+    </target>
 
-<target name="docs">
-    <javadoc
-        classpath="."
-        sourcepath="."
-        packagenames="uk.co.demon.bifrost.rpg.xmlmap"
-        destdir="docs"
-        windowtitle="Map Maker API"
-    />
-</target>
+    <target name="docs">
+        <javadoc
+            classpath="."
+            sourcepath="."
+            packagenames="uk.co.demon.bifrost.rpg.mapcraft"
+            destdir="docs"
+            windowtitle="Map Maker API"
+        />
+    </target>
 
 </project>

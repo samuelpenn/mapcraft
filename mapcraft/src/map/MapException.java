@@ -1,5 +1,5 @@
 
-package uk.co.demon.bifrost.rpg.xmlmap;
+package uk.co.demon.bifrost.rpg.mapcraft.map;
 
 public class MapException extends Exception {
     public

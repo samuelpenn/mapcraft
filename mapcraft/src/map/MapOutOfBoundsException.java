@@ -1,4 +1,4 @@
-package uk.co.demon.bifrost.rpg.xmlmap;
+package uk.co.demon.bifrost.rpg.mapcraft.map;
 
 
 public class MapOutOfBoundsException extends MapException {

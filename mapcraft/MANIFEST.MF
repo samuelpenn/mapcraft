@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Created-By: 1.3 (Sun Microsystems)
+Main-Class: uk.co.demon.bifrost.rpg.mapcraft.editor.MapEditor

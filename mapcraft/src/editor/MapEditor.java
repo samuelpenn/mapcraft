@@ -1,5 +1,7 @@
 
-package uk.co.demon.bifrost.rpg.xmlmap;
+package uk.co.demon.bifrost.rpg.mapcraft.editor;
+
+import uk.co.demon.bifrost.rpg.mapcraft.map.*;
 
 import javax.swing.*;
 import javax.swing.event.*;

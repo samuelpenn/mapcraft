@@ -1,4 +1,4 @@
-package uk.co.demon.bifrost.rpg.xmlmap;
+package uk.co.demon.bifrost.rpg.mapcraft.editor;
 
 import java.awt.*;
 import java.awt.image.*;

@@ -1,6 +1,6 @@
-package uk.co.demon.bifrost.rpg.xmlmap;
+package uk.co.demon.bifrost.rpg.mapcraft.map;
 
-import uk.co.demon.bifrost.rpg.xmlmap.*;
+import uk.co.demon.bifrost.rpg.mapcraft.xml.*;
 
 import java.io.*;
 import java.net.URL;

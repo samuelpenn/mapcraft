@@ -1,7 +1,7 @@
 
-package uk.co.demon.bifrost.rpg.xmlmap;
+package uk.co.demon.bifrost.rpg.mapcraft.map;
 
-import uk.co.demon.bifrost.rpg.xmlmap.*;
+import uk.co.demon.bifrost.rpg.mapcraft.map.*;
 
 /**
  * Defines a set of tiles for use in a map. The set is a two

@@ -1,4 +1,7 @@
-package uk.co.demon.bifrost.rpg.xmlmap;
+package uk.co.demon.bifrost.rpg.mapcraft.editor;
+
+import uk.co.demon.bifrost.rpg.mapcraft.map.*;
+import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
 
 import javax.swing.*;
 import java.awt.*;
@@ -69,8 +72,7 @@ public class MapViewer extends JPanel {
         icons[4] = toolkit.getImage("images/"+tileSize+"/woods.gif");
 
         try {
-            map = new Map("Map", Preferences.MAP_WIDTH,
-                    Preferences.MAP_HEIGHT, 64);
+            map = new Map("Map", 64, 48, 64);
             map.setBackground((short)1);
         } catch (Exception e) {
             e.printStackTrace();

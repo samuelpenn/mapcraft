@@ -1,7 +1,7 @@
 
-package uk.co.demon.bifrost.rpg.xmlmap;
+package uk.co.demon.bifrost.rpg.mapcraft.xml;
 
-import uk.co.demon.bifrost.rpg.xmlmap.*;
+import uk.co.demon.bifrost.rpg.mapcraft.map.*;
 import java.io.*;
 import java.util.*;
 
@@ -83,23 +83,6 @@ public class MapXML {
         return value;
     }
 
-
-    /**
-     * Exception class, raised when an error occurs during
-     * processing of an XML document. Used as a generic
-     * exception, to make things easier to catch.
-     */
-    public class XMLException extends Exception {
-        public
-        XMLException() {
-            super();
-        }
-
-        public
-        XMLException(String msg) {
-            super(msg);
-        }
-    }
 
     /**
      * Public constructor which reads a new map DOM from a
