@@ -40,7 +40,7 @@ public class IconSet {
         this.name = name;
         ids = new short[defaultSize];
         icons = new Image[defaultSize];
-        
+
         currentSize = 0;
     }
     
@@ -100,5 +100,40 @@ public class IconSet {
         }
         
         return null;
+    }
+
+    /**
+     * Make sure that the images for all the icons are fully loaded. Will
+     * call prepareImage() on each icon, and if any are not completed it
+     * waits 300ms and tries again. It will try a total of 3 times.
+     *
+     * This should be quicker than calling prepareImage() on each icon
+     * individually and waiting for that icon to complete before moving onto
+     * the next one.
+     *
+     * @return      True if all images loaded, false otherwise.
+     */
+    public boolean
+    prepareImages(Component jc) {
+        int         count = 3;
+        boolean     allDone = false;
+
+        while (!allDone) {
+            allDone = true;
+            for (int i = 0; i < currentSize; i++) {
+                allDone = jc.prepareImage(icons[i], -1, -1, jc) && allDone;
+            }
+            if (!allDone) {
+                try {
+                    Thread.sleep(300);
+                } catch (Exception e) {
+                }
+                if (count-- <= 0) {
+                    break;
+                }
+            }
+        }
+
+        return allDone;
     }
 }

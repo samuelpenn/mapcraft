@@ -255,12 +255,7 @@ public class MapViewer extends JPanel {
     prepareImage(Image image) {
         int     count = 3;
 
-        while (!prepareImage(image, -1, -1, this) && (count-- > 0)) {
-            try {
-                Thread.sleep(200);
-            } catch (Exception e) {
-            }
-        }
+        prepareImage(image, -1, -1, this);
 
         return;
     }
@@ -302,6 +297,7 @@ public class MapViewer extends JPanel {
         }
 
         outlineIcon = toolkit.getImage(views[view].getPath()+"/outline.png");
+        iconSet.prepareImages(this);
 
         return iconSet;
     }
