@@ -527,7 +527,7 @@ public class MapViewer extends JPanel {
      */
     public boolean
     isShowLargeGrid() { return showLargeGrid; }
-    
+
     /**
      * Set whether the map should show the helper grid.
      * Force a redraw of the map to update the display.
@@ -1054,7 +1054,7 @@ public class MapViewer extends JPanel {
 
     public boolean
     rescale(int newScale) {
-        map.rescale(map.getCurrentSet(), newScale);
+        map.rescale(newScale);
         paintComponent();
 
         return true;

@@ -1,12 +1,10 @@
 
 <project name="MapCraft" default="jar" basedir=".">
 
-    <property name="build.dir" value="build"/>
-    <property name="src.dir" value="src"/>
-    <property name="jar.file" value="mapcraft.jar"/>
-    <property name="tests.dir" value="tests"/>
-    <property name="reports.dir" value="tests/reports"/>
-    <property name="docs.dir" value="docs/api"/>
+    <property file="ant.properties"/>
+
+    <path id="lib.path">
+    </path>
 
     <target name="clean">
         <delete dir="${build.dir}" quiet="true"/>
@@ -20,7 +18,9 @@
         <copy todir="build">
             <fileset dir="src"/>
         </copy>
-        <javac srcdir="${src.dir}" destdir="${build.dir}" debug="on"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}" debug="on">
+            <classpath refid="lib.path"/>
+        </javac>
     </target>
 
     <target name="jar" depends="build">
