@@ -1021,6 +1021,7 @@ public class Map implements Cloneable {
         hills.add(new Terrain((short)4, "lowmnts", "Low mountains", "hills/4.png"));
         hills.add(new Terrain((short)5, "highmnts", "High mountains", "hills/5.png"));
         hills.add(new Terrain((short)6, "marsh", "Marshland", "hills/marsh.png"));
+        hills.add(new Terrain((short)7, "ice", "Ice sheet", "hills/ice.png"));
 
         return hills;
     }
@@ -1190,7 +1191,7 @@ public class Map implements Cloneable {
                 map.resize(176, 88, true, true);
                 map.save("new.map");
             } else if (options.isOption("-world")) {
-                map = new Map("Earth", 6400, 200);
+                map = new Map("Earth", 6400, 100);
                 map.loadTerrainSet("terrain/hexagonal.xml");
                 map.setImageDir("hexagonal/standard");
                 map.save("earth.map");
