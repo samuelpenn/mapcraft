@@ -17,7 +17,7 @@
             classpath="."
             sourcepath="src"
             packagenames="uk.co.demon.bifrost.rpg.mapcraft.*"
-            destdir="docs"
+            destdir="docs/api"
             windowtitle="Map Maker API"
         />
     </target>
