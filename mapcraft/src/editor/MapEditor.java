@@ -23,11 +23,8 @@ public class MapEditor extends MapViewer
     private Pane        terrainPane = null;
     private Pane        riverPane = null;
     private Pane        placePane = null;
-    
+
     private Brush       brush = new Brush();
-
-
-
 
 
     /**
@@ -240,6 +237,27 @@ public class MapEditor extends MapViewer
     }
 
     /**
+     * Class to listen for events from the File menu.
+     */
+    protected class
+    MenuViewListener implements ActionListener {
+        public void
+        actionPerformed(ActionEvent ev) {
+            String command = ev.getActionCommand();
+
+            info("ActionEvent: MenuViewListener."+command);
+
+            if (command.equals("showGrid")) {
+                info("ShowGrid");
+                
+            } else {
+                // Unimplemented menu option.
+                warn("ActionEvent: Unsupported MenuViewListener."+command);
+            }
+        }
+    }
+
+    /**
      * Class to listen for events from the Palette menu.
      */
     protected class
@@ -384,6 +402,14 @@ public class MapEditor extends MapViewer
 
         return menu;
     }
+    
+    public JMenuItem
+    createItem(JMenuItem item, String command, ActionListener l) {
+        item.setActionCommand(command);
+        item.addActionListener(l);
+
+        return item;
+    }
 
     /**
      * Create the 'View' menu for the frame.
@@ -392,13 +418,20 @@ public class MapEditor extends MapViewer
      */
     JMenu
     createViewMenu() {
-        JMenu		menu = new JMenu("View");
-        JMenuItem	item;
+        JMenu               menu = new JMenu("View");
+        JMenuItem	        item;
+        MenuViewListener    listener = new MenuViewListener();
 
         menu.setMnemonic(KeyEvent.VK_V);
 
-        item = new JMenuItem("Show grid", KeyEvent.VK_G);
-        menu.add(item);
+        menu.add(createItem(new JCheckBoxMenuItem("Show grid", true),
+                            "showGrid", listener), KeyEvent.VK_G);
+        menu.add(createItem(new JCheckBoxMenuItem("Show sites", true),
+                            "showSites", listener), KeyEvent.VK_S);
+        menu.add(createItem(new JCheckBoxMenuItem("Show hills", true),
+                            "showHills", listener), KeyEvent.VK_H);
+        menu.add(createItem(new JCheckBoxMenuItem("Show coasts", true),
+                            "showCoasts", listener), KeyEvent.VK_C);
 
         return menu;
     }

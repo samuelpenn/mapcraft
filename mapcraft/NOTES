@@ -43,7 +43,23 @@ Hills
     4   Medium mountains
     5   High mountains
 
+UI?
 
+How is this going to work? Do we need a 'hill' palette as
+well? This is going to get cluttered!
+
+
+
+Fancy Coastlines
+
+Fancy coastlines are drawn 'on the fly' using PNG masks.
+Used to allow us to cope with half hexes of water.
+
+Have only 6bits to play with.
+Each bit represents whether that side of the hex is water.
+All water facing sides have show coastline, but if bit is
+set, then this side has lots of water. Does not have to be
+water facing, to allow for channels between land hexes.
 
 
 

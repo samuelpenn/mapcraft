@@ -34,7 +34,12 @@ public class MapViewer extends JPanel {
     protected IconSet     riverSet = null;
     protected IconSet     siteSet = null;
     
-    protected boolean     showGrid = true;
+    private boolean     showGrid = true;
+    private boolean     showSites = true;
+    private boolean     showHills = true;
+    private boolean     showCoasts = true;
+    private boolean     showRivers = true;
+    private boolean     showRoads = true;
 
     protected void
     log(int level, String message) {
@@ -116,31 +121,7 @@ public class MapViewer extends JPanel {
             System.out.println("Setting up terrain icons");
             TerrainSet  set = map.getTerrainSet();
             
-            
-            
-            
-            /*
-            Iterator    iter = set.iterator();
 
-            if (iter == null || !iter.hasNext()) {
-                System.out.println("No iterator");
-                return;
-            }
-
-            iconSet = new IconSet(map.getName());
-            while (iter.hasNext()) {
-                Terrain t = (Terrain)iter.next();
-                if (t != null) {
-                    System.out.println("Defining terrain "+t.getName());
-                    short   id = t.getId();
-                    String  path = t.getImagePath();
-                    Image   icon = toolkit.getImage("images/"+tileSize+"/"+path);
-
-                    System.out.println("Adding icon "+path+" for terrain "+id);
-                    iconSet.add(id, icon);
-                }
-            }
-            */
             iconSet = readIcons("terrain", set);
             siteSet = readIcons("sites", map.getPlaceSet());
 
@@ -166,6 +147,87 @@ public class MapViewer extends JPanel {
         } catch (MapException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Is the map currently displaying the tile grid?
+     */
+    public boolean
+    isShowGrid() { return showGrid; }
+    
+    /**
+     * Set whether the map should show the tile grid.
+     * Force a redraw of the map to update the display.
+     */
+    public void
+    setShowGrid(boolean show) {
+        showGrid = show;
+        paintComponent();
+    }
+
+    /**
+     * Is the map currently displaying sites?
+     */
+    public boolean
+    isShowSites() { return showSites; }
+
+    /**
+     * Set whether the map should show sites.
+     * Force a redraw of the map to update the display.
+     */
+    public void
+    setShowSites(boolean show) {
+        showSites = show;
+        paintComponent();
+    }
+
+    /**
+     * Is the map currently displaying hills?
+     */
+    public boolean
+    isShowHills() { return showHills; }
+
+    /**
+     * Set whether the map should show hills.
+     * Force a redraw of the map to update the display.
+     */
+    public void
+    setShowHills(boolean show) {
+        showHills = show;
+        paintComponent();
+    }
+
+    public boolean
+    isShowCoasts() { return showCoasts; }
+
+    public void
+    setShowCoasts(boolean show) {
+        showCoasts = show;
+        paintComponent();
+    }
+
+    public boolean
+    isShowRivers() { return showRivers; }
+
+    public void
+    setShowRivers(boolean show) {
+        showRivers = show;
+        paintComponent();
+    }
+
+    public boolean
+    isShowRoads() { return showRoads; }
+
+    public void
+    setShowRoads(boolean show) {
+        showRoads = show;
+        paintComponent();
+    }
+
+
+    public void
+    paintComponent() {
+        paintComponent(this.getGraphics());
     }
 
     /**

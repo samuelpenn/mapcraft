@@ -3,7 +3,7 @@ Project Plan
 
 0.1 (Basics)
 *   Decide on file format. SAX/DOM decision. DOM!
-?   File format versioning support.
+*   File format versioning support - future requirement.
 *   Support scrolling map.
 *   Support terrain palette.
 *   Support named places.
@@ -21,6 +21,7 @@ Project Plan
     Support rescale facility (up and down).
     Resize boundaries of a map.
     Names for rivers and roads.
+    Fancy coastlines.
 
 0.3 (Printing support)
     Support for multiple display resolutions.
