@@ -1,0 +1,204 @@
+<html>
+    <head>
+        <title>Mapcraft Templates</title>
+    </head>
+
+    <style>
+        h4 {
+            margin: 0mm;
+        }
+
+        td p {
+            margin: 0mm;
+        }
+
+        td {
+            vertical-align: top;
+        }
+
+    </style>
+
+    <body>
+        <h1>Mapcraft Templates</h1>
+
+        <p>
+            Templates hold descriptions of tiles and objects for use in a
+            map. By default, there are two types of templates - hexagonal
+            templates for world maps, and square templates for local area
+            maps.
+        </p>
+
+        <p>
+            Each template has associated images to go with them. All images
+            are stored as square tiles, at 96x96 resolution, then rescaled
+            and reshaped to fit the type and zoom of map on display.
+        </p>
+
+        <h2>Terminology</h2>
+
+        <h4>Terrain</h4>
+
+        <p>
+            Terrain is the lowest level layer drawn on the map. Very simply,
+            it is what people walk on, rather than bump into. In world maps,
+            it describes the general vegetation and climate.
+        </p>
+
+        <h4>Features</h4>
+
+        <p>
+            Features modify the terrain, or sit upon it. Hills and mountains
+            are features (in world maps), as are walls and doors (in local
+            maps). Features are always drawn ontop of the terrain tile.
+        </p>
+
+        <h4>Things</h4>
+
+        <p>
+            Things are free floating objects which are not restricted to the
+            tile grid. Multiple things can be on the same tile. On world
+            maps, things are towns and cities. On local maps, they are
+            tables, beds and chests.
+        </p>
+
+        <h2>Hexagonal Standard</h2>
+
+        <h3>Terrain</h3>
+
+        <table>
+            <tr>
+                <td>
+                    <img src="../images/hexagonal/standard/96x96/terrain/sea.png"
+                         width="96" height="96" align="left" />
+                </td>
+                <td>
+                    <h4>Sea</h4>
+
+                    <p>
+                        Sea represents relatively shallow water, either
+                        coastal salt water or inland fresh water. It
+                        should be used where sea travel in small boats is
+                        easy.
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <img src="../images/hexagonal/standard/96x96/terrain/ocean.png"
+                         width="96" height="96" align="left" />
+                </td>
+
+                <td>
+                    <h4>Ocean</h4>
+
+                    <p>
+                        Ocean is deep water, nearly always salt water. Such
+                        waters are rarely travelled in small boats because
+                        of rough seas and being far from the sight of land.
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <img src="../images/hexagonal/standard/96x96/terrain/wetland.png"
+                         width="96" height="96" align="left" />
+                </td>
+                <td>
+                    <h4>Wetlands</h4>
+
+                    <p>
+                        Wetlands are low laying areas half-water, half-land.
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <img src="../images/hexagonal/standard/96x96/terrain/cropland.png"
+                         width="96" height="96" align="left" />
+                </td>
+                <td>
+                    <h4>Cropland</h4>
+
+                    <p>
+                        Cropland is cultivated farmland, consisting of fields,
+                        pasture and light woodland. Villages and farms tend to
+                        be common in this type of terrain, which is very much
+                        man made.
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <img src="../images/hexagonal/standard/96x96/terrain/grassland.png"
+                         width="96" height="96" align="left" />
+                </td>
+                <td>
+                    <h4>Grasslands</h4>
+
+                    <p>
+                        Grassland is flat plains, often home to herd animals
+                        predators alike. It may be pasture for tamed animals,
+                        though is more likely to be wilderness. At any rate,
+                        there isn't much difference between the two.
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <img src="../images/hexagonal/standard/96x96/terrain/grassland-dry.png"
+                         width="96" height="96" align="left" />
+                </td>
+                <td>
+                    <h4>Dry Grassland</h4>
+
+                    <p>
+                        Similar to grassland, dry grassland is flat
+                        grasslands, though the climate is bordering on
+                        semi-desert. Water, though not scarce, is in short
+                        display. Plants are hardy varieties, and may come
+                        and go with the seasons.
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <img src="../images/hexagonal/standard/96x96/terrain/rock.png"
+                         width="96" height="96" align="left" />
+                </td>
+                <td>
+                    <h4>Rock Desert</h4>
+
+                    <p>
+                        Rock desert is true desert - little or no rainfall,
+                        and hardly any growing plants. It may be hot or cold
+                        depending on the climate. The surface consists of
+                        pebbles and bolders. In hilly terrain, dry river
+                        valleys are weathered rocks will be common.
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <img src="../images/hexagonal/standard/96x96/terrain/desert.png"
+                         width="96" height="96" align="left" />
+                </td>
+                <td>
+                    <h4>Sand Desert</h4>
+
+                    <p>
+                        This is the stereotypical desert of hot sand dunes,
+                        sand storms and rare oasis.
+                    </p>
+                </td>
+            </tr>
+
+        </table>
+    </body>
+</html>
