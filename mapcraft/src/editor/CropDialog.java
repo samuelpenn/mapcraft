@@ -16,12 +16,9 @@ import uk.co.demon.bifrost.rpg.mapcraft.map.*;
 import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
 
 import javax.swing.*;
-import javax.swing.table.*;
 import java.awt.*;
-import java.awt.image.*;
 import java.awt.event.*;
 
-import java.util.*;
 
 /**
  * Implements a GUI dialog for controlling cropping of the map.
@@ -46,7 +43,7 @@ public class CropDialog extends JDialog implements ItemListener {
 
     public void
     itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == e.SELECTED) {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
         }
     }
 

@@ -14,14 +14,13 @@ package uk.co.demon.bifrost.rpg.mapcraft.map;
 import uk.co.demon.bifrost.rpg.mapcraft.xml.*;
 
 import java.io.*;
-import java.net.URL;
 import java.util.*;
 import javax.swing.ImageIcon;
 import java.awt.Toolkit;
 import java.awt.Image;
 import java.awt.image.*;
 
-import uk.co.demon.bifrost.utils.Options;
+import uk.co.demon.bifrost.rpg.mapcraft.utils.Options;
 
 /**
  * A class object which describes a region as one or more maps.

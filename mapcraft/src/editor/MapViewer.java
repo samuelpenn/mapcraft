@@ -24,8 +24,6 @@ import java.util.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.GeneralPath;
 
-import com.sun.image.codec.jpeg.*;
-
 
 /**
  * A component which displays a Map as part of a GUI.

@@ -12,22 +12,14 @@
  */
 package uk.co.demon.bifrost.rpg.mapcraft.editor;
 
-import uk.co.demon.bifrost.rpg.mapcraft.map.*;
-import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
-
-import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.*;
 import java.awt.image.*;
-import java.net.*;
 import java.io.*;
-
 import java.util.*;
-import java.awt.geom.Line2D;
 
 import com.sun.image.codec.jpeg.*;
 
-import uk.co.demon.bifrost.utils.Options;
+import uk.co.demon.bifrost.rpg.mapcraft.utils.Options;
 
 /**
  * A version of the MapViewer class which is designed for generating

@@ -17,17 +17,13 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 
-import org.apache.xerces.parsers.DOMParser;
 import org.apache.xpath.XPathAPI;
-import org.apache.xml.utils.DOMBuilder;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
-import javax.xml.transform.stream.*;
-import javax.xml.transform.dom.*;
 
 /**
  * Class for reading/writing a Map from/to an XML file. This acts

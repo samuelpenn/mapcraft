@@ -19,12 +19,10 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.event.*;
 import java.awt.*;
-import java.awt.image.*;
-import java.net.*;
 import java.io.*;
 import java.util.*;
 
-import uk.co.demon.bifrost.utils.Options;
+import uk.co.demon.bifrost.rpg.mapcraft.utils.Options;
 
 
 public class MapEditor extends MapViewer

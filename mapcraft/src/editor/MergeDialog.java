@@ -12,17 +12,11 @@
 
 package uk.co.demon.bifrost.rpg.mapcraft.editor;
 
-import uk.co.demon.bifrost.rpg.mapcraft.map.*;
 import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
 
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
 import java.awt.*;
-import java.awt.image.*;
 import java.awt.event.*;
-
-import java.util.*;
 
 /**
  * Implements a GUI dialog for controlling merging of two maps.

@@ -17,7 +17,6 @@ import uk.co.demon.bifrost.rpg.mapcraft.map.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
-import java.awt.image.*;
 import java.awt.event.*;
 
 import java.util.*;
@@ -125,7 +124,7 @@ public class ThingDialog extends JDialog implements ItemListener {
 
     public void
     itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == e.SELECTED) {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
             Terrain     t = (Terrain)e.getItem();
             String path = basePath;
             URL    url = ThingDialog.class.getResource(path + "/" + t.getImagePath());

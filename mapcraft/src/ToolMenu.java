@@ -14,15 +14,7 @@
 package uk.co.demon.bifrost.rpg.mapcraft;
 
 import javax.swing.*;
-import javax.swing.event.*;
 import java.awt.event.*;
-import java.awt.*;
-import java.awt.image.*;
-import java.net.*;
-import java.io.*;
-import java.util.*;
-
-import uk.co.demon.bifrost.rpg.mapcraft.editor.*;
 
 /**
  * Create and handle the Edit menu in the main application window.

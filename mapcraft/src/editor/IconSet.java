@@ -12,8 +12,6 @@
 package uk.co.demon.bifrost.rpg.mapcraft.editor;
 
 import java.awt.*;
-import java.awt.image.*;
-import java.util.*;
 
 /**
  * Holds all the icons for a particular view.
