@@ -25,7 +25,7 @@
             The maps being shown are ones used in my Habisfern fantasy
             campaign. Some are embedded into HTML pages using the XSLT
             plugin for Mapcraft.
-            <link href="http://www.bifrost.demon.co.uk/games/habisfern/encyclopedia/entries/b/bryteland.html" name="Example"/>
+            <link href="http://www.glendale.org.uk/habisfern/encyclopedia/entries/b/bryteland.html" name="Example"/>
         </p>
     </sidebar>
     
@@ -34,7 +34,7 @@
         
         <p>
             All the screenshots are from the application running in KDE
-            on Linux.
+            on Linux, using Java 1.4.
         </p>
     </sidebar>
     
@@ -99,7 +99,10 @@
                 1 hex = 125km. Since the map is of a spherical world, parts
                 of it are non-editable. Facilities exist to generate an
                 image from such a map that can be wrapped around a 3D globe.
-                The homepage shows the same map as a 3D projection.
+                The homepage shows the same map as a 3D projection, and
+                more screenshots are available on the
+                <link href="http://www.glendale.org.uk/traveller/gallery.html"
+                      name="Glendale website"/>.
             </p>
             
             <p>

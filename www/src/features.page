@@ -31,6 +31,22 @@
 
     <body>
         <sect1>
+            <p>
+                Mapcraft is still in development, and is considered to be
+                very much alpha software. It should be stable, however many
+                of the desired features are yet to be implemented, and some
+                which do work, either have no GUI or are rough around the
+                edges.
+            </p>
+            
+            <p>
+                The current aim is to tidy up the existing features so that
+                they work well from the GUI without requiring in depth
+                knowledge from the user.
+            </p>
+        </sect1>
+ 
+        <sect1>
             <title>Current Features</title>
             
             <p>
