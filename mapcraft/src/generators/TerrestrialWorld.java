@@ -22,8 +22,8 @@ import net.sourceforge.mapcraft.map.TerrainSet;
  */
 public class TerrestrialWorld extends WorldGenerator {
     public
-    TerrestrialWorld(String name, int radius) {
-        super(name, radius);
+    TerrestrialWorld(String name, int radius,int scale) {
+        super(name, radius, scale);
     }
     /**
      * Define the terrain types for Moon-like Selenian worlds.
@@ -33,10 +33,14 @@ public class TerrestrialWorld extends WorldGenerator {
     setupSelenian() {
         TerrainSet      ts = map.getTerrainSet();
 
+        int     r = 11 + (int)(Math.random()*3); // 12
+        int     g = 11 + (int)(Math.random()*3); // 12
+        int     b = 11 + (int)(Math.random()*3); // 12
+
         for (int i = 1; i < 17; i++) {
             String      tag = "grey."+i;
-            int         c = 50 + i*12;
-            String      colour = toColour(c, c, c);
+            String      colour = toColour(50+i*r, 50+i*g, 50+i*b);
+
             ts.add((short)(GREY+i-1), tag, tag, colour);
         }
     }
@@ -50,10 +54,15 @@ public class TerrestrialWorld extends WorldGenerator {
     setupHermian() {
         TerrainSet      ts = map.getTerrainSet();
         
+        int     r = 11 + (int)(Math.random()*3); // 12
+        int     g = 15 + (int)(Math.random()*4); // 17
+        int     b = 20 + (int)(Math.random()*10); // 25
+
         for (int i = 1; i < 17; i++) {
             String      tag = "hermian."+i;
-            String      colour = toColour(i*15, i*(i-1), 2*i*(i-8));
-            colour = toColour(255 - (i*12), 255 - (i*17), 200 - (i*25));
+            String      colour = null;
+
+            colour = toColour(255 - (i*r), 255 - (i*g), 200 - (i*b));
             ts.add((short)(GREY+i-1), tag, tag, colour);
         }
     }

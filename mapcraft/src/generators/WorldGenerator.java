@@ -30,6 +30,13 @@ public abstract class WorldGenerator {
     public static final int    SELENIAN = 1;
     public static final int    HERMIAN = 2;
     public static final int    AREAN = 3;
+    public static final int    VENUSIAN = 4;
+    public static final int    GAIAN = 5;
+    
+    public static final int    JOVIAN = 10;
+    public static final int    CRYOJOVIAN = 11;
+    public static final int    SUPERJOVIAN = 12;
+    public static final int    MACROJOVIAN = 13;
     
     protected int         worldType = SELENIAN;
     
@@ -56,9 +63,9 @@ public abstract class WorldGenerator {
     }
     
     public
-    WorldGenerator(String name, int radius) {
+    WorldGenerator(String name, int radius, int scale) {
         try {
-            map = new Map(name, radius, 75);
+            map = new Map(name, radius, scale);
             map.loadTerrainSet("terrain/celestia.xml");
             map.setImageDir("hexagonal/world");
             
@@ -73,8 +80,7 @@ public abstract class WorldGenerator {
     public abstract void
     setWorldType(int worldType);
     
-    
-    protected void
+    public void
     save(String filename) throws java.io.IOException {
         map.save(filename);
     }
@@ -433,7 +439,7 @@ public abstract class WorldGenerator {
     public void
     crater(int ox, int oy, int r, int depth) throws MapOutOfBoundsException {
         int     height =  map.getHeight(ox, oy) - depth;
-        System.out.println("Crater at "+ox+","+oy+" depth "+height);
+
         for (int y=0; y < map.getHeight(); y++) {
             for (int x=0; x < map.getWidth(); x++) {
                 if (isValid(x, y)) {
@@ -496,10 +502,12 @@ public abstract class WorldGenerator {
         System.out.println(utils.ra(150, 150));
 */        
 
-        generator = new TerrestrialWorld("foo", 2500);
+        //generator = new TerrestrialWorld("foo", 2500, 50);
+        generator = new JovianWorld("foo", 2500, 50);
         //generator.setWorldType(SELENIAN);
         //generator.setWorldType(HERMIAN);
-        generator.setWorldType(AREAN);
+        //generator.setWorldType(AREAN);
+        generator.setWorldType(JOVIAN);
         generator.generate();
         
         //generator.randomHeight();
