@@ -924,6 +924,15 @@ public class MapEditor extends MapViewer
         }
     }
 
+    public void
+    rescale() {
+        try {
+            map.rescale(25);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void
     main(String args[]) {
         Options options = new Options(args);

@@ -358,8 +358,6 @@ public class TileSet implements Cloneable {
         int         newHeight = height * factor + offset;
         Tile[][]    scaled = new Tile[newHeight][newWidth];
 
-        System.out.println("scaleSmaller: factor "+factor+" "+newWidth+"x"+newHeight);
-
         for (int x=0;  x < newWidth; x++) {
             boolean even = (x/factor)%2 == 0;
             int     top = even?0:offset;

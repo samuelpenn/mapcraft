@@ -239,9 +239,17 @@ public class Map extends MapBean implements Cloneable {
         tileSets[getCurrentSet()].setScale(scale);
     }
 
+    /**
+     * Rescale the current tileset to the new scale.
+     * Unlike setScale(), the map is physically changed to represent the
+     * new scale. If 1 hex = 25km before, and it is rescaled to 5km, then
+     * the map will be zoomed so there are 25x as many hexes.
+     *
+     * @param newScale  New scale to set the map to.
+     */
     public void
-    rescale(int set, int newScale) {
-        tileSets[set].rescale(newScale);
+    rescale(int newScale) {
+        tileSets[getCurrentSet()].rescale(newScale);
     }
 
 
