@@ -149,7 +149,25 @@ public class MapEditor extends MapViewer
             }
             y = yp/tileYSize;
 
-            applyBrush(x, y);
+            if (e.getButton() == e.BUTTON1) {
+                // Left mouse button
+                applyBrush(x, y);
+            } else if (e.getButton() == e.BUTTON3) {
+                // Right mouse button
+                debug("Right mouse");
+                try {
+                    if (map.isSite(x, y)) {
+                        Site        site = map.getSite(x, y);
+                        SiteDialog  dialog = new SiteDialog(site, frame);
+
+                        site.setName(dialog.getName());
+                        site.setDescription(dialog.getDescription());
+                        paintTile(x, y);
+                    }
+                } catch (MapOutOfBoundsException oobe) {
+                    warn("Mouse click out of bounds");
+                }
+            }
         }
     }
 
