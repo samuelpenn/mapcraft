@@ -64,6 +64,7 @@ public class ViewMenu extends JMenu implements ActionListener {
         addSeparator();
         
         addItem(Actions.VIEW_GRID);
+        addItem(Actions.VIEW_LARGEGRID);
     }
 
 
@@ -107,7 +108,10 @@ public class ViewMenu extends JMenu implements ActionListener {
             application.getEditor().zoomOut();
         } else if (cmd.equals(Actions.VIEW_GRID)) {
             // Toggle grid display.
-            application.getEditor().setShowGrid(!application.getEditor().isShowGrid());
+            application.getEditor().setShowLargeGrid(!application.getEditor().isShowLargeGrid());
+        } else if (cmd.equals(Actions.VIEW_LARGEGRID)) {
+            // Toggle large grid display.
+            application.getEditor().setShowLargeGrid(!application.getEditor().isShowLargeGrid());
         } else if (cmd.equals(Actions.VIEW_SHOWTERRAIN)) {
             application.getEditor().showTerrainPalette();
         } else if (cmd.equals(Actions.VIEW_SHOWFEATURES)) {

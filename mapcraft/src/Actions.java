@@ -52,7 +52,8 @@ public class Actions {
     public final static String  VIEW_SHOWTERRAIN    = "view.showterrain";
     public final static String  VIEW_SHOWFEATURES   = "view.showfeatures";
     public final static String  VIEW_GRID           = "view.grid";
-    
+    public final static String  VIEW_LARGEGRID      = "view.largegrid";
+
     public final static String  EDIT_TERRAIN        = "edit.terrain";
     public final static String  EDIT_FEATURES       = "edit.features";
     public final static String  EDIT_RIVERS         = "edit.rivers";
@@ -114,7 +115,8 @@ public class Actions {
             addLocal(VIEW_SHOWTERRAIN, "Terrain palette", "terrain");
             addLocal(VIEW_SHOWFEATURES, "Feature palette", "features");
             addLocal(VIEW_GRID, "Toggle grid", "grid");
-            
+            addLocal(VIEW_LARGEGRID, "Toggle rulers", "biggrid");
+
             add(VIEW_XXSMALL, "XX-Small");
             add(VIEW_XSMALL, "X-Small");
             add(VIEW_SMALL, "Small");

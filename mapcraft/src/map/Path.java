@@ -105,23 +105,17 @@ public class Path {
         xs = transform.getScaleX();
         ys = transform.getScaleY();
 
-        System.out.println("This path as "+elements.size()+" elements");
-        System.out.println("Scaling factors are "+xs+" and "+ys);
-
         for (i=0; i < elements.size(); i++) {
             Element e = (Element)elements.elementAt(i);
             x = (float)e.getX() * xscale + (float)iconWidth/2;
             y = (float)e.getY() * xscale + (float)iconHeight/2;
 
             if (e.getX()%2 == 1) {
-                System.out.println("Offset is "+offset);
                 y += offset;
             }
-            
+
             x = x * (float)xs;
             y = y * (float)ys;
-
-            System.out.println("Point "+x+","+y);
 
             if (p1 == null) {
                 p1 = new Point2D.Float(x, y);

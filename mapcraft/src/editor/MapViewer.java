@@ -16,6 +16,7 @@ import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.*;
 import java.awt.image.*;
 import java.net.*;
 import java.io.*;
@@ -51,8 +52,9 @@ public class MapViewer extends JPanel {
     protected IconSet     iconSet = null;
     protected IconSet     riverSet = null;
     protected IconSet     siteSet = null;
-    
+
     private boolean       showGrid = true;
+    private boolean       showLargeGrid = true;
     private boolean       showSites = true;
     private boolean       showHills = true;
     private boolean       showCoasts = true;
@@ -354,6 +356,23 @@ public class MapViewer extends JPanel {
     }
 
     /**
+     * Is the map currently displaying the large helper grid?
+     */
+    public boolean
+    isShowLargeGrid() { return showLargeGrid; }
+    
+    /**
+     * Set whether the map should show the helper grid.
+     * Force a redraw of the map to update the display.
+     */
+    public void
+    setShowLargeGrid(boolean show) {
+        showLargeGrid = show;
+        paintComponent();
+    }
+
+
+    /**
      * Is the map currently displaying sites?
      */
     public boolean
@@ -522,6 +541,33 @@ public class MapViewer extends JPanel {
                             g.drawString(map.getSite(x, y).getName(), xp, ypp);
                         }
                     }
+                }
+            }
+
+            if (showLargeGrid) {
+                int x1, x2, y1, y2;
+                Graphics2D  g2 = (Graphics2D)g;
+
+                // Vertical lines
+                y1 = 0;
+                y2 = endY * tileYSize;
+                for (x = 0; x < endX; x+=6) {
+                    x1 = x2 = (int) (x * tileXSize + (iconWidth * 0.5));
+                    GeneralPath gp = new GeneralPath();
+                    Line2D      line = new Line2D.Float(x1, y1, x2, y2);
+                    gp.append(line, true);
+                    g2.draw(gp);
+                }
+                
+                // Horizontal lines
+                x1 = 0;
+                x2 = endX * tileXSize;
+                for (y = 0; y < endY; y+=5) {
+                    y1 = y2 = (int) (y * tileYSize);
+                    GeneralPath gp = new GeneralPath();
+                    Line2D      line = new Line2D.Float(x1, y1, x2, y2);
+                    gp.append(line, true);
+                    g2.draw(gp);
                 }
             }
         } catch (Exception e) {
