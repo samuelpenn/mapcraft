@@ -48,13 +48,14 @@ Project Plan
 *   Move <thing>/<river> tags into <tileset> ready for multi-tileset support.
 
 0.2.3
-    Support GUI map cropping and linking to submaps.
+*   Support GUI map cropping and linking to submaps.
     Support GUI rescale facility (up and down).
+    Support GUI for merging siblings.
     Make Tile class have package scope. Only TileSet should reference it directly.
 *   Crop to highlighted regions (requires highlight support).
 *   Crop to named area.
-    Crop to things.
-    Crop to rivers and roads.
+*   Crop to things.
+*   Crop to rivers and roads.
 
 0.2.4
     Fix display issues with area editing.
