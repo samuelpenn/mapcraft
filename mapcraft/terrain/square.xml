@@ -146,6 +146,30 @@
             <image>table-ew.png</image>
             <solid value="false"/>
         </terrain>
+        <terrain id="33">
+            <name>furniture.bed1</name>
+            <description>Bed</description>
+            <image>bed-top.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="34">
+            <name>furniture.bed2</name>
+            <description>Bed</description>
+            <image>bed-bottom.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="35">
+            <name>misc.rubble</name>
+            <description>Rubble</description>
+            <image>rubble.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="36">
+            <name>misc.rubble2</name>
+            <description>Rubble 2</description>
+            <image>rubble2.png</image>
+            <solid value="false"/>
+        </terrain>
     </terrainset>
 
     <tileset id="root">

@@ -457,6 +457,67 @@ public class Map {
 
 
     }
+    
+    /**
+     * Resize the map. The width and height of the map is changed,
+     * with blank columns and rows being added as necessary.
+     *
+     * @param newWidth  New width of the map, in tiles.
+     * @param newHeight New height of the map, in tiles.
+     * @param atRight   If true, new columns are inserted/removed on the right,
+     *                  otherwise inserted/removed on the left.
+     * @param atBottom  If true, new columns are inserted/removed on the bottom,
+     *                  otherwise inserted/removed on the top.
+     */
+    public void
+    resize(int newWidth, int newHeight, boolean atRight, boolean atBottom)
+                throws InvalidArgumentException {
+
+        TileSet     resized = null;
+        TileSet     original = tileSets[0];
+        int         dx, dy;
+        
+        // Get the deltas for the changing width/height.
+        dx = newWidth - original.getWidth();
+        dy = newHeight - original.getHeight();
+
+        if (dx < 0) {
+            throw new InvalidArgumentException("New width must not be smaller than old width");
+        }
+
+        if (dy < 0) {
+            throw new InvalidArgumentException("New height must not be smaller than old height");
+        }
+
+        if (dx == 0 && dy == 0) {
+            // No op.
+            return;
+        }
+
+        resized = new TileSet(tileSets[0].getName(), newWidth,
+                                          newHeight, tileSets[0].getScale());
+        
+        int     xOffset = 0;
+        int     yOffset = 0;
+        if (atRight) {
+            xOffset = dx;
+        }
+        if (atBottom) {
+            yOffset = dy;
+        }
+
+        int     x, y;
+        for (y = 0; y < original.getHeight(); y++) {
+            for (x = 0; x < original.getWidth(); x++) {
+                try {
+                    resized.setTile(x+xOffset, y+yOffset, original.getTile(x, y));
+                } catch (MapOutOfBoundsException oobe) {
+                }
+            }
+        }
+        tileSets[0] = resized;
+
+    }
 
     /**
      * Returns a new Map object, which is a cropped subset of
@@ -724,7 +785,7 @@ public class Map {
 
         try {
             options = new Options(args);
-            System.out.println("Hello");
+
             if (options.isOption("-create")) {
                 int width = options.getInt("-width");
                 int height = options.getInt("-height");
@@ -745,6 +806,14 @@ public class Map {
             } else if (options.isOption("-rewrite")) {
                 map = new Map(options.getString("-rewrite"));
                 map.save("new.map");
+            } else if (options.isOption("-resize")) {
+                int     w = options.getInt("-width");
+                int     h = options.getInt("-height");
+                String filename = options.getString("-resize");
+
+                map = new Map(filename);
+                map.resize(w, h, false, false);
+                map.save("resized.map");
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -19,20 +19,19 @@ Project Plan
     Support roads as vectors.
     Support map cropping and linking to submaps.
     Support rescale facility (up and down).
-    Resize boundaries of a map.
+*   Resize boundaries of a map.
     Names for rivers and roads.
     Fancy coastlines.
 *   Hex overlay of map.
     Hills support.
     Subhex placement of sites.
-*   Faster display - precrop hex display etc.
+*   Faster display - precrop tile display etc.
     Toolbar support for brush types.
 *   Support square tiles for indoor maps.
 
 0.3 (Printing support)
-    Support for multiple display resolutions.
+*   Support for multiple display resolutions.
     Support printing to image file.
-    Hex overlay of map.
     Support map cropping on image print.
     Show A3/A4 crop areas on map as grid.
     Orientation and style of map labels.
