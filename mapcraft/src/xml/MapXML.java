@@ -626,7 +626,7 @@ public class MapXML {
 
                     name = getTextNode(node, "name");
                     description = getTextNode(node, "description");
-                    site = new Site(type, name, description, (short)x, (short)y, (short)0);
+                    site = new Site(type, name, description, x, y);
                     sites.add(site);
                 }
             }

@@ -230,19 +230,22 @@ public class MapEditor extends MapViewer
                 break;
             case Brush.SITES:
                 if (brush.getSelected() == 0) {
+                    int     s = map.getNearestSiteIndex(brush.getX(), brush.getY(), 100);
+                    if (s >= 0) {
+                        map.removeSite(s);
+                    }
                     map.getTile(x, y).setSite((Site)null);
-                } else if (!map.isSite(x, y)) {
+                } else {
                     // Only set site if no site currently present.
-                    Site    site = new Site(brush.getSelected(), "Unnamed", "Unknown");
+                    Site    site = new Site(brush.getSelected(), "Unnamed", "Unknown",
+                                            brush.getX(), brush.getY());
                     info("Applying site brush "+brush.getSelected());
-                    map.getTile(x, y).setSite(site);
+                    map.addSite(site);
                     info("Opening dialog");
                     SiteDialog dialog = new SiteDialog(site, frame);
                     info("Finished dialog");
                     site.setName(dialog.getName());
                     site.setDescription(dialog.getDescription());
-                } else {
-                    // Do nothing.
                 }
                 paintTile(x, y);
                 break;
@@ -315,6 +318,10 @@ public class MapEditor extends MapViewer
         mousePressed(MouseEvent e) {
             int     x,y;
             int     yp;
+
+            // Record actual X/Y coordinate of mouse click.
+            brush.setX((e.getX()*100)/tileXSize);
+            brush.setY((e.getY()*100)/tileYSize);
 
             if (map.getTileShape() == Map.SQUARE) {
                 x = e.getX()/tileXSize;

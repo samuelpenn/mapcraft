@@ -26,15 +26,14 @@ public class Site implements Cloneable {
     private String      description;
 
     // Sub-hex placement.
-    private short       x;
-    private short       y;
-    private short       rotation;
+    private int         x;
+    private int         y;
 
     public String
     toString() {
         String      string;
 
-        string = "Type ("+type+") Name ("+name+") X ("+x+") Y ("+y+") R ("+rotation+")";
+        string = "Type ("+type+") Name ("+name+") X ("+x+") Y ("+y+")";
 
         return string;
     }
@@ -50,7 +49,6 @@ public class Site implements Cloneable {
         this.description = description;
         this.x = 0;
         this.y = 0;
-        this.rotation = 0;
     }
 
     /**
@@ -64,20 +62,18 @@ public class Site implements Cloneable {
         this.description = "";
         this.x = 0;
         this.y = 0;
-        this.rotation = (short)(rotation%360);
     }
 
     /**
      * Full constructor for a Site, allowing all components to be specified.
      */
     public
-    Site(short type, String name, String description, short x, short y, short rotation) {
+    Site(short type, String name, String description, int x, int y) {
         this.type = type;
         this.name = name;
         this.description = description;
         this.x = x;
         this.y = y;
-        this.rotation = (short)(rotation%360);
     }
 
     public Object
@@ -86,7 +82,6 @@ public class Site implements Cloneable {
 
         s.x = x;
         s.y = y;
-        s.rotation = rotation;
 
         return (Object)s;
     }
@@ -119,34 +114,25 @@ public class Site implements Cloneable {
      * The X position of the site within a tile. Possible values range
      * from -100 to +100, with the default being zero.
      */
-    public short
+    public int
     getX() { return x; }
 
     /**
      * The Y position of the site within a tile. Possible values range
      * from -100 to +100, with the default being zero.
      */
-    public short
+    public int
     getY() { return y; }
 
-    /**
-     * The rotation of the image for this site, in degrees clockwise.
-     */
-    public short
-    getRotation() { return rotation; }
 
     public void
-    setX(short x) {
+    setX(int x) {
         this.x = x;
     }
 
     public void
-    setY(short y) {
+    setY(int y) {
         this.y = y;
     }
-    
-    public void
-    setRotation(short r) {
-        this.rotation = (short)(r%360);
-    }
+
 }

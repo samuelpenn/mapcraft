@@ -467,6 +467,16 @@ public class Map implements Cloneable {
         return sites;
     }
 
+    public void
+    removeSite(int s) {
+        sites.remove(s);
+    }
+
+    public void
+    addSite(Site s) {
+        sites.add(s);
+    }
+
     /**
      * Set the terrain of the given tile for the currently
      * selected TileSet.
@@ -1133,6 +1143,41 @@ public class Map implements Cloneable {
         }
 
         return false;
+    }
+
+    /**
+     * Return the (zero based) index for the nearest site to the given
+     * x/y coordinate. If 'max' is non-zero, then any sites more than
+     * 'max' away are ignored.
+     */
+    public int
+    getNearestSiteIndex(int x, int y, int max) {
+        Site    site = null;
+        int     index = -1;
+        int     sx=0, sy=0;
+        int     min = -1;
+        int     d = 0;
+
+        System.out.println("getNearestSiteIndex: "+x+","+y+" ("+max+")");
+
+        max = max * max;
+
+        for (int i = 0; i < sites.size(); i++) {
+            site = (Site)sites.elementAt(i);
+            sx = x - site.getX();
+            sy = y - site.getY();
+            // We're only looking for the smallest distance, so no need
+            // to bother getting the square root.
+            d = sx * sx + sy * sy;
+            System.out.println("site: "+sx+", "+sy+" "+d);
+            if ((min == -1 || d < min) && (max == 0 || d < max)) {
+                min = d;
+                index = i;
+                System.out.println("Nearest is "+index+" at "+min);
+            }
+        }
+
+        return index;
     }
 
     public static void

@@ -48,6 +48,9 @@ public class Brush {
     private short height = 0;
     private short area = 0;
 
+    private int     rawX = 0;
+    private int     rawY = 0;
+
     Brush() {
         brush = TERRAIN;
     }
@@ -61,6 +64,12 @@ public class Brush {
     getSize() {
         return size;
     }
+
+    int getX() { return rawX; }
+    int getY() { return rawY; }
+
+    void setX(int x) { this.rawX = x; }
+    void setY(int y) { this.rawY = y; }
 
     short
     getSelected() {
