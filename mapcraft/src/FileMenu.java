@@ -29,15 +29,15 @@ import uk.co.demon.bifrost.rpg.mapcraft.map.Map;
 public class FileMenu extends JMenu implements ActionListener {
     Actions     actions = new Actions(null);
     MapCraft    application = null;
-    
+
 
     private class MapFileFilter extends FileFilter {
         private String MAP_EXTENSION = ".map";
-        
+
         public
         MapFileFilter() {
         }
-        
+
         public String
         getDescription() {
             return "Mapcraft map files";
@@ -75,7 +75,7 @@ public class FileMenu extends JMenu implements ActionListener {
         super("File");
 
         JMenuItem       item;
-        
+
         this.application = application;
 
         addItem(Actions.FILE_NEW, "New...", KeyEvent.VK_N);
@@ -93,7 +93,7 @@ public class FileMenu extends JMenu implements ActionListener {
         item.setAction(actions.get(name, this));
         add(item);
     }
-    
+
     public void
     actionPerformed(ActionEvent e) {
         String  cmd = e.getActionCommand();
@@ -168,8 +168,8 @@ public class FileMenu extends JMenu implements ActionListener {
         try {
             System.out.println("Creating new map of "+width+"x"+height);
             Map         newMap = new Map(name, width, height, scale);
-            //newMap.loadTerrainSet("terrain/"+terrain+".xml");
-            URL     url = FileMenu.class.getResource("/"+terrain+".xml");
+
+            URL     url = FileMenu.class.getResource("/"+terrain);
             newMap.loadTerrainSet(url);
             newMap.save(name+".map");
             newMap = null;

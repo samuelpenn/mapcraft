@@ -41,6 +41,24 @@ public class CreateMap extends JDialog implements ActionListener {
     private JTextField          mapWidth;
     private JTextField          mapHeight;
     private JButton             okay, cancel;
+    private Hashtable           types;
+
+    /**
+     * Holds information about a map type. We present a drop down list
+     * of types to the user, then fetch the resource from the jar when
+     * the map is created.
+     */
+    private class MapType {
+        String        name;
+        String        resource;
+        String        tileShape;
+
+        MapType(String name, String resource, String tileShape) {
+            this.name = name;
+            this.resource = resource;
+            this.tileShape = tileShape;
+        }
+    }
 
     public void
     actionPerformed(ActionEvent event) {
@@ -52,6 +70,20 @@ public class CreateMap extends JDialog implements ActionListener {
         super(application.getWindow(), "Create New Map", true);
 
         this.application = application;
+
+        types = new Hashtable();
+        types.put("Wilderness (Hexagonal)",
+                  new MapType("Wilderness (Hexagonal)", "hexagonal.xml",
+                              "hexagonal"));
+
+        types.put("Building (Square)",
+                  new MapType("Building (Square)", "square.xml",
+                              "square"));
+
+        types.put("Town (Square)",
+                  new MapType("Town (Square)", "town.xml",
+                              "square"));
+
         setupWindows();
     }
 
@@ -86,7 +118,7 @@ public class CreateMap extends JDialog implements ActionListener {
         constraints.weighty = 0.0;
 
         add(new JLabel("Map name"), 0, 0, 1, 1);
-        add(mapName = new JTextField("New map", 24), 1, 0, 3, 1);
+        add(mapName = new JTextField("NewMap", 24), 1, 0, 3, 1);
 
         add(new JLabel("Author name"), 0, 1, 1, 1);
         add(authorName = new JTextField("anonymous", 24), 1, 1, 3, 1);
@@ -115,11 +147,19 @@ public class CreateMap extends JDialog implements ActionListener {
         setVisible(true);
     }
 
+    /**
+     * Get a list of all the map types we have templates for.
+     */
     private String[]
     getTypes() {
-        String[]    types = { "Outdoor (hexagons)", "Indoor (square)" };
+        String[]    names = new String[types.size()];
+        int         i = 0;
 
-        return types;
+        for (Enumeration e = types.keys(); e.hasMoreElements(); i++) {
+            names[i] = (String) e.nextElement();
+        }
+
+        return names;
     }
 
     /**
@@ -155,16 +195,11 @@ public class CreateMap extends JDialog implements ActionListener {
             return "hexagonal";
         }
 
-        String      type = (String)mapType.getSelectedItem();
-        String      value = "";
+        String      name = (String)mapType.getSelectedItem();
 
-        if (type.startsWith("Outdoor")) {
-            value = "hexagonal";
-        } else if (type.startsWith("Indoor")) {
-            value = "square";
-        }
+        MapType     type = (MapType)types.get(name);
 
-        return value;
+        return type.resource;
     }
 
     public int
