@@ -44,8 +44,8 @@ Project Plan
     Rotation for tiles and features.
 
 0.2.3
-    Support map cropping and linking to submaps.
-    Support rescale facility (up and down).
+    Support GUI map cropping and linking to submaps.
+    Support GUI rescale facility (up and down).
 
 0.2.4
     Fix display issues with area editing.
@@ -53,9 +53,9 @@ Project Plan
     Feedback in a status bar to say what editing.
 
 0.3 (Printing/XSLT support)
-    XSLT plugin for calling map from Yagsbook.
+*   XSLT plugin for calling map from Yagsbook.
     Interface to pull out areas around named sites.
-    Support map cropping on image print.
+*   Support map cropping on image print.
     Create image from the GUI.
 
 0.3.1
