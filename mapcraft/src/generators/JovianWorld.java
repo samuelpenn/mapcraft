@@ -27,6 +27,8 @@ public class JovianWorld extends WorldGenerator {
     public
     JovianWorld(String name, int radius, int scale) {
         super(name, radius, scale);
+        
+        log("JovianWorld: ["+name+"] "+radius+"km @"+scale+"km");
     }
 
     /**

@@ -144,6 +144,7 @@ public class MapBean implements Cloneable {
             setType(xml.getType());
 
             setCurrentSet("root");
+            System.out.println("MapBean: Finished reading XML data");
         } catch (MapException mape) {
             throw mape;
         } catch (Exception e) {

@@ -555,7 +555,7 @@ public class MapXML {
         try {
             // First, create an empty tileset.
             tileSet = new TileSet(name, width, height, scale);
-            System.out.println("Created tileset");
+            System.out.println("getTileSet: Created tileset");
             // Next, populate the tiles with data from the XML.
             NodeList    columns = getNodeList(node, "tiles/column");
             if (columns == null) {
@@ -590,7 +590,7 @@ public class MapXML {
                 }
             }
             columns = null; // Free memory;
-
+            System.out.println("getTileSet: Finished reading column data");
             try {
                 int     parentScale, parentX, parentY;
                 parentScale = getIntNode(node, "parent/scale");
@@ -608,6 +608,7 @@ public class MapXML {
         } catch (Exception e) {
             System.out.println(e);
         }
+        System.out.println("getTileSet: Finished");
 
         return tileSet;
     }

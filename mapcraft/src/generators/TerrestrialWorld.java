@@ -25,7 +25,7 @@ public class TerrestrialWorld extends WorldGenerator {
     TerrestrialWorld(String name, int radius, int scale) {
         super(name, radius, scale);
         System.out.println("Creating TerrestrialWorld ["+name+
-                           "] of "+radius+"km");
+                           "] "+radius+"km @"+scale+"km");
     }
     /**
      * Define the terrain types for Moon-like Selenian worlds.
@@ -73,7 +73,6 @@ public class TerrestrialWorld extends WorldGenerator {
             String      tag = "hermian."+i;
             String      colour = null;
 
-            log("setupHermian: Add terrain "+tag);
             colour = toColour(255 - (i*r), 255 - (i*g), 200 - (i*b));
             ts.add((short)(GREY+i-1), tag, tag, colour);
         }

@@ -42,7 +42,6 @@ public class MapImage extends MapViewer {
     public
     MapImage(Properties properties, String filename) {
         super(properties, filename);
-        System.out.println("MapImage: Finished");
     }
 
     private void
@@ -69,7 +68,6 @@ public class MapImage extends MapViewer {
         Graphics2D      graphics = null;
         int             w, h;
 
-        System.out.println("toImage: About to set view");
         setView(scale);
 
         try {
@@ -80,7 +78,6 @@ public class MapImage extends MapViewer {
                 map.unwrapWorld();
             }
             image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-            System.out.println("Painting image...");
             clearToWhite(image);
             graphics = image.createGraphics();
             if (graphics == null) {
@@ -88,7 +85,6 @@ public class MapImage extends MapViewer {
                 System.exit(0);
             }
             paintComponent(graphics);
-            System.out.println("...finished painting");
 
         } catch (Exception e) {
             System.out.println("toImage: "+e.getMessage());
@@ -143,8 +139,8 @@ public class MapImage extends MapViewer {
 
         try {
             image = toImage(scale, unwrap);
-            System.out.println("Original image is "+image.getWidth()+
-                               "x"+image.getHeight());
+//            System.out.println("Original image is "+image.getWidth()+
+//                               "x"+image.getHeight());
             
             int     w = width + crop * 2;
             int     h = height + crop * 2;
@@ -153,8 +149,8 @@ public class MapImage extends MapViewer {
             // Need to crop the image, to remove 'half hexes'.
             image = getBufferedImage(texture, crop);
             texture = null; // Free up some memory.
-            System.out.println("Final image is "+image.getWidth()+
-                    "x"+image.getHeight());
+//            System.out.println("Final image is "+image.getWidth()+
+//                    "x"+image.getHeight());
             saveAsJPEG(image, filename);
 
         } catch (IOException e) {
@@ -216,8 +212,6 @@ public class MapImage extends MapViewer {
             properties.setProperty("path.images", "");
 
             map = new MapImage(properties, filename);
-            Thread.sleep(2000);
-            System.out.println("Instantiated MapImage");
 
             if (options.isOption("-thing")) {
                 String  thing = options.getString("-thing");
@@ -244,7 +238,6 @@ public class MapImage extends MapViewer {
             map.setShowLargeGrid(false);
             map.setShowFeatures(true);
             if (celestia) {
-                System.out.println("About to save celestia");
                 scale = 1;
                 map.saveCelestia(outfile, scale, unwrap);
             } else {

@@ -515,7 +515,7 @@ public abstract class WorldGenerator {
         System.out.println(utils.ra(150, 150));
 */        
 
-        generator = new GaianWorld("foo", 6500, 100);
+        generator = new GaianWorld("foo", 6500, 50);
         //generator = new TerrestrialWorld("foo", 2500, 50);
         //generator = new JovianWorld("foo", 2500, 50);
         //generator.setWorldType(SELENIAN);
@@ -523,7 +523,8 @@ public abstract class WorldGenerator {
         //generator.setWorldType(AREAN);
         //generator.setWorldType(JOVIAN);
         //generator.setWorldType(PELAGIC);
-        generator.setWorldType(GAIAN);
+        //generator.setWorldType(GAIAN);
+        generator.setWorldType(PROTOGAIAN);
         generator.generate();
         
         System.out.println(generator.map.getTerrainSet().size());
