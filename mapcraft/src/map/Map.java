@@ -291,11 +291,13 @@ public class Map extends MapBean implements Cloneable {
         dy = newHeight - original.getHeight();
 
         if (dx < 0) {
-            throw new InvalidArgumentException("New width must not be smaller than old width");
+            throw new InvalidArgumentException(
+                    "New width must not be smaller than old width");
         }
 
         if (dy < 0) {
-            throw new InvalidArgumentException("New height must not be smaller than old height");
+            throw new InvalidArgumentException(
+                    "New height must not be smaller than old height");
         }
 
         if (dx == 0 && dy == 0) {
@@ -566,8 +568,12 @@ public class Map extends MapBean implements Cloneable {
      * some extent. Differences in the supplied map overwrite this map.
      */
     public boolean
-    merge(Map merge) {
+    merge(Map merge) throws MapException {
         System.out.println("Merging maps");
+
+        if (merge == null) {
+            throw new MapException("Cannot merge from a null map");
+        }
 
         if (!getParent().equals(merge.getParent())) {
             System.out.println("Maps do not have the same parent");

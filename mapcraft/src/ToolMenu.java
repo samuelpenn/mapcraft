@@ -79,6 +79,8 @@ public class ToolMenu extends JMenu implements ActionListener {
             application.getEditor().resize();
         } else if (cmd.equals(Actions.TOOL_RESCALE)) {
             application.getEditor().rescale();
+        } else if (cmd.equals(Actions.TOOL_MERGE)) {
+            application.getEditor().merge();
         }
     }
 
