@@ -20,7 +20,7 @@ package uk.co.demon.bifrost.rpg.mapcraft.map;
  * is of more use for 'features' in local area maps than it is for towns
  * in world area maps.
  */
-public class Site {
+public class Site implements Cloneable {
     private short       type;
     private String      name;
     private String      description;
@@ -29,11 +29,11 @@ public class Site {
     private short       sx;
     private short       sy;
     private short       rotation;
-    
+
     public String
     toString() {
         String      string;
-        
+
         string = "Type ("+type+") Name ("+name+") X ("+sx+") Y ("+sy+") R ("+rotation+")";
 
         return string;
@@ -78,11 +78,22 @@ public class Site {
         this.sx = x;
         this.sy = y;
         this.rotation = (short)(rotation%360);
-        
+
         if (sx < -100) sx = -100;
         if (sy < -100) sy = -100;
         if (sx > +100) sx = +100;
         if (sy > +100) sy = +100;
+    }
+
+    public Object
+    clone() throws CloneNotSupportedException {
+        Site    s = new Site(type, name, description);
+
+        s.sx = sx;
+        s.sy = sy;
+        s.rotation = rotation;
+
+        return (Object)s;
     }
 
     public short
@@ -99,7 +110,7 @@ public class Site {
     getDescription() {
         return description;
     }
-    
+
     public void
     setType(short type) { this.type = type; }
     

@@ -21,7 +21,7 @@ import uk.co.demon.bifrost.rpg.mapcraft.map.*;
  * @author  Samuel Penn
  * @version $Revision$
  */
-public class TileSet {
+public class TileSet implements Cloneable {
     protected String    name;
     protected int       width;
     protected int       height;
@@ -59,7 +59,30 @@ public class TileSet {
             }
         }
     }
-    
+
+    public Object
+    clone() throws CloneNotSupportedException {
+        TileSet     t = null;
+
+        try {
+            t = new TileSet(name, width, height, scale);
+
+            t.tiles = new Tile[height][width];
+            int     x, y;
+            for (y = 0; y < height; y++) {
+                for (x = 0; x < width; x++) {
+                    t.tiles[y][x] = (Tile)tiles[y][x].clone();
+                }
+            }
+        } catch (InvalidArgumentException e) {
+            // Something gone wrong really here, how could the original
+            // settings be invalid?
+            throw new CloneNotSupportedException("Original object invalid, cannot clone");
+        }
+
+        return (Object)t;
+    }
+
     private void
     checkBounds(int x, int y) throws MapOutOfBoundsException {
         if (x >= width || x < 0) {

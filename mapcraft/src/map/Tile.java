@@ -30,7 +30,7 @@ package uk.co.demon.bifrost.rpg.mapcraft.map;
  * @author  Samuel Penn (sam@bifrost.demon.co.uk)
  * @version $Revision$
  */
-public class Tile {
+public class Tile implements Cloneable {
     private short   terrain;
     private short   height;
     private short   hills;
@@ -38,11 +38,11 @@ public class Tile {
     private boolean river;
 
     private Site    site;
-    
+
     public String
     toString() {
         String      string = null;
-        
+
         string = "Terrain ("+terrain+") Height ("+height+") Hills ("+hills+") ";
         if (river) {
             string += "(river) ";
@@ -79,6 +79,18 @@ public class Tile {
         this.river = tile.river;
         this.site = tile.site;
         this.hills = tile.hills;
+    }
+
+    public Object
+    clone() throws CloneNotSupportedException {
+        Tile    t = new Tile();
+        t.terrain = terrain;
+        t.height = height;
+        t.writable = writable;
+        t.river = river;
+        t.site = (Site) site.clone();;
+
+        return (Object)t;
     }
 
     /**
