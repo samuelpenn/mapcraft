@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005 Samuel Penn, sam@bifrost.demon.co.uk
+ * Copyright (C) 2005 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -46,6 +46,8 @@ class MapEntry {
     int getWidth() { return width; }
     int getHeight() { return height; }
     int getScale() { return scale; }
+    
+    
     
     
 }
