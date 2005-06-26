@@ -19,7 +19,7 @@ import java.sql.*;
  * 
  * @author Samuel Penn
  */
-class MapEntry {
+public class MapEntry {
     private String      name;
     private String      shape;
     private String      template;
@@ -38,14 +38,14 @@ class MapEntry {
         description = results.getString("description");
     }
     
-    String getName() { return name; }
-    String getShape() { return shape; }
-    String getTemplate() { return template; }
-    String getDescription() { return description; }
+    public String getName() { return name; }
+    public String getShape() { return shape; }
+    public String getTemplate() { return template; }
+    public String getDescription() { return description; }
     
-    int getWidth() { return width; }
-    int getHeight() { return height; }
-    int getScale() { return scale; }
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
+    public int getScale() { return scale; }
     
     
     

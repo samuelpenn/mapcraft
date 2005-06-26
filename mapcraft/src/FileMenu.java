@@ -16,9 +16,15 @@ package net.sourceforge.mapcraft;
 import javax.swing.*;
 import java.awt.event.*;
 import java.net.*;
+import java.sql.SQLException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Properties;
 
 import net.sourceforge.mapcraft.map.Map;
+import net.sourceforge.mapcraft.map.tilesets.database.*;
 import net.sourceforge.mapcraft.utils.MapFileFilter;
+import net.sourceforge.mapcraft.editor.dialogs.ConnectDialog;
 
 public class FileMenu extends JMenu implements ActionListener {
     Actions     actions = new Actions(null);
@@ -34,6 +40,7 @@ public class FileMenu extends JMenu implements ActionListener {
 
         addItem(Actions.FILE_NEW, "New...", KeyEvent.VK_N);
         addItem(Actions.FILE_OPEN, "Open...", KeyEvent.VK_L);
+        addItem(Actions.FILE_CONNECT, "Connect...", KeyEvent.VK_C);
         addItem(Actions.FILE_SAVE, "Save", KeyEvent.VK_S);
         addItem(Actions.FILE_SAVEAS, "Save As...", KeyEvent.VK_A);
         addSeparator();
@@ -62,6 +69,8 @@ public class FileMenu extends JMenu implements ActionListener {
             application.save();
         } else if (cmd.equals(Actions.FILE_SAVEAS)) {
             saveas();
+        } else if (cmd.equals(Actions.FILE_CONNECT)) {
+        	connect();
         }
     }
 
@@ -135,6 +144,55 @@ public class FileMenu extends JMenu implements ActionListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-   }
+    }
+    
+    /**
+     * Connect to a database to either create a new map or load an existing one.
+     *
+     */
+    private void connect() {
+    	String      url = MapCraft.getProperty("database.url", "jdbc:mysql://wotan/mapcraft");
+        MapEntry[]  list = null;
+        Server      server = null;
+        
+        try {
+            Properties          properties = new Properties();
+            
+            properties.setProperty("user", "mapcraft");
+            properties.setProperty("password", "mapcraft");
+        	server = new Server(url);
+            server.connect(properties);
+            
+            list = server.getAllMaps();
+            for (int i=0; i < list.length; i++) {
+            	System.out.println(list[i].getName());
+            }
+            
+            url = MapCraft.getProperty("resources.terrain.url", 
+                    "http://mapcraft.sourceforge.net/resources/terrainsets");
+            
+            URL resourceUrl = null;
+            try {
+                resourceUrl = new URL(url);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            
+            Hashtable   terrainTable = server.getTerrainList(resourceUrl);
+            Enumeration e = terrainTable.keys();
+            String[]    s = new String[terrainTable.size()];
+            for (int i=0; i < s.length; i++) {
+                if (e.hasMoreElements()) {
+                	s[i] = (String)e.nextElement();
+                }
+            }
+            
+            ConnectDialog   dialog = new ConnectDialog(list, s, 
+                                                  application.getWindow());
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+        
+    }
 
 }

@@ -11,6 +11,7 @@
  */
 package net.sourceforge.mapcraft.map.tilesets.database;
 
+import java.net.URL;
 import java.sql.*;
 import java.util.*;
 
@@ -82,6 +83,32 @@ public class Server {
     public void disconnect() throws SQLException {
         cx.close();
         cx = null;
+    }
+    
+    public MapEntry[] getAllMaps() throws SQLException {
+    	ArrayList      list = new ArrayList();
+        
+        String      sql = "select * from mapcraft";
+        
+        Statement   stmnt = cx.createStatement();
+        ResultSet   results = stmnt.executeQuery(sql);
+        
+        try {
+            while (results.next()) {
+                MapEntry    entry = null;
+                entry = new MapEntry(results);
+                list.add(entry);
+            }
+        } finally {
+            results.close();
+            results = null;
+        }
+        
+        return (MapEntry[])list.toArray(new MapEntry[1]);
+    }
+    
+    public Hashtable getTerrainList(URL url) {
+    	return MapBuilder.getTerrainList(url);   
     }
 
     /**

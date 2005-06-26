@@ -11,11 +11,19 @@
  */
 package net.sourceforge.mapcraft.map.tilesets.database;
 
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Properties;
 
 import java.sql.*;
+
+import net.sourceforge.mapcraft.map.MapException;
+import net.sourceforge.mapcraft.xml.MapXML;
 
 /**
  * Create a new map in the database.
@@ -80,5 +88,79 @@ class MapBuilder {
 	private static void createTerrain(String name, Properties properties, Connection cx) throws SQLException {
 		// TODO: Create terrain entries for a new map.
 	}
+    
+    public static MapXML getTerrainInfo(URL url) {
+        URL     infoFile = null;
+        MapXML  map = null;
+        
+        try {
+        	infoFile = new URL(url.toString()+"/terrain.xml");
+        } catch (MalformedURLException e) {
+        	e.printStackTrace();
+        }
+        
+        try {
+        	map = new MapXML(infoFile);
+            
+            System.out.println(map.getAuthor());
+            System.out.println(map.getTileShape());
+        } catch (MapException e) {
+        	e.printStackTrace();
+        }
+        
+        return map;
+    }
+    
+    /**
+     * Returns a list of all valid terrain setups found at the given URL.
+     * Terrain sets are returned as a Hashtable keyed by the name, and
+     * containing an object of type MapXML.
+     * 
+     * @param url       Base URL to look for terrain resources.
+     * @return          Hashtable of MapXML objects.
+     */
+    public static Hashtable getTerrainList(URL url) {
+        Hashtable   table = new Hashtable();
+        String      document = null;
+        
+        try {
+        	InputStream     is = url.openStream();
+            byte[]          buffer = new byte[10240];
+            int             count = 0;
+            
+            while (is.available() > 0) {
+            	count += is.read(buffer, count, buffer.length - count);
+            
+            }
+            String s = new String(buffer);
+            
+            int idx = 0;
+            while ((idx = s.indexOf("<A HREF=", idx)) > 0) {
+            	int start = s.indexOf("\"", idx);
+                int end = s.indexOf("\"", start+1);
+                
+                String name = s.substring(start+1, end-1);
+                if (name.startsWith("?") || name.startsWith("/")) {
+                    // Not interested.
+                } else {
+                	System.out.println(name);
+                    URL     infoUrl = new URL(url.toString()+"/"+name);
+                    MapXML  map = getTerrainInfo(infoUrl);
+                    table.put(name, map);
+                }
+                idx = end;
+            }
+            is.close();
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
+        
+    	return table;
+    }
 
+    public static void main(String[] args) throws Exception {
+    	URL    url = new URL("http://mapcraft.sourceforge.net/resources/terrainsets");
+        
+        getTerrainList(url);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004 Samuel Penn, sam@glendale.org.uk
+ * Copyright (C) 2005 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -11,23 +11,25 @@
  */
 package net.sourceforge.mapcraft.editor.dialogs;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.*;
 
-import net.sourceforge.mapcraft.map.*;
-import net.sourceforge.mapcraft.map.elements.Area;
+import javax.swing.*;
+
+import net.sourceforge.mapcraft.map.tilesets.database.MapEntry;
 
 /**
- * Dialog for creating or editing a named area.
+ * Display a dialog listing all the available maps that the user can load,
+ * and also give an option to create a new map. Needs to get list of current
+ * maps from the database, and a list of possible terrain sets for new maps
+ * from a resource URL.
  * 
  * @author Samuel Penn
  */
-public class AreaDialog extends JDialog {
-    private Area            area;
-    private AreaSet         set;
-    
+public class ConnectDialog extends JDialog {
+    Entry[]      list;
+
     private JPanel          topPane;
     private JPanel          bottomPane;
     
@@ -35,7 +37,41 @@ public class AreaDialog extends JDialog {
     private JButton         okay, cancel;
     private JTextField      name, uri;
     private JComboBox       parent;
-    
+    private String[]        terrainList = null;
+     
+    private class Entry {
+        String      name;
+        String      shape;
+        String      template;
+        String      description;
+        int         width;
+        int         height;
+        int         scale;
+        boolean     editable;
+        
+    	Entry(MapEntry map, boolean editable) {
+    		this.name = map.getName();
+            this.width = map.getWidth();
+            this.height = map.getHeight();
+            this.description = map.getDescription();
+            this.scale = map.getScale();
+            this.template = map.getTemplate();
+            this.shape = map.getShape();
+            this.editable = editable;
+        }
+        
+        Entry(String name, boolean editable) {
+        	this.name = name;
+            this.width = 600;
+            this.height = 400;
+            this.scale = 1;
+            this.description = "New map";
+            this.template = "World";
+            this.shape = "Hexagonal";
+            this.editable = editable;
+        }
+    }
+
     /**
      * Helper method to add a component to a GridBagLayout.
      * 
@@ -59,7 +95,7 @@ public class AreaDialog extends JDialog {
         g.setConstraints(cmp, c);
         con.add(cmp);
     }
-    
+
     private void
     setupTopPane() {
         GridBagLayout       g = new GridBagLayout();
@@ -74,38 +110,24 @@ public class AreaDialog extends JDialog {
         c.anchor = GridBagConstraints.NORTH;
 
 
-        add(topPane, g, c, new JLabel("Area name"), 0, 0, 1, 1);
-        add(topPane, g, c, new JLabel("Parent"), 0, 1, 1, 1);
-        add(topPane, g, c, new JLabel("uri"), 0, 2, 1, 1);
+        add(topPane, g, c, new JLabel("Select map"), 0, 0, 1, 1);
+        add(topPane, g, c, new JLabel("Terrain"), 0, 1, 1, 1);
+        add(topPane, g, c, new JLabel("Shape"), 0, 2, 1, 1);
         
-        add(topPane, g, c, name = new JTextField(area.getName()), 1, 0, 2, 1);
-        add(topPane, g, c, uri = new JTextField(area.getUri()), 1, 2, 2, 1);
+        add(topPane, g, c, name = new JTextField(list[0].name), 1, 0, 2, 1);
+        add(topPane, g, c, uri = new JTextField(list[0].shape), 1, 2, 2, 1);
         
-        // Set up a combo box displaying all the possible parents.
+        // Set up a combo box displaying all the possible maps.
         // The list must include a 'null' item, and must not contain
         // this area's name.
-        String[]    array = set.toNameArray();
-        ArrayList   list = new ArrayList();
-        list.add("");
-        for (int i=0; i < array.length; i++) {
-            if (!array[i].equals(area.getName())) {
-                list.add(array[i]);
-            }
+        ArrayList   nameList = new ArrayList();
+        nameList.add("");
+        for (int i=0; i < list.length; i++) {
+            nameList.add(list[i].name);
         }
         int     selection = 0;
-        String  parentName = "";
-        if (area.getParent() != null) {
-            parentName = area.getParent().getName();
-        } 
-        for (int i=0; i < list.size(); i++) {
-            String  n = (String) list.get(i);
-            if (n.equals(parentName)) {
-                selection = i;
-                break;
-            }
-        }
         
-        parent = new JComboBox(list.toArray());
+        parent = new JComboBox(nameList.toArray());
         parent.setSelectedIndex(selection);
         add(topPane, g, c, parent, 1, 1, 2, 1);
 
@@ -132,18 +154,17 @@ public class AreaDialog extends JDialog {
                                  });
     }
     
-    /**
-     * Create a new dialog displaying information on an area.
-     * The user is able to edit this information as they see fit.
-     * 
-     * @param area      Area to be displayed.
-     * @param set       Set of all areas known to the map.
-     * @param frame     Parent frame.
-     */
-    AreaDialog(Area area, AreaSet set, JFrame frame) {
-        super(frame, area.getName()+" ("+area.getId()+")", true);
-        this.area = area;
-        this.set = set;
+    
+    
+	public ConnectDialog(MapEntry[] maps, String[] terrain, JFrame frame) {
+        super(frame, "Database Connection", true);
+        
+        terrainList = terrain;
+        list = new Entry[maps.length + 1];
+        list[0] = new Entry("<create new map>", true);
+        for (int i=0; i < maps.length; i++) {
+        	list[i+1] = new Entry(maps[i], false);
+        }
         
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(topPane = new JPanel(), BorderLayout.NORTH);
@@ -156,21 +177,7 @@ public class AreaDialog extends JDialog {
         setSize(new Dimension(300, 150));
         setLocationRelativeTo(null);
         setVisible(true);
-    }
-    
-    public String
-    getName() {
-        return name.getText();
-    }
-    
-    public String
-    getUri() {
-        return uri.getText();
-    }
-    
-    public String
-    getParentName() {
-        return (String)parent.getSelectedItem();
+        
     }
     
     /**
@@ -189,4 +196,5 @@ public class AreaDialog extends JDialog {
     isOkay() {
         return isOkay;
     }
+    
 }

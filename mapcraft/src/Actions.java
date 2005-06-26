@@ -35,6 +35,7 @@ public class Actions {
     public final static String  FILE_SAVEAS         = "file.saveas";
     public final static String  FILE_PRINT          = "file.print";
     public final static String  FILE_EXIT           = "file.exit";
+    public final static String  FILE_CONNECT	    = "file.connect";
 
     public final static String  VIEW_ZOOMIN         = "view.zoomin";
     public final static String  VIEW_ZOOMOUT        = "view.zoomout";
@@ -128,6 +129,7 @@ public class Actions {
             // File actions
             add(FILE_NEW, "New map", "general/New");
             add(FILE_OPEN, "Open...", "general/Open");
+            add(FILE_CONNECT, "Connect...", "general/Open");
             add(FILE_SAVE, "Save", "general/Save");
             add(FILE_SAVEAS, "Save As...", "general/SaveAs");
             add(FILE_EXIT, "Exit", "general/Stop");
