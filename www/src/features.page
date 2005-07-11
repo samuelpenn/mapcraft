@@ -103,10 +103,56 @@
                 </sect3>
 
                 <sect3>
+                    <title>World Maps</title>
+
+                    <p>
+                        World maps can be generated ready for outputting
+                        to 3D modelling software. See
+                        <link href="http://www.glendale.org.uk/traveller/gallery.html"
+                              name="this gallery"/> for some examples.
+                    </p>
+                </sect3>
+            </sect2>
+
+            <sect2>
+                <title>Backend features</title>
+
+                <sect3>
                     <title>Xalan Plugin</title>
 
                     <p>
-                        Xalan plugin for auto generating images from XML.
+                        There is a Xalan plugin which allows maps to be
+                        generated from an XML call. This is used by
+                        <link href="http://yagsbook.sourceforge.net"
+                              name="Yagsbook"/>
+                        to automatically generate maps from RPG
+                        documentation.
+                    </p>
+
+                    <p>
+                        For example, an article about a particular city
+                        can link to a map, and specify that it wants a
+                        small map displayed of the region around the city.
+                    </p>
+                </sect3>
+
+                <sect3>
+                    <title>XML Data files</title>
+
+                    <p>
+                        All map data is currently stored in XML files
+                        making them reasonably easy to parse.
+                    </p>
+                </sect3>
+
+                <sect3>
+                    <title>Object meta data</title>
+
+                    <p>
+                        Most objects in the map can have metadata
+                        associated with it. For example, a town or
+                        city can record its population, allegience
+                        or background information.
                     </p>
                 </sect3>
             </sect2>
@@ -115,17 +161,51 @@
         <sect1>
             <title>Planned Features</title>
 
-            <p>
-                Database support, for handling of very large maps.
-            </p>
+            <sect2>
+                <title>Graphics Support</title>
 
-            <p>
-                Automatically generate map statistics.
-            </p>
+                <sect3>
+                    <title>More GUI Options</title>
 
-            <p>
-                GUI interface to merging of maps.
-            </p>
+                    <p>
+                        Currently not all features are supported by a
+                        GUI interface - this needs to be rectified though
+                        it is not high on the priority list.
+                    </p>
+                </sect3>
+            </sect2>
+
+            <sect2>
+                <title>Backend Features</title>
+
+                <sect3>
+                    <title>Database support</title>
+
+                    <p>
+                        Currently it is difficult to support very large
+                        maps - in the order of thousands of tiles across.
+                        The code has recently been re-written to support
+                        multiple storage formats, and there is work in
+                        progress to add database support to Mapcraft.
+                    </p>
+
+                    <p>
+                        This will enable maps to be transparently tiled,
+                        keeping only the necessary parts in memory. The
+                        plan is to allow world maps tens of thousands of
+                        tiles across.
+                    </p>
+                </sect3>
+
+                <sect3>
+                    <title>Statistics</title>
+
+                    <p>
+                        Automatically generate map statistics, such as
+                        populations per region.
+                    </p>
+                </sect3>
+            </sect2>
         </sect1>
     </body>
 </page>
