@@ -38,17 +38,17 @@
                 which do work, either have no GUI or are rough around the
                 edges.
             </p>
-            
+
             <p>
                 The current aim is to tidy up the existing features so that
                 they work well from the GUI without requiring in depth
                 knowledge from the user.
             </p>
         </sect1>
- 
+
         <sect1>
             <title>Current Features</title>
-            
+
             <sect2>
                 <title>Graphics Support</title>
 
@@ -78,7 +78,7 @@
                         can alleviate most of the problems.
                     </p>
                 </sect3>
-            
+
                 <sect3>
                     <title>Vectors for Rivers and Roads</title>
 
@@ -93,7 +93,7 @@
 
                 <sect3>
                     <title>Town Objects</title>
-            
+
                     <p>
                         Sites (called 'things' in Mapcraft) such as
                         towns, cities, mines etc are shown as free
@@ -101,24 +101,28 @@
                         tile grid.
                     </p>
                 </sect3>
-            
+
                 <sect3>
                     <title>Xalan Plugin</title>
-                    
+
                     <p>
                         Xalan plugin for auto generating images from XML.
                     </p>
                 </sect3>
             </sect2>
         </sect1>
-        
+
         <sect1>
             <title>Planned Features</title>
-            
+
+            <p>
+                Database support, for handling of very large maps.
+            </p>
+
             <p>
                 Automatically generate map statistics.
             </p>
-            
+
             <p>
                 GUI interface to merging of maps.
             </p>
