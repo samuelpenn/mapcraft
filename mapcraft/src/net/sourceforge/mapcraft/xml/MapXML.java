@@ -3,8 +3,8 @@
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2,
- * or (at your option) any later version. See the file COPYING.
+ * as published by the Free Software Foundation; version 2.
+ * See the file COPYING.
  *
  * $Revision$
  * $Date$
@@ -13,9 +13,7 @@
 package net.sourceforge.mapcraft.xml;
 
 import net.sourceforge.mapcraft.map.*;
-import net.sourceforge.mapcraft.map.elements.Area;
-import net.sourceforge.mapcraft.map.elements.Path;
-import net.sourceforge.mapcraft.map.elements.Thing;
+import net.sourceforge.mapcraft.map.elements.*;
 import net.sourceforge.mapcraft.map.interfaces.ITileSet;
 import net.sourceforge.mapcraft.map.tilesets.TileSet;
 
@@ -23,10 +21,11 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 
-import org.apache.xpath.XPathAPI;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
+
+import com.sun.org.apache.xpath.internal.XPathAPI;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
@@ -252,8 +251,6 @@ public class MapXML {
     load(InputSource in) throws IOException, XMLException {
         try {
             DocumentBuilderFactory  dbf;
-            Node                    node;
-            NodeList                nodeList;
             dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
 
@@ -559,7 +556,6 @@ public class MapXML {
         String          path;
         int             i = 0;
         NamedNodeMap    values;
-        Node            value;
 
         try {
             node = getNode("/map/terrainset[@id='"+setId+"']");
@@ -648,7 +644,6 @@ public class MapXML {
 
             for (int t=0; t < columns.getLength(); t++) {
                 Node            column = columns.item(t);
-                Node            value;
                 NamedNodeMap    values;
 
                 // A column consists of an X coordinate, and stream
@@ -656,7 +651,6 @@ public class MapXML {
                 // as 2 digit base 36 numbers. White space is ignored.
                 if (column != null) {
                     int     x=0, y=0;
-                    short   terrain=0;
                     int     i;
 
                     // Do NOT used the XPathAPI here, since the docs
@@ -741,12 +735,9 @@ public class MapXML {
         ArrayList       things = new ArrayList();
         String          name, description;
         int             fontSize, importance;
-        String          image;
-        String          path;
         int             x, y, i = 0;
         short           type, rotation;
         NamedNodeMap    values;
-        Node            value;
         String          xpath = "/map/things/thing";
 
         if (!format.equals("0.1.0")) {
@@ -820,13 +811,10 @@ public class MapXML {
      */
     public AreaSet
     getAreas() throws XMLException {
-        String          name, description, uri;
-        String          image;
-        String          path;
-        int             id, x, y, i = 0;
+        String          name, uri;
+        int             id, i = 0;
         int             parent;
         NamedNodeMap    values;
-        Node            value;
         AreaSet         areas = new AreaSet();
 
         try {
@@ -838,7 +826,6 @@ public class MapXML {
 
             for (i=0; i < list.getLength(); i++) {
                 Node        node = list.item(i);
-                Area        area = null;
 
                 if (node != null) {
                     values = node.getAttributes();
@@ -977,7 +964,6 @@ public class MapXML {
     public static void
     main(String args[]) {
         System.out.println("Start");
-        String b;
 
         testEncoding(1, 1);
         testEncoding(10, 2);

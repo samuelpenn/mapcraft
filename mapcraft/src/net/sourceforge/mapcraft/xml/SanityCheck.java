@@ -13,9 +13,10 @@ package net.sourceforge.mapcraft.xml;
 
 import java.io.*;
 
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
+
+import com.sun.org.apache.xpath.internal.XPathAPI;
 
 import javax.xml.parsers.*;
 
