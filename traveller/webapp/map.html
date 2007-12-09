@@ -1,0 +1,77 @@
+<html>
+	<head>
+		<title>Third Imperium Mapping Project</title>
+
+		<style>
+			body {
+				margin: 0px;
+			}
+			
+			h1 {
+				color: #aaaaff;
+				background-color: #000099;
+				margin: 0px;
+				padding-top: 5px;
+				padding-bottom: 5px;
+				padding-left: 10px;
+				border-bottom: 3pt solid #aaaaff;
+			}
+			
+			div#sector {
+				height: 32pt;
+				width: 99%;
+				color: black;
+				background-color: #aaaaff;
+				margin: 0pt;
+				padding: 2pt;
+				padding-right: 0pt;
+				border: 2pt solid black;
+				border-bottom: none;
+			}
+			
+			div#sector p {
+				margin: 0pt;
+				padding: 0pt;
+			}
+			
+			img {
+				padding: 0px;
+				margin: 0px;
+				border: 0px none white;
+			}
+		</style>
+
+        <script type="text/javascript" src="scripts/ajax.js">
+        </script>
+        <script type="text/javascript" src="scripts/map.js">
+        </script>
+	</head>
+
+	<body onload="loadedPage()">
+		<h1>Third Imperium Mapping Project</h1>
+		
+		<img src="images/imperial-starburst.gif" width="120" height="120" style="position: absolute; top:0px; right:0px"/>
+		
+		<div style="margin-right: 140px">
+			<p>
+				This is a project to map the <e>Third Imperium</e> in its entirity,
+				from the stars and sectors down to the planets and moons themselves.
+			</p>
+
+	        <p id="text">Message</p>
+		</div>
+
+        <div id="sector">
+        </div>
+        
+        <div id="map" style="position: relative; width:99%; height:70%; border: 2pt solid black; overflow: hidden">
+        </div>
+        
+        <p style="font-style: italic">
+        	Map data generated from <a href="http://111george.com/core/">GNI data</a>. 
+        	Map viewer by Samuel Penn, available under the GPLv2.
+        	Home page at <a href="http://www.glendale.org.uk">www.glendale.org.uk</a>.
+        </p>
+	</body>
+</html>
+

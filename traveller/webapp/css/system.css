@@ -1,0 +1,116 @@
+/*
+ * Copyright (C) 2007 Samuel Penn, sam@glendale.org.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation version 2.
+ * See the file COPYING.
+ *
+ * $Revision: 1.2 $
+ * $Date: 2007/01/01 11:04:14 $
+ */
+
+h1 {
+	color: #aaaaff;
+	background-color: #000099;
+	font-size: xx-large;
+	text-align: left;
+	margin-bottom: 0pt;
+}
+
+div.systemblock {
+	background-color: #aaaaff;
+	padding-left: 3pt;
+	padding-right: 3pt;
+}
+
+div.systemblock p {
+	margin: 0px;
+}
+
+div.systemblock img {
+	padding-right: 4px;
+}
+
+div.starblock p {
+	margin: 0px;
+}
+
+h3 {
+	color: white;
+	background-color: #660000;
+}
+
+div.header {
+	background-color: #ffdddd;
+	color: black;
+	margin: 0pt;
+	margin-bottom: 12pt;
+}
+
+div.header div.span {
+	margin: 0pt;
+	padding-left: 5mm;
+	padding-right: 5mm;
+	color: black;
+}
+
+div.header div.span a {
+	color: black;
+}
+
+
+table {
+}
+
+table th {
+	text-align: left;
+	background-color: #330000;
+	color: white;
+	width: 12em;
+}
+
+table td {
+	text-align: left;
+	vertical-align: top;
+	border: 1pt solid #330000;
+}
+
+table.layout {
+	border: none;
+}
+
+table.layout td {
+	border: none;
+}
+
+div.planet {
+	border: 1pt solid black;
+	margin-left: 5mm;
+	margin-bottom: 5mm;
+}
+
+div.planet h3 {
+	margin: 0pt;
+	padding: 0pt;
+	background-color: #aaaaff;
+	color: black;
+}
+
+div.planet table.physical {
+}
+
+div.planet table.civilisation {
+	align: right;
+}
+
+div.moon {
+	margin-left: 10mm;
+}
+
+div.moon h4 {
+	margin: 0pt;
+	padding: 0pt;
+	background-color: #ccccff;
+	color: #555555;
+}

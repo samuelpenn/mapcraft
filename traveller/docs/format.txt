@@ -1,0 +1,25 @@
+
+Example of the data format used:
+
+ 1-14: Name
+15-18: HexNbr
+20-28: UWP - Port, Size, Atmosphere, Hydro, Pop, Gov, Law (-) Tech
+   31: Bases
+33-47: Codes & Comments
+   49: Zone
+52-54: PBG - Population digit, number of other terrestrial worlds, number of gas giants
+56-57: Allegiance
+59-74: Stellar Data
+
+
+
+
+0         1         2         3         4         5         6         7         8
+012345678901234567890123456789012345678901234567890123456789012345678901234567890
+eC Mirriam            0303 B9998A6-A B                 A 514 Im M6 V
+                           012345678
+
+Saregon       2936 A584976-E    Hi                 114 Im M3 V M6 D
+              2937 B434779-A  A                    703 Im M1 III M9 V
+Shakiiga      2938 B867ACA-B    Hi                 710 Im K4 V
+	
