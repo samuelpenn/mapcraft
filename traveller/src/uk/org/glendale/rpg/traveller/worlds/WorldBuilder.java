@@ -12,26 +12,17 @@
 package uk.org.glendale.rpg.traveller.worlds;
 
 import java.awt.Container;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
 import javax.media.j3d.*;
 import javax.vecmath.*;
-
-import org.j3d.geom.SphereGenerator;
-
-import jgl.GL;
-import jgl.GLAUX;
 
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.image.TextureLoader;
