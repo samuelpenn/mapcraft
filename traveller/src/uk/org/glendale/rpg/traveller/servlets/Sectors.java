@@ -7,7 +7,7 @@
  * See the file COPYING.
  *
  * $Revision: 1.2 $
- * $Date: 2007/12/09 17:45:17 $
+ * $Date: 2007/01/01 11:04:14 $
  */
 package uk.org.glendale.rpg.traveller.servlets;
 
@@ -15,6 +15,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -22,22 +25,25 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import uk.org.glendale.rpg.traveller.Config;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.database.ObjectNotFoundException;
+import uk.org.glendale.rpg.traveller.sectors.Sector;
 import uk.org.glendale.rpg.traveller.systems.Planet;
+import uk.org.glendale.rpg.traveller.systems.Star;
+import uk.org.glendale.rpg.traveller.systems.StarSystem;
+import uk.org.glendale.rpg.traveller.systems.StarSystem.Zone;
 
 /**
- * A RESTful implementation of a web service that enables access to planet
- * resources.
+ * A RESTful implementation of a web service that enables access to the universe.
  * 
- * A request should always be of the format /planet/<planetId>. Individual
- * methods will define further requirements.
+ * A request should always be of the format /universe
  * 
  * @author Samuel Penn
- * @created 2007/12/3
+ * @created 2007/12/4
  *
  */
-public class PlanetServlet extends HttpServlet {
+public class Sectors extends HttpServlet {
 	/**
 	 * Delete a resource from the universe. Currently this is always forbiddon.
 	 */
@@ -72,24 +78,35 @@ public class PlanetServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String		uri = request.getPathInfo();
-		String		format = "xml";
-		String		property = null;
-		int			id = 0;
 		
-		// Very quick test to ensure that the URL format is correct.
-		if (!uri.matches("/[0-9]+([/.].*)?")) {
-			response.sendError(400, "Incorrect request format ["+uri+"]");
-			return;
-		}
+		if (uri == null || uri.startsWith("/index")) {
+			universeMap(request, response);
+		} else {
 		
-		try {
-			id = Integer.parseInt(uri.replaceAll("/([0-9]+)([/.].*)?", "$1"));
-		} catch (NumberFormatException e) {
-			// Should be impossible, since the regexp will have failed by this point.
-			response.sendError(400, "Badly formatted planet id");
-			return;
+			response.getOutputStream().println("<p>["+uri+"]</p>");
+			try {
+				ObjectFactory		factory = new ObjectFactory();
+				Vector<Sector>		sectors = factory.getSectors();
+				
+				for (Sector sector : sectors) {
+					response.getOutputStream().println("<p>"+sector.getName()+"</p>");
+				}			
+			} catch (Throwable t) {
+				t.printStackTrace();
+				response.sendError(500, "Exception ("+t.getMessage()+")");
+				return;
+			}
 		}
+	}
 
+	/**
+	 * Generate a view onto the entire universe.
+	 */
+	private void universeMap(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String		format = "xml";
+		String		uri = request.getPathInfo();
+		String		property = null;
+		
 		if (uri.matches(".*\\.[a-z]+")) {
 			format = uri.replaceAll(".*\\.([a-z]+)", "$1");
 			if (format.equals("txt") || format.equals("xml") || format.equals("html") || format.equals("jpg")) {
@@ -103,24 +120,58 @@ public class PlanetServlet extends HttpServlet {
 		if (uri.matches("/[0-9]+/.*")) {
 			property = uri.replaceAll("/[0-9]+/([^.]+)(\\.[a-z]+)?", "$1");
 		}
-		
+
 		try {
 			ObjectFactory		factory = new ObjectFactory();
-			Planet				planet = factory.getPlanet(id);
-
-			if (property == null) {
-				getFullPage(factory, planet, format, request, response);
+			Vector<Sector>		sectors = factory.getSectors();
+		
+			String				output = null;
+			
+			if (format.equals("html")) {
+				response.setContentType("text/html");
+				output = universeAsHTML(sectors);
+			} else if (format.equals("xml")) {
+				response.setContentType("text/plain");
+				output = universeAsXML(sectors);				
 			} else {
-				getProperty(factory, planet, format, property, request, response);
+				response.setContentType("text/xml");
+				output = universeAsXML(sectors);
 			}
-		} catch (ObjectNotFoundException e) {
-			response.sendError(404, "Cannot find planet with id ["+id+"]");
-			return;
+			response.getOutputStream().println(output);
 		} catch (Throwable t) {
 			t.printStackTrace();
 			response.sendError(500, "Exception ("+t.getMessage()+")");
 			return;
 		}
+	}
+	
+	private String universeAsXML(Vector<Sector> sectors) {
+		return "";
+	}
+	
+	private String universeAsHTML(Vector<Sector> sectors) {
+		StringBuffer		buffer = new StringBuffer();
+		String				stylesheet = "";
+
+		buffer.append("<html>\n<head>\n<title>"+Config.getTitle()+" System</title>\n");
+		buffer.append("<link rel=\"STYLESHEET\" type=\"text/css\" media=\"screen\" href=\""+stylesheet+"\" />\n");
+        buffer.append("<script type=\"text/javascript\" src=\""+Config.getBaseUrl()+"scripts/system.js\"></script>\n");
+		buffer.append("</head><body>\n");
+		
+		buffer.append("<div id=\"header\">\n");
+		buffer.append("<h1>"+Config.getTitle()+"</h1>");
+		buffer.append("</div>\n");
+		
+		buffer.append("<div id=\"sectorlist\">\n");
+		for (Sector sector : sectors) {
+			buffer.append("<p>"+sector.getName()+"</p>");
+		}
+		
+		buffer.append("</div>\n");
+		
+		buffer.append("</body></html>\n");
+		
+		return buffer.toString();
 	}
 	
 	/**
@@ -134,35 +185,25 @@ public class PlanetServlet extends HttpServlet {
 	 * @param response		Response object.
 	 * @throws IOException
 	 */
-	private void getFullPage(ObjectFactory factory, Planet planet, String format, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	private void getFullPage(ObjectFactory factory, StarSystem system, String format, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		if (format.equals("html")) {
 			// Output information as HTML.
 			response.setContentType("text/html");
-			response.getOutputStream().print(outputHTML(planet, request.getContextPath()));
+			try {
+				response.getOutputStream().print(outputHTML(system, factory));
+			} catch (ObjectNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				response.getOutputStream().print(e.getMessage());
+			}
 		} else if (format.equals("txt")) {
 			// Output information as XML (with content type of plain text).
 			response.setContentType("text/plain");
-			response.getOutputStream().print(outputXML(planet, request.getContextPath()));
-		} else if (format.equals("jpg")) {
-			// Output map of the world, as JPEG.
-	        ByteArrayOutputStream	stream = null;
-	        
-	        if (request.getParameter("globe") != null) {
-	        	stream = factory.getPlanetGlobe(planet.getId());
-	        } else {
-	        	stream = factory.getPlanetMap(planet.getId());
-	        }
-	        if (stream == null) {
-	        	response.sendError(404, "Planet ["+planet.getId()+"] does not have the requested image available");
-	        	return;
-	        }
-	        response.setContentType("image/jpeg");
-	        ServletOutputStream	out = response.getOutputStream();
-	        out.write(stream.toByteArray());
+			response.getOutputStream().print(outputXML(system));
 		} else {
 			// Output information as XML.
 			response.setContentType("text/xml");
-			response.getOutputStream().print(outputXML(planet, request.getContextPath()));
+			response.getOutputStream().print(outputXML(system));
 		}
 	}
 
@@ -206,35 +247,108 @@ public class PlanetServlet extends HttpServlet {
 	}
 
 	/**
-	 * Output information about the planet as HTML. Also adds HTML header
-	 * and footer since the raw planet HTML is only an HTML snippet.
+	 * Output information about the system as HTML.
 	 * 
-	 * @param planet	Planet to output data on.
+	 * @param system	System to output data on.
 	 * @return			String containing the HTML page.
 	 */
-	private String outputHTML(Planet planet, String contextPath) {
+	private String outputHTML(StarSystem system, ObjectFactory factory) throws ObjectNotFoundException {
 		StringBuffer		buffer = new StringBuffer();
-		String				stylesheet = contextPath+"/data/css/system.css";
+		String				stylesheet = Config.getBaseUrl()+"css/systems.css";
+		Sector  			sector = new Sector(factory, system.getSectorId());
 		
-		buffer.append("<html>\n<head>\n<title>"+planet.getName()+"</title>\n");
+		buffer.append("<html>\n<head>\n<title>"+system.getName()+" System</title>\n");
 		buffer.append("<link rel=\"STYLESHEET\" type=\"text/css\" media=\"screen\" href=\""+stylesheet+"\" />\n");
+        buffer.append("<script type=\"text/javascript\" src=\""+Config.getBaseUrl()+"scripts/system.js\"></script>\n");
 		buffer.append("</head><body>\n");
-		buffer.append(planet.toHTML());
+		
+		buffer.append("<div id=\"header\">\n");
+		buffer.append("<h1>"+system.getName()+"</h1>\n");
+		
+		buffer.append("<p>\n");
+		buffer.append(sector.getName()+" / "+sector.getSubSectorName(system.getX(), system.getY())+" - "+system.getXAsString()+system.getYAsString());
+		buffer.append(" ("+system.getAllegianceData().getName()+")");
+		if (system.getZone() != Zone.Green) {
+			buffer.append(" / "+system.getZone().toString());
+		}
+		buffer.append("</p>\n");
+		buffer.append("</div>\n");
+		// Simple map of the whole solar system.
+		Vector<Planet>	planets = factory.getPlanetsBySystem(system.getId());
+		buffer.append("<div id=\"map\">\n");
+		int		lastX = 0, x = 0;
+		for (Star star : system.getStars()) {
+			String		image = Config.getBaseUrl()+"images/stars/"+star.getSpectralType().toString().substring(0, 1)+".png";
+			int			ssize = (int)Math.pow((star.getStarClass().getRadius() * 600000), 0.3);
+			lastX = 0;
+			buffer.append("<table><tr>");
+			
+			buffer.append("<td><img src=\""+image+"\" width=\""+ssize+"\" height=\""+ssize+"\" title=\""+star.getName()+"\"/></td>");
+			for (int i=0; i < planets.size(); i++) {
+				Planet		planet = planets.elementAt(i);
+				if (planet.getParentId() == star.getId() && !planet.isMoon()) {
+					x = planet.getDistance() / 3 - lastX;
+					lastX = planet.getDistance() / 3;
+					String		pimg = Config.getBaseUrl()+"planet/"+planet.getId()+".jpg?globe";
+					int			size = (int)Math.pow(planet.getRadius(), 0.3);
+					buffer.append("<td width=\""+x+"px\">");
+					buffer.append("<img src=\""+pimg+"\" width=\""+size+"\" height=\""+size+"\" title=\""+planet.getName()+"\" align=\"left\" valign=\"center\"/>");
+					buffer.append("</td>");
+				}
+			}
+			buffer.append("</tr></table>\n");
+		}
+		buffer.append("</div>\n");
+		
+		buffer.append("<div id=\"stars\">\n");
+		buffer.append("<table id=\"tabs\">\n");
+		buffer.append("<tr>");
+		int		idx = 0;
+		for (Star star : system.getStars()) {
+			String		image = Config.getBaseUrl()+"images/stars/"+star.getSpectralType().toString().substring(0, 1)+".png";
+			buffer.append("<td style=\"border: 1pt solid black\">");
+			buffer.append("<img src=\""+image+"\" width=\"64\" height=\"64\" onclick=\"selectStar('"+(idx++)+"')\"/>");
+			buffer.append("</td>");
+		}
+		buffer.append("</tr></table>\n");
+		buffer.append("</div>\n");
+		
+		buffer.append("<div id=\"planets\">\n");
+		idx = 0;
+		String	style = "";
+		for (Star star : system.getStars()) {
+			buffer.append("<div id=\"planets_"+(idx++)+"\" class=\"planets\" "+style+">\n");
+			
+			buffer.append("<p>"+star.getName()+"</p>");
+			buffer.append("<p>"+star.getStarClass()+" / "+star.getSpectralType()+"</p>");
+			
+			for (int i=0; i < planets.size(); i++) {
+				Planet	planet = planets.elementAt(i);
+				if (planet.getParentId() == star.getId() && !planet.isMoon()) {
+					buffer.append(planet.toHTML());
+				}
+			}
+
+			buffer.append("</div>\n");
+			style = "style=\"display: none;\"";
+		}
+		buffer.append("</div>\n");
+		
 		buffer.append("</body></html>\n");
 		
 		return buffer.toString();
 	}
 	
-	private String outputXML(Planet planet, String contextPath) {
+	private String outputXML(StarSystem system) {
 		StringBuffer		buffer = new StringBuffer();
-		String				stylesheet = contextPath+"/data/xslt/planet.xsl";
+		String				stylesheet = Config.getBaseUrl()+"xslt/system.xsl";
 
 		buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		
 		if (stylesheet != null) {
 			buffer.append("<?xml-stylesheet href=\"").append(stylesheet).append("\" type=\"text/xsl\"?>\n");
 		}
-		buffer.append(planet.toXML());
+		buffer.append(system.toXML());
 		
 		return buffer.toString();
 	}

@@ -1,0 +1,26 @@
+# Example properties file.
+# Rename this as config.properties after correcting the values.
+#
+
+universe=mortals
+#universe=traveller
+
+#
+# Traveller configuration
+#
+traveller.title=Third Imperium Mapping Project
+traveller.server.name=Traveller
+traveller.server.url=http://dev.glendale.org.uk/traveller/
+traveller.database.hostname=xxx
+traveller.database.name=traveller
+traveller.database.user=traveller
+traveller.database.password=xxx
+
+mortals.title=Mortals Universe
+mortals.server.name=Mortals
+mortals.server.url=http://dev.glendale.org.uk/mortals/
+mortals.server.deploy=mortals
+mortals.database.hostname=xxx
+mortals.database.name=fullthrust
+mortals.database.user=fullthrust
+mortals.database.password=xxx
