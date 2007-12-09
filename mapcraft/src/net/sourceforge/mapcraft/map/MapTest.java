@@ -11,7 +11,8 @@
  */
 package net.sourceforge.mapcraft.map;
 
-import junit.framework.*;
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 public class MapTest extends TestCase {
     private Map     map = null;
