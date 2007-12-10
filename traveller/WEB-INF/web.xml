@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+    <display-name>Traveller</display-name>
+    <description>
+	    	Web interface to Traveller data.
+    </description>
+    
+    <session-config>
+   		<session-timeout>60</session-timeout> <!-- Minutes -->
+   	</session-config>
+    
+    <servlet>
+   		<servlet-name>Information Getter</servlet-name>
+   		<servlet-class>uk.org.glendale.rpg.traveller.servlets.GetInfo</servlet-class>
+   	</servlet>
+   	
+   	<servlet>
+   		<servlet-name>Glossary</servlet-name>
+   		<servlet-class>uk.org.glendale.rpg.traveller.servlets.Glossary</servlet-class>
+   	</servlet>
+
+   	<servlet>
+   		<servlet-name>Subsector Map</servlet-name>
+   		<servlet-class>uk.org.glendale.rpg.traveller.servlets.GetMap</servlet-class>
+   	</servlet>
+   	
+   	<servlet>
+   		<servlet-name>Planet Image</servlet-name>
+   		<servlet-class>uk.org.glendale.rpg.traveller.servlets.GetPlanet</servlet-class>
+   	</servlet>
+
+   	<servlet>
+   		<servlet-name>Planet</servlet-name>
+   		<servlet-class>uk.org.glendale.rpg.traveller.servlets.PlanetServlet</servlet-class>
+   	</servlet>
+
+   	<servlet>
+   		<servlet-name>Systems</servlet-name>
+   		<servlet-class>uk.org.glendale.rpg.traveller.servlets.Systems</servlet-class>
+   	</servlet>
+
+   	<servlet>
+   		<servlet-name>Sectors</servlet-name>
+   		<servlet-class>uk.org.glendale.rpg.traveller.servlets.Sectors</servlet-class>
+   	</servlet>
+    	
+   	<servlet-mapping>
+   		<servlet-name>Information Getter</servlet-name>
+   		<url-pattern>/get</url-pattern>
+   	</servlet-mapping>
+
+   	<servlet-mapping>
+   		<servlet-name>Glossary</servlet-name>
+   		<url-pattern>/glossary/*</url-pattern>
+   	</servlet-mapping>
+
+   	<servlet-mapping>
+   		<servlet-name>Planet Image</servlet-name>
+   		<url-pattern>/planetimage/*</url-pattern>
+   	</servlet-mapping>
+
+   	<servlet-mapping>
+   		<servlet-name>Planet</servlet-name>
+   		<url-pattern>/planet/*</url-pattern>
+   	</servlet-mapping>
+
+   	<servlet-mapping>
+   		<servlet-name>Systems</servlet-name>
+   		<url-pattern>/system/*</url-pattern>
+   	</servlet-mapping>
+
+   	<servlet-mapping>
+   		<servlet-name>Subsector Map</servlet-name>
+   		<url-pattern>/subsector</url-pattern>
+   	</servlet-mapping>
+    	
+   	<servlet-mapping>
+   		<servlet-name>Sectors</servlet-name>
+   		<url-pattern>/sector/*</url-pattern>
+   	</servlet-mapping>
+<!--    	
+   	<listener>
+        <listener-class>
+	        uk.org.glendale.cities.handlers.StartupListener
+        </listener-class>
+    </listener>	
+-->	
+    	
+</web-app>
