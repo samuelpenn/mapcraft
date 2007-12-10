@@ -27,6 +27,8 @@ import uk.org.glendale.graphics.*;
 
 /**
  * Class for generating large scale maps of a star sector as bitmap images.
+ * Star systems are represented as a single dot on the map, with no other
+ * information presented.
  * 
  * @author Samuel Penn
  */
@@ -59,7 +61,7 @@ public class ImageMap {
 
 		try {
 	        map = new SimpleImage(width, height, "#FFFFFF");
-	
+
 	        Allegiance		a = null;
 	    	String			colour = "#000000";
 	        String			lastAl = "XXX";
@@ -83,15 +85,7 @@ public class ImageMap {
 	        	if (a != null) {
 	        		colour = a.getColour();
 	        	}
-	        	try {
-	        		String		image = "file:"+root+"/star_m.png";
-	        		URL		url = new URL(image);
-	        		//map.paint(url, x*size, y*size + ((x%2)*size/2), size/2, size/2);
-	        		map.circle(x*size, y*size + ((x%2)*size/2), size/2, colour);
-	        	} catch (MalformedURLException e) {
-	        		e.printStackTrace();
-	        		break;
-	        	}
+        		map.circle(x*size, y*size + ((x%2)*size/2), size/2, colour);
 	        }
 		} finally {
 			factory.close();
@@ -99,7 +93,7 @@ public class ImageMap {
         
         return map;
     }
-    
+
     public static void main(String[] args) throws Exception {
     	ObjectFactory		factory = new ObjectFactory();
         String root = "/home/sam/src/traveller/webapp/images";

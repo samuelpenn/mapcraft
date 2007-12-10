@@ -1392,7 +1392,10 @@ public class StarSystem {
 	 * @return		Population size in powers of 10.
 	 */
 	public int getMaxPopulation() {
-		long			max = 0;
+		if (factory == null) {
+			factory = new ObjectFactory();
+		}
+		long			max = factory.getMaximum("planet", "population", "system_id="+id);
 		
 		if (planets == null) {
 			planets = factory.getPlanetsBySystem(this.id);
@@ -1415,19 +1418,17 @@ public class StarSystem {
 	 * Get the highest tech level for worlds in this system.
 	 */
 	public int getMaxTechLevel() {
-		int			max = 0;
-		
-		if (planets == null) {
-			planets = factory.getPlanetsBySystem(this.id);
+		if (factory == null) {
+			factory = new ObjectFactory();
 		}
-		
-		for (Planet p : planets) {
-			if (p.getTechLevel() > max) {
-				max = p.getTechLevel();
-			}
+		return (int)factory.getMaximum("planet", "tech", "system_id="+id);
+	}
+	
+	public int getPlanetCount() {
+		if (factory == null) {
+			factory = new ObjectFactory();
 		}
-		
-		return max;
+		return factory.getPlanetCount(id);
 	}
 	
 	/**

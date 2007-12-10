@@ -13,6 +13,28 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 		<title>Known Space</title>
+		
+		<style>
+			th.head {
+				background-color: black;
+				color: white;
+				font-weight: bold;
+				font-style: italic;
+			}
+			
+			th.empty {
+				background-color: white;
+				color: white;
+				border-color: white;
+				margin: 0px;
+				padding: 0px;
+			}
+			
+			th {
+				background-color: black;
+				color: white;
+			}
+		</style>
 				
 	</head>
 	
@@ -57,14 +79,19 @@
 				int			maxX = table.get("maxx");
 				int			maxY = table.get("maxy");
 				
-				out.println("<tr style=\"margin: 0pt; padding: 0pt;\">\n");
+				int			width = (maxX - minX) + 3;
+				int			height = (maxY - minY) + 5;
+				
+				out.println("<tr style=\"margin: 0pt; padding: 0pt;\">");
+				out.println("<th class=\"empty\"></th>");
 				for (int x=minX; x <= maxX; x++) {
 					out.println("<th style=\"margin: 0pt; padding: 0pt; border: 1pt solid black; width: 0pt;\">"+x+"</th>");
 				}
-				out.println("</tr>\n");
+				out.println("<th class=\"empty\"></th></tr>");
 				
 				for (int y=minY; y <= maxY; y++) {
 					out.println("<tr style=\"margin: 0pt; padding: 0pt;\">");
+										
 					out.println("<th>"+y+"</th>");
 					for (int x=minX; x <= maxX; x++) {
 						Sector		sector = null;

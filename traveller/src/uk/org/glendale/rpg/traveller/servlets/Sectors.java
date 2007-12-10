@@ -78,23 +78,50 @@ public class Sectors extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String		uri = request.getPathInfo();
+		String		format = "xml";
 		
 		if (uri == null || uri.startsWith("/index")) {
 			universeMap(request, response);
 		} else {
-		
-			response.getOutputStream().println("<p>["+uri+"]</p>");
+			int		id = 0;
 			try {
-				ObjectFactory		factory = new ObjectFactory();
-				Vector<Sector>		sectors = factory.getSectors();
+				id = Integer.parseInt(uri.replaceAll("/([0-9]+)([/.].*)?", "$1"));
+			} catch (NumberFormatException e) {
+				// Should be impossible, since the regexp will have failed by this point.
+				response.sendError(400, "Badly formatted sector id ["+uri+"]");
+				return;
+			}
+
+			ObjectFactory	factory = null;
+			try {
+				factory = new ObjectFactory();
+				Sector				sector = new Sector(factory, id);
 				
-				for (Sector sector : sectors) {
-					response.getOutputStream().println("<p>"+sector.getName()+"</p>");
-				}			
+				if (uri.matches(".*\\.[a-z]+")) {
+					format = uri.replaceAll(".*\\.([a-z]+)", "$1");
+					if (format.equals("txt") || format.equals("xml") || format.equals("html") || format.equals("jpg")) {
+						// Okay.
+					} else {
+						response.sendError(415, "Unrecognised format type ["+format+"]");
+						return;
+					}
+				}
+				
+				if (format.equals("html")) {
+					response.setContentType("text/html");
+					response.getOutputStream().println(outputHTML(sector, factory));
+				} else if (format.equals("txt")) {
+					response.setContentType("text/plain");
+				} else {
+					response.setContentType("text/xml");
+				}
 			} catch (Throwable t) {
 				t.printStackTrace();
 				response.sendError(500, "Exception ("+t.getMessage()+")");
 				return;
+			} finally {
+				factory.close();
+				factory = null;
 			}
 		}
 	}
@@ -153,7 +180,7 @@ public class Sectors extends HttpServlet {
 		StringBuffer		buffer = new StringBuffer();
 		String				stylesheet = "";
 
-		buffer.append("<html>\n<head>\n<title>"+Config.getTitle()+" System</title>\n");
+		buffer.append("<html>\n<head>\n<title>"+Config.getTitle()+"</title>\n");
 		buffer.append("<link rel=\"STYLESHEET\" type=\"text/css\" media=\"screen\" href=\""+stylesheet+"\" />\n");
         buffer.append("<script type=\"text/javascript\" src=\""+Config.getBaseUrl()+"scripts/system.js\"></script>\n");
 		buffer.append("</head><body>\n");
@@ -163,10 +190,11 @@ public class Sectors extends HttpServlet {
 		buffer.append("</div>\n");
 		
 		buffer.append("<div id=\"sectorlist\">\n");
+		buffer.append("<ul>\n");
 		for (Sector sector : sectors) {
-			buffer.append("<p>"+sector.getName()+"</p>");
+			buffer.append("<li id=\"sector_"+sector.getId()+"\"><a href=\""+Config.getBaseUrl()+"sector/"+sector.getId()+".html\">"+sector.getName()+"</a></li>\n");
 		}
-		
+		buffer.append("</ul>\n");
 		buffer.append("</div>\n");
 		
 		buffer.append("</body></html>\n");
@@ -174,38 +202,6 @@ public class Sectors extends HttpServlet {
 		return buffer.toString();
 	}
 	
-	/**
-	 * Output a full page of data to the client. The format of tha data will
-	 * depend on the format requested.
-	 * 
-	 * @param factory		ObjectFactory giving access to the universe.
-	 * @param planet		Planet to get information on.
-	 * @param format		Format of the response.
-	 * @param request		Request object.
-	 * @param response		Response object.
-	 * @throws IOException
-	 */
-	private void getFullPage(ObjectFactory factory, StarSystem system, String format, HttpServletRequest request, HttpServletResponse response) throws IOException {
-		if (format.equals("html")) {
-			// Output information as HTML.
-			response.setContentType("text/html");
-			try {
-				response.getOutputStream().print(outputHTML(system, factory));
-			} catch (ObjectNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				response.getOutputStream().print(e.getMessage());
-			}
-		} else if (format.equals("txt")) {
-			// Output information as XML (with content type of plain text).
-			response.setContentType("text/plain");
-			response.getOutputStream().print(outputXML(system));
-		} else {
-			// Output information as XML.
-			response.setContentType("text/xml");
-			response.getOutputStream().print(outputXML(system));
-		}
-	}
 
 	/**
 	 * Output a single property back to the client. Only text or XML are supported.
@@ -252,91 +248,67 @@ public class Sectors extends HttpServlet {
 	 * @param system	System to output data on.
 	 * @return			String containing the HTML page.
 	 */
-	private String outputHTML(StarSystem system, ObjectFactory factory) throws ObjectNotFoundException {
+	private String outputHTML(Sector sector, ObjectFactory factory) throws ObjectNotFoundException {
 		StringBuffer		buffer = new StringBuffer();
 		String				stylesheet = Config.getBaseUrl()+"css/systems.css";
-		Sector  			sector = new Sector(factory, system.getSectorId());
 		
-		buffer.append("<html>\n<head>\n<title>"+system.getName()+" System</title>\n");
+		buffer.append("<html>\n<head>\n<title>"+sector.getName()+"</title>\n");
 		buffer.append("<link rel=\"STYLESHEET\" type=\"text/css\" media=\"screen\" href=\""+stylesheet+"\" />\n");
         buffer.append("<script type=\"text/javascript\" src=\""+Config.getBaseUrl()+"scripts/system.js\"></script>\n");
 		buffer.append("</head><body>\n");
 		
 		buffer.append("<div id=\"header\">\n");
-		buffer.append("<h1>"+system.getName()+"</h1>\n");
+		buffer.append("<h1>"+sector.getName()+"</h1>\n");
 		
 		buffer.append("<p>\n");
-		buffer.append(sector.getName()+" / "+sector.getSubSectorName(system.getX(), system.getY())+" - "+system.getXAsString()+system.getYAsString());
-		buffer.append(" ("+system.getAllegianceData().getName()+")");
-		if (system.getZone() != Zone.Green) {
-			buffer.append(" / "+system.getZone().toString());
-		}
-		buffer.append("</p>\n");
-		buffer.append("</div>\n");
-		// Simple map of the whole solar system.
-		Vector<Planet>	planets = factory.getPlanetsBySystem(system.getId());
-		buffer.append("<div id=\"map\">\n");
-		int		lastX = 0, x = 0;
-		for (Star star : system.getStars()) {
-			String		image = Config.getBaseUrl()+"images/stars/"+star.getSpectralType().toString().substring(0, 1)+".png";
-			int			ssize = (int)Math.pow((star.getStarClass().getRadius() * 600000), 0.3);
-			lastX = 0;
-			buffer.append("<table><tr>");
-			
-			buffer.append("<td><img src=\""+image+"\" width=\""+ssize+"\" height=\""+ssize+"\" title=\""+star.getName()+"\"/></td>");
-			for (int i=0; i < planets.size(); i++) {
-				Planet		planet = planets.elementAt(i);
-				if (planet.getParentId() == star.getId() && !planet.isMoon()) {
-					x = planet.getDistance() / 3 - lastX;
-					lastX = planet.getDistance() / 3;
-					String		pimg = Config.getBaseUrl()+"planet/"+planet.getId()+".jpg?globe";
-					int			size = (int)Math.pow(planet.getRadius(), 0.3);
-					buffer.append("<td width=\""+x+"px\">");
-					buffer.append("<img src=\""+pimg+"\" width=\""+size+"\" height=\""+size+"\" title=\""+planet.getName()+"\" align=\"left\" valign=\"center\"/>");
-					buffer.append("</td>");
+		buffer.append("<b>Star systems: </b>"+sector.getSystemCount());
+		buffer.append("</p><b><b>Sub sectors: </b>");
+		for (int y=0; y < 4; y++) {
+			for (int x=0; x < 4; x++) {
+				buffer.append(sector.getSubSectorName(x*8+1, y*10+1));
+				if (x < 3 || y < 3) {
+					buffer.append(", ");
+				} else {
+					buffer.append(".");
 				}
 			}
-			buffer.append("</tr></table>\n");
 		}
+		buffer.append("</p>");		
 		buffer.append("</div>\n");
 		
-		buffer.append("<div id=\"stars\">\n");
-		buffer.append("<table id=\"tabs\">\n");
-		buffer.append("<tr>");
-		int		idx = 0;
-		for (Star star : system.getStars()) {
-			String		image = Config.getBaseUrl()+"images/stars/"+star.getSpectralType().toString().substring(0, 1)+".png";
-			buffer.append("<td style=\"border: 1pt solid black\">");
-			buffer.append("<img src=\""+image+"\" width=\"64\" height=\"64\" onclick=\"selectStar('"+(idx++)+"')\"/>");
-			buffer.append("</td>");
-		}
-		buffer.append("</tr></table>\n");
-		buffer.append("</div>\n");
-		
-		buffer.append("<div id=\"planets\">\n");
-		idx = 0;
-		String	style = "";
-		for (Star star : system.getStars()) {
-			buffer.append("<div id=\"planets_"+(idx++)+"\" class=\"planets\" "+style+">\n");
-			
-			buffer.append("<p>"+star.getName()+"</p>");
-			buffer.append("<p>"+star.getStarClass()+" / "+star.getSpectralType()+"</p>");
-			
-			for (int i=0; i < planets.size(); i++) {
-				Planet	planet = planets.elementAt(i);
-				if (planet.getParentId() == star.getId() && !planet.isMoon()) {
-					buffer.append(planet.toHTML());
-				}
-			}
+		buffer.append("<div id=\"mainbody\">");
+		for (Sector.SubSector ss : Sector.SubSector.values()) {
+			int		xoff = ss.getXOffset();
+			int		yoff = ss.getYOffset();
+			buffer.append("<h3>"+sector.getSubSectorName(xoff, yoff)+"</h3>\n");
 
-			buffer.append("</div>\n");
-			style = "style=\"display: none;\"";
+			buffer.append("<table>");
+			buffer.append("<tr><th>XY</th><th>System</th><th>Planets</th><th>Population</th><th>TL</th></tr>\n");
+			for (int y=yoff; y < yoff+11; y++) {
+				for (int x=xoff; x < xoff+9; x++) {
+					StarSystem system = sector.getSystem(x, y);
+					if (system != null) {
+						buffer.append("<tr>");
+						buffer.append("<td>"+system.getXAsString()+system.getYAsString()+"</td>\n");
+						buffer.append("<td><a href=\""+Config.getBaseUrl()+"system/"+system.getId()+".html\">"+system.getName()+"</a></td>\n");
+						buffer.append("<td>"+system.getPlanetCount()+"</td>\n");
+						buffer.append("<td>"+system.getMaxPopulation()+"</td>\n");
+						buffer.append("<td>"+system.getMaxTechLevel()+"</td>\n");
+						buffer.append("</tr>\n");
+					}
+				}
+			}
+			buffer.append("</table>");
 		}
-		buffer.append("</div>\n");
+		buffer.append("</div>");
 		
 		buffer.append("</body></html>\n");
 		
 		return buffer.toString();
+	}
+	
+	private ByteArrayOutputStream outputJPEG(Sector sector, ObjectFactory factory) {
+		return null;
 	}
 	
 	private String outputXML(StarSystem system) {

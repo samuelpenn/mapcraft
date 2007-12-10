@@ -112,9 +112,10 @@ public class Systems extends HttpServlet {
 			property = uri.replaceAll("/[0-9]+/([^.]+)(\\.[a-z]+)?", "$1");
 		}
 		
+		ObjectFactory	factory = null;
 		try {
-			ObjectFactory		factory = new ObjectFactory();
-			StarSystem			system = factory.getStarSystem(id);
+			factory = new ObjectFactory();
+			StarSystem	system = new StarSystem(factory, id);
 
 			if (property == null) {
 				getFullPage(factory, system, format, request, response);
@@ -128,6 +129,8 @@ public class Systems extends HttpServlet {
 			t.printStackTrace();
 			response.sendError(500, "Exception ("+t.getMessage()+")");
 			return;
+		} finally {
+			factory.close();
 		}
 	}
 	
@@ -224,7 +227,9 @@ public class Systems extends HttpServlet {
 		
 		buffer.append("<p>\n");
 		buffer.append(sector.getName()+" / "+sector.getSubSectorName(system.getX(), system.getY())+" - "+system.getXAsString()+system.getYAsString());
-		buffer.append(" ("+system.getAllegianceData().getName()+")");
+		if (system.getAllegianceData() != null) {
+			buffer.append(" ("+system.getAllegianceData().getName()+")");
+		}
 		if (system.getZone() != Zone.Green) {
 			buffer.append(" / "+system.getZone().toString());
 		}

@@ -300,6 +300,10 @@ public class Sector {
 		return list;
 	}
 	
+	public int getSystemCount() {
+		return factory.getSystemCount(id);
+	}
+	
 	/**
 	 * Get details on all of the star systems in this sector. This list
 	 * contains the contents of the star systems, so is slower and returns

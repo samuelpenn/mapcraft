@@ -117,14 +117,14 @@ public class ObjectFactory {
 	
 	/**
 	 * Get a list of all the sectors in the universe.
-	 * @return
+	 * @return		Alphabetical list of sectors.
 	 */
 	public Vector<Sector> getSectors() {
 		Vector<Sector>		list = new Vector<Sector>();		
 		ResultSet			rs = null;
 		
 		try {
-			rs = read("sector", null);
+			rs = db.query("select * from sector order by name");
 			while (rs.next()) {
 				int			id = rs.getInt("id");
 				Sector		sector = new Sector(this, id);
@@ -141,7 +141,6 @@ public class ObjectFactory {
 		return list;
 	}
 	
-
 	/**
 	 * Get a list of all StarSystems in the given sector. Each system will be
 	 * populated with star and planet data.
@@ -185,6 +184,31 @@ public class ObjectFactory {
 		}
 		
 		return list;
+	}
+
+	/**
+	 * Get a count of the number of star systems in the given sector.
+	 * If no sector is found with the given id, then a count of 0 is
+	 * returned.
+	 * 
+	 * @param id		Id of the sector to count.
+	 * @return			Number of star systems.
+	 */
+	public int getSystemCount(int id) {
+		ResultSet		rs = null;
+		int				count = 0;
+		try {
+			rs = db.query("select count(*) as number from system where sector_id="+id);
+			if (rs.next()) {
+				count = rs.getInt("number");
+			}
+		} catch (SQLException e) {
+			
+		} finally {
+			rs = db.tidy(rs);
+		}
+		
+		return count;
 	}
 	
 	/**
@@ -316,6 +340,53 @@ public class ObjectFactory {
 		}
 		
 		return list;		
+	}
+	
+	/**
+	 * Get the number of major planets in the system, not including moons.
+	 * 
+	 * @param systemId		System to count.
+	 * @return				Number of planets.
+	 */
+	public int getPlanetCount(int systemId) {
+		ResultSet		rs = null;
+		int				count = 0;
+		try {
+			rs = db.query("select count(*) as number from planet where moon = 0 and system_id="+systemId);
+			if (rs.next()) {
+				count = rs.getInt("number");
+			}
+		} catch (SQLException e) {
+			
+		} finally {
+			rs = db.tidy(rs);
+		}
+		
+		return count;		
+	}
+	
+	/**
+	 * Get the maximum of a value from a table.
+	 */
+	public long getMaximum(String table, String column, String where) {
+		ResultSet		rs = null;
+		String			sql = "select max("+column+") as number from "+table;
+		if (where != null) {
+			sql += " where "+where;
+		}
+		long			max = 0;
+		try {
+			rs = db.query(sql);
+			if (rs.next()) {
+				max = rs.getLong("number");
+			}
+		} catch (SQLException e) {
+			
+		} finally {
+			rs = db.tidy(rs);
+		}
+		
+		return max;
 	}
 	
 	/**
@@ -542,4 +613,5 @@ public class ObjectFactory {
 			System.out.println(n);
 		}		
 	}
+
 }
