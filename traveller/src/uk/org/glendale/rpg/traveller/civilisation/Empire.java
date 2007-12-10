@@ -28,16 +28,20 @@ import uk.org.glendale.rpg.traveller.systems.*;
 public class Empire {
 	public static int		year = 0;
 	
+	private ObjectFactory factory = null;
+	
 	public Empire() {
-		
+		factory = new ObjectFactory();
+	}
+	
+	public Empire(ObjectFactory factory) {
+		this.factory = factory;
 	}
 	
 	/**
 	 * Grow all planets in the universe which have a population.
 	 */
 	public void grow() {
-		ObjectFactory		factory = new ObjectFactory();
-		
 		try {
 			ResultSet		rs = factory.read("planet", "population > 0");
 			
@@ -92,8 +96,6 @@ public class Empire {
 	 * simulation of the colonisation.
 	 */
 	public void colonise() {
-		ObjectFactory		factory = new ObjectFactory();
-		
 		try {
 			ResultSet		rs = factory.read("planet", "starport in ('A', 'B', 'C')");
 			while (rs.next()) {
@@ -114,11 +116,39 @@ public class Empire {
 		}
 	}
 	
+	private void firstWave(ObjectFactory factory, Planet planet) {
+		if (planet.getPopulation() > 0) {
+			return;
+		}
+		long		idealPopulation = planet.getIdealPopulation();
+		if (idealPopulation > 0) {
+			System.out.println(planet.getName()+": "+planet.getType()+" "+planet.getTemperature()+" "+planet.getAtmosphereType()+" "+planet.getAtmospherePressure()+" "+planet.getIdealPopulation());
+		}
+	}
+	
+	/**
+	 * Create a small population on all worlds in the specified sector.
+	 */
+	public void firstWave(int sectorId) {
+		Vector<StarSystem>	systems = factory.getStarSystemsBySector(sectorId);
+		
+		for (StarSystem system : systems) {
+			Vector<Planet> planets = factory.getPlanetsBySystem(system.getId());
+			for (Planet planet : planets) {
+				firstWave(factory, planet);
+			}
+		}
+	}
 	
 	public static void main(String[] args) {
-		Empire		empire = new Empire();
-		empire.grow();
-		empire.colonise();
+		ObjectFactory		factory = new ObjectFactory();
+		Empire				empire = new Empire(factory);
+		//empire.grow();
+		//empire.colonise();
+
+		for (Sector sector : factory.getSectors()) {
+			empire.firstWave(sector.getId());
+		}
 	}
 
 }

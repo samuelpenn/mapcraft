@@ -12,10 +12,10 @@
 package uk.org.glendale.rpg.traveller.systems.codes;
 
 public enum AtmospherePressure {
-	None(1.0, 0.05), 
-	Trace(1.0, 0.1), 
-	VeryThin(0.9, 0.5), 
-	Thin(0.8, 0.75), 
+	None(1.0, 0.0), 
+	Trace(1.0, 0.0), 
+	VeryThin(0.9, 0.01), 
+	Thin(0.8, 0.5), 
 	Standard(0.7, 1.0), 
 	Dense(0.6, 0.9), 
 	VeryDense(0.5, 0.75), 

@@ -29,17 +29,17 @@ package uk.org.glendale.rpg.traveller.systems.codes;
  *
  */
 public enum Temperature {
-	UltraCold(0.05, 50),
-	ExtremelyCold(0.1, 100), 
-	VeryCold(0.3, 200), 
-	Cold(0.6, 250), 
-	Cool(0.9, 273), 
+	UltraCold(0.0, 50),
+	ExtremelyCold(0.0, 100), 
+	VeryCold(0.0, 200), 
+	Cold(0.1, 250), 
+	Cool(0.75, 273), 
 	Standard(1.0, 293), 
-	Warm(1.2, 310), 
-	Hot(0.8, 330), 
-	VeryHot(0.3, 360), 
-	ExtremelyHot(0.1, 400),
-	UltraHot(0.05, 600);
+	Warm(0.5, 310), 
+	Hot(0.1, 330), 
+	VeryHot(0.0, 360), 
+	ExtremelyHot(0.0, 400),
+	UltraHot(0.0, 600);
 	
 	double	suitability = 1.0;
 	int		kelvin = 300;

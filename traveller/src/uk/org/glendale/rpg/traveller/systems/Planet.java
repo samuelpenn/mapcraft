@@ -1119,6 +1119,47 @@ public class Planet {
 		}
 	}
 	
+	public long getIdealPopulation() {
+		long			ideal = getRadius() * getRadius();
+		Habitability	habitable = planetType.getHabitability();
+		
+		if (planetType.isJovian()) {
+			ideal = 0;
+		} else if (planetType.isBelt()) {
+			ideal = 0;
+		}
+		
+		ideal *= habitable.getModifier() * temperature.getSuitability() * atmosphereType.getSuitability() * atmospherePressure.getSuitability();
+		
+		switch (techLevel) {
+		case 0:
+			ideal *= 1;
+			break;
+		case 1: case 2:
+			ideal *= 10;
+			break;
+		case 3: case 4:
+			ideal *= 25;
+			break;
+		case 5: case 6:
+			ideal *= 75;
+			break;
+		case 7: case 8:
+			ideal *= 100;
+			break;
+		case 9: case 10:
+			ideal *= 200;
+			break;
+		case 11: case 12:
+			ideal *= 300;
+			break;
+		default:
+			ideal *= 400;
+		}
+		
+		return ideal;
+	}
+	
 	/**
 	 * Terraform the planet.
 	 *
