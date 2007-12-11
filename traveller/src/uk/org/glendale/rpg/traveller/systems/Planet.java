@@ -41,7 +41,7 @@ public class Planet {
 	private int			moonCount = 0;
 	
 	private String			name = null;
-	private StarportType	starport = null;
+	private StarportType	starport = StarportType.X;
 	private int				distance = 0;
 	private int				radius = 0;
 	private int				day = 0;
@@ -203,6 +203,10 @@ public class Planet {
 	
 	public int getLawLevel() {
 		return lawLevel;
+	}
+	
+	public void setLawLevel(int lawLevel) {
+		this.lawLevel = lawLevel;
 	}
 	
 	public void setTemperature(Temperature temperature) {
@@ -1158,6 +1162,38 @@ public class Planet {
 		}
 		
 		return ideal;
+	}
+	
+	/**
+	 * The World Trade Number rates both the size of a world' economy
+	 * and its tendency to engage in interstellar trade.
+	 * 
+	 * @return		World Trade Number.
+	 */
+	public double getWTN() {
+		// WTN is based on the population of the planet.
+		double		wtn = Math.log10(population)/2.0;
+		
+		// Next, modify according to tech level.
+		switch (techLevel) {
+		case 0: case 1: case 2:
+			wtn -= 0.5;
+			break;
+		case 3: case 4: case 5:
+			break;
+		case 6: case 7: case 8:
+			wtn += 0.5;
+			break;
+		case 9: case 10: case 11:
+			wtn += 1.0;
+			break;
+		default:
+			wtn += 1.5;
+		}
+		
+		wtn = starport.getModifiedWTN(wtn);
+
+		return wtn;
 	}
 	
 	/**

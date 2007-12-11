@@ -22,6 +22,7 @@ public enum TradeCode {
 	Or ("Orbital Civilisation"),
 	Mi ("Mining Colony"),
 	Re ("Research Colony"),
+	Pi ("Pirate base"),
 	Ba ("Barren"),
 	Lo ("Low Population"),
 	Hi ("High Population"),

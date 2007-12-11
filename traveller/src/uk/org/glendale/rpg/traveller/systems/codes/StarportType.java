@@ -12,21 +12,40 @@
 package uk.org.glendale.rpg.traveller.systems.codes;
 
 public enum StarportType {
-	A(10),
-	B(9), 
-	C(8), 
-	D(7),
-	E(5),
-	X(0);
+	A(10, new double[] { 1.5, 1, 1, 0.5, 0.5, 0, 0, 0 }),
+	B(9, new double[] { 1, 1, 0.5, 0.5, 0, 0, -0.5, -1}),
+	C(8, new double[] { 1, 0.5, 0.5, 0, 0, -0.5, -1, -1.5}), 
+	D(7, new double[] { 0.5, 0.5, 0, 0, -0.5, -1, -1.5, -2}),
+	E(5, new double[] { 0.5, 0, 0, -0.5, -1, -1.5, -2, -2.5}),
+	X(0, new double[] { 0, 0, -2.5, -3, -3.5, -4, -4.5, -5});
 	
-	int		minTechLevel = 0;
+	int			minTechLevel = 0;
+	double[]	wtnModifier = null;
 	
-	StarportType(int minTechLevel) {
+	StarportType(int minTechLevel, double[] wtn) {
 		this.minTechLevel = minTechLevel;
+		this.wtnModifier = wtn;
 	}
 	
 	public int getMinimumTechLevel() {
 		return minTechLevel;
+	}
+	
+	/**
+	 * Given a World Trade Number, returns  the modified WTN depending
+	 * on this type of starport. Small starports tend to heavily modify
+	 * large WTNs downwards, but have a smaller (or even beneficial)
+	 * effect on small WTNs.
+	 */
+	public double getModifiedWTN(double wtn) {
+		int		i = (int)wtn;
+		if (i >= wtnModifier.length) {
+			i = wtnModifier.length - 1;
+		}
+		if (i < 0) {
+			i = 0;
+		}
+		return wtn + wtnModifier[i];
 	}
 	
 	public StarportType getBetter() {

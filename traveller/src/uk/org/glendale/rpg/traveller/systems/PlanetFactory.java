@@ -503,7 +503,7 @@ public class PlanetFactory {
 		}
 		planet.setTemperature(star.getOrbitTemperature(planet.getEffectiveDistance()));
 
-		planet.setHydrographics(Die.d20() * 3);
+		planet.setHydrographics(Die.d20() * 2);
 		planet.setLifeLevel(LifeType.SimpleLand);
 		setDayLength(planet, 1.0);
 
@@ -566,10 +566,8 @@ public class PlanetFactory {
 	/**
 	 * A world which once could have harboured life, but is now dead, like Mars.
 	 */
-	private Planet getArean(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.Arean);
-		planet.setRadius(2000 + Die.d10()*250);
-		
+	private void defineArean(Planet planet) {
+	
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1:
@@ -600,8 +598,6 @@ public class PlanetFactory {
 			planet.setHydrographics(Die.d4());
 		}
 		setDayLength(planet, 1.0);
-
-		return planet;
 	}
 	
 	/**
@@ -985,8 +981,6 @@ public class PlanetFactory {
 	private void defineEuropan(Planet planet) {
 		if (planet.getType() != PlanetType.Europan) throw new IllegalArgumentException("This is not a Europan world");
 		
-		System.out.println("We are defining a Europan world");
-		
 		// Atmosphere
 		switch (Die.d6()) {
 		case 1: case 2: case 3:
@@ -1051,7 +1045,7 @@ public class PlanetFactory {
 	 * It's crust is made of hard ice, with a thin methane atmosphere. What standing liquid
 	 * there is, is mostly temporary.
 	 */
-	private void definegetMesoTitanian(String name, int distance, Planet planet) {
+	private void definegetMesoTitanian(Planet planet) {
 		planet.setAtmosphereType(AtmosphereType.NitrogenCompounds);
 		switch (Die.d6()) {
 		case 1: case 2:
@@ -1073,7 +1067,7 @@ public class PlanetFactory {
 		}
 	}
 	
-	private void defineEuTitanian(String name, int distance, Planet planet) {
+	private void defineEuTitanian(Planet planet) {
 		planet.setAtmosphereType(AtmosphereType.NitrogenCompounds);
 		switch (Die.d6()) {
 		case 1: case 2:
@@ -1095,7 +1089,7 @@ public class PlanetFactory {
 		}
 	}
 	
-	private void defineTitanLacustric(String name, int distance, Planet planet) {
+	private void defineTitanLacustric(Planet planet) {
 		planet.setAtmosphereType(AtmosphereType.NitrogenCompounds);
 		switch (Die.d6()) {
 		case 1:
@@ -1262,10 +1256,10 @@ public class PlanetFactory {
 		
 		if (distance < star.getEarthDistance()/3) {
 			switch (Die.d10()) {
-			case 1:
+			case 1: case 2:
 				planet = getWorld(name, distance, PlanetType.AsteroidBelt);
 				break;
-			case 2: case 3: case 4:
+			case 3: case 4:
 				planet = getWorld(name, distance, PlanetType.Vulcanian);
 				break;
 			case 5: case 6: case 7:
@@ -1281,27 +1275,27 @@ public class PlanetFactory {
 		} else if (distance < star.getEarthDistance()/2) {
 			// Very hot worlds, close to the star.
 			switch (Die.d6(3)) {
-			case 3: case 4: case 5:
+			case 3: case 4: case 5: case 6:
 				planet = getWorld(name, distance, PlanetType.AsteroidBelt);
 				break;
-			case 6:
+			case 7:
 				planet = getWorld(name, distance, PlanetType.Ferrinian);
 				break;
-			case 7:
+			case 8:
 				planet = getWorld(name, distance, PlanetType.Vulcanian);
 				break;
-			case 8:
+			case 9:
 				planet = getWorld(name, distance, PlanetType.Basaltic);
 				break;
-			case 9: case 10:
+			case 10: case 11:
 				// Iron rich dwarf planet
 				planet = getWorld(name, distance, PlanetType.Hadean);
 				break;
-			case 11: case 12: case 13:
+			case 12: case 13: case 14:
 				// Mercury
 				planet = getWorld(name, distance, PlanetType.Hermian);
 				break;
-			case 14: case 15:
+			case 15:
 				planet = getWorld(name, distance, PlanetType.JaniLithic);
 				break;
 			case 16:
@@ -1340,8 +1334,11 @@ public class PlanetFactory {
 		if (distance < star.getEarthDistance()*1.5) {
 			// Warm worlds, possibility of atmosphere, even life.
 			switch (Die.d6() + earthFudge) {
-			case 1: case 2:
-				planet = getWorld(name, distance, PlanetType.Selenian);
+			case 1:
+				planet = getBelt(name, distance);
+				break;
+			case 2:
+				planet = getEoArean(name, distance);
 				break;
 			case 3: case 4:
 				planet = getAreanLacustric(name, distance);
@@ -1357,10 +1354,10 @@ public class PlanetFactory {
 				planet = getGaianTundral(name, distance);
 				break;
 			case 2:
-				planet = getAreanLacustric(name, distance);
+				planet = getWorld(name, distance, PlanetType.EoArean);
 				break;
 			case 3: case 4:
-				planet = getArean(name, distance);
+				planet = getWorld(name, distance, PlanetType.Arean);
 				break;
 			case 5: case 6: case 7:
 				planet = getWorld(name, distance, PlanetType.Selenian);
@@ -1376,7 +1373,7 @@ public class PlanetFactory {
 			// Further out worlds.
 			switch (Die.d10()) {
 			case 1:
-				planet = getArean(name, distance);
+				planet = getWorld(name, distance, PlanetType.Arean);
 				break;
 			case 2:
 				planet = getWorld(name, distance, PlanetType.Vestian);
