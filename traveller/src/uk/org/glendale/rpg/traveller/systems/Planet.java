@@ -1196,6 +1196,30 @@ public class Planet {
 		return wtn;
 	}
 	
+	public long getGWP() {
+		long	bpci = 0;
+		long[]	table = new long[] { 55, 85, 135, 229, 350, 560, 895,
+				                     1430, 2290, 3660, 5860, 9375,
+				                     15000, 24400 };
+		
+		if (techLevel < 0) {
+			bpci = table[0];
+		} else if (techLevel >= table.length) {
+			bpci = table[table.length-1];
+		} else {
+			bpci = table[techLevel];
+		}
+		
+		if (hasTradeCode(TradeCode.Ri)) bpci *= 1.6;
+		if (hasTradeCode(TradeCode.In)) bpci *= 1.4;
+		if (hasTradeCode(TradeCode.Ag)) bpci *= 1.2;
+		if (hasTradeCode(TradeCode.Po)) bpci *= 0.8;
+		if (hasTradeCode(TradeCode.Ni)) bpci *= 0.8;
+		if (hasTradeCode(TradeCode.Re)) bpci *= 0.8;
+		
+		return bpci * population;
+	}
+	
 	/**
 	 * Terraform the planet.
 	 *

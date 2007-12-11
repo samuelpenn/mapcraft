@@ -26,7 +26,7 @@ import uk.org.glendale.rpg.utils.Die;
 public class PlanetFactory {
 	private ObjectFactory	factory = null;
 	private Star			star = null;
-	private int				earthFudge = 0;
+	private int				earthFudge = 2;
 	
 	public PlanetFactory(ObjectFactory factory, Star star) {
 		this.factory = factory;

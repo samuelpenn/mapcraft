@@ -19,6 +19,7 @@ import java.util.*;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.database.ObjectNotFoundException;
 import uk.org.glendale.rpg.traveller.map.PostScript;
+import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
 import uk.org.glendale.rpg.traveller.systems.UWP;
 import uk.org.glendale.rpg.utils.Die;
@@ -387,6 +388,62 @@ public class Sector {
 		return name;
 	}
 	
+	/**
+	 * Get the distance in parsecs between two systems.
+	 * 
+	 * @param s1	First system.
+	 * @param s2	Second system.
+	 * @return		Distance in parsecs.
+	 */
+	public int getDistance(StarSystem s1, StarSystem s2) {
+		int		parsecs = 0;
+		
+		if (s1.getId() == s2.getId()) {
+			// Trivial case.
+			return 0;
+		}
+		
+		int		x1 = s1.getX();
+		int		y1 = s1.getY();
+		int		x2 = s2.getX();
+		int		y2 = s2.getY();
+		
+		if (s1.getSectorId() == s2.getSectorId()) {
+			// Easy case, both in same sector.
+			parsecs = (int)Math.sqrt((x2-x1) * (x2-x1) + (y2-y1) * (y2-y1));
+		} else {
+			// General case, need to figure out sector differences.
+			try {
+				Sector	sector = new Sector(s1.getSectorId());
+				x1 += sector.getX() * 32;
+				y1 += sector.getY() * 40;
+				sector = new Sector(s2.getSectorId());
+				x2 += sector.getX() * 32;
+				y2 += sector.getY() * 40;
+				
+				parsecs = (int)Math.sqrt((x2-x1) * (x2-x1) + (y2-y1) * (y2-y1));
+			} catch (ObjectNotFoundException e) {
+				
+			}
+		}
+		
+		return parsecs;
+	}
+	
+	/**
+	 * Get the bilateral trade number for two planets. The planets may or
+	 * may not be in the same sector (or even this sector).
+	 * 
+	 * @param p1		First planet.
+	 * @param p2		Second planet.
+	 * @return			Relative amount of trade between the two planets.
+	 */
+	public double getBTN(Planet p1, Planet p2) {
+		double btn = 0.0;
+		
+		return btn;
+	}
+	
 	public String toXML() {
 		StringBuffer		buffer = new StringBuffer();
 		
@@ -615,28 +672,33 @@ public class Sector {
 		} catch (ObjectNotFoundException e) {
 			
 		}
+		System.out.println("Creating sector ["+name+"]");
 		Sector		sector = new Sector(name, x, y);
 		//String		filename = "data/core/gni/"+datafile+".GNI";
 		//sector.create(new File(filename));
-		sector.create(5);
+		sector.create(30);
+	}
+	
+	public static void createSol() {
+		create("Sol", 0, 0, "iG");		
 	}
 	
 	public static void createMortals() {
 		// Core sectors.
-		create("Aquila", -1, 1, "hF");
-		create("Serpens", 0, 1, "hG");
-		create("Virgo", 1, 1, "hH");
+		create("Aquila", -1, -1, "hF");
+		create("Serpens", 0, -1, "hG");
+		create("Virgo", 1, -1, "hH");
 		create("Aquarius", -1, 0, "iF");
 		//create("Sol", 0, 0, "iG");
 		create("Hydra", 1, 0, "iH");
-		create("Pisces", -1, -1, "jF");
-		create("Taurus", 0, -1, "jG");
-		create("Orion", 1, -1, "jH");
+		create("Pisces", -1, 1, "jF");
+		create("Taurus", 0, 1, "jG");
+		create("Orion", 1, 1, "jH");
 		
 		// Other sectors.
-		create("Rift", -2, 2, "gE");
-		create("Passage", -1, 2, "gF");
-		create("Borders", -2, 1, "hE");
+		create("Rift", -2, -2, "gE");
+		create("Passage", -1, -2, "gF");
+		create("Borders", -2, -1, "hE");
 		create("Dominion", -2, 0, "iE");
 	}
 	
@@ -675,13 +737,23 @@ public class Sector {
 	
 	public static void main(String[] args) throws Exception {
 		//createTravellerSub();
-		createMortals();
+		//createMortals();
+		//createSol();
 		
+		ObjectFactory		factory = new ObjectFactory();
+		Sector				sector = new Sector(factory, 0, 0);
+		StarSystem			s1 = factory.getStarSystem(863);
+		StarSystem			s2 = factory.getStarSystem(125);
+		
+		System.out.println(sector.getDistance(s1, s2));
+		
+		/*
 		Sector		sector = new Sector(0, 0);
 		for (int y=0; y < 4; y++) {
 			for (int x=0; x < 4; x++) {
 				System.out.println(sector.getSubSectorName(x*8+1, y*10+1));
 			}
 		}
+		*/
 	}
 }
