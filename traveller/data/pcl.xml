@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<pcl xmlns="http://glendale.org.uk/xml/pcl">
+
+    <type name="Vulcanian">
+        <group>Planetesimal</group>
+        
+        <short>Small asteroids that form very close to their parent star.</short>
+    </type>
+    
+    <type name="Metallic">
+    	<group>Planetesimal</group>
+    	
+    	<short>Asteroids composed of nickel iron.</short>
+    </type>
+    
+    <type name="Silicaceous">
+    	<group>Planetesimal</group>
+    	
+    	<short>Silicate asteroids.</short>
+    </type>
+    
+    <type name="Carbonaceous">
+    	<group>Planetesimal</group>
+    	
+    	<short>Dark asteroids rich in carbon compounds.</short>
+    </type>
+</pcl>

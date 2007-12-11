@@ -1,0 +1,182 @@
+a3 Stinj Tianz
+a4 Bliardlie
+a5 Zhiensh
+aA Savria
+aB Datsatl
+aC Gakghang
+aD Thaku Fung
+aE Rzakki
+aF Listanaya
+aG Veg Fergakh
+aH Dfotseth
+aI Irugangog
+b3 Viajlefliez
+b4 Bleblqansh
+b5 Driasera
+bA Dalchie Jdatl
+bB Ugoede
+bC Ghoekhnael
+bD Ksinanirz
+bE Zao Kfeng Ig Grilokh
+bF Knaeleng
+bG Kharrthon
+bH Oeghz Vaerrghr
+bI Kfazz Ghik
+bJ Angfutsag
+c3 Brieplanz
+c4 Sidiadl
+c5 Zdiedeiant
+cA Stiatlchepr
+cB Aerenfors
+cC Knoellighz
+cD Dhuerorrg
+cE Ngathksirz
+cF Fa Dzaets
+cG Gzaekfueg
+cH Gashikan
+cI Trenchans
+cJ Ktiin'gzat
+cK Mugheen't
+cL Grikr!ng
+cM Ukaarriit!!b
+cN Kring Noor
+cO Mbil!!gh
+d3 Pliabriebl
+d4 Eiaplial
+d5 Zhodane
+dA Tienspevnekr
+dB Usingou
+dC Gvurrdon Sector
+dD Tuglikki Sector
+dE Provence Sector
+dF Windhorn
+dG Meshan Sector
+dH Mendan Sector
+dI Amdukan Sector
+dJ Arzul Sector
+dK Gelath
+dL Gur
+dM Un'k!!k'ng
+dN Xaagr
+dO Eekrookrigz
+e3 Tsadra Davr
+e4 Tsadra
+e5 Yiklerzdanzh
+eA Far Frontiers
+eB Foreven
+eC Spinward Marches
+eD Deneb Sector
+eE Corridor Sector
+eF Vland Sector
+eG Lishun Sector
+eH Antares Sector
+eI Empty Quarter
+eJ Star's End
+eK Gh!hken
+eL Ruupiin
+eM Raakaan
+eN Uuk
+eO Gnaa Iimb'kr
+f3 Chiepl Zhez
+f4 Astron
+f5 Fulani
+fA Vanguard Reaches
+fB The Beyond
+fC Trojan Reach
+fD Reft Sector
+fE Gushemege Sector
+fF Dagudashaag Sector
+fG Core Sector
+fH Fornast Sector
+fI Ley Sector
+fJ Gateway Sector
+fK Luretiir!girr
+fL X'kug
+fM Kilong
+fN Bar'kakr
+fO Mighabohk
+g4 Theta Borealis
+g5 Theron
+gA Iphigenaia
+gB Touchstone
+gC Riftspan Reaches
+gD Verge Sector
+gE Ilelish Sector
+gF Zarushagar Sector
+gG Massilia Sector
+gH Delphi Sector
+gI Glimmerdrift Reaches
+gJ Crucis Margin
+gK Kaa G!'kul
+gL Gzirr!k'l
+gM K'trekreer
+gN Nuughe
+gO N!!krumbiix
+h4 Khaeaw
+h5 Faoheiroi'iyhao
+hA Ftaoiyekyu
+hB Afawahisa
+hC Hlakhoi
+hD Ealiyasiyw Sector
+hE Reaver's Deep
+hF Daibei Sector
+hG Diaspora Sector
+hH Old Expanses
+hI The Hinterworlds
+hJ Leonidae
+hK Extolian
+hL Ricenden
+hM Blaskon
+hN Nooq
+hO Gzektixk
+i4 Hkakhaeaw
+i5 Esai'yo
+iA Waroatahe
+iB Karleaya
+iC Staihaia'yo
+iD Iwahfuah Sector
+iE Dark Nebula
+iF Magyar Sector
+iG Solomani Rim
+iH Alpha Crucis
+iI Spica Sector
+iJ Phlask
+iK Centrax
+iL Wrenton
+iM Folgore
+iN Avereguar
+j4 Yahehwe
+j5 Kefiykhta
+jA Heakhafaw
+jB Etakhasoa
+jC Aktifao Sector
+jD Uistilao Sector
+jE Ustral Quadrant
+jF Canopus Sector
+jG Aldebaran Sector
+jH Neworld Sector
+jI Langere Sector
+jJ Drakken
+jK Lorspane
+jL Porlock
+jM Kidunal
+jN Treece
+k4 Ohieraoi
+k5 Pahreahluis
+kA Hfiywitir
+kB Irlaftalea
+kC Teahloarifu
+kD Ahkiweahi
+kE Banners
+kF Hanstone
+kG Malorn
+kH Hadji
+kI Storr
+kJ Mikhail
+kK Darret
+kL Ataurre
+kM Katoonah
+kN Uytal
+lH RimReach
+lI Phlange
+lJ Tracerie

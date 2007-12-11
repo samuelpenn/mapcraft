@@ -1,0 +1,108 @@
+#Trade Codes
+
+<p>
+<i>Trade Codes</i> represent a broad set of properties about
+worlds which may affect trading and other factors. Each world
+may have one or more trade codes associated with it, and the
+various codes are described in this glossary.
+</p>
+
+<p>
+Trade codes are also shown on the sector maps with icons
+representing each code. Currently, only some of the more
+important codes are shown in this way.
+</p>
+
+<table>
+    <tr>
+        <th style="text-align: left; width: 48px;">Code</th>
+        <th style="text-align: left; width: 48px;">Icon</th>
+        <th style="text-align: left">Description</th>
+    </tr>
+
+    <tr>
+        <td><a href="trade-ag">Ag</a></td>
+        <td><img src="../images/symbols/trade_ag.png" width="16" height="16" alt="Ag"/></td>
+        <td>Agricultural</td>
+    </tr>
+    <tr>
+        <td><a href="trade-as">As</a></td>
+        <td><img src="../images/symbols/trade_as.png" width="16" height="16" alt="As"/></td>
+        <td>Asteroid world.</td>
+    </tr>
+    <tr>
+        <td><a href="trade-ba">Ba</a></td>
+        <td><img src="../images/symbols/trade_ba.png" width="16" height="16" alt="Ba"/></td>
+        <td>Barren world.</td>
+    </tr>
+    <tr>
+        <td><a href="trade-cp">Cp</a></td>
+        <td><img src="../images/symbols/trade_cp.png" width="16" height="16" alt="Cp"/></td>
+        <td>Subsector capital.</td>
+    </tr>
+    <tr>
+        <td><a href="trade-cx">Cx</a></td>
+        <td><img src="../images/symbols/trade_cx.png" width="16" height="16" alt="Cx"/></td>
+        <td>Sector capital.</td>
+    </tr>
+    <tr>
+        <td><a href="trade-de">De</a></td>
+        <td><img src="../images/symbols/trade_de.png" width="16" height="16" alt="De"/></td>
+        <td>Desert world</td>
+    </tr>
+    <tr>
+        <td><a href="trade-fl">Fl</a></td>
+        <td><img src="../images/symbols/trade_fl.png" width="16" height="16" alt="Fl"/></td>
+        <td>Oceans are non-water.</td>
+    </tr>
+    <tr>
+        <td><a href="trade-hi">Hi</a></td>
+        <td><img src="../images/symbols/trade_hi.png" width="16" height="16" alt="Hi"/></td>
+        <td>High population world (1 billion or more).</td>
+    </tr>
+    <tr>
+        <td><a href="trade-ic">Ic</a></td>
+        <td><img src="../images/symbols/trade_ic.png" width="16" height="16" alt="Ic"/></td>
+        <td>All this world's water is in ice caps.</td>
+    </tr>
+    <tr>
+        <td><a href="trade-in">In</a></td>
+        <td><img src="../images/symbols/trade_in.png" width="16" height="16" alt="In"/></td>
+        <td>Industrial world.</td>
+    </tr>
+    <tr>
+        <td><a href="trade-lo">Lo</a></td>
+        <td><img src="../images/symbols/trade_lo.png" width="16" height="16" alt="Lo"/></td>
+        <td>Low population world.</td>
+    </tr>
+    <tr>
+        <td><a href="trade-na">Na</a></td>
+        <td><img src="../images/symbols/trade_na.png" width="16" height="16" alt="Na"/></td>
+        <td>Non-agricultural world.</td>
+    </tr>
+    <tr>
+        <td><a href="trade-ni">Ni</a></td>
+        <td><img src="../images/symbols/trade_ni.png" width="16" height="16" alt="Ni"/></td>
+        <td>Non-industrial world.</td>
+    </tr>
+    <tr>
+        <td><a href="trade-po">Po</a></td>
+        <td><img src="../images/symbols/trade_po.png" width="16" height="16" alt="Po"/></td>
+        <td>Poor world.</td>
+    </tr>
+    <tr>
+        <td><a href="trade-ri">Ri</a></td>
+        <td><img src="../images/symbols/trade_ri.png" width="16" height="16" alt="Ri"/></td>
+        <td>Rich world.</td>
+    </tr>
+    <tr>
+        <td><a href="trade-va">Va</a></td>
+        <td><img src="../images/symbols/trade_va.png" width="16" height="16" alt="Va"/></td>
+        <td>Vacuum world.</td>
+    </tr>
+    <tr>
+        <td><a href="trade-wa">Wa</a></td>
+        <td><img src="../images/symbols/trade_wa.png" width="16" height="16" alt="Wa"/></td>
+        <td>Water world.</td>
+    </tr>
+</table>
