@@ -389,6 +389,28 @@ public class Sector {
 	}
 	
 	/**
+	 * Get the distance in parsecs between two planets. Works out which
+	 * system they are both in, then figures the distance between the
+	 * two systems. If they are in the same system, the distance is 0.
+	 * 
+	 * @param p1		First planet.
+	 * @param p2		Second planet.
+	 * @return			Distance in parsecs.
+	 */
+	public int getDistance(Planet p1, Planet p2) {
+		try {
+			StarSystem		s1 = new StarSystem(factory, p1.getSystemId());
+			StarSystem		s2 = new StarSystem(factory, p2.getSystemId());
+			
+			return getDistance(s1, s2);
+		} catch (ObjectNotFoundException e) {
+			// The database foreign key constraints should prevent this.
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	/**
 	 * Get the distance in parsecs between two systems.
 	 * 
 	 * @param s1	First system.
@@ -432,15 +454,48 @@ public class Sector {
 	
 	/**
 	 * Get the bilateral trade number for two planets. The planets may or
-	 * may not be in the same sector (or even this sector).
+	 * may not be in the same sector (or even this sector). This calculation
+	 * is based on that in GURPS Free Trader p.14. See there for full
+	 * details of what the numbers mean.
 	 * 
 	 * @param p1		First planet.
 	 * @param p2		Second planet.
 	 * @return			Relative amount of trade between the two planets.
 	 */
 	public double getBTN(Planet p1, Planet p2) {
-		double btn = 0.0;
+		if (p1 == null || p2 == null) {
+			// If either world is null, there is no trade.
+			return 0;
+		} else if (p1.getPopulation() == 0 || p2.getPopulation() == 0) {
+			// If either world is unpopulated, then there is no trade.
+			return 0;
+		}
+
+		double	wtcm = 0.0;	// World Trade Classification Modifier, not yet used.
+		double 	btn = 0.0;
+		int		distance = getDistance(p1, p2);
+		double	modifier = 0;
 		
+		if (distance >= 1000) modifier = 6.0;
+		else if (distance >= 600) modifier = 5.5;
+		else if (distance >= 300) modifier = 5.0;
+		else if (distance >= 200) modifier = 4.5;
+		else if (distance >= 100) modifier = 4.0;
+		else if (distance >= 60) modifier = 3.5;
+		else if (distance >= 30) modifier = 3.0;
+		else if (distance >= 20) modifier = 2.5;
+		else if (distance >= 10) modifier = 2.0;
+		else if (distance >= 6) modifier = 1.5;
+		else if (distance >= 3) modifier = 1.0;
+		else if (distance == 2) modifier = 0.5;
+		else modifier = 0.0;
+		
+		btn = p1.getWTN() + p2.getWTN() + wtcm - modifier*2;
+
+		// Limit the BTN according to the smallest of the two trade partners.
+		double	smallest = Math.min(p1.getWTN(), p2.getWTN());
+		if (btn > smallest + 5) btn = smallest + 5;
+
 		return btn;
 	}
 	
@@ -742,10 +797,10 @@ public class Sector {
 		
 		ObjectFactory		factory = new ObjectFactory();
 		Sector				sector = new Sector(factory, 0, 0);
-		StarSystem			s1 = factory.getStarSystem(863);
-		StarSystem			s2 = factory.getStarSystem(125);
+		StarSystem			s1 = factory.getStarSystem(69);
+		StarSystem			s2 = factory.getStarSystem(13);
 		
-		System.out.println(sector.getDistance(s1, s2));
+		System.out.println(sector.getBTN(s1.getMainWorld(), s2.getMainWorld()));
 		
 		/*
 		Sector		sector = new Sector(0, 0);

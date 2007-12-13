@@ -36,10 +36,12 @@ import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 
 /**
  * Defines a single star system in the Traveller universe. The system may be
- * defined using the .sec data file.
+ * defined using the .sec data file. There will be multiple planets within
+ * a star system (and possibly multiple stars as well). The principal world
+ * is the one which has the largest starport. If both starports are the
+ * same, it is the one with the greatest GWP.
  * 
  * @author Samuel Penn
- *
  */
 public class StarSystem {
 	ObjectFactory			factory = null;
@@ -149,6 +151,11 @@ public class StarSystem {
 		read(rs);
 	}
 	
+	public StarSystem(ObjectFactory factory, ResultSet rs) throws SQLException {
+		this.factory = factory;
+		read(rs);
+	}
+	
 	private void read(ResultSet rs) throws SQLException {
 		id = rs.getInt("id");
 		name = rs.getString("name");
@@ -242,6 +249,45 @@ public class StarSystem {
 		}
 
 		return starport;
+	}
+	
+	/**
+	 * Get the main world of this star system. The main world is the
+	 * one with the largest star port. Failing that, it is the world
+	 * with the greatest GWP.
+	 * 
+	 * @return		Main world of this star system, or null if none
+	 *              are populated.
+	 */
+	public Planet getMainWorld() {
+		StarportType		starport = StarportType.X;
+		Planet				mainWorld = null;
+
+		if (stars.size() == 0) {
+			ObjectFactory		fac = new ObjectFactory();
+			stars = fac.getStarsBySystem(this.id);
+			planets = fac.getPlanetsBySystem(this.id);
+			fac.close();
+		}
+		
+		for (Planet planet : planets) {
+			if (planet.getStarport() == null || planet.getPopulation() == 0) {
+				continue;
+			}
+			if (mainWorld == null) {
+				mainWorld = planet;
+				starport = planet.getStarport();
+			} else 	if (planet.getStarport().compareTo(starport) < 0) {
+				starport = planet.getStarport();
+				mainWorld = planet;
+			} else if (planet.getStarport() == starport) {
+				if (planet.getGWP() > mainWorld.getGWP()) {
+					mainWorld = planet;
+				}
+			}
+		}
+
+		return mainWorld;
 	}
 	
 	/**

@@ -414,6 +414,11 @@ public class Planet {
 		read(rs);
 	}
 	
+	public Planet(ObjectFactory factory, ResultSet rs) throws SQLException {
+		this.factory = factory;
+		read(rs);
+	}
+	
 	private void read(ResultSet rs) throws SQLException {
 		id = rs.getInt("id");
 		name = rs.getString("name");

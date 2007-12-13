@@ -262,6 +262,69 @@ public class Systems extends HttpServlet {
 		}
 		buffer.append("</div>\n");
 		
+		Planet		mainWorld = system.getMainWorld();
+		if (mainWorld != null) {
+			buffer.append("<div id=\"trade\">");
+			buffer.append("<h2>Trade Details</h2>");
+			
+			buffer.append("<table>");
+			buffer.append("<tr><th>System</th><th>BTN</th><th>Cr/Year</th><th>Dt/Y</th><th>Dt/Wk</th><th>Dt/Day</th></tr>");
+			
+			for (int sy = system.getY() - 10; sy < system.getY()+10; sy++) {
+				for (int sx = system.getX() - 10; sx < system.getX()+10; sx++) {
+					StarSystem	s2 = sector.getSystem(sx, sy);
+					if (s2 == null) continue;
+					double		btn = sector.getBTN(system.getMainWorld(), s2.getMainWorld());
+					
+					if (btn < 6.5) {
+						continue;
+					}
+					
+					long		credits = (long)Math.pow(10, btn);
+					int			year = 0;
+					int			week = 0;
+					int			day = 0;
+					
+					if (btn >= 4.0) {
+						year = (int)Math.pow(10, btn-4.0);
+					}
+					if (btn >= 5.5) {
+						week = (int)Math.pow(10, btn-5.5);
+					}
+					if (btn >= 6.5) {
+						day = (int)Math.pow(10, btn-6.5);
+					}
+					String		cr = null;
+					if (credits > 1000000000000L) {
+						credits /= 1000000000;
+						cr = ""+(credits/1000.0)+" TCr";
+					} else if (credits > 1000000000) {
+						credits /= 1000000;
+						cr = ""+(credits/1000.0)+" GCr";
+					} else if (credits > 1000000) {
+						credits /= 1000;
+						cr = ""+(credits/1000.0)+" MCr";
+					} else if (credits > 1000) {
+						cr = ""+(credits/1000.0)+" KCr";
+					} else {
+						cr = ""+credits + " Cr";
+					}
+					buffer.append("<tr>");
+					buffer.append("<td>"+s2.getName()+"</td>");
+					buffer.append("<td>"+((int)(btn*10)/10.0)+"</td>");
+					buffer.append("<td>"+cr+"</td>");
+					buffer.append("<td>"+year+"</td>");
+					buffer.append("<td>"+week+"</td>");
+					buffer.append("<td>"+day+"</td>");
+					buffer.append("</tr>");
+					
+				}
+			}
+			buffer.append("</table>");
+			
+			buffer.append("</div>");
+		}
+		
 		buffer.append("<div id=\"stars\">\n");
 		buffer.append("<table id=\"tabs\">\n");
 		buffer.append("<tr>");

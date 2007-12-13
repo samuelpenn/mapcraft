@@ -33,6 +33,7 @@ public class Empire {
 	public static int		year = 0;
 	private int				techLevel = 10;
 	private int				intensity = 0;
+	private double			populationModifier = 1;
 	
 	private ObjectFactory factory = null;
 	
@@ -382,7 +383,7 @@ public class Empire {
 		
 		if (idealPopulation > 1000000) {
 			switch (Die.d6() + intensity) {
-			case 1:
+			case -1: case 0: case 1:
 				planet.setPopulation(idealPopulation / Die.d6());
 				planet.setTechLevel(techLevel-3);
 				planet.setStarport(StarportType.C);
@@ -409,7 +410,7 @@ public class Empire {
 			}
 		} else if (idealPopulation > 10000) {
 			switch (Die.d6() + intensity) {
-			case 1:
+			case -1: case 0: case 1:
 				break;
 			case 2: case 3:
 				planet.setPopulation(idealPopulation * Die.d10(1) * 10);
@@ -433,7 +434,7 @@ public class Empire {
 			}			
 		} else if (idealPopulation > 100) {
 			switch (Die.d6() + intensity) {
-			case 1: case 2:
+			case -1: case 0: case 1: case 2:
 				break;
 			case 3:
 				planet.setPopulation(idealPopulation * Die.d10() * 5);
@@ -482,6 +483,7 @@ public class Empire {
 		//empire.grow();
 		//empire.colonise();
 
+		empire.setIntensity(-2);
 		for (Sector sector : factory.getSectors()) {
 			empire.firstWave(sector.getId());
 		}

@@ -238,14 +238,43 @@ public class ObjectFactory {
 		return planet;
 	}
 	
+	/**
+	 * Get the star system as the designated location in the sector.
+	 * Sector coordinates are 1-32 for X, and 1-40 for Y. If the
+	 * coordinates are outside of this, then try and find the star
+	 * system in a neighbouring sector instead.
+	 * 
+	 * @param sectorId		Id of default sector to look in.
+	 * @param x				X coordinate relative to sector.
+	 * @param y				Y coordinate relative to sector.
+	 * 
+	 * @return				Found system, or null if none there.				
+	 */
 	public StarSystem getStarSystem(int sectorId, int x, int y) {
 		ResultSet				rs = null;
 		StarSystem				ss = null;
 		
+		if (x < 1 || x > 32 || y < 1 || y > 40) {
+			try {
+				Sector		sector = new Sector(this, sectorId);
+				int			sx = sector.getX();
+				int			sy = sector.getY();
+				
+				while (x < 1) { sx--; x += 32; }
+				while (y < 1) { sy--; y += 40; }
+				while (x > 32) { sx++; x -= 32; }
+				while (y > 40) { sy++; y -= 40; }
+				sector = new Sector(this, sx, sy);
+				sectorId = sector.getId();
+			} catch (ObjectNotFoundException e) {
+				return null;
+			}
+		}
+		
 		try {
 			rs = read("system", "sector_id="+sectorId+" and x="+x+" and y="+y);
 			if (rs.next()) {
-				ss = new StarSystem(rs);
+				ss = new StarSystem(this, rs);
 				ss.setStars(getStarsBySystem(ss.getId()));
 				ss.setPlanets(getPlanetsBySystem(ss.getId()));
 			}
@@ -330,7 +359,7 @@ public class ObjectFactory {
 		try {
 			rs = read("planet", "system_id="+systemId);
 			while (rs.next()) {
-				Planet		planet = new Planet(rs);
+				Planet		planet = new Planet(this, rs);
 				list.add(planet);
 			}
 		} catch (SQLException e) {
