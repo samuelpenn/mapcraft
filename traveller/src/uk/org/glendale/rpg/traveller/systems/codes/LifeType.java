@@ -11,6 +11,21 @@
  */
 package uk.org.glendale.rpg.traveller.systems.codes;
 
+/**
+ * Defines the evolutionary stage of life on a planet.
+ * 
+ * Proteins: Simple replicators.
+ * Protozoa: Single celled organisms
+ * Metazoa: Multi-celled organisms.
+ * ComplexOcean: Fish
+ * SimpleLand: Insects, moss, simple plants.
+ * ComplexLand: Early tetrapods and forests.
+ * Extensive: Earth-like.
+ * 
+ * @see http://mapcraft.glendale.org.uk/planets/lifelevel
+ * 
+ * @author Samuel Penn
+ */
 public enum LifeType {
 	None, Proteins, Protozoa, Metazoa, ComplexOcean, SimpleLand, ComplexLand, Extensive
 }

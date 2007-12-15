@@ -529,6 +529,34 @@ public class WorldBuilder {
 		}
 	}
 	
+	protected void basicFlood(int hydrographics) {
+		this.hydrographics = hydrographics;
+		int[]	bucket = new int[100];
+		
+		// Perform a bucket sort. We need to know how many instances there
+		// are of each possible height (0..99).
+		for (int x=0; x < width; x++) {
+			for (int y=0; y < height; y++) {
+				bucket[getHeight(x, y)]++;
+			}
+		}
+		
+		// Now flood fill the world.
+		
+		for (int h=99; h >= 0 && getHydrographics() > hydrographics; h--) {
+			//System.out.println("Flooding world to a height of ["+h+"] at ["+getHydrographics()+"%]");
+			for (int x=0; x < width; x++) {
+				for (int y=0; y < height; y++) {
+					if (getHeight(x, y) > h && getTerrain(x, y) == water) {
+						setTerrain(x, y, land);
+					} else {
+						setTerrain(x, y, water);
+					}
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Flood the world with water. The percentage of the surface to be filled 
 	 * is specified, and the number of tiles that need to be water to meet this

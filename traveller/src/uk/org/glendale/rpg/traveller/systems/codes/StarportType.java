@@ -11,6 +11,20 @@
  */
 package uk.org.glendale.rpg.traveller.systems.codes;
 
+/**
+ * Starport classification for a world. This uses the standard Traveller
+ * classificatins, from A (best) to E (worst) and X as no starport at all.
+ * 
+ * The type of starport may modify the World Trade Number, and the types
+ * define how this modification happens. Modifiers are stored in an array,
+ * with the modifier for an initial WTN of 0 to 7. These modifiers are
+ * from GURPS Free Trader.
+ * 
+ * Starports also have a minimum Tech Level, which is required to support
+ * a starport of the given type.
+ * 
+ * @author Samuel Penn
+ */
 public enum StarportType {
 	A(10, new double[] { 1.5, 1, 1, 0.5, 0.5, 0, 0, 0 }),
 	B(9, new double[] { 1, 1, 0.5, 0.5, 0, 0, -0.5, -1}),

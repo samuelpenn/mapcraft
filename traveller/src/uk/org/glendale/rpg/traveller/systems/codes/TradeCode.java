@@ -13,6 +13,7 @@ package uk.org.glendale.rpg.traveller.systems.codes;
 
 /**
  * Defines the various trade codes used by the Imperium to describe worlds.
+ * Some of these are from Classic Traveller, some are unique to here.
  * 
  * @author Samuel Penn
  */
