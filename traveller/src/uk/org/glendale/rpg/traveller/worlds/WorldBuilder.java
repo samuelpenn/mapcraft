@@ -58,7 +58,7 @@ public class WorldBuilder {
 	protected		int			hydrographics = 0;
 	
 	protected final	Terrain		sea = Terrain.create("Sea", 100, 100, 255, true);
-	protected final	Terrain		land = Terrain.create("Land", 50, 50, 50, 2, 2, 2, false);
+	protected final	Terrain		land = Terrain.create("Land", 0, 0, 0, 1.5, 1.5, 1.5, false);
 	
 	protected		Properties	properties = new Properties();
 	
@@ -87,7 +87,7 @@ public class WorldBuilder {
 	}
 	
 	/**
-	 * Set the temperature of the world. Zero is considered to be standard
+	 * Get the temperature of the world. Zero is considered to be standard
 	 * temperature, with -1 for cool, -2 cold, +1 warm, +2 hot etc.
 	 * 
 	 * @param temperature		Temperature to use.
@@ -96,6 +96,7 @@ public class WorldBuilder {
 		if (planet == null) return 0;
 
 		switch (planet.getTemperature()) {
+		case UltraHot: return +8;
 		case ExtremelyHot:return +5;
 		case VeryHot: return +3;
 		case Hot: return +2;
@@ -105,6 +106,7 @@ public class WorldBuilder {
 		case Cold: return -2;
 		case VeryCold: return -3;
 		case ExtremelyCold: return -5;
+		case UltraCold: return -8;
 		}
 		
 		return 0;
@@ -578,6 +580,14 @@ public class WorldBuilder {
 		}
 	}
 	
+	/**
+	 * Get the latitude of the given row on the map. The latitude will be
+	 * returned as a number between 0 and 90, and is always positive. It
+	 * should be used to determine how far from the equator a point is.
+	 * 
+	 * @param y		Row on the map.
+	 * @return		Absolute distance from equator in degrees, from 0 to 90.
+	 */
 	protected int getLatitude(int y) {
 		return (int) Math.abs((-90 * ((y-(height/2.0)) / (height/2.0))));
 	}

@@ -32,7 +32,8 @@ class Gaian extends WorldBuilder {
 	// Terrain types.
 	private Terrain		water = null;
 	private Terrain		rock = null;
-	private Terrain		ice = null;
+	private Terrain		ice = null;  // This is ice over water.
+	private Terrain		snow = null; // Snow and ice over land.
 	private Terrain		desert = null;
 	private Terrain		grasslands = null;
 	private Terrain		jungle = null;
@@ -65,6 +66,9 @@ class Gaian extends WorldBuilder {
 							g.fillRect(x*scale, y*scale, scale, scale);																					
 						}
 					} else {
+						g.setColor(getTerrain(x, y).getColor(h));
+						g.fillRect(x*scale, y*scale, scale, scale);
+						/*
 						if (waterMap != null && waterMap[x][y] > 0) {
 							int		d = (getSeaLevel(x, y) - averageSeaLevel)*5 + 120;
 							if (d > 255) d = 255;
@@ -75,6 +79,7 @@ class Gaian extends WorldBuilder {
 							g.setColor(new Color(h, h, h));
 							g.fillRect(x*scale, y*scale, scale, scale);
 						}
+						*/
 					}
 				}
 			}
@@ -306,6 +311,10 @@ class Gaian extends WorldBuilder {
 			}			
 		}
 		
+		ice = Terrain.create("Ice", 255, 255, 255, true);
+		snow = Terrain.create("Snow", 200, 200, 200, 0.5, 0.5, 0.5, false);
+		
+		
 		// Create the oceans of this world, according to the hydrographics
 		// setting for the world.
 		createSea();
@@ -333,22 +342,29 @@ class Gaian extends WorldBuilder {
 		System.out.println("Hydro: "+planet.getHydrographics()+"%");
 		
 		generateIceCap();
-		generateEcology();
+		//generateEcology();
 		draw();
 	}
 	
 	protected void generateIceCap() {
 		int		landCount[] = new int[width];
+		
+		// The more land there is in a given longitude, the greater
+		// the extant of the ice cap.
 		for (int x=0; x < width; x++) {
 			landCount[x] = getLandCount(x);
 		}
+
 		for (int y = 0; y < height; y++) {
-			int		latitude = getLatitude(y) - getTemperature()*10;
+			int		latitude = getLatitude(y);
 			for (int x = 0; x < width; x++) {
 				if (getTerrain(x, y).isWater()) {
-					if (latitude + landCount[x]/10 + getHeight(x, y) > 80) {
-						setHeight(x, y, Die.d20(2)+65);
-						setTerrain(x, y, land);
+					if (latitude + Math.sqrt(landCount[x]) > 85 - getTemperature()*5) {
+						setTerrain(x, y, ice);
+					}
+				} else {
+					if (latitude + Math.sqrt(landCount[x]) + Math.sqrt(getHeight(x, y)) > 85 - getTemperature()*5) {
+						setTerrain(x, y, snow);
 					}
 				}
 			}
