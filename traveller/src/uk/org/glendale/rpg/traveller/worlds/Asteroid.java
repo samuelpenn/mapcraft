@@ -45,47 +45,48 @@ class Asteroid extends WorldBuilder {
 	 * surface and number and size of impact craters.
 	 */
 	public void generate() {
-		Terrain		terrain = Terrain.Carbon;
+		Terrain		terrain = null;
 		int			impacts = Die.d100(2);
 		double		raise = 1.0;
 		int			smooth = 0;
-		
+
 		switch (type) {
 		case Carbonaceous:
 			// The default.
+			terrain = Terrain.create("Carbon", 10, 10, 10, 1, 1, 1, false);
 			impacts = 0;
 			raise = 0.75;
 			break;
 		case Basaltic:
-			terrain = Terrain.Basaltic;
+			terrain = Terrain.create("Basaltic", 20, 10, 10, 2, 1, 1, false);
 			impacts = Die.d10(2);
 			raise = 0.5;
 			smooth = 50;
 			break;
 		case Vulcanian:
-			terrain = Terrain.Vulcanian;
+			terrain = Terrain.create("Vulcanian", 50, 0, 0, 2, 1, 1, false);
 			impacts = Die.d100(3);
 			break;
 		case Silicaceous:
-			terrain = Terrain.Silicaceous;
+			terrain = Terrain.create("Silicaceous", 180, 140, 0, 1, 1, 2, false);
 			impacts = Die.d100(3);
 			break;
 		case Sideritic:
-			terrain = Terrain.Vulcanian;
+			terrain = Terrain.create("Sideritic", 50, 0, 0, 2, 1, 1, false);
 			impacts = Die.d100(3);
 			break;
 		case Enceladean:
-			terrain = Terrain.Ice;
+			terrain = Terrain.create("Ice", 125, 150, 125, 2, 2, 2, false);
 			impacts = Die.d10(3);
 			raise = 0.5;
 			smooth = 50;
 			break;
 		case Mimean:
-			terrain = Terrain.Ice;
+			terrain = Terrain.create("Ice", 150, 150, 150, 1, 1, 2, false);
 			impacts = Die.d20(5);
 			break;
 		case Oortean:
-			terrain = Terrain.Ice;
+			terrain = Terrain.create("Ice", 120, 120, 120, 2, 2, 2, false);
 			impacts = Die.d20(3);
 			raise = 0.75;
 			break;
