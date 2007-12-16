@@ -56,152 +56,12 @@ public class WorldBuilder {
 	
 	protected 		Planet		planet = null;
 	protected		int			hydrographics = 0;
-	protected		Terrain		water = Terrain.Water;
-	protected 		Terrain		land = Terrain.Gaian;
+	
+	protected		Terrain		water = Terrain.create("Water", 100, 100, 255, true);
+	protected 		Terrain		rock = Terrain.create("Gaian", 50, 50, 50, 2, 2, 2, false);
+	protected 		Terrain		land = Terrain.create("Gaian", 50, 100, 0, 0.5, 1, 0, false);
 	
 	protected		Properties	properties = new Properties();
-	
-	public enum Terrain {
-		Blank("blank", 100),
-		// Stars
-		O(170, 170, 220, 1.5, 1.5, 1.5, false),
-		B(160, 180, 250, 1.5, 1.5, 1, false),
-		A(220, 220, 220, 1, 1, 1, false),
-		F(210, 210, 170, 1.6, 1.6, 1.2, false),
-		G(200, 200, 160, 1.4, 1.4, 1, false),
-		K(200, 160, 150, 1.5, 1.5, 1.3, false),
-		M(200, 120, 120, 1.5, 1.5, 1.5, false),
-		Ospot(17, 17, 22, 1.5, 1.5, 2, false),
-		Bspot(16, 18, 25, 1.5, 1.5, 2, false),
-		Aspot(22, 22, 22, 2, 2, 2, false),
-		Fspot(21, 21, 17, 2, 2, 1.5, false),
-		Gspot(20, 20, 16, 2, 2, 1.5, false),
-		Kspot(20, 16, 15, 2, 1.5, 1.3, false),
-		Mspot(20, 12, 12, 2, 1.5, 1.5, false),
-		//Standard
-		Rock("rock", 15),
-		Water("water", 100, true),
-		WaterLight("waterlight", 100, true),
-		WaterDark("waterdark", 100, true),
-		WaterRed("waterred", 100, true),
-		WaterGreen("watergreen", 100, true),
-		WaterPurple("waterpurple", 100, true),
-		WaterBlack("waterblack", 100, true),
-		Algae("algae", 30, true),
-		Grass("grass", 15),
-		Gaian("gaian/gaian", 10),
-		Dirt("dirt", 15),
-		Forest("wood", 30),
-		Desert("desert/desert", 30),
-		Snow("snow", 30),
-		Scrub("scrub", 30),
-		Rust("metallic/rust", 15),
-		Dark("metallic/dark", 15),
-		Sulphur("metallic/sulphur", 15),
-		Larva("metallic/larva", 20),
-		Ice("ice/ice", 15, true),
-		Methane("ice/methane", 15),
-		DirtyMethane("ice/dirtymethane", 15),
-		// Jovian.
-		RedGas("gas/red", 15),
-		GreenGas("gas/green", 15),
-		BlueGas("gas/blue", 15),
-		OrangeGas("gas/orange", 15),
-		CreamGas("gas/cream", 15),
-		YellowGas("gas/yellow", 15),
-		WhiteGas("gas/white", 15),
-		// Asteroid types.
-		Basaltic("asteroids/basaltic", 15),
-		Carbon("asteroids/carbon", 15),
-		Vulcanian("asteroids/vulcanian", 15),
-		Silicaceous("asteroids/silicaceous", 15),
-		// Planetoids
-		// Rocky worlds
-		Hermian(230, 180, 115, -1, -1, -1, false),
-		HermianFlats(210, 190, 135, -0.7, -1, -1, false),
-		Ferrinian(120, 120, 50, 3, 2.0, 2.0, false),
-		FerrinianEjecta(100, 100, 50, 1.5, 1.0, 0.5, false),
-		Hadean(60, 30, 30, 0.8, 0.4, 0.3, false),
-		HadeanImpact(40, 20, 20, 0.4, 0.2, 0.1, false),
-		HadeanEjecta(90, 60, 60, 1, 0.8, 0.8, false),
-		Cerean(50, 50, 50, 2, 2, 1.5, false),
-		Vestian(90, 90, 90, 2, 2, 1.5, false),
-		Selenian(100, 100, 100, 1.5, 1.5, 1.5, false),
-		SelenianFlats(140, 140, 140, -0.25, -0.25, -0.25, false),
-		SelenianEjecta(130, 130, 130, 2, 2, 2, false);
-		
-		private String	image;
-		private int		range;
-		private boolean	isWater = false;
-		
-		private int		minRed = 0;
-		private int		minGreen = 0;
-		private int		minBlue = 0;
-		private double	varRed = 0.0;
-		private double  varGreen = 0.0;
-		private double	varBlue = 0.0;
-		
-		Terrain(String image, int range) {
-			this.image = image;
-			this.range = range;
-		}
-
-		Terrain(String image, int range, boolean isWater) {
-			this.image = image;
-			this.range = range;
-			this.isWater = isWater;
-		}
-		
-		/**
-		 * Dynamically generate the images.
-		 */
-		Terrain(int red, int green, int blue, double r, double g, double b, boolean isWater) {
-			this.image = null;
-			this.range = 1;
-			this.isWater = isWater;
-			
-			this.minRed = red;
-			this.minGreen = green;
-			this.minBlue = blue;
-			this.varRed = r;
-			this.varGreen = g;
-			this.varBlue = b;
-		}
-		
-		public boolean isWater() {
-			return isWater;
-		}
-		
-		private String concatHex(String string, int value) {
-			if (value < 16) string += "0";
-			if (value > 255) value = 255;
-			return string + Integer.toHexString(value);
-		}
-		
-		public String getImage(int height) {
-			if (image != null) {
-				int		idx = height / range;
-	
-				return image+"_"+idx;
-			} else {
-				String		colour = "#";
-				colour = concatHex(colour, minRed + (int)(height * varRed));
-				colour = concatHex(colour, minGreen + (int)(height * varGreen));
-				colour = concatHex(colour, minBlue + (int)(height * varBlue));
-				
-				return colour;
-			}
-		}
-		
-		public int getIndex() {
-			return ordinal();
-		}
-		
-		public static Terrain getTerrain(int index) {
-			return values()[index];
-		}
-		
-	}
 	
 	/**
 	 * Properties define special geographical or ecological features about
@@ -442,7 +302,7 @@ public class WorldBuilder {
 		for (int x=0; x < width; x++) {
 			for (int y=0; y < height; y++) {
 				setHeight(x, y, h[x][y]);
-				setTerrain(x, y, Terrain.Rock);
+				setTerrain(x, y, rock);
 			}
 		}		
 		
@@ -653,7 +513,7 @@ public class WorldBuilder {
 				if (landCount > 4 && getHeight(x, y) == 0) {
 					int		average = total/landCount;
 					setHeight(x, y, average);
-					setTerrain(x, y, Terrain.Rock);
+					setTerrain(x, y, rock);
 				} else if (landCount < 4) {
 					int		average = total/((size*2+1)*(size*2+1));
 					setHeight(x, y, average);
@@ -676,7 +536,7 @@ public class WorldBuilder {
 					if (start > -1 && count <= length) {
 						for (; start <= x; start++) {
 							// Change to land.
-							setTerrain(start, y, Terrain.Rock);
+							setTerrain(start, y, rock);
 							// Set height to be closer to neighbouring land tile.
 							setHeight(start, y, getHeight(x, y)+Die.d6()-Die.d6());
 						}
@@ -709,7 +569,7 @@ public class WorldBuilder {
 	
 		for (int y=0; y < height; y++) {
 			for (int x=0; x < width; x++) {
-				if (getTerrain(x, y).isWater) {
+				if (getTerrain(x, y).isWater()) {
 					setHeight(x, y, 0);
 				} else {
 					int h = getHeight(x, y);
@@ -794,16 +654,16 @@ public class WorldBuilder {
 		for (int y=0; y < height; y++) {
 			latitude = getLatitude(y);
 			for (int x=0; x < width; x++) {
-				Terrain		terrain = Terrain.Rock;
 				int			landCount = getLandCount(x);
+				Terrain		terrain = null;
 				
 				if (Math.abs(latitude) + Math.sqrt(landCount) > (85 + Die.d6() - getHeight(x, y) + temperature*5)) {
 					// Is it high enough latitude for snow and ice?
-					terrain = Terrain.Snow;
+					terrain = land;
 				} else if (getHeight(x, y) > 30 + temperature * 5) {
-					terrain = Terrain.Snow;
+					terrain = land;
 				} else if (getHeight(x, y) > 20) {
-					terrain = Terrain.Dirt;
+					terrain = land;
 				} else 	if (getTerrain(x,y) == water) {
 					// Otherwise, if water then stay as water.
 					terrain = water;
@@ -837,16 +697,16 @@ public class WorldBuilder {
 					}
 					
 					if (fertility < 20) {
-						terrain = Terrain.Desert;
+						terrain = rock;
 						if (getHeight(x, y) > 70) {
-							terrain = Terrain.Dirt;
+							terrain = land;
 						}
 					} else if (fertility < 35) {
-						terrain = Terrain.Scrub;
+						terrain = land;
 					} else if (fertility < 50) {
-						terrain = Terrain.Grass;
+						terrain = land;
 					} else {
-						terrain = Terrain.Forest;
+						terrain = rock;
 					}
 /*					
 					System.out.println(fertility);
