@@ -57,9 +57,8 @@ public class WorldBuilder {
 	protected 		Planet		planet = null;
 	protected		int			hydrographics = 0;
 	
-	protected		Terrain		water = Terrain.create("Water", 100, 100, 255, true);
-	protected 		Terrain		rock = Terrain.create("Gaian", 50, 50, 50, 2, 2, 2, false);
-	protected 		Terrain		land = Terrain.create("Gaian", 50, 100, 0, 0.5, 1, 0, false);
+	protected final	Terrain		sea = Terrain.create("Sea", 100, 100, 255, true);
+	protected final	Terrain		land = Terrain.create("Land", 50, 50, 50, 2, 2, 2, false);
 	
 	protected		Properties	properties = new Properties();
 	
@@ -302,7 +301,7 @@ public class WorldBuilder {
 		for (int x=0; x < width; x++) {
 			for (int y=0; y < height; y++) {
 				setHeight(x, y, h[x][y]);
-				setTerrain(x, y, rock);
+				setTerrain(x, y, land);
 			}
 		}		
 		
@@ -407,10 +406,10 @@ public class WorldBuilder {
 			//System.out.println("Flooding world to a height of ["+h+"] at ["+getHydrographics()+"%]");
 			for (int x=0; x < width; x++) {
 				for (int y=0; y < height; y++) {
-					if (getHeight(x, y) > h && getTerrain(x, y) == water) {
+					if (getHeight(x, y) > h && getTerrain(x, y) == sea) {
 						setTerrain(x, y, land);
 					} else {
-						setTerrain(x, y, water);
+						setTerrain(x, y, sea);
 					}
 				}
 			}
@@ -445,7 +444,7 @@ public class WorldBuilder {
 			//System.out.println("Flooding world to a height of ["+h+"] at ["+getHydrographics()+"%]");
 			for (int x=0; x < width; x++) {
 				for (int y=0; y < height; y++) {
-					if (getHeight(x, y) > h && getTerrain(x, y) == water) {
+					if (getHeight(x, y) > h && getTerrain(x, y) == sea) {
 						setTerrain(x, y, land);
 					}
 				}
@@ -483,7 +482,7 @@ public class WorldBuilder {
 		for (int x=0; x < width; x++) {
 			for (int y=0; y < height; y++) {
 				h[x][y] = getHeight(x, y);
-				if (getTerrain(x, y) == water) {
+				if (getTerrain(x, y) == sea) {
 					h[x][y] = 0;
 				}
 			}
@@ -513,11 +512,11 @@ public class WorldBuilder {
 				if (landCount > 4 && getHeight(x, y) == 0) {
 					int		average = total/landCount;
 					setHeight(x, y, average);
-					setTerrain(x, y, rock);
+					setTerrain(x, y, land);
 				} else if (landCount < 4) {
 					int		average = total/((size*2+1)*(size*2+1));
 					setHeight(x, y, average);
-					setTerrain(x, y, water);
+					setTerrain(x, y, sea);
 				}
 			}
 		}
@@ -527,8 +526,8 @@ public class WorldBuilder {
 		for (int y=0; y < height; y++) {
 			int		start = -1, count = 0;
 			for (int x=0; x < width; x++) {
-				if (getTerrain(x, y) == water) {
-					if (getTerrain(x, y-1) == water || getTerrain(x, y+1) == water) {
+				if (getTerrain(x, y) == sea) {
+					if (getTerrain(x, y-1) == sea || getTerrain(x, y+1) == sea) {
 						count++;
 					}
 					if (start < 0) start = x;
@@ -536,7 +535,7 @@ public class WorldBuilder {
 					if (start > -1 && count <= length) {
 						for (; start <= x; start++) {
 							// Change to land.
-							setTerrain(start, y, rock);
+							setTerrain(start, y, land);
 							// Set height to be closer to neighbouring land tile.
 							setHeight(start, y, getHeight(x, y)+Die.d6()-Die.d6());
 						}
@@ -595,7 +594,7 @@ public class WorldBuilder {
 		int		count = 0;
 		
 		for (int y=0; y < height; y++) {
-			if (getTerrain(longitude, y) != water) {
+			if (getTerrain(longitude, y) != sea) {
 				count++;
 			}
 		}
@@ -617,7 +616,7 @@ public class WorldBuilder {
 		int		wetness = 0;
 		
 		// If this is a water tile, then totally wet.
-		if (!ignoreSelf && getTerrain(x, y) == water) {
+		if (!ignoreSelf && getTerrain(x, y) == sea) {
 			return 100;
 		}
 		
@@ -664,9 +663,9 @@ public class WorldBuilder {
 					terrain = land;
 				} else if (getHeight(x, y) > 20) {
 					terrain = land;
-				} else 	if (getTerrain(x,y) == water) {
+				} else 	if (getTerrain(x,y) == sea) {
 					// Otherwise, if water then stay as water.
-					terrain = water;
+					terrain = sea;
 				} else {
 					// Now sort out the type of vegetation.
 					int			fertility = hydrographics + getWetness(x, y, false)/2 - getHeight(x, y)/5 + landCount/5 -Math.abs(latitude)/5;
@@ -697,7 +696,7 @@ public class WorldBuilder {
 					}
 					
 					if (fertility < 20) {
-						terrain = rock;
+						terrain = land;
 						if (getHeight(x, y) > 70) {
 							terrain = land;
 						}
@@ -706,7 +705,7 @@ public class WorldBuilder {
 					} else if (fertility < 50) {
 						terrain = land;
 					} else {
-						terrain = rock;
+						terrain = land;
 					}
 /*					
 					System.out.println(fertility);
@@ -728,8 +727,6 @@ public class WorldBuilder {
         
         //System.out.println(url);
         image = Toolkit.getDefaultToolkit().getImage(url);
-        
-        Toolkit     toolkit = Toolkit.getDefaultToolkit();
         
         MediaTracker    tracker = new MediaTracker(new Container());
         tracker.addImage(image, 0);
@@ -874,7 +871,7 @@ public class WorldBuilder {
 					inc = height-y;
 				}
 				total += inc;
-				if (getTerrain(x, y) == water) {
+				if (getTerrain(x, y) == sea) {
 					hydro += inc;;
 				}
 			}
@@ -917,6 +914,7 @@ public class WorldBuilder {
 		case Enceladean:
 		case Mimean:
 		case Oortean:
+			// Asteroids, small moons and comets.
 			wb = new Asteroid(planet, width, height);
 			break;
 		case Selenian:
@@ -925,31 +923,19 @@ public class WorldBuilder {
 		case Hadean:
 		case Vestian:
 		case Cerean:
+		case Kuiperian:
+		case Hephaestian:
+			// Typical airless moons and dwarf planets.
 			wb = new Barren(planet, width, height);
 			break;
-		case Hephaestian:
-			wb = new Hephaestian(width, height);
-			break;
-		case Kuiperian:
-			wb = new Kuiperian(width, height);
-			break;
 		case EuJovian:
-			wb = new EuJovian(width, height);
-			break;
 		case SubJovian:
-			wb = new SubJovian(width, height);
-			break;
 		case CryoJovian:
-			wb = new CryoJovian(width, height);
-			break;
 		case SuperJovian:
-			wb = new SuperJovian(width, height);
-			break;
 		case MacroJovian:
-			wb = new MacroJovian(width, height);
-			break;
 		case EpiStellarJovian:
-			wb = new EpiStellarJovian(width, height);
+			// Any Jovian worlds should be created here.
+			wb = new Jovian(planet, width, height);
 			break;
 		case Gaian:
 		case EoGaian:
@@ -1028,9 +1014,9 @@ public class WorldBuilder {
 	public static void main(String[] args) throws Exception {
 		System.out.println(GraphicsEnvironment.isHeadless());
 		
-		//createPlanetType(PlanetType.Vestian);
+		createPlanetType(PlanetType.Hephaestian);
 		//imageUniverse(38);
-		exampleGlobes();
+		//exampleGlobes();
 		System.exit(0);
 				
 		ObjectFactory		factory = new ObjectFactory();

@@ -11,6 +11,7 @@
  */
 package uk.org.glendale.rpg.traveller.worlds;
 
+import java.awt.Color;
 import java.util.Vector;
 
 
@@ -20,7 +21,11 @@ import java.util.Vector;
  * had to re-create it as a class, with some enum-like functionality.
  * 
  * Note that from now on, we only ever use colours to define a terrain,
- * never an image.
+ * never an image. A terrain colour consists of a base RGB colour, plus
+ * optionally a height modifier. Heights for a map tile range from 0 to 99,
+ * and the height modifiers (one each for red, green and blue) multiplies
+ * the height and add to the base to derive the final colour. If the
+ * modifier is positive, then higher ground is brighter.
  * 
  * @author Samuel Penn.
  */
@@ -107,8 +112,7 @@ public class Terrain {
 	private double	varRed = 0.0;
 	private double  varGreen = 0.0;
 	private double	varBlue = 0.0;
-	
-	
+		
 	/**
 	 * Dynamically generate the images.
 	 */
@@ -154,6 +158,23 @@ public class Terrain {
 		return string + Integer.toHexString(value);
 	}
 	
+	public Color getColor(int height) {
+		int			red = minRed + (int)(height * varRed);
+		int			green = minGreen + (int)(height * varGreen);
+		int			blue = minBlue + (int)(height * varBlue);
+		
+		if (red < 0) red = 0;
+		if (red > 255) red = 255;
+		
+		if (green < 0) green = 0;
+		if (green > 255) green = 255;
+		
+		if (blue < 0) blue = 0;
+		if (blue > 255) blue = 255;
+		
+		return new Color(red, green, blue);
+	}
+	
 	public String getImage(int height) {
 		String		colour = "#";
 		int			red = minRed + (int)(height * varRed);
@@ -182,6 +203,14 @@ public class Terrain {
 	
 	public static Terrain getTerrain(int index) {
 		return values.elementAt(index);
+	}
+
+	/**
+	 * Clear the cache of all previously created terrain types. This is not
+	 * thread safe, since doing this will wipe the cache for all consumers.
+	 */
+	public void clear() {
+		values = new Vector<Terrain>();
 	}
 	
 }

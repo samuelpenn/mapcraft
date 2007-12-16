@@ -50,6 +50,14 @@ import uk.org.glendale.rpg.utils.Die;
  * 
  * Vestian (Planetoid)
  * 
+ * Kuiperian (Planetoid)
+ * 	 
+ *   Methane ice world, similar to Pluto.
+ *   
+ * Hephaestian (Planetoid)
+ * 
+ * 	 Active, volcanic world like Io.
+ * 
  * @author Samuel Penn.
  */
 class Barren extends WorldBuilder {
@@ -153,6 +161,18 @@ class Barren extends WorldBuilder {
 			flats = Die.d8(2);
 			flatSize = 100 + Die.d100(3);
 			bumps = Die.d4(1);
+		case Kuiperian:
+			terrain = Terrain.create("KuiperianIces", 100, 75, 50, 1.5, 1.5, 1, false);
+			//impact = Terrain.create("KuiperianDark", 25, 25, 25, 2, 2, 0.5, false);
+			craters = Die.d100();
+			ejecta = Terrain.create("KuiperianEjecta", 100, 75, 50, 3, 3, 2, false);
+			lava = Terrain.create("KuiperianLava", 50, 20, 10, 0.5, 0.5, 0.5, false);
+			flats = Die.d8();
+			flatSize = Die.d100(5);
+			break;
+		case Hephaestian:
+			terrain = Terrain.create("Hephaestian", 100, 75, 50, 3, 2, 0.5, false);
+			craterDepth = 0.85;
 			break;
 		}
 	}

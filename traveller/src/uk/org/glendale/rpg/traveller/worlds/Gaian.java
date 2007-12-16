@@ -17,12 +17,9 @@ import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
-import java.io.File;
 
 import uk.org.glendale.rpg.traveller.systems.Planet;
-import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
-import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
-import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
+import uk.org.glendale.rpg.traveller.systems.codes.*;
 import uk.org.glendale.rpg.utils.Die;
 
 /**
@@ -32,10 +29,19 @@ import uk.org.glendale.rpg.utils.Die;
  */
 class Gaian extends WorldBuilder {
 	
+	// Terrain types.
+	private Terrain		water = null;
+	private Terrain		rock = null;
+	private Terrain		ice = null;
+	private Terrain		desert = null;
+	private Terrain		grasslands = null;
+	private Terrain		jungle = null;
+	
 	private Canvas		canvas = null;
 	private int[][]		waterMap = null;
 	
 	public boolean useImage = false;
+	
 	private class MapCanvas extends Canvas implements MouseListener {
 		private Gaian b = null;
 		
@@ -53,12 +59,9 @@ class Gaian extends WorldBuilder {
 					if (b.useImage) {
 						if (b.getTerrain(x,y) == b.water) {
 							g.setColor(new Color(0, 0, 200));
-							g.fillRect(x*scale, y*scale, scale, scale);							
-						} else if (b.getTerrain(x,y) == Terrain.Gaian) {
-							g.setColor(new Color(0, 100+h, 0));
-							g.fillRect(x*scale, y*scale, scale, scale);														
+							g.fillRect(x*scale, y*scale, scale, scale);
 						} else {
-							g.setColor(new Color(h*2, h*2, h*2));
+							g.setColor(b.getTerrain(x, y).getColor(b.getHeight(x, y)));
 							g.fillRect(x*scale, y*scale, scale, scale);																					
 						}
 					} else {
@@ -187,7 +190,7 @@ class Gaian extends WorldBuilder {
 					if (getSeaDepth(x, y) > 0) {
 						setSeaDepth(x, y, seaLevel-h);
 					} else if (h < seaLevel && cc > 0) {
-						setTerrain(x, y, water);
+						setTerrain(x, y, sea);
 						setSeaDepth(x, y, seaLevel-getHeight(x, y));
 						numberChanged++;
 					} else {
@@ -242,7 +245,7 @@ class Gaian extends WorldBuilder {
 				if (getSeaDepth(x, y) == 0) {
 					setTerrain(x, y, land);
 				} else {
-					setTerrain(x, y, water);
+					setTerrain(x, y, sea);
 				}
 			}
 		}
@@ -282,29 +285,33 @@ class Gaian extends WorldBuilder {
 	 * terrain types etc.
 	 */
 	public void generate() {
-		land = Terrain.Gaian;
-		// Figure out the type of seas that we have.
-		switch (Die.d8()) {
-		case 1: case 2:
-			water = Terrain.WaterLight;
-			break;
-		case 3: case 4:
-			water = Terrain.WaterDark;
-			break;
-		default:
-			water = Terrain.Water;
-		}
+		// Figure out the type of seas that we have. This doesn't have any
+		// real effect, except to give the water a slightly different colour.
 		if (planet.hasFeature(PlanetFeature.BlackWater)) {
-			water = Terrain.WaterBlack;
+			water = Terrain.create("Water", 0, 0, 50, true);
 		} else if (planet.hasFeature(PlanetFeature.GreenWater)) {
-			water = Terrain.WaterGreen;
+			water = Terrain.create("Water", 0, 150, 100, true);
 		} else if (planet.hasFeature(PlanetFeature.PurpleWater)) {
-			water = Terrain.WaterPurple;
+			water = Terrain.create("Water", 100, 50, 100, true);
+		} else {
+			switch (Die.d8()) {
+			case 1: case 2:
+				water = Terrain.create("Water", 50, 50, 150, true);
+				break;
+			case 3: case 4:
+				water = Terrain.create("Water", 100, 100, 250, true);
+				break;
+			default:
+				water = Terrain.create("Water", 100, 100, 200, true);
+			}			
 		}
 		
+		// Create the oceans of this world, according to the hydrographics
+		// setting for the world.
 		createSea();
 		draw();
 
+		/*
 		int	waterCount = 0;
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -314,13 +321,16 @@ class Gaian extends WorldBuilder {
 						int		wetness = getWetness(x, y, true);
 						if (wetness < 85) {
 							setHeight(x, y, wetness);
-							setTerrain(x, y, Terrain.Algae);
+							setTerrain(x, y, Terrain);
 						}
 					}
 				}
 			}
 		}
-		System.out.println("Hydro: "+(int)(100 * waterCount / (width * height))+"%");
+		*/
+		// We might as well set the planet's data to be correct.
+		planet.setHydrographics(getHydrographics());
+		System.out.println("Hydro: "+planet.getHydrographics()+"%");
 		
 		generateIceCap();
 		generateEcology();
@@ -338,7 +348,7 @@ class Gaian extends WorldBuilder {
 				if (getTerrain(x, y).isWater()) {
 					if (latitude + landCount[x]/10 + getHeight(x, y) > 80) {
 						setHeight(x, y, Die.d20(2)+65);
-						setTerrain(x, y, Terrain.Ice);
+						setTerrain(x, y, land);
 					}
 				}
 			}
@@ -461,7 +471,7 @@ class Gaian extends WorldBuilder {
 					continue;
 				} else if (getHeight(x, y) > snowHeight) {
 					setHeight(x, y, 99);
-					setTerrain(x, y, Terrain.Snow);
+					setTerrain(x, y, land);
 				//} else if (getHeight(x, y) > grassHeight) {
 				//	setTerrain(x, y, Terrain.Dirt);
 				} else {
@@ -490,7 +500,7 @@ class Gaian extends WorldBuilder {
 					}
 										
 					setHeight(x, y, fertility);
-					setTerrain(x, y, Terrain.Gaian);
+					setTerrain(x, y, land);
 				}
 			}
 		}
