@@ -30,14 +30,36 @@ public class Star extends WorldBuilder {
 	public Star() {
 		super();
 	}
-	
+
 	public Star(int width, int height, SpectralType spectral) {
 		super(width, height);
 		
 		this.spectral = spectral;
 		String	letter = spectral.toString().substring(0, 1);
-		this.terrain = Terrain.valueOf(letter);
-		this.sunspot = Terrain.valueOf(letter+"spot");
+		
+		if (letter.equals("O")) {
+			terrain = Terrain.create("O", 170, 170, 220, 1.5, 1.5, 1.5, false);
+			sunspot = Terrain.create("Ospot", 17, 17, 22, 1.5, 1.5, 2, false);
+		} else if (letter.equals("B")) {
+			terrain = Terrain.create("B", 160, 180, 250, 1.5, 1.5, 1, false);
+			sunspot = Terrain.create("Bspot", 16, 18, 25, 1.5, 1.5, 2, false);
+		} else if (letter.equals("A")) {
+			terrain = Terrain.create("A", 220, 220, 220, 1, 1, 1, false);
+			sunspot = Terrain.create("Aspot", 22, 22, 22, 2, 2, 2, false);
+		} else if (letter.equals("F")) {
+			terrain = Terrain.create("F", 210, 210, 170, 1.6, 1.6, 1.2, false);
+			sunspot = Terrain.create("Fspot", 21, 21, 17, 2, 2, 1.5, false);
+		} else if (letter.equals("G")) {
+			terrain = Terrain.create("G", 200, 200, 160, 1.4, 1.4, 1, false);
+			sunspot = Terrain.create("Gspot", 20, 20, 16, 2, 2, 1.5, false);
+		} else if (letter.equals("K")) {
+			terrain = Terrain.create("K", 200, 160, 150, 1.5, 1.5, 1.3, false);
+			sunspot = Terrain.create("Kspot", 20, 16, 15, 2, 1.5, 1.3, false);
+		} else if (letter.equals("M")) {
+			terrain = Terrain.create("M", 200, 120, 120, 1.5, 1.5, 1.5, false);
+			sunspot = Terrain.create("Mspot", 20, 12, 12, 2, 1.5, 1.5, false);
+		}
+		
 	}
 		
 	public void generate() {
