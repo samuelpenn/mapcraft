@@ -54,7 +54,7 @@ import uk.org.glendale.rpg.utils.Die;
  */
 class Barren extends WorldBuilder {
 	private PlanetType		type = PlanetType.Selenian;
-	private Terrain			terrain = Terrain.Selenian;
+	private Terrain			terrain = null;
 	private Terrain			lava = null;
 	private Terrain			ejecta = null;
 	private Terrain			impact = null;
@@ -74,6 +74,18 @@ class Barren extends WorldBuilder {
 		super();
 		System.out.println("Creating Barren world");
 	}
+
+	/*
+	Hermian(230, 180, 115, -1, -1, -1, false),
+	HermianFlats(210, 190, 135, -0.7, -1, -1, false),
+	Ferrinian(120, 120, 50, 3, 2.0, 2.0, false),
+	FerrinianEjecta(100, 100, 50, 1.5, 1.0, 0.5, false),
+	Hadean(60, 30, 30, 0.8, 0.4, 0.3, false),
+	HadeanImpact(40, 20, 20, 0.4, 0.2, 0.1, false),
+	HadeanEjecta(90, 60, 60, 1, 0.8, 0.8, false),
+	Cerean(50, 50, 50, 2, 2, 1.5, false),
+	Vestian(90, 90, 90, 2, 2, 1.5, false),
+	*/
 	
 	Barren(Planet planet, int width, int height) {
 		super(width, height);
@@ -83,17 +95,17 @@ class Barren extends WorldBuilder {
 		// Firstly, set basic variables.
 		switch (type) {
 		case Selenian:
-			terrain = Terrain.Selenian;
-			lava = Terrain.SelenianFlats;
-			ejecta = Terrain.SelenianEjecta;
-			impact = Terrain.Selenian;
+			terrain = Terrain.create("Selenian", 100, 100, 100, 1.5, 1.5, 1.5, false);
+			lava = Terrain.create("SelenianFlats", 140, 140, 140, -0.25, -0.25, -0.25, false);
+			ejecta = Terrain.create("SelenianEjecta", 130, 130, 130, 2, 2, 2, false);
+			impact = Terrain.create("SelenianImpact", 100, 100, 100, 1, 1, 1, false);
 			flats = Die.d10();
 			flatSize = Die.d100(5);
 			break;
 		case Hermian:
-			terrain = Terrain.Hermian;
-			lava = Terrain.HermianFlats;
-			impact = Terrain.Hermian;
+			terrain = Terrain.create("Hermian", 230, 180, 115, -1, -1, -1, false);
+			lava = Terrain.create("HermianFlats", 210, 190, 135, -0.7, -1, -1, false);
+			impact = Terrain.create("HermianImpact", 230, 180, 115, -0.75, -1, -1, false);
 			craters = 500;
 			craterSize = 7;
 			craterDepth = 0.7;
@@ -101,42 +113,42 @@ class Barren extends WorldBuilder {
 			flatSize = Die.d100(3);
 			break;
 		case Ferrinian:
-			terrain = Terrain.Ferrinian;
-			impact = Terrain.Ferrinian;
-			ejecta = Terrain.FerrinianEjecta;
+			terrain = Terrain.create("Ferrinian", 120, 120, 50, 3, 2, 2, false);
+			impact = terrain;
+			ejecta = Terrain.create("FerrinianEjecta", 100, 100, 50, 1.5, 1.0, 0.5, false);
 			craters = 1500;
 			craterSize = 6;
 			craterDepth = 0.8;
 			break;
 		case Hadean:
-			terrain = Terrain.Hadean;
-			impact = Terrain.HadeanImpact;
-			ejecta = Terrain.Hadean;
-			highlands = Terrain.Rock;
+			terrain = Terrain.create("Hadean", 60, 30, 30, 0.8, 0.4, 0.3, false);
+			impact = Terrain.create("HadeanImpact", 40, 20, 20, 0.4, 0.2, 0.1, false);
+			ejecta = Terrain.create("HadeanEjecta", 90, 60, 60, 1, 0.8, 0.8, false);
+			highlands = Terrain.create("HadeanHighlands", 50, 50, 50, 1.5, 1.25, 1.25, false);
 			craters = 100;
 			craterSize = 20;
 			highlandLower = 80;
 			bumps = Die.d6(2);
 			break;
 		case Cerean:
-			terrain = Terrain.Cerean;
-			impact = Terrain.Cerean;
-			ejecta = Terrain.Cerean;
+			terrain = Terrain.create("Cerean", 50, 50, 50, 2, 2, 1.5, false);
+			impact = Terrain.create("CereanImpact", 25, 25, 25, 1, 1, 0.75, false);
+			ejecta = Terrain.create("CereanEjecta", 150, 150, 150, 2, 2, 1.5, false);
 			craters = 200;
 			craterSize = 15;
 			craterDepth = 0.9;
-			highlands = Terrain.Ice;
+			highlands = Terrain.create("CereanHighlands", 75, 75, 75, 1, 1, 0.75, false);
 			highlandLower = 75;
 			bumps = Die.d4(2);
 			break;
 		case Vestian:
-			terrain = Terrain.Cerean;
-			impact = Terrain.Cerean;
-			lava = Terrain.Vestian;
+			terrain = Terrain.create("Vestian", 90, 90, 90, 2, 2, 1.5, false);
+			impact = terrain;
+			lava = Terrain.create("VestianFlats", 70, 70, 70, 1.5, 1.5, 1, false);;
 			craters = 100;
 			craterSize = 15;
 			craterDepth = 0.5;
-			highlands = Terrain.Ice;
+			highlands = Terrain.create("VestianHighlands", 90, 90, 90, 1.5, 1.5, 1.5, false);
 			highlandLower = 75;
 			flats = Die.d8(2);
 			flatSize = 100 + Die.d100(3);
