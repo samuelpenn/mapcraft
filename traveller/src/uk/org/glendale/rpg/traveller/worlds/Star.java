@@ -11,9 +11,7 @@
  */
 package uk.org.glendale.rpg.traveller.worlds;
 
-import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.SpectralType;
-import uk.org.glendale.rpg.utils.Die;
 
 /**
  * Generates a map for a barren world. Barren worlds are dry rock worlds
@@ -23,7 +21,6 @@ import uk.org.glendale.rpg.utils.Die;
  * @author Samuel Penn.
  */
 public class Star extends WorldBuilder {
-	private SpectralType		spectral = null;
 	private Terrain				terrain = null;
 	private Terrain				sunspot = null;
 
@@ -34,7 +31,6 @@ public class Star extends WorldBuilder {
 	public Star(int width, int height, SpectralType spectral) {
 		super(width, height);
 		
-		this.spectral = spectral;
 		String	letter = spectral.toString().substring(0, 1);
 		
 		if (letter.equals("O")) {
