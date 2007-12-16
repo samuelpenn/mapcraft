@@ -34,8 +34,11 @@ class Gaian extends WorldBuilder {
 	private Terrain		rock = null;
 	private Terrain		ice = null;  // This is ice over water.
 	private Terrain		snow = null; // Snow and ice over land.
+	
 	private Terrain		desert = null;
-	private Terrain		grasslands = null;
+	private Terrain		scrub = null;
+	private Terrain		grassland = null;
+	private Terrain 	woodland = null;
 	private Terrain		jungle = null;
 	
 	private Canvas		canvas = null;
@@ -138,8 +141,40 @@ class Gaian extends WorldBuilder {
 	}
 	
 	
+	/**
+	 * Given a map, returns the value of a given point on that map. Wraps
+	 * east to west, and returns 0 for any points off the north or south
+	 * edges of the map.
+	 */
+	private int getNeighbour(int[][] map, int x, int y) {
+		if (x < 0) x += width;
+		if (x >= width) x -= width;
+		if (y < 0 || y >= height) return 0;
+		
+		return map[x][y];
+	}
 	
-	
+	/**
+	 * Given a map, sum the values of all the neighbours of the given point.
+	 * The map is assumed to be the same size as the world terrain map, and
+	 * wraps east-west but returns 0 for neighbours off the north or south
+	 * edges of the map.
+	 * 
+	 * @param map		Two dimensional array containing the map.
+	 * @param x			X coordinate of point.
+	 * @param y			Y coordinate of point.
+	 * @return			Sum of all the neighbours of (x,y).
+	 */
+	private int getNeighbourSum(int[][] map, int x, int y) {
+		int		sum = 0;
+		
+		sum += getNeighbour(map, x-1, y);
+		sum += getNeighbour(map, x+1, y);
+		sum += getNeighbour(map, x, y-1);
+		sum += getNeighbour(map, x, y+1);
+		
+		return sum;
+	}
 	
 	private int getCoastCount(int x, int y) {
 		int		neighbours = 0;
@@ -342,7 +377,7 @@ class Gaian extends WorldBuilder {
 		System.out.println("Hydro: "+planet.getHydrographics()+"%");
 		
 		generateIceCap();
-		//generateEcology();
+		generateEcology();
 		draw();
 	}
 	
@@ -359,11 +394,11 @@ class Gaian extends WorldBuilder {
 			int		latitude = getLatitude(y);
 			for (int x = 0; x < width; x++) {
 				if (getTerrain(x, y).isWater()) {
-					if (latitude + Math.sqrt(landCount[x]) > 85 - getTemperature()*5) {
+					if (latitude + Math.sqrt(landCount[x]) > 90 - getTemperature()*5) {
 						setTerrain(x, y, ice);
 					}
 				} else {
-					if (latitude + Math.sqrt(landCount[x]) + Math.sqrt(getHeight(x, y)) > 85 - getTemperature()*5) {
+					if (latitude + Math.sqrt(landCount[x]) + Math.sqrt(getHeight(x, y)) > 90 - getTemperature()*5) {
 						setTerrain(x, y, snow);
 					}
 				}
@@ -410,34 +445,49 @@ class Gaian extends WorldBuilder {
 	}
 	
 	private int getSnowHeight(int latitude) {
+		int		snowHeight = 80;
 
-		int		snowHeight = 0;
 		switch (planet.getTemperature()) {
-		case ExtremelyCold: snowHeight = -50; break;
-		case VeryCold: snowHeight = 20; break;
-		case Cold: snowHeight = 40; break;
-		case Cool: snowHeight = 65; break;
-		case Standard: snowHeight = 80; break;
-		case Warm: snowHeight = 90; break;
-		case Hot: snowHeight = 120; break;
-		case VeryHot: snowHeight = 200; break;
-		case ExtremelyHot: snowHeight = 500; break;
+		case UltraCold:
+		case ExtremelyCold:
+		case VeryCold:
+			// Doesn't matter where we are, these world wills be completely
+			// covered with snow and ice.
+			snowHeight = 0;
+			break;
+		case Cold:
+			snowHeight = averageSeaLevel + 20 - latitude;
+			break;
+		case Cool:
+		case Standard:
+		case Warm:
+			snowHeight = averageSeaLevel + 40 - (latitude/2) - getTemperature() * 5;
+			break;
+		case Hot:
+			snowHeight = 95;
+			break;
+		case VeryHot:
+		case ExtremelyHot:
+		case UltraHot:
+			// Regardless of any other factors, such hot worlds will have
+			// no snow and ice.
+			snowHeight = 100;
+			break;
 		}
-		snowHeight *= 0.75;
-		
-		snowHeight -= latitude/2;
 		
 		return snowHeight;
 	}
 	
 	/**
 	 * Get the level of fertility of this world, where 100 = Earth. This
-	 * is based on the life level.
+	 * is based on the life level and temperature.
 	 * 
 	 * @return		Fertility, from 0+.
 	 */
 	private int getFertility() {
 		int		fertility = 50;
+		
+		System.out.println(planet.getLifeLevel()+"/"+planet.getTemperature()+"/"+planet.getAtmospherePressure());
 		
 		switch (planet.getLifeLevel()) {
 		case None: case Proteins: case Protozoa: case Metazoa:
@@ -457,17 +507,68 @@ class Gaian extends WorldBuilder {
 			break;
 		}
 		
+		switch (planet.getTemperature()) {
+		case UltraCold:
+		case ExtremelyCold:
+		case VeryCold:
+			fertility = 0;
+			break;
+		case Cold:
+			fertility /= 2;
+			break;
+		case Cool:
+			fertility *= 0.75;
+			break;
+		case Standard:
+			break;
+		case Warm:
+			fertility *= 1.2;
+			break;
+		case Hot:
+			fertility *= 0.5;
+			break;
+		case VeryHot:
+		case ExtremelyHot:
+		case UltraHot:
+			fertility = 0;
+			break;
+		}
+		
+		if (planet.hasFeature(PlanetFeature.Dry)) {
+			fertility *= 0.75;
+		} else if (planet.hasFeature(PlanetFeature.Wet)) {
+			fertility *= 1.25;
+		}
+		
+		if (planet.getHydrographics() < 50) {
+			fertility *= 0.5;
+		}
+		
 		return fertility;
 	}
 	
+	/**
+	 * Work out the ecological distribution of this world. Basically just colours
+	 * the land part of the map according to whether it is desert, grasslands or
+	 * jungle.
+	 */
 	protected void generateEcology() {
 		int		temperature = getTemperature();
 		
-		//normaliseHeights();
+		// Define colours for the terrain types.
+		desert = Terrain.create("Desert", 100, 100, 0, 1.2, 1, 0, false);
+		scrub = Terrain.create("Grass", 75, 75, 10, 1, 0.5, 0, false);
+		grassland = Terrain.create("Grass", 25, 50, 25, 0, 1.5, 0, false);
+		woodland = Terrain.create("Grass", 15, 50, 15, 0, 1, 0, false);
+		jungle = Terrain.create("Jungle", 0, 25, 0, 0, 1, 0, false);
 		
+				
 		// The first thing we do is figure out where the mountains are.
 		// Mountains won't have anything growing on them. Mountains are
 		// either 'Dirt' or 'Ice' depending on temperature.
+		int		fertility = getFertility();
+		int[][]	fertilityMap = new int[width][height];
+		
 		for (int y=0; y < height; y++) {
 			int		latitude = getLatitude(y);
 			int		grassHeight = getGrassHeight(latitude);
@@ -482,55 +583,91 @@ class Gaian extends WorldBuilder {
 			}
 
 			for (int x=0; x < width; x++) {
-				if (getTerrain(x, y).isWater()) {
+				int		h = getHeight(x, y);
+				fertilityMap[x][y] = 0;
+				if (getTerrain(x, y).isWater() || getTerrain(x, y) == snow) {
 					// This is sea, so ignore.
 					continue;
-				} else if (getHeight(x, y) > snowHeight) {
-					setHeight(x, y, 99);
-					setTerrain(x, y, land);
-				//} else if (getHeight(x, y) > grassHeight) {
-				//	setTerrain(x, y, Terrain.Dirt);
-				} else {
-					int		fertility = (int)(getFertility() - tropical);
-
-					if (getHeight(x, y) > grassHeight) {
-						fertility *= 0.2;
-					} else if (getHeight(x, y) > grassHeight/2) {
-						fertility *= 0.5;
-					} else if (getHeight(x, y) > grassHeight/3) {
-						fertility *= 0.75;
-					} else if (getHeight(x, y) < grassHeight/5) {
-						fertility *= 1.25;
-					}
-
-					fertility += getWetness(x, y, false)/5;
-					fertility *= 1.5;
-					fertility -= getHeight(x, y);
-					
-					if (planet.hasFeature(PlanetFeature.Dry)) {
-						fertility += (height/4) - getLandCount(x)/3;
-					} else if (planet.hasFeature(PlanetFeature.Wet)) {
-						fertility += (height/4) - getLandCount(x)/7;
+				} else if (h > snowHeight) {
+					if (Die.d100() >= snowHeight) {
+						setTerrain(x, y, land);
 					} else {
-						fertility += (height/4) - getLandCount(x)/5;
+						setTerrain(x, y, snow);
 					}
-										
-					setHeight(x, y, fertility);
+				} else if (getCoastCount(x, y) > 0 && fertility > latitude * 2) {
+					setTerrain(x, y, grassland);
+					fertilityMap[x][y] = fertility;// - latitude *2;
+				} else {
 					setTerrain(x, y, land);
 				}
 			}
 		}
+
+		System.out.println("Fertility: "+fertility);
 		
+		int		grassLine = fertility - 5;
+		int		treeLine = fertility - 10;
 		
-		
+		boolean		done = false;
+		while (!done) {
+			draw();
+			int		updates = 0;
+			for (int y=0; y < height; y++) {
+				int		latitude = getLatitude(y);
+				for (int x=0; x < width; x++) {
+					if (getTerrain(x, y).isWater()) {
+						continue;
+					}
+					if (getTerrain(x, y) == snow || getTerrain(x, y) == rock) {
+						continue;
+					}
+					if (getHeight(x, y) > grassLine) {
+						continue;
+					}
+					int		sum = getNeighbourSum(fertilityMap, x, y);
+					int		localFertility = fertility - latitude - getHeight(x, y) + averageSeaLevel;
+					if (getHeight(x, y) > treeLine) {
+						localFertility /= 2;
+					}
+					
+					
+					if (sum > fertilityMap[x][y] && Die.d100() > getHeight(x, y)) {
+						if (fertilityMap[x][y] < localFertility) {
+							fertilityMap[x][y]++;
+							updates++;
+						}
+					}
+					
+					if (fertilityMap[x][y] > 90) {
+						setTerrain(x, y, jungle);
+					} else if (fertilityMap[x][y] > 60) {
+						setTerrain(x, y, woodland);
+					} else if (fertilityMap[x][y] > 30) {
+						setTerrain(x, y, grassland);
+					} else if (fertilityMap[x][y] > 10) {
+						setTerrain(x, y, scrub);
+					} else {
+						setTerrain(x, y, desert);
+					}
+				}
+			}
+			System.out.println(updates);
+			if (updates == 0) {
+				done = true;
+			}
+		}
+		draw();
 	}
 
 	
 	public static void main(String[] args) throws Exception {
 		Gaian g = new Gaian(513, 257);
 		g.setPlanet(new Planet("Bob",PlanetType.Gaian,6400));
-		g.planet.setHydrographics(50);
+		g.planet.setHydrographics(70);
 		g.planet.setTemperature(Temperature.Standard);
+		g.planet.setLifeLevel(LifeType.Extensive);
+		g.planet.setAtmosphereType(AtmosphereType.Standard);
+		g.planet.setAtmospherePressure(AtmospherePressure.Standard);
 		//g.draw();
 		g.generate();
 		//g.getWorldMap(2).save(new File("/home/sam/gaian.jpg"));
