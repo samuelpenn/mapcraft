@@ -1,0 +1,18 @@
+
+#
+# Where the library is located
+#
+rpg.lib.file=/home/sam/src/rpg/release/rpgutils.jar
+
+#
+# Name of the WAR file to build, and installation path on the appserver.
+#
+project.name=mortals
+#project.name=traveller
+
+#
+# Connection to the appserver for automatic deployment.
+#
+appserver.username=admin
+appserver.password=TomcatsAdminUserPassword
+appserver.url=http://ServerName:8080/manager

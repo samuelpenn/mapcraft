@@ -1,0 +1,19 @@
+Mapcraft WorldGen Software
+--------------------------
+
+A few notes on building this.
+
+There are two configuration files which need to be copied and changed.
+These are:
+  ant.example
+  src/uk/org/glendale/rpg/traveller/build.example
+
+These are the SVN versions of the two configuration files ant.properties
+and build.properties. They should be copied to *.properties, and configured
+with the location/passwords etc of database and application servers.
+
+If the ANT build tells you to read the README, then it probably can't
+find these two files.
+
+The *.example version of the files should never contain real passwords
+and server names. Use local copies instead for this.
