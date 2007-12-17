@@ -861,6 +861,37 @@ public class WorldBuilder {
 		return new SimpleImage(img);
 	}
 
+	
+	public int getHydrographics2() {
+		int		hydro = 0;
+		double	waterArea = 0.0;
+		double	surfaceArea = 0.0;
+		
+		for (int y=0; y < height; y++) {
+			int		latitude = getLatitude(y);
+			double 	area = 1.0;
+			
+			double	r = 10;
+			double	radians = Math.toRadians(latitude);
+			double	cos = Math.cos(radians);
+			double	sin = Math.sin(radians);
+			
+			// Work out the radius. All we need at this point is a relative
+			// value, so we don't need to convert to a circumference.
+			area = Math.sqrt(((r*r*cos)*(r*r*cos) + (r*r*sin)*(r*r*sin))/((r*cos)*(r*cos) + (r*sin)*(r*sin)));
+			
+			surfaceArea += area * width;
+			for (int x=0; x < width; x++) {
+				if (getTerrain(x, y).isWater()) {
+					waterArea += area;
+				}
+			}
+		}
+		
+		hydro = (int)((100 * waterArea) / surfaceArea);
+		
+		return hydro;
+	}
 
 	
 	/**

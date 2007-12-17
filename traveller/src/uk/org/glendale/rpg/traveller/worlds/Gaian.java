@@ -71,20 +71,13 @@ class Gaian extends WorldBuilder {
 					} else {
 						g.setColor(getTerrain(x, y).getColor(h));
 						g.fillRect(x*scale, y*scale, scale, scale);
-						/*
-						if (waterMap != null && waterMap[x][y] > 0) {
-							int		d = (getSeaLevel(x, y) - averageSeaLevel)*5 + 120;
-							if (d > 255) d = 255;
-							if (d < 0) d = 0;
-							g.setColor(new Color(0, 0, d));
-							g.fillRect(x*scale, y*scale, scale, scale);
-						} else {
-							g.setColor(new Color(h, h, h));
-							g.fillRect(x*scale, y*scale, scale, scale);
-						}
-						*/
 					}
 				}
+			}
+			// Equator and 45 degree lines.
+			g.setColor(new Color(255, 0, 0, 128));
+			for (int y : new int[] { height/2, height/4, (height*3)/4 }) {
+				g.drawLine(0, y*scale, width*scale, y*scale);
 			}
 			
 		}
@@ -188,7 +181,7 @@ class Gaian extends WorldBuilder {
 
 	
 	int	averageSeaLevel = 0;
-	int	seaGrowthRate = 5;
+	int	seaGrowthRate = 2;
 	private void createSea() {
 		normaliseHeights();
 		basicFlood(30);
@@ -248,21 +241,21 @@ class Gaian extends WorldBuilder {
 				}
 			}
 			int		h = getHydrographics();
-			if (numberChanged == 0) {
+			if (numberChanged <= seaGrowthRate*2) {
 				if (h < hydrographics/2) {
 					seaLevel += seaGrowthRate * 2;
 				} else {
 					seaLevel += seaGrowthRate;
 				}
-				//draw();
-			} else if (numberChanged < (hydrographics - h)) {
-				seaLevel += seaGrowthRate;
 				draw();
+			} else if (numberChanged < (hydrographics - h)/2) {
+				//seaLevel += seaGrowthRate;
+				//draw();
 			} else if ((h < hydrographics) && Die.d100() == 1) {
 				seaLevel++;
 				draw();
 			}
-
+			//draw();
 			int		total = 0, count=0;
 			for (int x=0; x < width; x++) {
 				for (int y=0; y < height; y++) {
@@ -607,6 +600,7 @@ class Gaian extends WorldBuilder {
 		
 		int		grassLine = fertility - 5;
 		int		treeLine = fertility - 10;
+		int		tropicsLatitude = planet.getTilt();
 		
 		boolean		done = false;
 		while (!done) {
@@ -614,6 +608,8 @@ class Gaian extends WorldBuilder {
 			int		updates = 0;
 			for (int y=0; y < height; y++) {
 				int		latitude = getLatitude(y);
+				int		tropics = 90 - Math.abs(latitude - tropicsLatitude);
+				
 				for (int x=0; x < width; x++) {
 					if (getTerrain(x, y).isWater()) {
 						continue;
@@ -625,15 +621,27 @@ class Gaian extends WorldBuilder {
 						continue;
 					}
 					int		sum = getNeighbourSum(fertilityMap, x, y);
-					int		localFertility = fertility - latitude - getHeight(x, y) + averageSeaLevel;
+					int		localFertility = fertility - latitude/2 - (int)((getHeight(x, y) - averageSeaLevel)*1.5);
+					
+					// Work out the effects of the tropics. These should be dry
+					// and mostly desert, though it is affected by the amount of
+					// land at that longitude.
+					int		tropicalModifier = tropics - 80 + (getLandCount(x)/5);
+					if (tropicalModifier > 0) {
+						localFertility -= tropicalModifier * 2;
+					} else if (latitude < tropicsLatitude) {
+						// Anything between the tropics and the equator
+						// are forced to be very fertile.
+						localFertility *= 1.5;
+					}
+					
 					if (getHeight(x, y) > treeLine) {
 						localFertility /= 2;
 					}
 					
-					
 					if (sum > fertilityMap[x][y] && Die.d100() > getHeight(x, y)) {
 						if (fertilityMap[x][y] < localFertility) {
-							fertilityMap[x][y]++;
+							fertilityMap[x][y] += Die.d3();
 							updates++;
 						}
 					}
@@ -664,6 +672,7 @@ class Gaian extends WorldBuilder {
 		Gaian g = new Gaian(513, 257);
 		g.setPlanet(new Planet("Bob",PlanetType.Gaian,6400));
 		g.planet.setHydrographics(70);
+		g.planet.setTilt(22);
 		g.planet.setTemperature(Temperature.Standard);
 		g.planet.setLifeLevel(LifeType.Extensive);
 		g.planet.setAtmosphereType(AtmosphereType.Standard);
