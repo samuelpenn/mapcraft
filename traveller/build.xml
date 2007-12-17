@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<project name="Traveller" default="deploy">
+	<path id="lib.path">
+		<pathelement location="support/catalina.jar"/>
+		<pathelement location="support/catalina-ant.jar"/>
+	</path>
+	
+	<property file="ant.properties"/>
+
+	<target name="build">
+		<fail unless="rpg.lib.file" message="Cannot find location of RPG library, see the README for details."/>
+		<copy file="${rpg.lib.file}" todir="WEB-INF/lib"/>
+		<!-- <javac srcdir="src" destdir="build"/> -->
+	</target>
+	
+	<target name="webapp" depends="build">
+		<fail unless="project.name" message="The project name has not been set, see the README for details."/>
+		<mkdir dir="release"/>
+		<war destfile="release/${project.name}.war" webxml="WEB-INF/web.xml">
+			<classes dir="build"/>
+			<fileset dir="webapp"/>
+			<webinf dir="WEB-INF">
+				<exclude name="**/web.xml"/>
+			</webinf>
+		</war>
+	</target>
+	
+	<target name="deploy" depends="webapp">
+		<taskdef  classpathref="lib.path"  classname="org.apache.catalina.ant.DeployTask" name="deploy"/>
+		
+		<fail unless="project.name" message="The project name has not been set, see the README for details."/>
+		
+		<deploy username="${appserver.username}" password="${appserver.password}" url="${appserver.url}" 
+			    war="release/${project.name}.war"
+			    path="/${project.name}"
+			    update="true">
+		</deploy>
+	</target>
+	
+</project>
