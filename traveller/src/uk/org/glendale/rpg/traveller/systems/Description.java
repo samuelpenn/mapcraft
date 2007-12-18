@@ -144,9 +144,12 @@ public class Description {
 
 		try {
 			// Switch statement.
-			// <VARIABLE|VALUE=a|VALUE=b|VALUE=c|DEFAULT>
+			// (VARIABLE|VALUE=a|VALUE=b|VALUE=c|DEFAULT)
+			// If the VARIABLE is equal to a VALUE, display the option for that value.
+			// If VALUE> or VALUE< is used (instead of VALUE=), select the option if the
+			// VALUE is greater than or less than the VARIABLE.
 			while (line.indexOf("(") >= 0 && line.indexOf(")") >= 0) {
-				String				options = line.substring(line.indexOf("(")+1, line.indexOf(")")+2);
+				String				options = line.substring(line.indexOf("(")+1, line.indexOf(")")+1);
 				String[]			tokens = options.split("\\|");
 				String				option = "";
 				String				value = getProperty(tokens[0].replaceAll("\\$", ""));
@@ -156,6 +159,7 @@ public class Description {
 				for (int i=1; i < tokens.length; i++) {
 					String		test = tokens[i].replaceAll("[=<>].*", "");
 					option = tokens[i].replaceAll(".*[=<>]", "");
+					
 					System.out.println(tokens[i]);
 					if (tokens[i].indexOf("=") > -1) {
 						System.out.println("Equal to case");
@@ -163,10 +167,25 @@ public class Description {
 							break; 
 						}
 					} else if (tokens[i].indexOf("<") > -1) {
-						System.out.println("Less than case");
+						System.out.println("Less than case");						
+						try {
+							Long	v = Long.parseLong(value);
+							Long	t = Long.parseLong(test);
+							if (t < v) break;
+						} catch (NumberFormatException e) {
+							if (value.compareToIgnoreCase(test) < 0) break;
+						}
+						
 					} else if (tokens[i].indexOf(">") > -1) {
 						// Is the tested value greater than this case?
 						System.out.println("Greater than case");					
+						try {
+							Long	v = Long.parseLong(value);
+							Long	t = Long.parseLong(test);
+							if (t > v) break;
+						} catch (NumberFormatException e) {
+							if (value.compareToIgnoreCase(test) > 0) break;
+						}
 					} else {
 						// Default value.
 						System.out.println("Default");
@@ -250,7 +269,6 @@ public class Description {
 
 	private void generate() {
 		buffer = new StringBuffer();
-		String				text = null;
 
 		// Get a comment on the world's temperature.
 		addText(buffer, "planet."+planet.getType(), 100);
@@ -318,7 +336,7 @@ public class Description {
 	 */
 	public static void main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
-		int[]			samples = { 68290 };
+		int[]			samples = { 1370 };
 		
 		for (int i=0; i < samples.length; i++) {
 			Planet			planet = new Planet(factory, samples[i]);
