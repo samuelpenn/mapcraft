@@ -16,9 +16,6 @@ import uk.org.glendale.rpg.traveller.Config;
 import uk.org.glendale.rpg.traveller.Log;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
@@ -308,7 +305,6 @@ public class ObjectFactory {
 		
 		return ss;		
 	}
-
 	
 	public Vector<Star> getStarsBySystem(int systemId) {
 		Vector<Star>		list = new Vector<Star>();
@@ -483,7 +479,7 @@ public class ObjectFactory {
 	
 	public void storePlanetMap(int id, ByteArrayOutputStream stream) {
 		String		table = "map";
-		Hashtable	data = new Hashtable();
+		Hashtable<String,Object>	data = new Hashtable<String,Object>();
 		byte[]		bytes = stream.toByteArray();
 		
 		data.put("planet_id", id);
@@ -492,14 +488,13 @@ public class ObjectFactory {
 		try {
 			db.insert2(table, data);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public void storePlanetGlobe(int id, ByteArrayOutputStream stream) {
 		String		table = "globe";
-		Hashtable	data = new Hashtable();
+		Hashtable<String,Object>	data = new Hashtable<String,Object>();
 		byte[]		bytes = stream.toByteArray();
 		
 		data.put("planet_id", id);
@@ -508,7 +503,6 @@ public class ObjectFactory {
 		try {
 			db.insert2(table, data);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
