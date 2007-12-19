@@ -106,6 +106,12 @@ public class Name {
     	name = name.replaceAll(" '", "'");
     	name = name.replaceAll("_", " ");
     	
+    	for (int i=0; i < name.length(); i++) {
+    		if (name.charAt(i) == ' ' && i < name.length()-2) {
+    			name = name.substring(0, i+1) + name.substring(i+1, i+2).toUpperCase() + name.substring(i+2); 
+    		}
+    	}
+    	
     	return name.trim();
     }
     

@@ -108,7 +108,19 @@ public class Star {
 		// Randomise the star class.
 		switch (Die.d6(3)) {
 		case 3: case 4: case 5: case 6:
-			starClass = StarClass.D;
+			switch (Die.d6(3)) {
+			case 3:
+				starForm = StarForm.BlackHole;
+				starClass = StarClass.BH;
+				break;
+			case 4: case 5: case 6:
+				starForm = StarForm.NeutronStar;
+				starClass = StarClass.N;
+				break;
+			default:
+				starForm = StarForm.WhiteDwarf;
+				starClass = StarClass.D;
+			}
 			break;
 		case 7:
 			starClass = StarClass.VI;

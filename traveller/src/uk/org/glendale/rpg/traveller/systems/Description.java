@@ -288,9 +288,23 @@ public class Description {
 		planet.setDescription(description.getFullDescription(rootText));
 	}
 	
+	public String getFullDescription() {
+		return getFullDescription("planet."+planet.getType());
+	}
+
+	/**
+	 * Get the full description for this planet.
+	 * 
+	 * @param rootKey
+	 * @return
+	 */
 	private String getFullDescription(String rootKey) {
 		buffer = new StringBuffer();
 		addText(buffer, rootKey, 100);
+		addText(buffer, rootKey+".temperature."+planet.getTemperature(), 100);
+		addText(buffer, rootKey+".atmosphere."+planet.getAtmosphereType(), 100);
+		addText(buffer, rootKey+".atmosphere."+planet.getAtmospherePressure(), 100);
+		
 		
 		// Add description for any physical features.
 		Iterator<PlanetFeature>	features = planet.getFeatures();
@@ -336,7 +350,7 @@ public class Description {
 	 */
 	public static void main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
-		int[]			samples = { 1370 };
+		int[]			samples = { 5453 };
 		
 		for (int i=0; i < samples.length; i++) {
 			Planet			planet = new Planet(factory, samples[i]);
@@ -344,7 +358,9 @@ public class Description {
 
 			//System.out.println(description.parse("This planet is $Name with a population of $Population"));
 			//System.exit(0);
-			System.out.println(planet.getName()+" ("+planet.getType()+"): "+description.getText());
+			System.out.println(planet.getName()+" ("+planet.getType()+"): "+description.getFullDescription());
+			description.setDescription(planet);
+			planet.persist();
 		}
 		//System.out.println(description.parse("This is a really [nice|nasty|beautiful] thing."));
 		//System.out.println(description.parse("The [chaotic|anarchic|fractured|unstable] [societies|gangs|groups|governments|states] of this [world|planet] [make it|means that it is] a [dangerous|treacherous] place."));

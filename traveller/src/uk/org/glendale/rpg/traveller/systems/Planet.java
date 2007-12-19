@@ -1011,19 +1011,6 @@ public class Planet {
 		} else {
 			buffer.append("<h3>"+getName()+" ("+planetType+")"+((population>0)?" (Populated)":"")+"</h3>\n");
 		}
-		
-		// Description
-		if (description != null) {
-			buffer.append("<div class=\"description\">"+description+"</div>");
-		}
-		
-		buffer.append("<table width=\"100%\" border=\"0\"><tr><td style=\"background-color:black\">");
-		if (factory == null) factory = new ObjectFactory();
-		if (factory.hasPlanetGlobe(id)) {
-			int		imageSize = (int)(Math.pow(getRadius(), 0.3)*8);
-			buffer.append("<img src=\""+Config.getBaseUrl()+"planet/"+id+".jpg?globe\" width=\""+imageSize+"\" height=\""+imageSize+"\"/>");
-		}
-		buffer.append("</td><td>");
 
 		// Trade data
 		if (tradeCodes != null && tradeCodes.length() > 0) {
@@ -1033,8 +1020,10 @@ public class Planet {
 				buffer.append("<img width=\"16\" height=\"16\" src=\""+Config.getBaseUrl()+"images/symbols/trade_"+codes[c].toLowerCase()+".png\"/>");
 				buffer.append(getTrade(codes[c])+"; ");
 			}
+			buffer.append(" ("+id+")\n");
 			buffer.append("</p>\n");
 		}
+		
 
 		// Physical data
 		buffer.append("<p>\n");
@@ -1074,7 +1063,16 @@ public class Planet {
 			text = getGlossaryText(glossary, "starport-"+starport);
 			if (text != null) buffer.append("<p><i>"+text+"</i></p>");
 		}
-		buffer.append("</td></tr></table>");
+
+		buffer.append("<table width=\"100%\" border=\"0\"><tr><td style=\"background-color:black\">");
+		if (factory == null) factory = new ObjectFactory();
+		if (factory.hasPlanetGlobe(id)) {
+			int		imageSize = (int)(Math.pow(getRadius(), 0.3)*8);
+			buffer.append("<a href=\""+Config.getBaseUrl()+"planet/"+id+".jpg\">");
+			buffer.append("<img border=\"0\" src=\""+Config.getBaseUrl()+"planet/"+id+".jpg?globe\" width=\""+imageSize+"\" height=\""+imageSize+"\"/>");
+			buffer.append("</a>");
+		}
+		buffer.append("</td><td valign=\"top\">"+getDescription()+"</td></tr></table>");
 		
 		// Moons?
 		if (factory == null) factory = new ObjectFactory();
