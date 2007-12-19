@@ -262,6 +262,9 @@ public class Systems extends HttpServlet {
 		}
 		buffer.append("</div>\n");
 		
+		/*
+		 * Display trade information if this system has a populated world.
+		 */
 		Planet		mainWorld = system.getMainWorld();
 		if (mainWorld != null) {
 			buffer.append("<div id=\"trade\">");
@@ -326,15 +329,20 @@ public class Systems extends HttpServlet {
 		}
 		
 		buffer.append("<div id=\"stars\">\n");
-		buffer.append("<table id=\"tabs\">\n");
+		buffer.append("<table id=\"tabs\" cellspacing=\"0\">\n");
 		buffer.append("<tr>");
 		int		idx = 0;
+		String	c = "selected";
 		for (Star star : system.getStars()) {
 			String		image = Config.getBaseUrl()+"images/stars/"+star.getSpectralType().toString().substring(0, 1)+".png";
-			buffer.append("<td style=\"border: 1pt solid black\">");
-			buffer.append("<img src=\""+image+"\" width=\"64\" height=\"64\" onclick=\"selectStar('"+(idx++)+"')\"/>");
+			int			width = (int)(64 * star.getSize());
+			buffer.append("<td id=\"star_"+idx+"\" class=\""+c+"\">");
+			buffer.append("<img src=\""+image+"\" width=\""+width+"\" height=\""+width+"\" onclick=\"selectStar('"+idx+"')\"/>");
 			buffer.append("</td>");
+			idx++;
+			c = "unselected";
 		}
+		buffer.append("<td>&nbsp</td>");
 		buffer.append("</tr></table>\n");
 		buffer.append("</div>\n");
 		
@@ -344,8 +352,12 @@ public class Systems extends HttpServlet {
 		for (Star star : system.getStars()) {
 			buffer.append("<div id=\"planets_"+(idx++)+"\" class=\"planets\" "+style+">\n");
 			
-			buffer.append("<p>"+star.getName()+"</p>");
-			buffer.append("<p>"+star.getStarClass()+" / "+star.getSpectralType()+"</p>");
+			buffer.append("<h2>"+star.getName()+"</h2>");
+			buffer.append("<p><b>Star class: </b>"+star.getStarClass()+" ("+star.getStarClass().getDescription()+")</p>");
+			buffer.append("<p><b>Spectral type: </b>"+star.getSpectralType()+" ("+star.getSpectralType().getSurfaceTemperature()+" Kelvin)</p>");
+			buffer.append("<p><b>Inner orbit: </b>"+star.getInnerLimit()+" Mkm</p>");
+			buffer.append("<p><b>Ideal orbit: </b>"+star.getEarthDistance()+" Mkm</p>");
+			buffer.append("<p><b>Cold orbit: </b>"+star.getColdPoint()+" Mkm</p>");
 			
 			for (int i=0; i < planets.size(); i++) {
 				Planet	planet = planets.elementAt(i);
