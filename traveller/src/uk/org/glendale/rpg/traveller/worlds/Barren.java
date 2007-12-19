@@ -11,8 +11,20 @@
  */
 package uk.org.glendale.rpg.traveller.worlds;
 
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.event.MouseListener;
+
+import javax.swing.JFrame;
+
 import uk.org.glendale.rpg.traveller.systems.Planet;
+import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
+import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
+import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
+import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.utils.Die;
 
 /**
@@ -63,7 +75,7 @@ import uk.org.glendale.rpg.utils.Die;
 class Barren extends WorldBuilder {
 	private PlanetType		type = PlanetType.Selenian;
 	private Terrain			terrain = null;
-	private Terrain			lava = null;
+	private Terrain[]		lava = null;
 	private Terrain			ejecta = null;
 	private Terrain			impact = null;
 	private Terrain			highlands = null;
@@ -77,34 +89,74 @@ class Barren extends WorldBuilder {
 	private int				flatSize = 0;
 	
 	private int				highlandLower = 0;
+	
+	private FloodPlain[]	plains = null;
 		
 	Barren() {
 		super();
 		System.out.println("Creating Barren world");
 	}
 
-	/*
-	Hermian(230, 180, 115, -1, -1, -1, false),
-	HermianFlats(210, 190, 135, -0.7, -1, -1, false),
-	Ferrinian(120, 120, 50, 3, 2.0, 2.0, false),
-	FerrinianEjecta(100, 100, 50, 1.5, 1.0, 0.5, false),
-	Hadean(60, 30, 30, 0.8, 0.4, 0.3, false),
-	HadeanImpact(40, 20, 20, 0.4, 0.2, 0.1, false),
-	HadeanEjecta(90, 60, 60, 1, 0.8, 0.8, false),
-	Cerean(50, 50, 50, 2, 2, 1.5, false),
-	Vestian(90, 90, 90, 2, 2, 1.5, false),
-	*/
+	private Canvas		canvas = null;
+	private int[][]		waterMap = null;
+	
+	public boolean useImage = false;
+	
+	private class FloodPlain {
+		int		number = 0;
+		int		height = 0;
+		Terrain	terrain = null;
+		
+		FloodPlain(Terrain terrain, int number, int height) {
+			this.terrain = terrain;
+			this.number = number;
+			this.height = height;
+		}		
+	}
+	
+	private class MapCanvas extends Canvas {
+		private WorldBuilder b = null;
+		
+		MapCanvas(WorldBuilder b) {
+			super();
+			this.b = b;
+		}
+		public void paint(Graphics g) {
+			int scale = 3;
+			for (int x=0; x<width; x++) {
+				for (int y=0; y<height; y++) {
+					int		h = b.getHeight(x, y);
+					g.setColor(getTerrain(x, y).getColor(h));
+					g.fillRect(x*scale, y*scale, scale, scale);
+				}
+			}
+		}
+	}
+	
+	private void draw() {
+		canvas.paint(canvas.getGraphics());		
+	}
+	
 	
 	Barren(Planet planet, int width, int height) {
 		super(width, height);
 		this.planet = planet;
 		this.type = planet.getType();
+
+		JFrame		frame = new JFrame("Gaian World");
+		canvas = new MapCanvas(this);
+		canvas.setPreferredSize(new Dimension(width*3, height*3));
+		canvas.setVisible(true);
+		frame.add(canvas);
+		frame.setVisible(true);
+		frame.setMinimumSize(new Dimension(width*3, height*3));
+		frame.setSize(new Dimension(width*3+100, height*3+100));
 		
 		// Firstly, set basic variables.
 		switch (type) {
 		case Selenian:
 			terrain = Terrain.create("Selenian", 100, 100, 100, 1.5, 1.5, 1.5, false);
-			lava = Terrain.create("SelenianFlats", 140, 140, 140, -0.25, -0.25, -0.25, false);
+			lava = new Terrain[] { Terrain.create("SelenianFlats", 140, 140, 140, -0.25, -0.25, -0.25, false) };
 			ejecta = Terrain.create("SelenianEjecta", 130, 130, 130, 2, 2, 2, false);
 			impact = Terrain.create("SelenianImpact", 100, 100, 100, 1, 1, 1, false);
 			flats = Die.d10();
@@ -112,7 +164,7 @@ class Barren extends WorldBuilder {
 			break;
 		case Hermian:
 			terrain = Terrain.create("Hermian", 230, 180, 115, -1, -1, -1, false);
-			lava = Terrain.create("HermianFlats", 210, 190, 135, -0.7, -1, -1, false);
+			lava = new Terrain[] { Terrain.create("HermianFlats", 210, 190, 135, -0.7, -1, -1, false) };
 			impact = Terrain.create("HermianImpact", 230, 180, 115, -0.75, -1, -1, false);
 			craters = 500;
 			craterSize = 7;
@@ -152,7 +204,7 @@ class Barren extends WorldBuilder {
 		case Vestian:
 			terrain = Terrain.create("Vestian", 90, 90, 90, 2, 2, 1.5, false);
 			impact = terrain;
-			lava = Terrain.create("VestianFlats", 70, 70, 70, 1.5, 1.5, 1, false);;
+			lava = new Terrain[] { Terrain.create("VestianFlats", 70, 70, 70, 1.5, 1.5, 1, false) };
 			craters = 100;
 			craterSize = 15;
 			craterDepth = 0.5;
@@ -166,13 +218,23 @@ class Barren extends WorldBuilder {
 			//impact = Terrain.create("KuiperianDark", 25, 25, 25, 2, 2, 0.5, false);
 			craters = Die.d100();
 			ejecta = Terrain.create("KuiperianEjecta", 100, 75, 50, 3, 3, 2, false);
-			lava = Terrain.create("KuiperianLava", 50, 20, 10, 0.5, 0.5, 0.5, false);
+			lava = new Terrain[] { Terrain.create("KuiperianLava", 50, 20, 10, 0.5, 0.5, 0.5, false) };
 			flats = Die.d8();
 			flatSize = Die.d100(5);
 			break;
 		case Hephaestian:
-			terrain = Terrain.create("Hephaestian", 100, 75, 50, 3, 2, 0.5, false);
-			craterDepth = 0.85;
+			terrain = Terrain.create("Hephaestian", 100, 75, 0, 2.5, 2.5, 2, false);
+			ejecta = impact = Terrain.create("HephaestianCrater", 100, 75, 0, 2.5, 2, 1.5, false);
+			craters = Die.d20(2);
+			craterSize = 10;
+			craterDepth = 0.7;
+			
+			plains = new FloodPlain[] { new FloodPlain(Terrain.create("HephaestianIces", 100, 75, 0, 2.5, 2.5, 3, false), 100, 50),
+					                    new FloodPlain(Terrain.create("HephaestianLava", 150, 75, 0, 4, 1.5, 1.5, false), 25, 25) };
+			
+			//highlands = Terrain.create("HephaestianHighlands", 100, 50, 0, 1, 0.75, 0.5, false);
+			//highlands = Terrain.create("HephaestianHighlands", 0, 0, 0, 0.1, 0.1, 0.1, false);
+			highlandLower = 50;
 			break;
 		}
 	}
@@ -198,17 +260,83 @@ class Barren extends WorldBuilder {
 		}
 	}
 	
+	private int countNeighbours(int x, int y, Terrain t) {
+		int		count = 0;
+		
+		if (getTerrain(x-1, y) == t) count++;
+		if (getTerrain(x+1, y) == t) count++;
+		if (getTerrain(x, y-1) == t) count++;
+		if (getTerrain(x, y+1) == t) count++;
+		
+		return count;
+	}
+
+	private int countNeighboursHigher(int x, int y, Terrain t) {
+		int		count = 0;
+		int		h = getHeight(x, y);
+		
+		if (getTerrain(x-1, y) == t && getHeight(x-1, y) >= h) count++;
+		if (getTerrain(x+1, y) == t && getHeight(x+1, y) >= h) count++;
+		if (getTerrain(x, y-1) == t && getHeight(x, y-1) >= h) count++;
+		if (getTerrain(x, y+1) == t && getHeight(x, y+1) >= h) count++;
+		
+		return count;
+	}
+	
+	private void floodWithLava(Terrain t, int number, int maxHeight) {
+		for (int i = 0; i < number; i++) {
+			setTerrain(Die.rollZero(width), Die.rollZero(height), t);
+		}
+		
+		int		lowest = 100;
+		boolean done = false;
+		while (!done) {
+			int		count = 0;
+			for (int y=0; y < height; y++) {
+				for (int x=0; x < width; x++) {
+					if (getTerrain(x, y) != t && countNeighboursHigher(x, y, t) > 0) {
+						setTerrain(x, y, t);
+						count++;
+						if (getHeight(x, y) < lowest) lowest = getHeight(x,y);
+					}
+				}
+			}
+			System.out.println("Flow: "+count);
+			if (count == 0) done = true;
+			draw();
+		}
+		
+		for (int h=lowest; h < lowest + maxHeight; h++) {
+			done = false;
+			while (!done) {
+				int		count = 0;
+				for (int y=0; y < height; y++) {
+					for (int x=0; x < width; x++) {
+						if (getTerrain(x, y) != t && getHeight(x, y) <= h && countNeighbours(x, y, t) > 0) {
+							setTerrain(x, y, t);
+							count++;
+						}
+					}
+				}
+				System.out.println(h+": "+count);
+				if (count == 0) done = true;
+				if (count > (height * width /2)) maxHeight = h;
+			}			
+			draw();
+		}
+	}
+	
 	/**
 	 * Generate a number of larva flats of a given size at random points
 	 * on the planet's surface.
 	 */
-	private void basaltFlats(int number, int size) {
+	private void basaltFlats(int number, int size, Terrain l) {
 		for (int flat=0; flat < number; flat++) {
 			int		x = Die.die(width);
 			int		y = Die.die((int)(height*0.8)) + (int)(height * 0.2);
 			
-			setHeight(x, y, getHeight(x, y) + Die.d10());			
-			generateLava(x, y, getHeight(x, y), size);
+			setHeight(x, y, getHeight(x, y) + 10);
+			generateLava(x, y, getHeight(x, y), size, l);
 		}
 	}
 	
@@ -216,7 +344,7 @@ class Barren extends WorldBuilder {
 	 * Recursively generate lava flats, until we hit another lava flat
 	 * or the size counter drops below zero.
 	 */
-	private void generateLava(int x, int y, int h, int size) {
+	private void generateLava(int x, int y, int h, int size, Terrain l) {
 		if (size < 0) {
 			return;
 		}
@@ -224,25 +352,25 @@ class Barren extends WorldBuilder {
 		if (x >= width) x -= width;
 		if (y < 0 || y >= height) return;
 		
-		if (getTerrain(x, y) == lava) return;
-		setTerrain(x, y, lava);
+		if (getTerrain(x, y) == l) return;
+		setTerrain(x, y, l);
 		
 		try {
 			if (getHeight(x-1, y) <= h) {
-				setHeight(x-1, y, (getHeight(x-1, y) + h)/2);
-				generateLava2(x-1, y, h, size - Die.d2());
+				setHeight(x-1, y, (getHeight(x-1, y)*2 + h)/3);
+				generateLava2(x-1, y, h, size - Die.d2(), l);
 			}
 			if (getHeight(x+1, y) <= h) {
-				setHeight(x+1, y, (getHeight(x+1, y) + h)/2);
-				generateLava2(x+1, y, h, size - Die.d2());
+				setHeight(x+1, y, (getHeight(x+1, y)*2 + h)/3);
+				generateLava2(x+1, y, h, size - Die.d2(), l);
 			}
 			if (getHeight(x, y+1) <= h) {
-				setHeight(x, y+1, (getHeight(x, y+1) + h)/2);
-				generateLava2(x, y+1, h, size - Die.d2());
+				setHeight(x, y+1, (getHeight(x, y+1)*2 + h)/3);
+				generateLava2(x, y+1, h, size - Die.d2(), l);
 			}
 			if (getHeight(x, y-1) <= h) {
-				setHeight(x, y-1, (getHeight(x, y-1) + h)/2);
-				generateLava2(x, y-1, h, size - Die.d2());
+				setHeight(x, y-1, (getHeight(x, y-1)*2 + h)/3);
+				generateLava2(x, y-1, h, size - Die.d2(), l);
 			}
 		} catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println("generateLava: "+x+","+y);
@@ -254,7 +382,7 @@ class Barren extends WorldBuilder {
 	 * If we don't do this, we get lateral bias in the growth of the
 	 * flat. There's probably a better way of doing this.
 	 */
-	private void generateLava2(int x, int y, int h, int size) {
+	private void generateLava2(int x, int y, int h, int size, Terrain l) {
 		if (size < 0) {
 			return;
 		}
@@ -262,25 +390,25 @@ class Barren extends WorldBuilder {
 		if (x >= width) x -= width;
 		if (y < 0 || y >= height) return;
 		
-		if (getTerrain(x, y) == lava) return;
-		setTerrain(x, y, lava);
+		if (getTerrain(x, y) == l) return;
+		setTerrain(x, y, l);
 		
 		try {
 			if (getHeight(x, y-1) <= h) {
-				setHeight(x, y-1, (getHeight(x, y-1) + h)/2);
-				generateLava(x, y-1, h, size - Die.d2());
+				setHeight(x, y-1, (getHeight(x, y-1)*2 + h)/3);
+				generateLava(x, y-1, h, size - Die.d2(), l);
 			}
 			if (getHeight(x, y+1) <= h) {
-				setHeight(x, y+1, (getHeight(x, y+1) + h)/2);
-				generateLava(x, y+1, h, size - Die.d2());
+				setHeight(x, y+1, (getHeight(x, y+1)*2 + h)/3);
+				generateLava(x, y+1, h, size - Die.d2(), l);
 			}
 			if (getHeight(x+1, y) <= h) {
-				setHeight(x+1, y, (getHeight(x+1, y) + h)/2);
-				generateLava(x+1, y, h, size - Die.d2());
+				setHeight(x+1, y, (getHeight(x+1, y)*2 + h)/3);
+				generateLava(x+1, y, h, size - Die.d2(), l);
 			}
 			if (getHeight(x-1, y) <= h) {
-				setHeight(x-1, y, (getHeight(x-1, y) + h)/2);
-				generateLava(x-1, y, h, size - Die.d2());
+				setHeight(x-1, y, (getHeight(x-1, y)*2 + h)/3);
+				generateLava(x-1, y, h, size - Die.d2(), l);
 			}
 		} catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println("generateLava: "+x+","+y);
@@ -307,7 +435,27 @@ class Barren extends WorldBuilder {
 
 		// If there are flats defined, then generate some.
 		if (lava != null) {
-			basaltFlats(flats, flatSize);
+			for (Terrain l : lava) {
+				basaltFlats(flats, flatSize, l);
+			}
 		}
+		
+		if (plains != null) {
+			for (FloodPlain p : plains) {
+				floodWithLava(p.terrain, p.number, p.height);
+				draw();
+			}
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		Planet	p = new Planet("Bob", PlanetType.Hephaestian, 4000);
+		Barren w = new Barren(p, 513, 257);
+		w.planet.setTilt(22);
+		w.planet.setTemperature(Temperature.Standard);
+		//g.draw();
+		w.generate();
+		//g.getWorldMap(2).save(new File("/home/sam/gaian.jpg"));
+		Thread.sleep(10000);
 	}
 }

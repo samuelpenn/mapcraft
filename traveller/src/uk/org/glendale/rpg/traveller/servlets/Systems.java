@@ -342,7 +342,7 @@ public class Systems extends HttpServlet {
 			idx++;
 			c = "unselected";
 		}
-		buffer.append("<td>&nbsp</td>");
+		buffer.append("<td width=\"100%\">&nbsp;</td>");
 		buffer.append("</tr></table>\n");
 		buffer.append("</div>\n");
 		

@@ -486,6 +486,7 @@ public class ObjectFactory {
 		data.put("image", bytes);
 		
 		try {
+			db.delete(table, "planet_id="+id);
 			db.insert2(table, data);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -501,6 +502,7 @@ public class ObjectFactory {
 		data.put("image", bytes);
 		
 		try {
+			db.delete(table, "planet_id="+id);
 			db.insert2(table, data);
 		} catch (SQLException e) {
 			e.printStackTrace();
