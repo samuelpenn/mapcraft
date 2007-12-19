@@ -57,23 +57,27 @@ table#tabs tr {
 table#tabs td {
 	margin: 0px;
 	padding: 0px;
-	width: 96;
 	height: 96;
+	min-width: 128;
 	text-align: center;
 	vertical-align: center;
 	margin-right: 10px;
 	border-bottom: 3px solid #4a68ea;
-	background-color: black;
 	border-spacing: 5px 0px;
+	background-color: white;
 }
 
 table#tabs td.selected {
+	background-color: black;
 	border: 3px solid #4a68ea;
 	border-bottom: 3px solid white;
 	max-width: 96;
 }
 
 table#tabs td.unselected {
+	border: 1px solid #4a68ea;
+	border-bottom: 3px solid #4a68ea;
+	background-color: black;
 	max-width: 96;
 }
 
@@ -81,6 +85,7 @@ div#planets {
 	margin-top: 0px;
 	padding-top: 0px;
 	border: 1px solid #4a68ea;
+	border-left: 3px solid #4a68ea;
 	border-top: none;
 	padding-left: 5px;
 }
