@@ -46,9 +46,11 @@ public class Jovian extends WorldBuilder {
 			break;
 		case SubJovian:
 			// Less variance.
-			redVar = 0;
-			red = 120;
-			greenVar = blueVar = 1;
+			red = 200;
+			green = 200;
+			blue = 120;
+			redVar = greenVar = 2;
+			blueVar = 1;
 			break;
 		case SuperJovian:
 			redVar = 3;

@@ -1035,6 +1035,17 @@ public class WorldBuilder {
 			}
 		}
 	}
+
+	public static void imagePlanet(int planetId) throws Exception {
+		ObjectFactory		factory = new ObjectFactory();
+		Planet				planet = new Planet(factory, planetId);
+		
+		WorldBuilder		wb = WorldBuilder.getBuilder(planet, 513, 257);
+		wb.generate();
+		SimpleImage		simple = wb.getWorldMap(2);
+		factory.storePlanetMap(planet.getId(), simple.save());
+		factory.storePlanetGlobe(planet.getId(), wb.getWorldGlobe(2).save());				
+	}
 	
 	public static void exampleGlobes() throws Exception {
 		for (PlanetType type : PlanetType.values()) {
@@ -1055,7 +1066,8 @@ public class WorldBuilder {
 	public static void main(String[] args) throws Exception {
 		System.out.println(GraphicsEnvironment.isHeadless());
 		
-		createPlanetType(PlanetType.Hephaestian);
+		//createPlanetType(PlanetType.Hephaestian);
+		imagePlanet(5454);
 		//imageUniverse(38);
 		//exampleGlobes();
 		System.exit(0);
