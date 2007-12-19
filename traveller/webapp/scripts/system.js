@@ -24,4 +24,14 @@ function selectStar(id) {
 	if (div != null) {
 		div.style.display = "block";
 	}
+	
+	for (i = 0; i < 9; i++) {
+		var		div = document.getElementById("star_"+i);
+		if (div != null && i != id) {
+			div.className = "unselected";
+		} else if (i == id) {
+			div.className = "selected";
+		}
+	}
+	
 }
