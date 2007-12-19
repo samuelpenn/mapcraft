@@ -19,6 +19,7 @@ import java.util.*;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.database.ObjectNotFoundException;
 import uk.org.glendale.rpg.traveller.map.PostScript;
+import uk.org.glendale.rpg.traveller.systems.Name;
 import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
 import uk.org.glendale.rpg.traveller.systems.UWP;
@@ -516,17 +517,21 @@ public class Sector {
 	 * @param density		Percentage of hexes which have a star system.
 	 */
 	public void create(int density) {
-		String		alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		String		baseName = alpha.substring(x+12, x+13)+alpha.substring(y+12, y+13);
+		Name		names = new Name("planet");
 
 		for (int x=1; x <= WIDTH; x++) {
 			for (int y=1; y <= HEIGHT; y++) {
 				if (Die.d100() <= density) {
 					// Create a new star system.
-					int				ssx = (x%8 == 0)?8:x%8;
-					int				ssy = (y%10 == 0)?10:y%10;
-					int				number = ssx*100 + ssy;
-					String			name = baseName + Sector.getSubSector(x, y)+number;
+					String			name = names.getName();
+					try {
+						while (new StarSystem(factory, name) != null) {
+							name = names.getName();
+						}
+					} catch (ObjectNotFoundException e) {
+						// Come here if the chosen name is unique.
+					}
+					
 					StarSystem		ss = new StarSystem(factory, name, getId(), x, y);
 					ss.persist();
 				}
@@ -540,9 +545,6 @@ public class Sector {
 	 * @param file
 	 */
 	public void create(File file) {
-		String				alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		//String				baseName = alpha.substring(x+12, x+13)+alpha.substring(y+12, y+13);
-
 		FileReader          reader = null;
         LineNumberReader    input = null;
         try {
@@ -793,7 +795,9 @@ public class Sector {
 	public static void main(String[] args) throws Exception {
 		//createTravellerSub();
 		//createMortals();
-		//createSol();
+		createSol();
+		
+		System.exit(0);
 		
 		ObjectFactory		factory = new ObjectFactory();
 		Sector				sector = new Sector(factory, 0, 0);
