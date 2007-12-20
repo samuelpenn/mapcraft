@@ -978,15 +978,26 @@ public class WorldBuilder {
 			// Any Jovian worlds should be created here.
 			wb = new Jovian(planet, width, height);
 			break;
+		case LithicGelidian:
+		case Europan:
+		case EuTitanian:
+		case MesoTitanian:
+		case TitaniLacustric:
+		case Iapetean:
+		case JaniLithic:
+		case Tritonic:
+			wb = new IceWorld(planet, width, height);
+			break;
 		case Gaian:
 		case EoGaian:
 		case ArchaeoGaian:
 		case GaianTundral:
 		case MesoGaian:
 		case PostGaian:
+			wb = new Gaian(width, height);
+			break;
 		case Arean:
 		case EoArean:
-			wb = new Gaian(width, height);
 			break;
 		default:
 			throw new IllegalArgumentException("Unrecognised "+type);
@@ -1067,7 +1078,7 @@ public class WorldBuilder {
 		System.out.println(GraphicsEnvironment.isHeadless());
 		
 		//createPlanetType(PlanetType.Hephaestian);
-		imagePlanet(5458);
+		imagePlanet(5460);
 		//imageUniverse(38);
 		//exampleGlobes();
 		System.exit(0);

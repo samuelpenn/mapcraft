@@ -28,51 +28,14 @@ import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.utils.Die;
 
 /**
- * Generates a map for a barren world. Barren worlds are dry rock worlds
- * with craters and mountains but little in the way of other features.
- * This class supports a large number of planet types, including
- * rocky planetoids (aka dwarf planets).
- * 
- * Barren worlds can consist of:
- *   Craters   : Impact craters from asteroid bombardments.
- *   Flats     : Ancient lava flows long since cooled and hardened.
- *   Highlands : Remanents of a crust, for worlds which have had their
- *               crust stripped away.
- *   Ejecta    : Surface shaped by ejecta from asteroid impacts.
- *   Bumps     : Misshapen surface, common planetoids.
- * 
- * Selenian (Planetoid)
- * 
- *   Similar to our moon, no tectonic activity, no atmosphere, and no water.
- *   A cratered surface with a few ancient lava flats and a dusty surface.
- *   
- * Hermian
- * 
- *   Similar to Mercury. Hard hot rock, otherwise dead. Plenty of craters.
- *   
- * Ferrinian
- * 
- *   Very heavy metals, with some hard rock. Cratered, no dust or atmosphere.
- *   
- * Hadean (Planetoid)
- * 
- *   Planetoid, halfway between asteroid and a full planet.
- *   
- * Cerean (Planetoid)
- * 
- * Vestian (Planetoid)
- * 
- * Kuiperian (Planetoid)
- * 	 
- *   Methane ice world, similar to Pluto.
- *   
- * Hephaestian (Planetoid)
- * 
- * 	 Active, volcanic world like Io.
+ * Generates a map for an ice world. These are worlds large enough to be
+ * considered at least dwarf planets, probably with some sort of atmosphere
+ * and some structured core and crust. They may be totally frozen, or have
+ * liquid oceans beneath their crust.
  * 
  * @author Samuel Penn.
  */
-class Barren extends WorldBuilder {
+class IceWorld extends WorldBuilder {
 	private PlanetType		type = PlanetType.Selenian;
 	private Terrain			terrain = null;
 	private Terrain[]		lava = null;
@@ -92,7 +55,7 @@ class Barren extends WorldBuilder {
 	
 	private FloodPlain[]	plains = null;
 		
-	Barren() {
+	IceWorld() {
 		super();
 		System.out.println("Creating Barren world");
 	}
@@ -138,12 +101,12 @@ class Barren extends WorldBuilder {
 	}
 	
 	
-	Barren(Planet planet, int width, int height) {
+	IceWorld(Planet planet, int width, int height) {
 		super(width, height);
 		this.planet = planet;
 		this.type = planet.getType();
 
-		JFrame		frame = new JFrame("Gaian World");
+		JFrame		frame = new JFrame("Ice World");
 		canvas = new MapCanvas(this);
 		canvas.setPreferredSize(new Dimension(width*3, height*3));
 		canvas.setVisible(true);
@@ -154,88 +117,29 @@ class Barren extends WorldBuilder {
 		
 		// Firstly, set basic variables.
 		switch (type) {
-		case Selenian:
-			terrain = Terrain.create("Selenian", 100, 100, 100, 1.5, 1.5, 1.5, false);
-			lava = new Terrain[] { Terrain.create("SelenianFlats", 140, 140, 140, -0.25, -0.25, -0.25, false) };
-			ejecta = Terrain.create("SelenianEjecta", 130, 130, 130, 2, 2, 2, false);
-			impact = Terrain.create("SelenianImpact", 100, 100, 100, 1, 1, 1, false);
-			flats = Die.d10();
-			flatSize = Die.d100(5);
-			break;
-		case Hermian:
-			terrain = Terrain.create("Hermian", 230, 180, 115, -1, -1, -1, false);
-//			lava = new Terrain[] { Terrain.create("HermianFlats", 210, 190, 135, -0.7, -1, -1, false) };
-			impact = Terrain.create("HermianImpact", 230, 180, 115, -0.75, -1, -1, false);
-			craters = 500;
-			craterSize = 7;
-			craterDepth = 0.7;
-			plains = new FloodPlain[] { new FloodPlain(Terrain.create("HermianLava", 210, 190, 135, -0.7, -1, -1, false), 50, 15)};
-//			flats = Die.d8();
-//			flatSize = Die.d100(3);
-			break;
-		case Ferrinian:
-			terrain = Terrain.create("Ferrinian", 120, 120, 50, 3, 2, 2, false);
-			impact = terrain;
-			ejecta = Terrain.create("FerrinianEjecta", 100, 100, 50, 1.5, 1.0, 0.5, false);
-			craters = 1500;
-			craterSize = 6;
+		case LithicGelidian:
+			terrain = Terrain.create("LithicGelidian", 0, 0, 0, 3, 2, 1.5, false);
+			impact = Terrain.create("LithicGelidianImpact", 25, 20, 0, 3, 2, 1, false);
+			craters = 100;
+			craterSize = 10;
 			craterDepth = 0.8;
 			break;
-		case Hadean:
-			terrain = Terrain.create("Hadean", 60, 30, 30, 0.8, 0.4, 0.3, false);
-			impact = Terrain.create("HadeanImpact", 40, 20, 20, 0.4, 0.2, 0.1, false);
-			ejecta = Terrain.create("HadeanEjecta", 90, 60, 60, 1, 0.8, 0.8, false);
-			highlands = Terrain.create("HadeanHighlands", 50, 50, 50, 1.5, 1.25, 1.25, false);
-			craters = 100;
-			craterSize = 20;
-			highlandLower = 80;
-			bumps = Die.d6(2);
+		case Europan:
+			terrain = Terrain.create("Ice", 150, 150, 150, 1, 1, 1, false);
 			break;
-		case Cerean:
-			terrain = Terrain.create("Cerean", 50, 50, 50, 2, 2, 1.5, false);
-			impact = Terrain.create("CereanImpact", 25, 25, 25, 1, 1, 0.75, false);
-			ejecta = Terrain.create("CereanEjecta", 150, 150, 150, 2, 2, 1.5, false);
-			craters = 200;
-			craterSize = 15;
-			craterDepth = 0.9;
-			highlands = Terrain.create("CereanHighlands", 75, 75, 75, 1, 1, 0.75, false);
-			highlandLower = 75;
-			bumps = Die.d4(2);
+		case EuTitanian:
+		case MesoTitanian:
+		case TitaniLacustric:
+			terrain = Terrain.create("Ice", 50, 50, 50, 1, 1, 1, false);
 			break;
-		case Vestian:
-			terrain = Terrain.create("Vestian", 90, 90, 90, 2, 2, 1.5, false);
-			impact = terrain;
-			lava = new Terrain[] { Terrain.create("VestianFlats", 70, 70, 70, 1.5, 1.5, 1, false) };
-			craters = 100;
-			craterSize = 15;
-			craterDepth = 0.5;
-			highlands = Terrain.create("VestianHighlands", 90, 90, 90, 1.5, 1.5, 1.5, false);
-			highlandLower = 75;
-			flats = Die.d8(2);
-			flatSize = 100 + Die.d100(3);
-			bumps = Die.d4(1);
-		case Kuiperian:
-			terrain = Terrain.create("KuiperianIces", 100, 75, 50, 1.5, 1.5, 1, false);
-			//impact = Terrain.create("KuiperianDark", 25, 25, 25, 2, 2, 0.5, false);
-			craters = Die.d100();
-			ejecta = Terrain.create("KuiperianEjecta", 100, 75, 50, 3, 3, 2, false);
-			lava = new Terrain[] { Terrain.create("KuiperianLava", 50, 20, 10, 0.5, 0.5, 0.5, false) };
-			flats = Die.d8();
-			flatSize = Die.d100(5);
+		case Iapetean:
+			terrain = Terrain.create("Ice", 150, 150, 150, 1, 1, 1, false);
 			break;
-		case Hephaestian:
-			terrain = Terrain.create("Hephaestian", 100, 75, 0, 2.5, 2.5, 2, false);
-			ejecta = impact = Terrain.create("HephaestianCrater", 100, 75, 0, 2.5, 2, 1.5, false);
-			craters = Die.d20(2);
-			craterSize = 10;
-			craterDepth = 0.7;
-			
-			plains = new FloodPlain[] { new FloodPlain(Terrain.create("HephaestianIces", 150, 100, 25, 2.5, 2.5, 3, false), 100, 25),
-					                    new FloodPlain(Terrain.create("HephaestianLava", 150, 75, 0, 4, 1.5, 1.5, false), 25, 10) };
-			
-			//highlands = Terrain.create("HephaestianHighlands", 100, 50, 0, 1, 0.75, 0.5, false);
-			//highlands = Terrain.create("HephaestianHighlands", 0, 0, 0, 0.1, 0.1, 0.1, false);
-			//highlandLower = 50;
+		case JaniLithic:
+			terrain = Terrain.create("Ice", 150, 150, 150, 1, 1, 1, false);
+			break;
+		case Tritonic:
+			terrain = Terrain.create("Ice", 150, 150, 150, 1, 1, 1.2, false);
 			break;
 		}
 	}
@@ -457,7 +361,7 @@ class Barren extends WorldBuilder {
 
 	public static void main(String[] args) throws Exception {
 		Planet	p = new Planet("Bob", PlanetType.Hephaestian, 4000);
-		Barren w = new Barren(p, 513, 257);
+		IceWorld w = new IceWorld(p, 513, 257);
 		w.planet.setTilt(22);
 		w.planet.setTemperature(Temperature.Standard);
 		//g.draw();
