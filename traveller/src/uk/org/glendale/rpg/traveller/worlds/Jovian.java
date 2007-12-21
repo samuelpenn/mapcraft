@@ -33,7 +33,6 @@ public class Jovian extends WorldBuilder {
 	 */
 	public void generate() {
 		int			numberOfBands = 10;
-		Terrain[]	bands = new Terrain[numberOfBands];
 		
 		int			red = 100, redVar = 2;
 		int			green = 100, greenVar = 2;
@@ -43,6 +42,7 @@ public class Jovian extends WorldBuilder {
 		switch (type) {
 		case EuJovian:
 			// Standard, as above.
+			numberOfBands = 8 + Die.d4();
 			break;
 		case SubJovian:
 			// Less variance.
@@ -51,25 +51,31 @@ public class Jovian extends WorldBuilder {
 			blue = 120;
 			redVar = greenVar = 2;
 			blueVar = 1;
+			numberOfBands = 4 + Die.d4();
 			break;
 		case SuperJovian:
+			numberOfBands = 8 + Die.d6();
 			redVar = 3;
 			break;
 		case MacroJovian:
+			numberOfBands = 8 + Die.d8();
 			redVar = 4;
 			greenVar = blueVar = 3;
 			break;
 		case CryoJovian:
+			numberOfBands = 3 + Die.d8();
 			redVar = 0;
 			red = 100;
 			green = blue = 120;
 			break;
 		case EpiStellarJovian:
+			numberOfBands = 2 + Die.d8(2);
 			redVar = 3;
 			green = blue = 50;
 			break;
 		}
 		
+		Terrain[]	bands = new Terrain[numberOfBands];
 		for (int band=0; band < numberOfBands; band++) {
 			bands[band] = Terrain.create("Band"+band, red+Die.d20(redVar), green+Die.d20(greenVar), blue+Die.d20(blueVar), 0.5, 0.5, 0.5, false);
 		}

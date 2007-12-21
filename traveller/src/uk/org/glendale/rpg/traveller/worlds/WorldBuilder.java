@@ -1078,7 +1078,7 @@ public class WorldBuilder {
 		System.out.println(GraphicsEnvironment.isHeadless());
 		
 		//createPlanetType(PlanetType.Hephaestian);
-		imagePlanet(5460);
+		imagePlanet(2036);
 		//imageUniverse(38);
 		//exampleGlobes();
 		System.exit(0);

@@ -64,12 +64,12 @@ public enum PlanetType {
 	Panthalassic(Category.Terrestrial, 5.5, 6000), 
 	PostGaian(Category.Terrestrial, 5.5, 6500, Habitability.Unpleasant), 
 	
-	CryoJovian(Category.Jovian, 1.0, 50000, Habitability.VeryHostile),
-	SubJovian(Category.Jovian, 1.0, 70000, Habitability.VeryHostile), 
+	CryoJovian(Category.Jovian, 1.1, 50000, Habitability.VeryHostile),
+	SubJovian(Category.Jovian, 0.8, 70000, Habitability.VeryHostile), 
 	EuJovian(Category.Jovian, 1.0, 90000, Habitability.VeryHostile), 
-	SuperJovian(Category.Jovian, 1.0, 120000, Habitability.VeryHostile),
-	MacroJovian(Category.Jovian, 1.0, 160000, Habitability.VeryHostile), 
-	EpiStellarJovian(Category.Jovian, 1.0, 100000, Habitability.VeryHostile);
+	SuperJovian(Category.Jovian, 1.5, 120000, Habitability.VeryHostile),
+	MacroJovian(Category.Jovian, 2.0, 160000, Habitability.VeryHostile), 
+	EpiStellarJovian(Category.Jovian, 1.2, 100000, Habitability.VeryHostile);
 	
 	private enum Category {
 		Belt, Asteroid, Terrestrial, Dwarf, Jovian;

@@ -443,6 +443,14 @@ public class Planet {
 		tradeCodes = rs.getString("trade");
 		description = rs.getString("description");
 		moon = rs.getInt("moon")>0;
+		
+		String	f = rs.getString("features");
+		if (f!=null && f.length() > 0) {
+			String[]	list = f.split(" ");
+			for (String item : list) {
+				addFeature(PlanetFeature.getByCode(item));
+			}
+		}
 	}
 	
 	/**
@@ -954,6 +962,13 @@ public class Planet {
 		data.put("moon", moon?1:0);
 		if (description != null) {
 			data.put("description", description);
+		}
+		if (features != null && features.size() > 0) {
+			String		v = "";
+			for (PlanetFeature f : features) {
+				v += f.getCode() + " ";
+			}
+			data.put("features", v.trim());
 		}
 		
 		int auto = factory.persist("planet", data);

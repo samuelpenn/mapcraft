@@ -12,6 +12,8 @@
 package uk.org.glendale.rpg.traveller.systems;
 
 import java.lang.reflect.Method;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
@@ -143,6 +145,18 @@ public class Description {
 		StringBuffer		buffer = new StringBuffer();
 
 		try {
+			// Replace any property variables.
+			while (line.indexOf("$") >= 0) {
+				String		prop = line.substring(line.indexOf("$")+1);
+				String		value = "";
+				
+				prop = prop.replaceAll("[^A-Za-z].*", "");
+				System.out.println(prop);
+				
+				value = getProperty(prop);
+				line = line.replaceFirst("\\$"+prop, value);
+			}
+
 			// Switch statement.
 			// (VARIABLE|VALUE=a|VALUE=b|VALUE=c|DEFAULT)
 			// If the VARIABLE is equal to a VALUE, display the option for that value.
@@ -208,22 +222,12 @@ public class Description {
 			while (line.indexOf("{") >= 0 && line.indexOf("}") >= 0) {
 				String		options = line.substring(line.indexOf("{"), line.indexOf("}")+1);
 				String		option = random(options);
+				System.out.println("Replacing ["+option+"] in ["+line+"]...");
 				option = parse(getPhrase(option));
+				System.out.println("...with ["+option+"]");
 	
 				line = line.replaceFirst("\\{.*?\\}", option);
-			}
-			
-			// Replace any property variables.
-			while (line.indexOf("$") >= 0) {
-				String		prop = line.substring(line.indexOf("$")+1);
-				String		value = "";
-				
-				prop = prop.replaceAll("[^A-Za-z].*", "");
-				System.out.println(prop);
-				
-				value = getProperty(prop);
-				line = line.replaceFirst("\\$"+prop, value);
-			}
+			}			
 		} catch (Throwable e) {
 			System.out.println("Unable to parse ["+line+"] ("+e.getMessage()+")");
 			e.printStackTrace();
@@ -234,7 +238,9 @@ public class Description {
 	/**
 	 * Get the named property from the Planet object. Uses reflection to call
 	 * the right getter on the Planet. If no such property is found, then the
-	 * empty string is returned. Result is always a string.
+	 * empty string is returned. Result is always a string. If the contents
+	 * looks like a number, then it will be formatted and truncated to 1dp if
+	 * necessary.
 	 * 
 	 * @param name		Name of property to fetch.
 	 * @return			Value of the property, or empty string.
@@ -248,6 +254,15 @@ public class Description {
 			Object		result = method.invoke(planet);
 			
 			value = ""+result;
+			
+			try {
+				double i = Double.parseDouble(value);
+				DecimalFormat	format = new DecimalFormat();
+				format.setMaximumFractionDigits(1);
+				value = format.format(i);
+			} catch (NumberFormatException e) {
+				// Do nothing.
+			}
 		} catch (Throwable e) {
 			value = "";
 		}
@@ -304,7 +319,7 @@ public class Description {
 		addText(buffer, rootKey+".temperature."+planet.getTemperature(), 100);
 		addText(buffer, rootKey+".atmosphere."+planet.getAtmosphereType(), 100);
 		addText(buffer, rootKey+".atmosphere."+planet.getAtmospherePressure(), 100);
-		
+		addText(buffer, rootKey+".biosphere."+planet.getLifeLevel(), 100);
 		
 		// Add description for any physical features.
 		Iterator<PlanetFeature>	features = planet.getFeatures();
@@ -350,16 +365,17 @@ public class Description {
 	 */
 	public static void main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
-		int[]			samples = { 5453 };
-		
-		for (int i=0; i < samples.length; i++) {
-			Planet			planet = new Planet(factory, samples[i]);
-			Description		description = new Description(planet);
+		/*
+		Planet p = factory.getPlanet(7631);
+		Description d = new Description(p);
+		System.out.println(d.parse("{LithicGelidian.extra.1}"));
+		System.exit(0);
+		*/
+		Vector<Planet> planets = factory.getPlanetsBySystem(366);
 
-			//System.out.println(description.parse("This planet is $Name with a population of $Population"));
-			//System.exit(0);
-			System.out.println(planet.getName()+" ("+planet.getType()+"): "+description.getFullDescription());
-			description.setDescription(planet);
+		for (Planet planet : planets) {
+			System.out.println(planet.getName()+" ("+planet.getType()+")");
+			Description.setDescription(planet);
 			planet.persist();
 		}
 		//System.out.println(description.parse("This is a really [nice|nasty|beautiful] thing."));

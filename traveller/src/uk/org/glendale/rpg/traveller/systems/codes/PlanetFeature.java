@@ -75,6 +75,16 @@ public enum PlanetFeature {
 		return code;
 	}
 	
+	public static PlanetFeature getByCode(String c) {
+		for (PlanetFeature f : values()) {
+			if (f.getCode().equals(c)) {
+				return f;
+			}
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * Are these two features contradictory? Returns true if a single world
 	 * shouldn't have both features. Checks both to see if this feature
