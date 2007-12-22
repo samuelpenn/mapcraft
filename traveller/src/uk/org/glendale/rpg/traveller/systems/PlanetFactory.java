@@ -84,7 +84,7 @@ public class PlanetFactory {
 		// Only one of the following codes should be applied.
 		if (planet.getAtmospherePressure() == AtmospherePressure.None) {
 			planet.addTradeCode(TradeCode.Va);
-		} else if (planet.getLifeLevel() == LifeType.None) {
+		} else if (planet.getLifeLevel() == LifeType.None && planet.getHydrographics() == 0) {
 			planet.addTradeCode(TradeCode.Ba);
 		} else if (planet.getHydrographics() == 0) {
 			planet.addTradeCode(TradeCode.De);
@@ -166,103 +166,67 @@ public class PlanetFactory {
 	 * Found in the outer reaches of the solar system, they tend to be small and cold.
 	 * Examples are Neptune and Uranus.
 	 */
-	private Planet getCryoJovian(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.CryoJovian);
-		planet.setRadius(10000 + Die.d10()*5000);
-		planet.setTemperature(star.getOrbitTemperature(distance));
-		
+	private void defineCryoJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.NitrogenCompounds);
 		planet.setMoonCount(Die.d3(2));
 		setDayLength(planet, 0.25);
 		selectRingFeature(planet, false);
-		
-		return planet;
 	}
 	
 	/**
 	 * Small gas giants such as Saturn.
 	 */
-	private Planet getSubJovian(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.SubJovian);
-		planet.setRadius(40000 + Die.d10(2)*1000);
-		planet.setTemperature(star.getOrbitTemperature(distance));
-		
+	private void defineSubJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
 		planet.setMoonCount(Die.d4(2));
 		setDayLength(planet, 0.25);
 		selectRingFeature(planet, false);
-		
-		return planet;
 	}
 
 	/**
 	 * Medium gas giants such as Jupiter.
 	 */
-	private Planet getEuJovian(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.EuJovian);
-		planet.setRadius(60000 + Die.d10(2)*2000);
-		planet.setTemperature(star.getOrbitTemperature(distance));
-		
+	private void defineEuJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
 		planet.setMoonCount(Die.d6(2));
 		setDayLength(planet, 0.25);
 		selectRingFeature(planet, false);
-		
-		return planet;
 	}
 	
 	/**
 	 * Large gas giants.
 	 */
-	private Planet getSuperJovian(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.SuperJovian);
-		planet.setRadius(80000 + Die.d10(2)*2500);
-		planet.setTemperature(star.getOrbitTemperature(distance));
-		
+	private void defineSuperJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
 		planet.setMoonCount(Die.d6(2));
 		setDayLength(planet, 0.25);
 		selectRingFeature(planet, false);
-		
-		return planet;
 	}
 
 	/**
 	 * Massive gas giants.
 	 */
-	private Planet getMacroJovian(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.MacroJovian);
-		planet.setRadius(100000 + Die.d10(2)*2500);
-		planet.setTemperature(star.getOrbitTemperature(distance));
-		
+	private void defineMacroJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
 		planet.setMoonCount(Die.d6(3));
 		setDayLength(planet, 0.25);
 		selectRingFeature(planet, false);
-		
-		return planet;
 	}
 
 	/**
 	 * Jovian planets very close to their primary star, generally 5AU or closer.
 	 */
-	private Planet getEpiStellarJovian(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.EpiStellarJovian);
-		planet.setRadius(50000 + Die.d20(2)*2000);
-		planet.setTemperature(star.getOrbitTemperature(distance));
-		
+	private void defineEpiStellarJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
 		planet.setMoonCount(Die.d4(1));
 		setDayLength(planet, 1);
 		selectRingFeature(planet, true);
-		
-		return planet;
 	}
 	
 	
@@ -1403,29 +1367,29 @@ public class PlanetFactory {
 		if (distance < star.getEarthDistance()*10) {
 			switch (Die.d6()) {
 			case 1: case 2: case 3:
-				planet = getSubJovian(name, distance);
+				planet = getWorld(name, distance, PlanetType.SubJovian);
 				break;
 			case 4: case 5:
-				planet = getEuJovian(name, distance);
+				planet = getWorld(name, distance, PlanetType.EuJovian);
 				break;
 			case 6:
-				planet = getSuperJovian(name, distance);
+				planet = getWorld(name, distance, PlanetType.SuperJovian);
 				break;
 			}
 		} else if (distance < star.getEarthDistance()*10) {
 			switch (Die.d6()) {
 			case 1: case 2: case 3:
-				planet = getCryoJovian(name, distance);
+				planet = getWorld(name, distance, PlanetType.CryoJovian);
 				break;
 			case 4: case 5:
-				planet = getEuJovian(name, distance);
+				planet = getWorld(name, distance, PlanetType.EuJovian);
 				break;
 			case 6:
-				planet = getSuperJovian(name, distance);
+				planet = getWorld(name, distance, PlanetType.SuperJovian);
 				break;
 			}
 		} else {
-			planet = getCryoJovian(name, distance);			
+			planet = getWorld(name, distance, PlanetType.CryoJovian);			
 		}
 		setDayLength(planet, 1.0);
 		
@@ -1437,7 +1401,7 @@ public class PlanetFactory {
 	 * EpiStellarJovian world.
 	 */
 	public Planet getHotJovian(String name, int distance) {
-		Planet		planet = getEpiStellarJovian(name, distance);
+		Planet		planet = getWorld(name, distance, PlanetType.EpiStellarJovian);
 		setDayLength(planet, 0.5);
 		
 		return planet;

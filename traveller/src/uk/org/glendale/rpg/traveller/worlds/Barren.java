@@ -134,7 +134,7 @@ class Barren extends WorldBuilder {
 	}
 	
 	private void draw() {
-		canvas.paint(canvas.getGraphics());		
+		//canvas.paint(canvas.getGraphics());		
 	}
 	
 	
@@ -142,7 +142,7 @@ class Barren extends WorldBuilder {
 		super(width, height);
 		this.planet = planet;
 		this.type = planet.getType();
-
+/*
 		JFrame		frame = new JFrame("Gaian World");
 		canvas = new MapCanvas(this);
 		canvas.setPreferredSize(new Dimension(width*3, height*3));
@@ -151,7 +151,7 @@ class Barren extends WorldBuilder {
 		frame.setVisible(true);
 		frame.setMinimumSize(new Dimension(width*3, height*3));
 		frame.setSize(new Dimension(width*3+100, height*3+100));
-		
+*/		
 		// Firstly, set basic variables.
 		switch (type) {
 		case Selenian:

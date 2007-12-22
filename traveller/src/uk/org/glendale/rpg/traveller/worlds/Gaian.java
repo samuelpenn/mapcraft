@@ -118,7 +118,7 @@ class Gaian extends WorldBuilder {
 	
 	public Gaian(int width, int height) {
 		super(width, height);
-		
+		/*
 		JFrame		frame = new JFrame("Gaian World");
 		canvas = new MapCanvas(this);
 		canvas.setPreferredSize(new Dimension(width*3, height*3));
@@ -127,10 +127,11 @@ class Gaian extends WorldBuilder {
 		frame.setVisible(true);
 		frame.setMinimumSize(new Dimension(width*3, height*3));
 		frame.setSize(new Dimension(width*3+100, height*3+100));
+		*/
 	}
 	
 	private void draw() {
-		canvas.paint(canvas.getGraphics());		
+		//canvas.paint(canvas.getGraphics());		
 	}
 	
 	

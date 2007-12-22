@@ -12,17 +12,22 @@
 
 package uk.org.glendale.rpg.traveller.sectors;
 
+import java.awt.GraphicsEnvironment;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.sql.*;
 import java.util.*;
 
+import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.database.ObjectNotFoundException;
 import uk.org.glendale.rpg.traveller.map.PostScript;
+import uk.org.glendale.rpg.traveller.systems.Description;
 import uk.org.glendale.rpg.traveller.systems.Name;
 import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
 import uk.org.glendale.rpg.traveller.systems.UWP;
+import uk.org.glendale.rpg.traveller.worlds.WorldBuilder;
 import uk.org.glendale.rpg.utils.Die;
 
 /**
@@ -792,10 +797,42 @@ public class Sector {
 		readSubSectorNames();		
 	}
 	
+	public static void regenerateSystem(int id) {
+		regenerateSystem(new ObjectFactory(), id);
+	}
+	
+	public static void regenerateSystem(ObjectFactory factory, int id) {
+		for (Planet p : factory.getPlanetsBySystem(id)) {
+			Description.setDescription(p);
+			p.persist();
+			try {
+				WorldBuilder	wb = WorldBuilder.getBuilder(p, 513, 257);
+				wb.generate();
+				SimpleImage		simple = wb.getWorldMap(2);
+				factory.storePlanetMap(p.getId(), simple.save());
+				factory.storePlanetGlobe(p.getId(), wb.getWorldGlobe(2).save());
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}		
+	}
+	
+	public static void regenerate(int id) throws ObjectNotFoundException, IOException {
+		ObjectFactory	factory = new ObjectFactory();
+		Sector			sector = new Sector(factory, id);
+		
+		for (StarSystem sys: sector.getSystems()) {
+			regenerateSystem(factory, sys.getId());
+		}
+		
+	}
+	
 	public static void main(String[] args) throws Exception {
+		System.out.println(GraphicsEnvironment.isHeadless());
 		//createTravellerSub();
 		//createMortals();
-		createSol();
+		//createSol();
+		regenerateSystem(1);
 		
 		System.exit(0);
 		

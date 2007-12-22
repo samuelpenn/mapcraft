@@ -151,7 +151,7 @@ public class Description {
 				String		value = "";
 				
 				prop = prop.replaceAll("[^A-Za-z].*", "");
-				System.out.println(prop);
+				//System.out.println(prop);
 				
 				value = getProperty(prop);
 				line = line.replaceFirst("\\$"+prop, value);
@@ -168,7 +168,7 @@ public class Description {
 				String				option = "";
 				String				value = getProperty(tokens[0].replaceAll("\\$", ""));
 				
-				System.out.println(value);
+				//System.out.println(value);
 				
 				for (int i=1; i < tokens.length; i++) {
 					String		test = tokens[i].replaceAll("[=<>].*", "");
@@ -222,9 +222,9 @@ public class Description {
 			while (line.indexOf("{") >= 0 && line.indexOf("}") >= 0) {
 				String		options = line.substring(line.indexOf("{"), line.indexOf("}")+1);
 				String		option = random(options);
-				System.out.println("Replacing ["+option+"] in ["+line+"]...");
+				//System.out.println("Replacing ["+option+"] in ["+line+"]...");
 				option = parse(getPhrase(option));
-				System.out.println("...with ["+option+"]");
+				//System.out.println("...with ["+option+"]");
 	
 				line = line.replaceFirst("\\{.*?\\}", option);
 			}			
