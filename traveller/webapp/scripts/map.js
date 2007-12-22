@@ -434,7 +434,7 @@ function gotSectorInfo() {
         sectorText = "<p><b><a href=\""+GET+"type=sector&format=html&id="+sectorId+"\">"+sectorName+"</a></b> ("+systems+" systems) / "+subSector+"</p>";
         if (systemName != "") {
 	        sectorText += "<p>";
-        	sectorText += "<a href=\""+GET+"type=system&format=html&id="+systemId+"\">"+systemName+"</a>: ("+systemAllegiance+") "+planetNodes.length+" planets";
+        	sectorText += "<a href=\"/system/"+systemId+".html\">"+systemName+"</a>: ("+systemAllegiance+") "+planetNodes.length+" planets";
         	if (planetNumber > 0) {
         		sectorText+=", Main world: planet "+planetNumber+" ("+planetType+"); ";
         		sectorText+=""+planetTemperature+", "+planetAtmosphere+" atmosphere ("+planetPressure+")";
