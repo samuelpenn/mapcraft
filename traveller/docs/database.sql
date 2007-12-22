@@ -67,6 +67,7 @@ CREATE TABLE planet (id int auto_increment not null, system_id int not null,
 					description TEXT,
 					life varchar(32) DEFAULT 'None',
 					base varchar(8), trade varchar(64), day int default 86400,
+					features varchar(64),
 					PRIMARY KEY(id), KEY(system_id), KEY(parent_id),
 					FOREIGN KEY (system_id) REFERENCES system(id))
 					ENGINE=INNODB;
