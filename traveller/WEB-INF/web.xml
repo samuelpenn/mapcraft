@@ -49,6 +49,11 @@
    		<servlet-name>Sectors</servlet-name>
    		<servlet-class>uk.org.glendale.rpg.traveller.servlets.Sectors</servlet-class>
    	</servlet>
+
+   	<servlet>
+   		<servlet-name>Names</servlet-name>
+   		<servlet-class>uk.org.glendale.rpg.traveller.servlets.Names</servlet-class>
+   	</servlet>
     	
    	<servlet-mapping>
    		<servlet-name>Information Getter</servlet-name>
@@ -83,6 +88,11 @@
    	<servlet-mapping>
    		<servlet-name>Sectors</servlet-name>
    		<url-pattern>/sector/*</url-pattern>
+   	</servlet-mapping>
+
+   	<servlet-mapping>
+   		<servlet-name>Names</servlet-name>
+   		<url-pattern>/names/*</url-pattern>
    	</servlet-mapping>
 <!--    	
    	<listener>
