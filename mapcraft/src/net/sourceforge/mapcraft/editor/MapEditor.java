@@ -197,16 +197,14 @@ public class MapEditor extends MapViewer
                 }
                 for (int px = x - width; px <= x+width; px++) {
                     for (int py = y - width; py <= y+width; py++) {
-                        currentSet.setTerrain(px, py, 
-                                currentSet.getTerrainSet().getTerrain(brush.getSelected()));
+                        currentSet.setTerrain(px, py, currentSet.getTerrainSet().getTerrain(brush.getSelected()));
                         currentSet.setTerrainRotation(px, py, brush.getRotation());
                         paintTile(px, py);
                     }
                 }
                 break;
             case Brush.FEATURES:
-                currentSet.setFeature(x, y, 
-                        currentSet.getFeatureSet().getTerrain(brush.getSelected()));
+                currentSet.setFeature(x, y, currentSet.getFeatureSet().getTerrain(brush.getSelected()));
                 currentSet.setFeatureRotation(x, y, brush.getRotation());
                 paintTile(x, y);
                 break;

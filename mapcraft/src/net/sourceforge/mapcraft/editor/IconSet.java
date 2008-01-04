@@ -79,7 +79,6 @@ public class IconSet {
         }
         ids[currentSize] = id;
         icons[currentSize] = icon;
-
         currentSize++;
     }
 
@@ -100,6 +99,17 @@ public class IconSet {
         return null;
     }
 
+    
+    private void waitForImage(Image image) {
+		MediaTracker tracker = new MediaTracker(new Container());
+		tracker.addImage(image, 0);
+		try {
+			tracker.waitForID(0);
+		} catch (InterruptedException e) {
+
+		}
+    }
+    
     /**
      * Make sure that the images for all the icons are fully loaded. Will
      * call prepareImage() on each icon, and if any are not completed it
@@ -113,9 +123,13 @@ public class IconSet {
      */
     public boolean
     prepareImages(Component jc) {
-        int         count = 3;
+        int         count = 10;
         boolean     allDone = false;
-
+        
+        for (int i=0; i < currentSize; i++) {
+        	waitForImage(icons[i]);
+        }
+/*
         while (!allDone) {
             allDone = true;
             for (int i = 0; i < currentSize; i++) {
@@ -131,7 +145,7 @@ public class IconSet {
                 }
             }
         }
-
+*/
         return allDone;
     }
 }
