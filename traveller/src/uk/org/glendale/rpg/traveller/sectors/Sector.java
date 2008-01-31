@@ -198,6 +198,13 @@ public class Sector {
 		}
 	}
 
+	public Sector(ObjectFactory factory, String name) throws ObjectNotFoundException {
+		this.factory = factory;
+		if (!read("name='"+name.replaceAll("'", "''")+"'")) {
+			throw new ObjectNotFoundException("Could not find a sector named ["+name+"]");
+		}
+	}
+
 	/**
 	 * Get the sector of the given coordinates. If the sector does not exist,
 	 * then an exception will be thrown.
@@ -228,7 +235,7 @@ public class Sector {
 			throw new ObjectNotFoundException("Could not find a sector with coordinates ["+x+","+y+"]");
 		}
 	}
-		
+			
 	/**
 	 * Read sector information from the database. If a matching sector is found,
 	 * then returns true and populates this object's fields.
@@ -830,9 +837,9 @@ public class Sector {
 	public static void main(String[] args) throws Exception {
 		System.out.println(GraphicsEnvironment.isHeadless());
 		//createTravellerSub();
-		//createMortals();
+		createMortals();
 		//createSol();
-		regenerateSystem(1);
+		//regenerateSystem(1);
 		
 		System.exit(0);
 		
