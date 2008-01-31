@@ -80,60 +80,14 @@ public class Sectors extends HttpServlet {
 		String		uri = request.getPathInfo();
 		String		format = "xml";
 		
-		if (uri == null || uri.startsWith("/index")) {
-			universeMap(request, response);
-		} else {
-			int		id = 0;
-			try {
-				id = Integer.parseInt(uri.replaceAll("/([0-9]+)([/.].*)?", "$1"));
-			} catch (NumberFormatException e) {
-				// Should be impossible, since the regexp will have failed by this point.
-				response.sendError(400, "Badly formatted sector id ["+uri+"]");
-				return;
-			}
-
-			ObjectFactory	factory = null;
-			try {
-				factory = new ObjectFactory();
-				Sector				sector = new Sector(factory, id);
-				
-				if (uri.matches(".*\\.[a-z]+")) {
-					format = uri.replaceAll(".*\\.([a-z]+)", "$1");
-					if (format.equals("txt") || format.equals("xml") || format.equals("html") || format.equals("jpg")) {
-						// Okay.
-					} else {
-						response.sendError(415, "Unrecognised format type ["+format+"]");
-						return;
-					}
-				}
-				
-				if (format.equals("html")) {
-					response.setContentType("text/html");
-					response.getOutputStream().println(outputHTML(sector, factory));
-				} else if (format.equals("txt")) {
-					response.setContentType("text/plain");
-				} else {
-					response.setContentType("text/xml");
-				}
-			} catch (Throwable t) {
-				t.printStackTrace();
-				response.sendError(500, "Exception ("+t.getMessage()+")");
-				return;
-			} finally {
-				factory.close();
-				factory = null;
-			}
-		}
-	}
-
-	/**
-	 * Generate a view onto the entire universe.
-	 */
-	private void universeMap(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String		format = "xml";
-		String		uri = request.getPathInfo();
-		String		property = null;
 		
+		
+		if (uri == null || uri.startsWith("/index") || uri.equals("/")) {
+			System.out.println("Universe list");
+			universeMap(request, response);
+			return;
+		}
+
 		if (uri.matches(".*\\.[a-z]+")) {
 			format = uri.replaceAll(".*\\.([a-z]+)", "$1");
 			if (format.equals("txt") || format.equals("xml") || format.equals("html") || format.equals("jpg")) {
@@ -143,9 +97,108 @@ public class Sectors extends HttpServlet {
 				return;
 			}
 		}
+
+		// Syntax is "sector/subsector" or "sector/coordinate"
+		// Where sector is "id", "name" or "x,y"
 		
-		if (uri.matches("/[0-9]+/.*")) {
-			property = uri.replaceAll("/[0-9]+/([^.]+)(\\.[a-z]+)?", "$1");
+		String	sectorValue = uri.replaceAll("([0-9a-zA-Z, ']+)([/.].*)?", "$1");
+		if (sectorValue.startsWith("/")) sectorValue = sectorValue.substring(1);
+		System.out.println(sectorValue);
+		
+		ObjectFactory		factory = null;
+		Sector				sector = null;
+		StarSystem			system = null;
+		
+		try {
+			factory = new ObjectFactory();
+			if (sectorValue.matches("-?[0-9]+,-?[0-9]+")) {
+				// This is an x,y coordinate.
+				System.out.println("Sector coordinate");
+				int x = Integer.parseInt(sectorValue.substring(0, sectorValue.indexOf(",")));
+				int y = Integer.parseInt(sectorValue.substring(sectorValue.indexOf(",")+1));
+				sector = new Sector(factory, x, y);
+			} else if (sectorValue.matches("[0-9]+")) {
+				System.out.println("Sector id");
+				sector = new Sector(factory, Integer.parseInt(sectorValue));
+			} else {
+				System.out.println("Sector name");
+				sector = new Sector(factory, sectorValue);
+			}
+			System.out.println(sector.getName());
+		} catch (ObjectNotFoundException e) {
+			response.sendError(404, "Cannot find sector ["+sectorValue+"]");
+			factory.close();
+			return;
+		}
+				
+		if (uri.matches("/[^/]+/.+")) {
+			String		part = uri.replaceAll("/[^/]+/([^/.]+)([/.].*)?", "$1");
+			
+			if (part.matches("[0-9][0-9][0-9][0-9]")) {
+				response.getOutputStream().println("Coordinate");
+				int		x = Integer.parseInt(part.substring(0, 2));
+				int		y = Integer.parseInt(part.substring(2, 4));
+				system = sector.getSystem(x, y);
+				if (system == null) {
+					response.sendError(404, "No star system at coordinates ["+x+","+y+"] in sector ["+sector.getName()+"]");
+					factory.close();
+					return;
+				}
+			} else {
+				// Not currently implemented.
+			}
+		}
+		
+		if (format.equals("html")) {
+			response.setContentType("text/html");
+			if (system != null) {
+				response.getOutputStream().print(system.toHTML());
+			} else {
+				outputHTML(sector, factory);
+			}
+		} else if (format.equals("txt")) {
+			response.setContentType("text/plain");
+		} else {
+			response.setContentType("text/xml");
+		}
+		
+		
+		/*
+		{
+			try {
+				factory = new ObjectFactory();
+				sector = new Sector(factory, id);
+				
+				
+			} catch (Throwable t) {
+				t.printStackTrace();
+				response.sendError(500, "Exception ("+t.getMessage()+")");
+				return;
+			} finally {
+				factory.close();
+				factory = null;
+			}
+		}
+		*/
+	}
+
+	/**
+	 * Generate a view onto the entire universe.
+	 */
+	private void universeMap(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String		format = "html";
+		String		uri = request.getPathInfo();
+		
+		if (uri == null) {
+			// Just use defaults.
+		} else if (uri.matches(".*\\.[a-z]+")) {
+			format = uri.replaceAll(".*\\.([a-z]+)", "$1");
+			if (format.equals("txt") || format.equals("xml") || format.equals("html") || format.equals("jpg")) {
+				// Okay.
+			} else {
+				response.sendError(415, "Unrecognised format type ["+format+"]");
+				return;
+			}
 		}
 
 		try {
@@ -192,7 +245,9 @@ public class Sectors extends HttpServlet {
 		buffer.append("<div id=\"sectorlist\">\n");
 		buffer.append("<ul>\n");
 		for (Sector sector : sectors) {
-			buffer.append("<li id=\"sector_"+sector.getId()+"\"><a href=\""+Config.getBaseUrl()+"sector/"+sector.getId()+".html\">"+sector.getName()+"</a></li>\n");
+			buffer.append("<li id=\"sector_"+sector.getId()+"\"><a href=\""+Config.getBaseUrl()+"sector/"+sector.getId()+".html\">");
+			buffer.append(sector.getName()+" ("+sector.getX()+","+sector.getY()+")");
+			buffer.append("</a></li>\n");
 		}
 		buffer.append("</ul>\n");
 		buffer.append("</div>\n");
@@ -248,7 +303,7 @@ public class Sectors extends HttpServlet {
 	 * @param system	System to output data on.
 	 * @return			String containing the HTML page.
 	 */
-	private String outputHTML(Sector sector, ObjectFactory factory) throws ObjectNotFoundException {
+	private String outputHTML(Sector sector, ObjectFactory factory) {
 		StringBuffer		buffer = new StringBuffer();
 		String				stylesheet = Config.getBaseUrl()+"css/systems.css";
 		
