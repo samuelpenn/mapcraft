@@ -84,6 +84,7 @@ public class Description {
     	
     	return text;
     }
+    
 		
 	public Description(Planet planet) {
 		this.planet = planet;
@@ -166,43 +167,40 @@ public class Description {
 				String				options = line.substring(line.indexOf("(")+1, line.indexOf(")")+1);
 				String[]			tokens = options.split("\\|");
 				String				option = "";
-				String				value = getProperty(tokens[0].replaceAll("\\$", ""));
-				
-				//System.out.println(value);
+				String				value = tokens[0];
 				
 				for (int i=1; i < tokens.length; i++) {
 					String		test = tokens[i].replaceAll("[=<>].*", "");
 					option = tokens[i].replaceAll(".*[=<>]", "");
 					
-					System.out.println(tokens[i]);
 					if (tokens[i].indexOf("=") > -1) {
-						System.out.println("Equal to case");
 						if (test.equals(value)) {
 							break; 
 						}
 					} else if (tokens[i].indexOf("<") > -1) {
-						System.out.println("Less than case");						
 						try {
 							Long	v = Long.parseLong(value);
 							Long	t = Long.parseLong(test);
-							if (t < v) break;
+							if (t < v) {
+								break;
+							}
 						} catch (NumberFormatException e) {
 							if (value.compareToIgnoreCase(test) < 0) break;
 						}
 						
 					} else if (tokens[i].indexOf(">") > -1) {
 						// Is the tested value greater than this case?
-						System.out.println("Greater than case");					
 						try {
 							Long	v = Long.parseLong(value);
 							Long	t = Long.parseLong(test);
-							if (t > v) break;
+							if (t > v) {
+								break;
+							}
 						} catch (NumberFormatException e) {
 							if (value.compareToIgnoreCase(test) > 0) break;
 						}
 					} else {
 						// Default value.
-						System.out.println("Default");
 						break;
 					}
 				}
@@ -264,6 +262,7 @@ public class Description {
 				// Do nothing.
 			}
 		} catch (Throwable e) {
+			e.printStackTrace();
 			value = "";
 		}
 		
@@ -301,6 +300,12 @@ public class Description {
 		
 		Description		description = new Description(planet);
 		planet.setDescription(description.getFullDescription(rootText));
+	}
+	
+	public String getDescription(String key) {
+		buffer = new StringBuffer();
+		addText(buffer, key, 100);
+		return buffer.toString();
 	}
 	
 	public String getFullDescription() {
@@ -365,6 +370,13 @@ public class Description {
 	 */
 	public static void main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
+		Planet		p = factory.getPlanet(171229);
+		Description d = new Description(p);
+		System.out.println(d.getDescription("techlevel.TL4"));
+		factory.close();
+		System.exit(0);
+		
+		
 		/*
 		Planet p = factory.getPlanet(7631);
 		Description d = new Description(p);

@@ -55,6 +55,7 @@ public class StarSystem {
 	private String			allegiance = null;
 	private Zone			zone = Zone.Green;
 	private String			base = null;
+	private String			uwpLine = null;
 	
 	public enum Zone {
 		Green, Amber, Red;
@@ -132,6 +133,23 @@ public class StarSystem {
 		this.allegiance = allegiance;
 	}
 	
+	public String getUWP() {
+		return uwpLine;
+	}
+	
+	/**
+	 * Set the original UWP for this system. UWPs are limited to
+	 * a length of 80 characters, so anything longer is truncated.
+	 * This is now remembered so that we can regenerate the system
+	 * easily at a later date.
+	 * 
+	 * @param uwp		The original Traveller style UWP.
+	 */
+	public void setUWP(String uwp) {
+		if (uwp.length() > 80) uwp = uwp.substring(0, 80);
+		this.uwpLine = uwp;
+	}
+	
 	public Zone getZone() {
 		return zone;
 	}
@@ -164,6 +182,27 @@ public class StarSystem {
 		y = rs.getInt("y");
 		allegiance = rs.getString("allegiance");
 		zone = Zone.valueOf(rs.getString("zone"));
+		uwpLine = rs.getString("uwp");
+	}
+	
+	public void regenerate() {
+		System.out.println(uwpLine);
+		UWP		uwp = new UWP(uwpLine);
+		
+		parseStarData(uwp);
+		parseAllegiance(uwp);
+		parseBase(uwp);
+		parseZone(uwp);
+		
+		generatePlanets(uwp);
+		// Now see if any of the other stars in this system have planets.
+		for (int i=1; i < stars.size(); i++) {
+			if (Die.d6() > i*2) {
+				generatePlanets(i);
+			}
+		}
+
+		persist();		
 	}
 	
 	public void setStars(Vector<Star> stars) {
@@ -641,6 +680,8 @@ public class StarSystem {
 			} else {
 				planet = planetFactory.getCoolWorld(planetName, distance);
 			}
+			System.out.println("Adding planet "+planet.getName()+"/"+planet.getType()+" at "+planet.getDistance());
+			Description.setDescription(planet);
 			planet.persist();
 			planets.add(planet);
 
@@ -659,8 +700,13 @@ public class StarSystem {
 		int			mainDistance = (planets.elementAt(closest).getDistance() + bestDistance) / 2;
 		Planet		mainPlanet = new Planet(factory, id, uwp, star, name+" "+getRoman(closest+1), mainDistance);
 		mainPlanet.setId(planets.elementAt(closest).getId());
+		Description.setDescription(mainPlanet);
 		mainPlanet.persist();
 		planets.set(closest, mainPlanet);
+		
+		// Add descriptive notes for this world.
+		Description d = new Description(mainPlanet);
+		factory.addNote(mainPlanet.getId(), "tech", d.getDescription("techlevel.TL"+mainPlanet.getTechLevel()));
 		
 		if (mainDistance > distance) {
 			distance = mainDistance;
@@ -676,6 +722,7 @@ public class StarSystem {
 			}
 			
 			planet = planetFactory.getColdJovian(planetName, distance);
+			Description.setDescription(planet);
 			planet.persist();
 			planets.add(planet);
 			distance += increase + Die.die(increase, 2);
@@ -696,11 +743,32 @@ public class StarSystem {
 			}
 			
 			planet = planetFactory.getIceWorld(planetName, distance);
+			Description.setDescription(planet);
 			planet.persist();
 			planets.add(planet);
 			distance += increase + Die.die(increase, 2);
 			increase *= 3;			
 		}
+
+		// Having finished all the major worlds, now create any required moons.
+		for (Planet planet : planets) {
+			System.out.println("Creating moons for ["+planet.getName()+"]");
+			if (planet.getMoonCount() > 0) {
+				Planet[]	moons = planetFactory.getMoons(planet, planet.getMoonCount());
+				for (Planet moon : moons) {
+					Description.setDescription(moon);
+					moon.persist();
+					// Do we need to add it to the list of planets?
+					// planets.add(moon);
+				}
+				// The Moon count is simply a marker to tell us to create moons for this
+				// world. Since this code is called once for each star, we can end up
+				// coming through here multiple times. Set the moon count to zero, so each
+				// planet only has moons generated for it once.
+				planet.setMoonCount(0);
+			}
+		}
+	
 	}
 	
 	/**
@@ -870,14 +938,19 @@ public class StarSystem {
 		}
 		data.put("name", name);
 		data.put("zone", ""+zone);
+		if (uwpLine != null) {
+			data.put("uwp", uwpLine);
+		}
 
-		int					auto = factory.persist("system", data);
+		int		auto = factory.persist("system", data);
 		// If stored for the first time, set our unique id.
 		if (id == 0) id = auto;
 		
-		for (Iterator<Star> i = stars.iterator(); i.hasNext(); ) {
-			Star		star = i.next();
-			star.persist();
+		if (stars != null) {
+			for (Iterator<Star> i = stars.iterator(); i.hasNext(); ) {
+				Star		star = i.next();
+				star.persist();
+			}
 		}
 	}
 	
@@ -1300,7 +1373,6 @@ public class StarSystem {
 		if (stars == null && planets == null) {
 			// If no stars and planets, just output basic system info.
 		} else {
-			buffer.append(">\n");
 			if (stars != null) {
 				Iterator<Star>		i = stars.iterator();
 				
@@ -1329,73 +1401,181 @@ public class StarSystem {
 	 * @return		String containing HTML body content.
 	 */
 	public String toHTML() {
+		return toHTML(true);
+	}
+	
+	public String toHTML(boolean header) {
 		StringBuffer		buffer = new StringBuffer();
+		String				stylesheet = Config.getBaseUrl()+"css/systems.css";
+		Sector  			sector = null;
 		
-		// Get basic header information.
-		buffer.append("<h1>"+getName()+"</h1>\n");
-		buffer.append("<p>"+getDescription()+"</p>\n");
-		
-		// Now display some metadata about the system (e.g., where it is).
-		buffer.append("<div class=\"systemblock\">\n");
-
-		buffer.append("<p><b>Trade Codes:</b> ");
-		for (TradeCode code : TradeCode.values()) {
-			if (hasTradeCode(code)) {
-				buffer.append("<img width=\"16\" height=\"16\" src=\""+Config.getBaseUrl()+"images/symbols/trade_"+code.toString().toLowerCase()+".png\"/>");
-			}
-		}		
-		buffer.append("</p>\n");
-		
-		buffer.append("<p><b>Sector:</b> ");
 		try {
-			Sector		sector = new Sector(sectorId);
-			buffer.append(sector.getName());
+			sector = new Sector(factory, getSectorId());
 		} catch (ObjectNotFoundException e) {
-			buffer.append(sectorId);
+			sector = null;
 		}
-		buffer.append(" ("+getXAsString()+getYAsString()+")");
+		
+		if (header) {
+			buffer.append("<html>\n<head>\n<title>"+getName()+" System</title>\n");
+			buffer.append("<link rel=\"STYLESHEET\" type=\"text/css\" media=\"screen\" href=\""+stylesheet+"\" />\n");
+	        buffer.append("<script type=\"text/javascript\" src=\""+Config.getBaseUrl()+"scripts/system.js\"></script>\n");
+			buffer.append("</head><body>\n");
+		}
+		
+		buffer.append("<div id=\"header\">\n");
+		buffer.append("<h1>"+getName()+"</h1>\n");
+		
+		buffer.append("<p>\n");
+		if (sector != null) {
+			buffer.append(sector.getName()+" / "+sector.getSubSectorName(getX(), getY())+" - "+getXAsString()+getYAsString());
+		}
+		if (getAllegianceData() != null) {
+			buffer.append(" ("+getAllegianceData().getName()+")");
+		}
+		if (getZone() != Zone.Green) {
+			buffer.append(" / "+getZone().toString());
+		}
 		buffer.append("</p>\n");
-		
-		Allegiance	data = getAllegianceData();
-		if (data != null) {
-			buffer.append("<p><b>Allegiance:</b> "+data.getName()+" ("+data.getCode()+")</p>\n");			
-		}
-		buffer.append("<p><b>Stars:</b> ");
-		for (int i=0; i < stars.size(); i++) {
-			buffer.append(stars.elementAt(i).getName());
-			if (i < stars.size()-1) {
-				buffer.append("; ");
-			} else {
-				buffer.append(".");
-			}
-		}
-		buffer.append("</p>\n");		
-		
 		buffer.append("</div>\n");
-		
-		buffer.append("<div class=\"starblock\">\n");
-		for (Star star : stars) {
-			buffer.append("<div class=\"star\">\n");
-			buffer.append("<h2>"+star.getName()+"</h2>\n");
-			buffer.append("<p><b>Star Classification:</b> "+star.getStarClass()+"</p>\n");
-			buffer.append("<p><b>Spectral Type:</b> "+star.getSpectralType()+"</p>\n");
-			buffer.append("<p><b>Habitable zones:</b> ");
-			buffer.append(star.getInnerLimit()+"Mkm / "+star.getEarthDistance()+"Mkm / "+star.getColdPoint()+"Mkm");
-			buffer.append("</p>");
+		// Simple map of the whole solar system.
+		Vector<Planet>	planets = factory.getPlanetsBySystem(getId());
+		buffer.append("<div id=\"map\">\n");
+		int		lastX = 0, x = 0;
+		for (Star star : getStars()) {
+			String		image = Config.getBaseUrl()+"images/stars/"+star.getSpectralType().toString().substring(0, 1)+".png";
+			int			ssize = (int)Math.pow((star.getStarClass().getRadius() * 600000), 0.3);
+			lastX = 0;
+			buffer.append("<table><tr>");
 			
-			for (Planet planet : planets) {
-				if (planet.getParentId() == star.getId()) {
-					buffer.append("<div class=\"planet\">\n");
-					buffer.append(planet.toHTML());
-					buffer.append("</div>\n");
+			buffer.append("<td><img src=\""+image+"\" width=\""+ssize+"\" height=\""+ssize+"\" title=\""+star.getName()+"\"/></td>");
+			for (int i=0; i < planets.size(); i++) {
+				Planet		planet = planets.elementAt(i);
+				if (planet.getParentId() == star.getId() && !planet.isMoon()) {
+					x = planet.getDistance() / 3 - lastX;
+					lastX = planet.getDistance() / 3;
+					String		pimg = Config.getBaseUrl()+"planet/"+planet.getId()+".jpg?globe";
+					int			size = (int)Math.pow(planet.getRadius(), 0.3);
+					buffer.append("<td width=\""+x+"px\">");
+					buffer.append("<img src=\""+pimg+"\" width=\""+size+"\" height=\""+size+"\" title=\""+planet.getName()+"\" align=\"left\" valign=\"center\"/>");
+					buffer.append("</td>");
 				}
 			}
-			buffer.append("</div>\n");
+			buffer.append("</tr></table>\n");
 		}
 		buffer.append("</div>\n");
-
-		buffer.append("<div class=\"planetblock\">\n");
+		
+		/*
+		 * Display trade information if this system has a populated world.
+		 */
+		Planet		mainWorld = getMainWorld();
+		if (mainWorld != null && sector != null) {
+			buffer.append("<div id=\"trade\">");
+			buffer.append("<h2>Trade Details</h2>");
+			
+			buffer.append("<table>");
+			buffer.append("<tr><th>System</th><th>BTN</th><th>Cr/Year</th><th>Dt/Y</th><th>Dt/Wk</th><th>Dt/Day</th></tr>");
+			
+			for (int sy = getY() - 10; sy < getY()+10; sy++) {
+				for (int sx = getX() - 10; sx < getX()+10; sx++) {
+					StarSystem	s2 = sector.getSystem(sx, sy);
+					if (s2 == null) continue;
+					double		btn = sector.getBTN(getMainWorld(), s2.getMainWorld());
+					
+					if (btn < 7.5) {
+						continue;
+					}
+					
+					long		credits = (long)Math.pow(10, btn);
+					int			year = 0;
+					int			week = 0;
+					int			day = 0;
+					
+					if (btn >= 4.0) {
+						year = (int)Math.pow(10, btn-4.0);
+					}
+					if (btn >= 5.5) {
+						week = (int)Math.pow(10, btn-5.5);
+					}
+					if (btn >= 6.5) {
+						day = (int)Math.pow(10, btn-6.5);
+					}
+					String		cr = null;
+					if (credits > 1000000000000L) {
+						credits /= 1000000000;
+						cr = ""+(credits/1000.0)+" TCr";
+					} else if (credits > 1000000000) {
+						credits /= 1000000;
+						cr = ""+(credits/1000.0)+" GCr";
+					} else if (credits > 1000000) {
+						credits /= 1000;
+						cr = ""+(credits/1000.0)+" MCr";
+					} else if (credits > 1000) {
+						cr = ""+(credits/1000.0)+" KCr";
+					} else {
+						cr = ""+credits + " Cr";
+					}
+					buffer.append("<tr>");
+					buffer.append("<td><a href=\""+Config.getBaseUrl()+"system/"+s2.getId()+".html\">"+s2.getName()+"</a></td>");
+					buffer.append("<td>"+((int)(btn*10)/10.0)+"</td>");
+					buffer.append("<td>"+cr+"</td>");
+					buffer.append("<td>"+year+"</td>");
+					buffer.append("<td>"+week+"</td>");
+					buffer.append("<td>"+day+"</td>");
+					buffer.append("</tr>");
+					
+				}
+			}
+			buffer.append("</table>");
+			
+			buffer.append("</div>");
+		}
+		
+		buffer.append("<div id=\"stars\">\n");
+		buffer.append("<table id=\"tabs\" cellspacing=\"0\">\n");
+		buffer.append("<tr>");
+		int		idx = 0;
+		String	c = "selected";
+		for (Star star : getStars()) {
+			String		image = Config.getBaseUrl()+"images/stars/"+star.getSpectralType().toString().substring(0, 1)+".png";
+			int			width = (int)(64 * star.getSize());
+			buffer.append("<td id=\"star_"+idx+"\" class=\""+c+"\">");
+			buffer.append("<img src=\""+image+"\" width=\""+width+"\" height=\""+width+"\" onclick=\"selectStar('"+idx+"')\"/>");
+			buffer.append("</td>");
+			idx++;
+			c = "unselected";
+		}
+		buffer.append("<td width=\"100%\">&nbsp;</td>");
+		buffer.append("</tr></table>\n");
 		buffer.append("</div>\n");
+		
+		buffer.append("<div id=\"planets\">\n");
+		idx = 0;
+		String	style = "";
+		for (Star star : getStars()) {
+			buffer.append("<div id=\"planets_"+(idx++)+"\" class=\"planets\" "+style+">\n");
+			
+			buffer.append("<h2>"+star.getName()+"</h2>");
+			buffer.append("<p><b>Star class: </b>"+star.getStarClass()+" ("+star.getStarClass().getDescription()+")</p>");
+			buffer.append("<p><b>Spectral type: </b>"+star.getSpectralType()+" ("+star.getSpectralType().getSurfaceTemperature()+" Kelvin)</p>");
+			buffer.append("<p><b>Inner orbit: </b>"+star.getInnerLimit()+" Mkm</p>");
+			buffer.append("<p><b>Ideal orbit: </b>"+star.getEarthDistance()+" Mkm</p>");
+			buffer.append("<p><b>Cold orbit: </b>"+star.getColdPoint()+" Mkm</p>");
+			
+			for (int i=0; i < planets.size(); i++) {
+				Planet	planet = planets.elementAt(i);
+				if (planet.getParentId() == star.getId() && !planet.isMoon()) {
+					buffer.append(planet.toHTML());
+				}
+			}
+
+			buffer.append("</div>\n");
+			style = "style=\"display: none;\"";
+		}
+		buffer.append("</div>\n");
+		
+		if (header) {
+			buffer.append("</body></html>\n");
+		}
 		
 		return buffer.toString();
 	}

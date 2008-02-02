@@ -66,7 +66,7 @@ public class PlanetFactory {
 		return defineWorld(planet);
 	}
 	
-	private Planet defineWorld(Planet planet) {
+	Planet defineWorld(Planet planet) {
 		String		methodName = "define"+planet.getType();
 		Class		c = this.getClass();
 		try {
@@ -166,7 +166,7 @@ public class PlanetFactory {
 	 * Found in the outer reaches of the solar system, they tend to be small and cold.
 	 * Examples are Neptune and Uranus.
 	 */
-	private void defineCryoJovian(Planet planet) {
+	void defineCryoJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.NitrogenCompounds);
 		planet.setMoonCount(Die.d3(2));
@@ -177,7 +177,7 @@ public class PlanetFactory {
 	/**
 	 * Small gas giants such as Saturn.
 	 */
-	private void defineSubJovian(Planet planet) {
+	void defineSubJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
 		planet.setMoonCount(Die.d4(2));
@@ -188,7 +188,7 @@ public class PlanetFactory {
 	/**
 	 * Medium gas giants such as Jupiter.
 	 */
-	private void defineEuJovian(Planet planet) {
+	void defineEuJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
 		planet.setMoonCount(Die.d6(2));
@@ -199,7 +199,7 @@ public class PlanetFactory {
 	/**
 	 * Large gas giants.
 	 */
-	private void defineSuperJovian(Planet planet) {
+	void defineSuperJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
 		planet.setMoonCount(Die.d6(2));
@@ -210,7 +210,7 @@ public class PlanetFactory {
 	/**
 	 * Massive gas giants.
 	 */
-	private void defineMacroJovian(Planet planet) {
+	void defineMacroJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
 		planet.setMoonCount(Die.d6(3));
@@ -221,7 +221,7 @@ public class PlanetFactory {
 	/**
 	 * Jovian planets very close to their primary star, generally 5AU or closer.
 	 */
-	private void defineEpiStellarJovian(Planet planet) {
+	void defineEpiStellarJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
 		planet.setMoonCount(Die.d4(1));
@@ -237,7 +237,7 @@ public class PlanetFactory {
 	 * Incredibly geologically active worlds such as Io. Unstable, and much of it may
 	 * be molten. May have an atmosphere, though will consist mostly of sulphur.
 	 */
-	private void defineHephaestian(Planet planet) {
+	void defineHephaestian(Planet planet) {
 		// Atmosphere
 		switch (Die.d6()) {
 		case 1: case 2: case 3:
@@ -265,7 +265,7 @@ public class PlanetFactory {
 	 * to be almost entirely metal content, with little rock. Unlikely to
 	 * have any atmosphere except trace amounts of Hydrogen/Helium.
 	 */
-	private void defineFerrinian(Planet planet) {
+	void defineFerrinian(Planet planet) {
 		if (planet.getRadius() > 2000) {
 			planet.setAtmosphereType(AtmosphereType.Hydrogen);
 			planet.setAtmospherePressure(AtmospherePressure.Trace);			
@@ -278,10 +278,7 @@ public class PlanetFactory {
 	 * Primal Earth-like worlds with thick atmospheres and early oceans. There may
 	 * be life, though it will be very primitive. Geologically active.
 	 */
-	private Planet getEoGaian(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.EoGaian);
-		planet.setRadius(3000 + Die.d10()*500);
-		
+	void defineEoGaian(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1: case 2: case 3:
@@ -322,17 +319,12 @@ public class PlanetFactory {
 			break;
 		}
 		setDayLength(planet, 1.0);
-
-		return planet;
 	}
 
 	/**
 	 * Primal Earth-like world where life is beginning to take hold.
 	 */
-	private Planet getMesoGaian(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.MesoGaian);
-		planet.setRadius(3000 + Die.d10()*500);
-		
+	void defineMesoGaian(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1: case 2: case 3: case 4:
@@ -370,8 +362,6 @@ public class PlanetFactory {
 			break;
 		}
 		setDayLength(planet, 1.0);
-
-		return planet;
 	}
 
 	/**
@@ -380,10 +370,7 @@ public class PlanetFactory {
 	 * worlds, which suggests that the jump from oceanic to land is a difficult
 	 * one for life.
 	 */
-	private Planet getArchaeoGaian(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.ArchaeoGaian);
-		planet.setRadius(3000 + Die.d10()*500);
-		
+	void defineArchaeoGaian(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1: case 2:
@@ -420,8 +407,6 @@ public class PlanetFactory {
 		planet.setHydrographics(Die.d20() * 4);
 		planet.setLifeLevel(LifeType.ComplexOcean);
 		setDayLength(planet, 1.0);
-
-		return planet;
 	}
 
 	/**
@@ -430,10 +415,7 @@ public class PlanetFactory {
 	 * forever, and eventually it will turn into a Mars like airless desert
 	 * within a billion years.
 	 */
-	private Planet getEoArean(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.EoArean);
-		planet.setRadius(2000 + Die.d10()*250);
-		
+	void defineEoArean(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1: case 2:
@@ -470,8 +452,6 @@ public class PlanetFactory {
 		planet.setHydrographics(Die.d20() * 2);
 		planet.setLifeLevel(LifeType.SimpleLand);
 		setDayLength(planet, 1.0);
-
-		return planet;
 	}
 
 	/**
@@ -479,10 +459,7 @@ public class PlanetFactory {
 	 * land. However, the world has become too cold, and is beginning to
 	 * freeze. Life is unlikely to evolve into anything more complex.
 	 */
-	private Planet getAreanLacustric(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.AreanLacustric);
-		planet.setRadius(2000 + Die.d10()*500);
-		
+	void defineAreanLacustric(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1: case 2: case 3:
@@ -523,14 +500,12 @@ public class PlanetFactory {
 			break;
 		}
 		setDayLength(planet, 1.0);
-
-		return planet;
 	}
 
 	/**
 	 * A world which once could have harboured life, but is now dead, like Mars.
 	 */
-	private void defineArean(Planet planet) {
+	void defineArean(Planet planet) {
 	
 		// Atmosphere type
 		switch (Die.d6()) {
@@ -568,7 +543,7 @@ public class PlanetFactory {
 	 * Venus like, acidic hot house world with a thick atmosphere and
 	 * opaque cloud layer.
 	 */
-	private void defineCytherean(Planet planet) {
+	void defineCytherean(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1:
@@ -601,7 +576,7 @@ public class PlanetFactory {
 	 * to Venus, though the clouds are less opaque, and the greenhouse
 	 * effect is somewhat less. However, the world is still dry and barren.
 	 */
-	private void definePhosphorian(Planet planet) {
+	void definePhosphorian(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1:
@@ -640,7 +615,7 @@ public class PlanetFactory {
 	 * manage to cling to an atmosphere without going through the massive greenhouse
 	 * process of Cytherian worlds.
 	 */
-	private void defineJaniLithic(Planet planet) {
+	void defineJaniLithic(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1: case 2:
@@ -679,10 +654,7 @@ public class PlanetFactory {
 	 * almost complete, water cover. Without the dense atmosphere, the water
 	 * would boil.
 	 */
-	private Planet getPelagic(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.Pelagic);
-		planet.setRadius(5000 + Die.d10()*300);
-		
+	void definePelagic(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1:
@@ -708,17 +680,12 @@ public class PlanetFactory {
 		planet.setTemperature(star.getOrbitTemperature(planet.getEffectiveDistance()));		
 		planet.setHydrographics(100);
 		setDayLength(planet, 1.0);
-
-		return planet;
 	}
 
 	/**
 	 * Earth like worlds, with extensive life and a good atmosphere.
 	 */
-	private Planet getGaian(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.Gaian);
-		planet.setRadius(4500 + Die.d10()*250);
-		
+	void defineGaian(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1:
@@ -766,18 +733,13 @@ public class PlanetFactory {
 			planet.setLifeLevel(LifeType.Extensive);
 		}
 		setDayLength(planet, 1.0);
-
-		return planet;
 	}
 
 	/**
 	 * Cold Earth like worlds. They had extensive life once, but are in a snowball
 	 * phase.
 	 */
-	private Planet getGaianTundral(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.GaianTundral);
-		planet.setRadius(4500 + Die.d10()*250);
-		
+	void defineGaianTundral(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1:
@@ -818,17 +780,12 @@ public class PlanetFactory {
 			planet.setLifeLevel(LifeType.ComplexLand);
 		}
 		setDayLength(planet, 1.0);
-
-		return planet;
 	}
 
 	/**
 	 * Massive terrestrial worlds with huge oceans.
 	 */
-	private Planet getPanthalassic(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.Panthalassic);
-		planet.setRadius(5000 + Die.d20()*500);
-		
+	void definePanthalassic(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1: case 2:
@@ -871,17 +828,12 @@ public class PlanetFactory {
 			planet.setLifeLevel(LifeType.ComplexOcean);
 		}
 		setDayLength(planet, 1.0);
-
-		return planet;
 	}
 
 	/**
 	 * Old, dying Earth like worlds.
 	 */
-	private Planet getPostGaian(String name, int distance) {
-		Planet			planet = new Planet(factory, name, star, distance, PlanetType.PostGaian);
-		planet.setRadius(4500 + Die.d10()*250);
-		
+	void definePostGaian(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1: case 2: case 3:
@@ -912,15 +864,13 @@ public class PlanetFactory {
 		planet.setHydrographics(Die.d10());
 		planet.setLifeLevel(LifeType.Metazoa);
 		setDayLength(planet, 1.0);
-
-		return planet;
 	}
 
 	/**
 	 * Cold worlds in the outer solar system, made of rock and ice, similar to
 	 * Callisto.
 	 */
-	private void defineLithicGelidian(Planet planet) {
+	void defineLithicGelidian(Planet planet) {
 		// Atmosphere
 		switch (Die.d6()) {
 		case 1: case 2: case 3:
@@ -942,7 +892,7 @@ public class PlanetFactory {
 	/**
 	 * Cold worlds with a frozen surface ocean with liquid water beneath.
 	 */
-	private void defineEuropan(Planet planet) {
+	void defineEuropan(Planet planet) {
 		if (planet.getType() != PlanetType.Europan) throw new IllegalArgumentException("This is not a Europan world");
 		
 		// Atmosphere
@@ -965,7 +915,7 @@ public class PlanetFactory {
 	/**
 	 * Cold dark worlds of ice and little rock.
 	 */
-	private void defineStygian(Planet planet) {
+	void defineStygian(Planet planet) {
 		// Atmosphere
 		switch (Die.d6()) {
 		case 1: case 2: case 3: case 4:
@@ -985,7 +935,7 @@ public class PlanetFactory {
 	 * Most objects will be sub-100km in radius. Individual large objects will be listed
 	 * separately if greater than 1000km in radius.
 	 */
-	private void defineAsteroidBelt(Planet planet) {
+	void defineAsteroidBelt(Planet planet) {
 		setDayLength(planet, 1.0);
 		planet.addTradeCode(TradeCode.As);
 	}
@@ -1009,7 +959,7 @@ public class PlanetFactory {
 	 * It's crust is made of hard ice, with a thin methane atmosphere. What standing liquid
 	 * there is, is mostly temporary.
 	 */
-	private void definegetMesoTitanian(Planet planet) {
+	void defineMesoTitanian(Planet planet) {
 		planet.setAtmosphereType(AtmosphereType.NitrogenCompounds);
 		switch (Die.d6()) {
 		case 1: case 2:
@@ -1031,7 +981,7 @@ public class PlanetFactory {
 		}
 	}
 	
-	private void defineEuTitanian(Planet planet) {
+	void defineEuTitanian(Planet planet) {
 		planet.setAtmosphereType(AtmosphereType.NitrogenCompounds);
 		switch (Die.d6()) {
 		case 1: case 2:
@@ -1053,7 +1003,7 @@ public class PlanetFactory {
 		}
 	}
 	
-	private void defineTitanLacustric(Planet planet) {
+	void defineTitanLacustric(Planet planet) {
 		planet.setAtmosphereType(AtmosphereType.NitrogenCompounds);
 		switch (Die.d6()) {
 		case 1:
@@ -1104,25 +1054,25 @@ public class PlanetFactory {
 			// Very large chance of Earth-like world.
 			switch (Die.d10()) {
 			case 1:
-				planet = getArchaeoGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.ArchaeoGaian);
 				break;
 			case 2:
-				planet = getMesoGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.MesoGaian);
 				break;
 			case 3:
-				planet = getEoArean(name, distance);
+				planet = getWorld(name, distance, PlanetType.EoArean);
 				break;
 			case 4:
-				planet = getPanthalassic(name, distance);
+				planet = getWorld(name, distance, PlanetType.Panthalassic);
 				break;
 			case 5: case 6: case 7: case 8:
-				planet = getGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.Gaian);
 				break;
 			case 9:
-				planet = getPostGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.PostGaian);
 				break;
 			case 10:
-				planet = getEoGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.EoGaian);
 				break;
 			}
 			break;
@@ -1130,25 +1080,25 @@ public class PlanetFactory {
 			// Large chance of Earth-like world.
 			switch (Die.d20()) {
 			case 1: case 2: case 3: case 4:
-				planet = getArchaeoGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.ArchaeoGaian);
 				break;
 			case 5: case 6: case 7:
-				planet = getMesoGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.MesoGaian);
 				break;
 			case 8: case 9: case 10:
-				planet = getEoArean(name, distance);
+				planet = getWorld(name, distance, PlanetType.EoArean);
 				break;
 			case 11:
-				planet = getPanthalassic(name, distance);
+				planet = getWorld(name, distance, PlanetType.Panthalassic);
 				break;
 			case 12: case 13: case 14: case 15: case 16:
-				planet = getGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.Gaian);
 				break;
 			case 17: case 18:
-				planet = getPostGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.PostGaian);
 				break;
 			case 19: case 20:
-				planet = getEoGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.EoGaian);
 				break;
 			}
 			break;
@@ -1156,25 +1106,25 @@ public class PlanetFactory {
 			// Standard chance of different world types.
 			switch (Die.d20()) {
 			case 1: case 2: case 3: case 4: case 5: case 6: case 7:
-				planet = getArchaeoGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.ArchaeoGaian);
 				break;
 			case 8: case 9: case 10:
-				planet = getMesoGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.MesoGaian);
 				break;
 			case 11: case 12:
-				planet = getEoArean(name, distance);
+				planet = getWorld(name, distance, PlanetType.EoArean);
 				break;
 			case 13:
-				planet = getPanthalassic(name, distance);
+				planet = getWorld(name, distance, PlanetType.Panthalassic);
 				break;
 			case 14:
-				planet = getGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.Gaian);
 				break;
 			case 15:
-				planet = getPostGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.PostGaian);
 				break;
 			case 16: case 17: case 18: case 19: case 20:
-				planet = getEoGaian(name, distance);
+				planet = getWorld(name, distance, PlanetType.EoGaian);
 				break;
 			}
 		}
@@ -1187,18 +1137,21 @@ public class PlanetFactory {
 		Planet		planet = null;
 		
 		switch (Die.d10()) {
-		case 1: case 2: case 3: case 4:
+		case 1: case 2:
 			planet = getWorld(name, distance, PlanetType.Cytherean);
 			break;
+		case 3: case 4:
+			planet = getWorld(name, distance, PlanetType.Phosphorian);
+			break;
 		case 5: case 6:
-			planet = getPelagic(name, distance);
+			planet = getWorld(name, distance, PlanetType.Pelagic);
 			break;
 		case 7: case 8:
 			// Mercury
-			planet = getMesoGaian(name, distance);
+			planet = getWorld(name, distance, PlanetType.MesoGaian);
 			break;
 		case 9: case 10:
-			planet = getPanthalassic(name, distance);
+			planet = getWorld(name, distance, PlanetType.Panthalassic);
 			break;
 		}
 		setDayLength(planet, 1.0);
@@ -1302,10 +1255,10 @@ public class PlanetFactory {
 				planet = getBelt(name, distance);
 				break;
 			case 2:
-				planet = getEoArean(name, distance);
+				planet = getWorld(name, distance, PlanetType.EoArean);
 				break;
 			case 3: case 4:
-				planet = getAreanLacustric(name, distance);
+				planet = getWorld(name, distance, PlanetType.AreanLacustric);
 				break;
 			default:
 				planet = getWarmGaian(name, distance);
@@ -1314,22 +1267,19 @@ public class PlanetFactory {
 		} else if (distance < star.getEarthDistance()*2) {
 			// Cool worlds, just beyond Earth distance.
 			switch (Die.d10()) {
-			case 1:
-				planet = getGaianTundral(name, distance);
+			case 1: case 2:
+				planet = getWorld(name, distance, PlanetType.GaianTundral);
 				break;
-			case 2:
+			case 3:
 				planet = getWorld(name, distance, PlanetType.EoArean);
 				break;
-			case 3: case 4:
+			case 4: case 5: case 6:
 				planet = getWorld(name, distance, PlanetType.Arean);
 				break;
-			case 5: case 6: case 7:
-				planet = getWorld(name, distance, PlanetType.Selenian);
-				break;
-			case 8: case 9:
+			case 7: case 8:
 				planet = getWorld(name, distance, PlanetType.Cerean);
 				break;
-			case 10:
+			case 9: case 10:
 				planet = getWorld(name, distance, PlanetType.Vestian);
 				break;
 			}
@@ -1339,14 +1289,11 @@ public class PlanetFactory {
 			case 1:
 				planet = getWorld(name, distance, PlanetType.Arean);
 				break;
-			case 2:
+			case 2: case 3:
 				planet = getWorld(name, distance, PlanetType.Vestian);
 				break;
-			case 3:
-				planet = getWorld(name, distance, PlanetType.Selenian);
-				break;
-			case 4: case 5:
-				planet = getWorld(name, distance, PlanetType.Europan);
+			case 4: case 5: 
+				planet = getWorld(name, distance, PlanetType.AreanLacustric);
 				break;
 			case 6: case 7:
 				planet = getWorld(name, distance, PlanetType.Stygian);

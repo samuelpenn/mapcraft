@@ -226,6 +226,19 @@ public class Planet {
 		return population;
 	}
 	
+	/**
+	 * Get the log of the planet's population.
+	 * 
+	 * @return	0 if there is no population, or the log base 10 of
+	 *          the planet's population otherwise.
+	 */
+	public int getPopulationLog() {
+		if (population > 0) {
+			return (int)Math.log10(population);
+		}
+		return 0;
+	}
+	
 	public void setPopulation(long population) {
 		this.population = population;
 	}
@@ -476,6 +489,8 @@ public class Planet {
 		parseTechLevel(uwp);
 		parseBase(uwp);
 		parseTradeCodes(uwp);
+		
+		System.out.println("Creating main world with population "+population);
 
 		if (population > 0) {
 			lifeType = LifeType.Extensive;
@@ -1059,6 +1074,7 @@ public class Planet {
 			// Civilisation
 			GlossaryFactory		glossary = new GlossaryFactory();
 			String				text = null;
+			String[]			notes = null;
 			format.setGroupingUsed(true);
 			buffer.append("<p><b>Population:</b> "+format.format(population)+"</p>\n");
 			// Government
@@ -1071,8 +1087,15 @@ public class Planet {
 			if (text != null) buffer.append("<p><i>"+text+"</i></p>");
 			// Tech level
 			buffer.append("<p><b>Tech level:</b> "+techLevel+"</p>\n");
-			text = getGlossaryText(glossary, "tech-"+techLevel);
-			if (text != null) buffer.append("<p><i>"+text+"</i></p>");
+			notes = factory.getNotes(id, "tech");
+			if (notes == null || notes.length == 0) {
+				text = getGlossaryText(glossary, "tech-"+techLevel);
+				if (text != null) buffer.append("<p><i>"+text+"</i></p>");				
+			} else {
+				for (String p : notes) {
+					buffer.append("<p><i>"+p+"</i></p>");
+				}
+			}
 			// Starport
 			buffer.append("<p><b>Starport:</b> "+starport+"</p>\n");
 			text = getGlossaryText(glossary, "starport-"+starport);

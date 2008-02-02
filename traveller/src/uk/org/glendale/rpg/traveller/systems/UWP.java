@@ -85,6 +85,11 @@ public class UWP {
      * 0....^....1....^....2....^....3....^....4....^....5....^....6....^....7..
      */
     public UWP(String uwp) {
+    	
+    	if (!uwp.matches("[a-z][A-Z] .*")) {
+    		uwp = "aA "+uwp;
+    	}
+    	
     	this.uwp = uwp;
         // Which sector is the world in?
         sectorName = uwp.substring(0, 2);
