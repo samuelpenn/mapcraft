@@ -707,6 +707,9 @@ public class StarSystem {
 		// Add descriptive notes for this world.
 		Description d = new Description(mainPlanet);
 		factory.addNote(mainPlanet.getId(), "tech", d.getDescription("techlevel.TL"+mainPlanet.getTechLevel()));
+		factory.addNote(mainPlanet.getId(), "law", d.getDescription("lawlevel.LL"+mainPlanet.getLawLevel()));
+		factory.addNote(mainPlanet.getId(), "government", d.getDescription("government."+mainPlanet.getGovernment()));
+		factory.addNote(mainPlanet.getId(), "starport", d.getDescription("starport."+mainPlanet.getStarport()));
 		
 		if (mainDistance > distance) {
 			distance = mainDistance;
