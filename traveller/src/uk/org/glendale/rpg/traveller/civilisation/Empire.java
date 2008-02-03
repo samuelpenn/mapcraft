@@ -483,7 +483,7 @@ public class Empire {
 		//empire.grow();
 		//empire.colonise();
 
-		empire.setIntensity(-2);
+		empire.setIntensity(+2);
 		for (Sector sector : factory.getSectors()) {
 			empire.firstWave(sector.getId());
 		}
