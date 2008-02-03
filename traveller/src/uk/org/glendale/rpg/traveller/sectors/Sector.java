@@ -160,7 +160,7 @@ public class Sector {
 	 */
 	public Sector(int id) throws ObjectNotFoundException {
 		factory = new ObjectFactory();
-		
+		System.out.println("Getting sector "+id);
 		if (!read("id="+id)) {
 			factory.close();
 			throw new ObjectNotFoundException("Could not find a sector with id "+id);
@@ -254,7 +254,9 @@ public class Sector {
 				name = rs.getString("name");
 				x = rs.getInt("x");
 				y = rs.getInt("y");
+				System.out.println("Got "+name);
 			} else {
+				System.out.println("No sector found");
 				return false;
 			}
 		} catch (SQLException e) {
@@ -512,12 +514,69 @@ public class Sector {
 		return btn;
 	}
 	
-	public String toXML() {
+	public String toXML2() {
 		StringBuffer		buffer = new StringBuffer();
 		
 		buffer.append("<sector id=\"").append(id).append("\" name=\"");
 		buffer.append(name).append("\" ");
 		buffer.append("x=\"").append(x).append("\" y=\"").append(y).append("\"/>");
+		
+		return buffer.toString();
+	}
+
+	private String escape(String text) {
+		text = text.replaceAll("&", "&amp;");
+		text = text.replaceAll("<", "&lt;");
+		text = text.replaceAll(">", "&gt;");
+		text = text.replaceAll("'", "&apos;");
+		text = text.replaceAll("\"", "&quot;");
+		return text;
+	}
+	
+	public String toXML() {
+		return toXML(true);
+	}
+	
+	public String toXML(boolean header) {
+		StringBuffer		buffer = new StringBuffer();
+		
+		if (header) {
+			buffer.append("<?xml version=\"1.0\"?>\n");
+		}
+		
+		buffer.append("<sector xmlns=\"http://yagsbook.sourceforge.net/xml/traveller\" name=\"");
+		buffer.append(escape(getName()));
+		buffer.append("\" x=\"");
+		buffer.append(getX());
+		buffer.append("\" y=\"");
+		buffer.append(getY());
+		buffer.append("\" id=\"");
+		buffer.append(getId());
+		buffer.append("\">\n");
+		
+		for (int y=0; y < 4; y++) {
+			for (int x=0; x < 4; x++) {
+				buffer.append("<subsector x=\""+x+"\" y=\""+y+"\" name=\"");
+				buffer.append(escape(getSubSectorName(x*8+1, y*10+1)));
+				buffer.append("\"/>\n");
+			}
+		}
+		
+		Iterator<StarSystem>	i = listSystems().iterator();
+		while (i.hasNext()) {
+			StarSystem		ss = i.next();
+			
+			buffer.append("<system id=\"");
+			buffer.append(ss.getId());
+			buffer.append("\" name=\"");
+			buffer.append(escape(ss.getName()));
+			buffer.append("\" x=\"");
+			buffer.append(ss.getX());
+			buffer.append("\" y=\"");
+			buffer.append(ss.getY());				
+			buffer.append("\"/>\n");
+		}
+		buffer.append("</sector>\n");
 		
 		return buffer.toString();
 	}
@@ -606,6 +665,60 @@ public class Sector {
         	e.printStackTrace();
         }		
 	}
+	
+	public void populateUWPs(File file) {
+		FileReader          reader = null;
+        LineNumberReader    input = null;
+        try {
+            String    line = null;
+            
+            reader = new FileReader(file);
+            input = new LineNumberReader(reader);
+            
+            // Look for the start of the actual data.
+            boolean		start = false;
+            while (!start) {
+            	line = input.readLine();
+            	if (line == null) {
+            		break;
+            	} else if (line.startsWith(" 64-80: ")) {
+            		line = input.readLine();
+            		start = true;
+            	}
+            }
+            
+            int		count = 0;
+            for (line = input.readLine(); line != null; line = input.readLine()) {
+            	//System.out.println(input.getLineNumber()+": "+line);
+            	try {
+	            	UWP				uwp = new UWP("XX "+line, name, x, y);
+	            	
+	            	System.out.print(".");
+	            	if ((++count)%100 == 0) {
+	            		System.out.println("");
+	            	}
+	            	
+	            	
+					int		x = uwp.getX();
+					int		y = uwp.getY();
+					StarSystem	system = factory.getStarSystem(id, x, y);
+					if (system.getUWP() != null) continue;
+					//System.out.println(system.getName()+" ["+line+"] ["+line.length()+"]");
+					system.setUWP(line);
+					system.persist();
+            	} catch (Throwable e) {
+            		System.out.println("\nERROR: "+line);
+            		e.printStackTrace();
+            	}
+            }
+            System.out.println("");
+                
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }		
+	}
+	
+	
 	
 	/**
 	 * Import a data file containing a list of all the sectors.
@@ -799,6 +912,32 @@ public class Sector {
 			}
 		}
 	}
+	
+	public static void populateUWPs() {
+		ObjectFactory		factory = new ObjectFactory();
+		Vector<Sector>		sectors = factory.getSectors();
+		String				position = "012345ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		
+		for (Sector sector : sectors) {
+			int			x = sector.getX();
+			int			y = sector.getY();
+			String		filename = position.substring(y+11, y+12).toLowerCase()+position.substring(x+12, x+13).toUpperCase();
+			//String		filename = Integer.toString(y+15, 36).toLowerCase()+Integer.toString(x+16, 36).toUpperCase();
+			
+			System.out.println("Populating "+sector.getId()+": "+sector.getName());
+
+			try {
+				File		file = new File("data/core/gni/"+filename+".GNI");
+				if (file.canRead()) {
+					sector.populateUWPs(file);
+				}
+			} catch (Throwable e) {
+				System.out.println("Error in data for ["+filename+"]");
+				e.printStackTrace();
+				return;
+			}
+		}		
+	}
 		
 	public static void createTravellerSub() {
 		readSubSectorNames();		
@@ -837,9 +976,10 @@ public class Sector {
 	public static void main(String[] args) throws Exception {
 		System.out.println(GraphicsEnvironment.isHeadless());
 		//createTravellerSub();
-		createMortals();
+		//createMortals();
 		//createSol();
 		//regenerateSystem(1);
+		populateUWPs();
 		
 		System.exit(0);
 		
