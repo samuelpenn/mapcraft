@@ -80,8 +80,6 @@ public class Sectors extends HttpServlet {
 		String		uri = request.getPathInfo();
 		String		format = "xml";
 		
-		
-		
 		if (uri == null || uri.startsWith("/index") || uri.equals("/")) {
 			System.out.println("Universe list");
 			universeMap(request, response);
@@ -130,7 +128,8 @@ public class Sectors extends HttpServlet {
 			factory.close();
 			return;
 		}
-				
+		
+		// Get the star system at the given coordinates.
 		if (uri.matches("/[^/]+/.+")) {
 			String		part = uri.replaceAll("/[^/]+/([^/.]+)([/.].*)?", "$1");
 			
@@ -154,12 +153,14 @@ public class Sectors extends HttpServlet {
 			if (system != null) {
 				response.getOutputStream().print(system.toHTML());
 			} else {
-				outputHTML(sector, factory);
+				response.getOutputStream().print(outputHTML(sector, factory));
 			}
 		} else if (format.equals("txt")) {
 			response.setContentType("text/plain");
+			response.getOutputStream().print(sector.toXML());
 		} else {
 			response.setContentType("text/xml");
+			response.getOutputStream().print(sector.toXML());
 		}
 		
 		
