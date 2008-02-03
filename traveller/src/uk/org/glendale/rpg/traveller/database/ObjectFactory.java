@@ -291,7 +291,7 @@ public class ObjectFactory {
 		try {
 			rs = db.query("select * from system where id=?", id);
 			if (rs.next()) {
-				ss = new StarSystem(rs);
+				ss = new StarSystem(this, rs);
 				ss.setStars(getStarsBySystem(ss.getId()));
 				ss.setPlanets(getPlanetsBySystem(ss.getId()));
 			} else {
@@ -353,7 +353,7 @@ public class ObjectFactory {
 		ResultSet			rs = null;
 	
 		try {
-			rs = read("planet", "system_id="+systemId);
+			rs = read("planet", "system_id="+systemId+" order by distance");
 			while (rs.next()) {
 				Planet		planet = new Planet(this, rs);
 				list.add(planet);
@@ -617,6 +617,26 @@ public class ObjectFactory {
 		return list.toArray(new String[0]);
 	}
 	
+	/**
+	 * Clears a star system of all planets and stars. Used when about to
+	 * recreate the system.
+	 * 
+	 * @param id		Id of the system to clear.
+	 */
+	public void cleanStarSystem(int id) throws ObjectNotFoundException {
+		ResultSet		rs = null;
+		StarSystem		system = getStarSystem(id);
+		
+		for (Planet planet : system.getPlanets()) {
+			db.delete("note", "planet_id="+planet.getId());
+			db.delete("globe", "planet_id="+planet.getId());
+			db.delete("map", "planet_id="+planet.getId());
+		}
+			
+		db.delete("planet", "system_id="+id);
+		db.delete("star", "system_id="+id);
+	}
+	
 	public static void main(String[] args) throws Exception {
 		ObjectFactory		factory = new ObjectFactory();
 		/*
@@ -626,6 +646,13 @@ public class ObjectFactory {
 		writer.write(stream.toByteArray());
 		writer.close();
 		*/
+		
+		factory.cleanStarSystem(2682);
+		StarSystem		system = factory.getStarSystem(2682);
+		system.regenerate();
+		factory.close();
+		
+		/*
 		factory.addNote(666, "Hello world");
 		for (String n : factory.getNotes(666)) {
 			System.out.println(n);
@@ -636,7 +663,8 @@ public class ObjectFactory {
 		}		
 		for (String n : factory.getNotes(666, "%")) {
 			System.out.println(n);
-		}		
+		}
+		*/		
 	}
 
 }
