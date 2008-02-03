@@ -32,8 +32,9 @@ CREATE TABLE sector (id int auto_increment not null, name varchar(250) not null,
 #
 CREATE TABLE system (id int auto_increment not null, sector_id int not null, 
 					 x int not null, y int not null, name varchar(250) not null, 
-					 allegiance varchar(4) default 'Un', 
+					 allegiance varchar(4) default 'Un',
 					 zone varchar(16) default 'Green', base varchar(8), 
+					 uwp varchar(80),
 					 PRIMARY KEY(id), KEY (sector_id), KEY (sector_id, x, y),
 					 FOREIGN KEY (sector_id) REFERENCES sector(id))
 					 ENGINE=INNODB;
