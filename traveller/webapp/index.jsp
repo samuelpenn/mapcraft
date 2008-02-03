@@ -8,7 +8,7 @@
 	</head>
 	
 	<body>
-		<h1>Traveller Data</h1>
+		<h1>Star System Data</h1>
 		
 		<p>
 			These pages contain some attempts at mapping the Imperium, which is part
@@ -26,36 +26,36 @@
 			<li><a href="glossary/">Glossary of terms</a>.</li>
 		</ul>
 		
-		<h2>API Interface</h2>
+		<h2>REST Interface</h2>
 		
 		<p>
-			An API interface is available to access data on the universe:
+			The map pages that make up the map, and the information it contains,
+			are built on top of a web services layer which can be accessed via
+			a REST interface. Currently, this is just read-only. The interface
+			is quite simple, and best described with the following examples.
 		</p>
 		
 		<p>
-			<b>http://www.glendale.org.uk/traveller/data/get?type=TYPE&amp;id=ID</b>
+			<b>http://dev.glendale.org.uk/traveller/system/5.html</b><br/>
+			This gets information on system number 5, returned in HTML format.
+			To get the data as XML, request a .xml or .txt file instead (both
+			return XML, the difference being the content type it defines).
 		</p>
 		
 		<p>
-			Where TYPE can be one of <b>universe</b>, <b>sector</b> or <b>system</b>. The ID is the unique
-			id of the sector or system. Alternatively, instead of id, you can use name or
-			x and y (for sectors only). Core sector is treated as 0,0.
+			<b>http://dev.glendale.org.uk/traveller/sector/1.html</b><br/>
+			Get information on sector number 1.
 		</p>
 		
 		<p>
-			Finally, you can assign a format of either <b>text</b> or <b>xml</b>. e.g, to
-			get details on system <i>Harmony</i> in XML format, use:
+			<b>http://dev.glendale.org.uk/traveller/sector/The Reft.html</b><br/>
+			Get information on The Reft sector.
 		</p>
 		
 		<p>
-			<a href="http://www.glendale.org.uk/traveller/data/get?type=system&name=Harmony&format=xml">
-				http://www.glendale.org.uk/traveller/data/get?type=system&amp;name=Harmony&amp;format=xml
-			</a>
-		</p>
-		
-		<p>
-			Note that a stylesheet may be applied to any XML returned, depending on the
-			browser you are using.
+			Data returned as XML may be rendered by a stylesheet, depending
+			on your browser, so fetch the Text version instead if you really
+			want to see the raw XML.
 		</p>
 	</body>
 </html>

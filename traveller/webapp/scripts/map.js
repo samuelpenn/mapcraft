@@ -342,8 +342,13 @@ function keyPressed(event) {
 }
 
 function updateSectorInfo(x, y) {
-    var     url = GET+"type=sector&format=xml&x="+x+"&y="+y+"&detailX="+currentSubX+"&detailY="+currentSubY;
+    var     url = "sector/"+x+","+y+".xml";
     httpRequest("GET", url, true, gotSectorInfo);
+}
+
+function updateSystemInfo(id) {
+	var url = "system/"+id+".xml";
+	httpRequest("GET", url, true, gotSystemInfo);
 }
 
 function gotSectorInfo() {
@@ -391,12 +396,34 @@ function gotSectorInfo() {
                 break;
             }
         }
-        
+        var		sectorText;
+        sectorText = "<p><b><a href=\"sector/"+sectorId+".html\">"+sectorName+"</a></b> ("+systems+" systems) / "+subSector+"</p>";
+        divNode.innerHTML = sectorText;
+        updateSystemInfo(systemId);
+    }
+}
+
+function gotSystemInfo() {
+    if (request.readyState != 4) {
+		return;
+	}        
+    var     divNode = document.getElementById("system");
+    if (request.status == 200) {
         // Sector data includes full info on the user's selected system.
         // Find this and pull out the data on the first populated world.
+        var     root = request.responseXML;
         var		planetNodes = root.getElementsByTagName("planet");
         var		planetPopulation = -1, planetNumber = 0;
+        var     systemName = "";
+        var		systemId = 0;
+        var		systemAllegiance = "";
+        var		systemNode = root.getElementsByTagName("system")[0];
+        systemName = systemNode.getAttribute("name");
+        systemId = systemNode.getAttribute("id");
+        systemAllegiance = root.getElementsByTagName("allegiance")[0].childNodes[0].nodeValue;
+        
         for (var p=0; planetNodes != null && p < planetNodes.length; p++) {
+        	if (planetNodes[p].getElementsByTagName("population") == null) continue;
         	node = planetNodes[p].getElementsByTagName("population")[0];
         	if (node != null) planetPopulation = node.childNodes[0].nodeValue;
         	if (planetPopulation > 0) {
@@ -430,11 +457,10 @@ function gotSectorInfo() {
         	}
         }
         
-        var		sectorText;        
-        sectorText = "<p><b><a href=\""+GET+"type=sector&format=html&id="+sectorId+"\">"+sectorName+"</a></b> ("+systems+" systems) / "+subSector+"</p>";
+        var		sectorText = "";
         if (systemName != "") {
 	        sectorText += "<p>";
-        	sectorText += "<a href=\"/system/"+systemId+".html\">"+systemName+"</a>: ("+systemAllegiance+") "+planetNodes.length+" planets";
+        	sectorText += "<a href=\"system/"+systemId+".html\">"+systemName+"</a>: ("+systemAllegiance+") "+planetNodes.length+" planets";
         	if (planetNumber > 0) {
         		sectorText+=", Main world: planet "+planetNumber+" ("+planetType+"); ";
         		sectorText+=""+planetTemperature+", "+planetAtmosphere+" atmosphere ("+planetPressure+")";

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=US-ASCII" pageEncoding="US-ASCII"%>
 <%@ page import="java.util.*" %>
 
+<%@ page import="uk.org.glendale.rpg.traveller.Config" %>
 <%@ page import="uk.org.glendale.rpg.traveller.sectors.*" %>
 <%@ page import="uk.org.glendale.rpg.traveller.systems.*" %>
 
@@ -26,6 +27,7 @@
 			
 			if (sector == null) {
 				// If everything else has failed, get the core sector.
+				System.out.println("Getting default sector");
 				sector = new Sector(0, 0);
 			}
 		%>
@@ -46,9 +48,9 @@
 				padding-left: 10px;
 				border-bottom: 3pt solid #aaaaff;
 			}
-			
-			div#sector {
-				height: 48pt;
+
+			div.data {
+				height: 12pt;
 				width: 99%;
 				color: black;
 				background-color: #aaaaff;
@@ -58,8 +60,16 @@
 				border: 2pt solid black;
 				border-bottom: none;
 			}
-			
-			div#sector p {
+
+			div#sector {
+			}
+
+			div#system {
+				border-top: none;
+				height: 36pt;
+			}
+						
+			div.data p {
 				margin: 0pt;
 				padding: 0pt;
 			}
@@ -72,6 +82,7 @@
 		</style>
 		
 		<script type="text/javascript">
+			var		BASE_URL = "<%= Config.getBaseUrl() %>";
 			var		sectorX = <%= sector.getX() %>;
 			var		sectorY = <%= sector.getY() %>
 		</script>
@@ -106,7 +117,9 @@
 			</form>
 		</div>
 
-        <div id="sector">
+        <div id="sector" class="data">
+        </div>
+        <div id="system" class="data">
         </div>
         
         <div id="map" style="position: relative; width:99%; height:70%; border: 2pt solid black; overflow: hidden">
