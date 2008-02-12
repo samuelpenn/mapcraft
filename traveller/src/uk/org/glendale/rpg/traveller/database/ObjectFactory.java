@@ -647,8 +647,9 @@ public class ObjectFactory {
 		writer.close();
 		*/
 		
-		factory.cleanStarSystem(2682);
-		StarSystem		system = factory.getStarSystem(2682);
+		int		id = 10335;
+		factory.cleanStarSystem(id);
+		StarSystem		system = factory.getStarSystem(id);
 		system.regenerate();
 		factory.close();
 		

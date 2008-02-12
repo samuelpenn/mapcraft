@@ -178,7 +178,6 @@ public class Sector {
 		this.factory = factory;
 		
 		if (!read("id="+id)) {
-			factory.close();
 			throw new ObjectNotFoundException("Could not find a sector with id "+id);
 		}
 	}
@@ -254,9 +253,7 @@ public class Sector {
 				name = rs.getString("name");
 				x = rs.getInt("x");
 				y = rs.getInt("y");
-				System.out.println("Got "+name);
 			} else {
-				System.out.println("No sector found");
 				return false;
 			}
 		} catch (SQLException e) {
@@ -505,7 +502,9 @@ public class Sector {
 		else if (distance == 2) modifier = 0.5;
 		else modifier = 0.0;
 		
-		btn = p1.getWTN() + p2.getWTN() + wtcm - modifier*2;
+		modifier *= modifier;
+		
+		btn = p1.getWTN() + p2.getWTN() + wtcm - modifier;
 
 		// Limit the BTN according to the smallest of the two trade partners.
 		double	smallest = Math.min(p1.getWTN(), p2.getWTN());

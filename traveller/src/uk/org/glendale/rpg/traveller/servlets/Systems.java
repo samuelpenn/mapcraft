@@ -82,26 +82,36 @@ public class Systems extends HttpServlet {
 		String		uri = request.getPathInfo();
 		String		format = "xml";
 		String		property = null;
+		String		name = null;
 		int			id = 0;
 		
 		System.out.println(uri);
 		
 		// Very quick test to ensure that the URL format is correct.
+		/*
 		if (!uri.matches("/[0-9]+([/.].*)?")) {
 			response.sendError(400, "Incorrect request format ["+uri+"]");
 			return;
 		}
+		*/
 		
 		try {
-			id = Integer.parseInt(uri.replaceAll("/([0-9]+)([/.].*)?", "$1"));
+			name = uri.replaceAll("/([^/]+)([/.].*)?", "$1");
+			if (name.endsWith(".html") || name.endsWith(".xml") || name.endsWith(".txt")) {
+				name = name.substring(0, name.lastIndexOf("."));
+			}
+			System.out.println(name);
+			id = Integer.parseInt(name);
 		} catch (NumberFormatException e) {
 			// Should be impossible, since the regexp will have failed by this point.
-			response.sendError(400, "Badly formatted system id");
-			return;
+			//response.sendError(400, "Badly formatted system id");
+			//return;
+			id = -1;
 		}
 
-		if (uri.matches(".*\\.[a-z]+")) {
-			format = uri.replaceAll(".*\\.([a-z]+)", "$1");
+		format = uri.replaceAll("/([^/]+)([/.].*)?", "$1");
+		if (format.endsWith(".html") || format.endsWith(".xml") || format.endsWith(".txt")) {
+			format = format.replaceAll(".*\\.", "");
 			if (format.equals("txt") || format.equals("xml") || format.equals("html") || format.equals("jpg")) {
 				// Okay.
 			} else {
@@ -117,7 +127,12 @@ public class Systems extends HttpServlet {
 		ObjectFactory	factory = null;
 		try {
 			factory = new ObjectFactory();
-			StarSystem	system = new StarSystem(factory, id);
+			StarSystem	system = null;
+			if (id > 0) {
+				system = new StarSystem(factory, id);
+			} else {
+				system = new StarSystem(factory, name);
+			}
 
 			if (property == null) {
 				getFullPage(factory, system, format, request, response);
@@ -126,11 +141,9 @@ public class Systems extends HttpServlet {
 			}
 		} catch (ObjectNotFoundException e) {
 			response.sendError(404, "Cannot find planet with id ["+id+"]");
-			return;
 		} catch (Throwable t) {
 			t.printStackTrace();
 			response.sendError(500, "Exception ("+t.getMessage()+")");
-			return;
 		} finally {
 			factory.close();
 		}

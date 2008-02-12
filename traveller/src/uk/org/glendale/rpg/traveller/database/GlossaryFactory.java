@@ -40,7 +40,7 @@ public class GlossaryFactory {
 							  Config.getDatabaseUser(), Config.getDatabasePassword());
 	}
 	
-	private static GlossaryFactory getInstance() {
+	public static GlossaryFactory getInstance() {
 		instance = new GlossaryFactory();
 		return instance;
 	}
