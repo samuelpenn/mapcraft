@@ -108,9 +108,9 @@
 							ImageMap		map = new ImageMap(sector.getName(), root+"/images");
 							map.drawMap(2).save(file);
 						}
-						out.print("<td style=\"margin: 0pt; padding: 0pt; border: 1pt solid black;\">");
+						out.print("<td style=\"margin: 0pt; padding: 0pt; border: none;\">");
 						out.print("<a href=\"map.jsp?id="+sector.getId()+"\" title=\""+sector.getName()+"\">");
-						out.print("<img src=\"images/sectors/"+sector.getId()+".jpg\"/></a>");
+						out.print("<img src=\"images/sectors/"+sector.getId()+".jpg\" border=\"0\"/></a>");
 						out.println("</td>");
 					}
 					out.println("</tr>");
