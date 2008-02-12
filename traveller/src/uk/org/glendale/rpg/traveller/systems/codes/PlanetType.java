@@ -53,7 +53,7 @@ public enum PlanetType {
 	MesoGaian(Category.Terrestrial, 5.5, 6500, Habitability.Difficult), 
 	ArchaeoGaian(Category.Terrestrial, 5.5, 6500, Habitability.Difficult), 
 	EoArean(Category.Terrestrial, 5.0, 5500, Habitability.Difficult), 
-	AreanLacustric(Category.Terrestrial, 4.5, 4500), 
+	AreanLacustric(Category.Terrestrial, 4.5, 3500), 
 	Arean(Category.Terrestrial, 4.5, 3500),
 	Cytherean(Category.Terrestrial, 5.5, 6200, Habitability.Hostile),    // Venus
 	Phosphorian(Category.Terrestrial, 5.5, 6200, Habitability.Hostile),  // Cloudless Venus

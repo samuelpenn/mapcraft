@@ -370,9 +370,9 @@ public class Description {
 	 */
 	public static void main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
-		Planet		p = factory.getPlanet(171229);
+		Planet		p = factory.getPlanet(171244);
 		Description d = new Description(p);
-		System.out.println(d.getDescription("techlevel.TL4"));
+		System.out.println(d.getDescription("government.Balkanization"));
 		factory.close();
 		System.exit(0);
 		

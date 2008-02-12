@@ -21,7 +21,7 @@ public enum AtmosphereType {
 	OrganicToxins(0.5, 1.0),
 	LowOxygen(0.75, 1.0), 
 	Pollutants(0.5, 1.0), 
-	HighCarbonDioxide(0.1, 0.75), 
+	HighCarbonDioxide(0.25, 0.75), 
 	HighOxygen(1.0, 1.0), 
 	InertGases(0.0, 1.0), 
 	Hydrogen(0.0, 1.0), 
@@ -47,6 +47,10 @@ public enum AtmosphereType {
 	 */
 	public double getSuitability() {
 		return suitability;
+	}
+	
+	public boolean isGaian() {
+		return (suitability > 0.1);
 	}
 	
 	/**

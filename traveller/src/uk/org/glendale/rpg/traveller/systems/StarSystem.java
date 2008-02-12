@@ -43,7 +43,7 @@ import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
  * 
  * @author Samuel Penn
  */
-public class StarSystem {
+public class StarSystem implements Comparable {
 	ObjectFactory			factory = null;
 	private String			name = null;
 	private int				id = 0;
@@ -1407,6 +1407,42 @@ public class StarSystem {
 		return toHTML(true);
 	}
 	
+	/**
+	 * Comparable class so we can sort bilateral trade numbers for lots
+	 * of systems. Returns things sorted in greatest BTN first.
+	 */
+	private class BTN implements Comparable {
+		StarSystem		system = null;
+		double			btn = 0.0;
+		
+		BTN(StarSystem system, double btn) {
+			this.system = system;
+			this.btn = btn;
+		}
+		
+		double getBTN() {
+			return btn;
+		}
+		
+		StarSystem getStarSystem() {
+			return system;
+		}
+
+		public int compareTo(Object o) {
+			if (o instanceof BTN) {
+				BTN		b = (BTN)o;
+				if (getBTN() < b.getBTN()) {
+					return +1;
+				} else if (getBTN() > b.getBTN()) {
+					return -1;
+				} else {
+					return getStarSystem().compareTo(b.getStarSystem());
+				}
+			}
+			return 0;
+		}
+	}
+	
 	public String toHTML(boolean header) {
 		StringBuffer		buffer = new StringBuffer();
 		String				stylesheet = Config.getBaseUrl()+"css/systems.css";
@@ -1476,57 +1512,66 @@ public class StarSystem {
 			buffer.append("<h2>Trade Details</h2>");
 			
 			buffer.append("<table>");
-			buffer.append("<tr><th>System</th><th>BTN</th><th>Cr/Year</th><th>Dt/Y</th><th>Dt/Wk</th><th>Dt/Day</th></tr>");
+			buffer.append("<tr><th>System</th><th>Distance</th><th>BTN</th><th>Cr/Year</th><th>Dt/Y</th><th>Dt/Wk</th><th>Dt/Day</th></tr>");
 			
-			for (int sy = getY() - 10; sy < getY()+10; sy++) {
-				for (int sx = getX() - 10; sx < getX()+10; sx++) {
+			TreeSet<BTN>	list = new TreeSet<BTN>();
+
+			int		area = 6;
+			for (int sy = getY() - area; sy < getY()+area; sy++) {
+				for (int sx = getX() - area; sx < getX()+area; sx++) {
 					StarSystem	s2 = sector.getSystem(sx, sy);
 					if (s2 == null) continue;
+					if (s2.getId() == getId()) continue;
+					
 					double		btn = sector.getBTN(getMainWorld(), s2.getMainWorld());
 					
-					if (btn < 7.5) {
-						continue;
-					}
-					
-					long		credits = (long)Math.pow(10, btn);
-					int			year = 0;
-					int			week = 0;
-					int			day = 0;
-					
-					if (btn >= 4.0) {
-						year = (int)Math.pow(10, btn-4.0);
-					}
-					if (btn >= 5.5) {
-						week = (int)Math.pow(10, btn-5.5);
-					}
-					if (btn >= 6.5) {
-						day = (int)Math.pow(10, btn-6.5);
-					}
-					String		cr = null;
-					if (credits > 1000000000000L) {
-						credits /= 1000000000;
-						cr = ""+(credits/1000.0)+" TCr";
-					} else if (credits > 1000000000) {
-						credits /= 1000000;
-						cr = ""+(credits/1000.0)+" GCr";
-					} else if (credits > 1000000) {
-						credits /= 1000;
-						cr = ""+(credits/1000.0)+" MCr";
-					} else if (credits > 1000) {
-						cr = ""+(credits/1000.0)+" KCr";
-					} else {
-						cr = ""+credits + " Cr";
-					}
-					buffer.append("<tr>");
-					buffer.append("<td><a href=\""+Config.getBaseUrl()+"system/"+s2.getId()+".html\">"+s2.getName()+"</a></td>");
-					buffer.append("<td>"+((int)(btn*10)/10.0)+"</td>");
-					buffer.append("<td>"+cr+"</td>");
-					buffer.append("<td>"+year+"</td>");
-					buffer.append("<td>"+week+"</td>");
-					buffer.append("<td>"+day+"</td>");
-					buffer.append("</tr>");
-					
+					list.add(new BTN(s2, btn));
 				}
+			}
+
+			int		max = 5;
+			for (BTN b : list) {
+				StarSystem  s2 = b.getStarSystem();
+				double 		btn = b.getBTN();
+				long		credits = (long)Math.pow(10, btn);
+				int			year = 0;
+				int			week = 0;
+				int			day = 0;
+				
+				if (btn >= 4.0) {
+					year = (int)Math.pow(10, btn-4.0);
+				}
+				if (btn >= 5.5) {
+					week = (int)Math.pow(10, btn-5.5);
+				}
+				if (btn >= 6.5) {
+					day = (int)Math.pow(10, btn-6.5);
+				}
+				String		cr = null;
+				if (credits > 1000000000000L) {
+					credits /= 1000000000;
+					cr = ""+(credits/1000.0)+" TCr";
+				} else if (credits > 1000000000) {
+					credits /= 1000000;
+					cr = ""+(credits/1000.0)+" GCr";
+				} else if (credits > 1000000) {
+					credits /= 1000;
+					cr = ""+(credits/1000.0)+" MCr";
+				} else if (credits > 1000) {
+					cr = ""+(credits/1000.0)+" KCr";
+				} else {
+					cr = ""+credits + " Cr";
+				}
+				buffer.append("<tr>");
+				buffer.append("<td><a href=\""+Config.getBaseUrl()+"system/"+s2.getId()+".html\">"+s2.getName()+"</a></td>");
+				buffer.append("<td>"+(int)(sector.getDistance(getMainWorld(), s2.getMainWorld()))+"pc</td>");
+				buffer.append("<td>"+((int)(btn*10)/10.0)+"</td>");
+				buffer.append("<td>"+cr+"</td>");
+				buffer.append("<td>"+year+"</td>");
+				buffer.append("<td>"+week+"</td>");
+				buffer.append("<td>"+day+"</td>");
+				buffer.append("</tr>");
+				if (--max < 1) break;
 			}
 			buffer.append("</table>");
 			
@@ -1713,11 +1758,14 @@ public class StarSystem {
 		//UWP		uwp = new UWP("eC Mirriam            0303 B9998A6-A B                 A 534 Im G2 V");
 		
 		ObjectFactory	factory = new ObjectFactory();
-		StarSystem		ss = new StarSystem(factory, 1164);
+		StarSystem		ss = new StarSystem(factory, 10335);
 		
+		ss.toHTML();
+		/*
 		for (Planet planet : ss.getPlanets()) {
 			System.out.println(planet.getName());
 		}
+		*/
 		
 		//uwp.dump();
 		//System.exit(0);
@@ -1745,6 +1793,10 @@ public class StarSystem {
 		
 		map.close();
 		*/
+	}
+	
+	public int compareTo(Object arg0) {
+		return toString().compareToIgnoreCase(arg0.toString());
 	}
 
 }

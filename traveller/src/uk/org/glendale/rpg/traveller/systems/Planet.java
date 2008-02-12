@@ -518,23 +518,130 @@ public class Planet {
 			lifeType = LifeType.Extensive;
 		}
 		
-		if (atmospherePressure == AtmospherePressure.None) {
-			// Planet has no atmosphere.
-			lifeType = LifeType.None;
-			if (radius > 4000) {
-				planetType = PlanetType.Arean;
+		// Seen a few of these. Fix them.
+		if (hydrographics > 100) hydrographics = 100;
+
+		if (isMoon()) {
+			// Is a moon.
+			// TODO: Implement.
+		} else if (atmospherePressure == AtmospherePressure.None) {
+			// Any vacuum world.
+			if (radius < 2000) {
+				// Asteroids.
+				if (temperature.isHotterThan(Temperature.Hot)) {
+					planetType = PlanetType.Vulcanian;
+				} else if (temperature.isHotterThan(Temperature.Cool)) {
+					planetType = PlanetType.Basaltic;
+				} else if (temperature.isColderThan(Temperature.VeryCold)) {
+					planetType = PlanetType.Mimean;
+				} else {
+					planetType = PlanetType.Cerean;
+				}
+				lifeType = LifeType.None;
+			} else if (radius < 4000) {
+				if (temperature.isHotterThan(Temperature.Hot)) {
+					planetType = PlanetType.Hermian;
+				} else if (temperature.isHotterThan(Temperature.Cool)) {
+					planetType = PlanetType.EoArean;
+				} else if (temperature.isColderThan(Temperature.Cold)) {
+					planetType = PlanetType.AreanLacustric;
+				} else {
+					planetType = PlanetType.Arean;
+				}
+				lifeType = LifeType.None;				
+			} else if (radius < 7000) {
+				if (temperature.isHotterThan(Temperature.Hot)) {
+					planetType = PlanetType.JaniLithic;
+					atmospherePressure = AtmospherePressure.Trace;
+					atmosphereType = AtmosphereType.InertGases;
+				} else if (temperature.isColderThan(Temperature.VeryCold)) {
+					planetType = PlanetType.LithicGelidian;
+				} else {
+					planetType = PlanetType.Arean;
+				}
+				lifeType = LifeType.None;				
 			} else {
-				planetType = PlanetType.Selenian;
+				if (temperature.isHotterThan(Temperature.Hot)) {
+					planetType = PlanetType.JaniLithic;
+					atmospherePressure = AtmospherePressure.VeryThin;
+					atmosphereType = AtmosphereType.InertGases;
+					lifeType = LifeType.None;				
+				} else if (temperature.isColderThan(Temperature.VeryCold)) {
+					planetType = PlanetType.LithicGelidian;
+					lifeType = LifeType.None;				
+				} else {
+					// Way too silly. Fix it.
+					atmospherePressure = AtmospherePressure.Thin;
+					atmosphereType = AtmosphereType.Standard;
+					sanityCheck(star);
+					return;
+				}
 			}
-		} else if (atmospherePressure == AtmospherePressure.Trace) {
-			planetType = PlanetType.Arean;
-			lifeType = LifeType.Metazoa;
-			if (temperature.isColderThan(Temperature.Cold)) {
-				planetType = PlanetType.Europan;
-			} else if (temperature.isColderThan(Temperature.Cool)) {
-				planetType = PlanetType.GaianTundral;
+		} else if (atmospherePressure.isThinnerThan(AtmospherePressure.Thin)) {
+			if (atmosphereType.isGaian()) {
+				lifeType = LifeType.SimpleLand;
+				if (temperature.isHotterThan(Temperature.Hot)) {
+					planetType = PlanetType.JaniLithic;
+					if (hydrographics > 10) {
+						hydrographics /= 5;
+					}
+					lifeType = LifeType.Metazoa;
+				} else if (temperature.isColderThan(Temperature.Cold)) {
+					planetType = PlanetType.GaianTundral;
+					lifeType = LifeType.ComplexOcean;
+				} else if (radius < 5000) {
+					planetType = PlanetType.EoArean;
+				} else {
+					planetType = PlanetType.PostGaian;					
+				}
+			} else {
+				lifeType = LifeType.None;
+				if (radius < 3000) {
+					if (temperature.isHotterThan(Temperature.Hot)) {
+						planetType = PlanetType.Hermian;
+					} else if (temperature.isColderThan(Temperature.Cold)) {
+						planetType = PlanetType.Oortean;
+					} else {
+						planetType = PlanetType.Cerean;
+					}
+				} else if (radius < 5000) {
+					if (temperature.isHotterThan(Temperature.Hot)) {
+						planetType = PlanetType.Hermian;
+					} else if (temperature.isColderThan(Temperature.Cold)) {
+						planetType = PlanetType.LithicGelidian;
+					} else {
+						planetType = PlanetType.Arean;
+					}
+				} else {
+					if (temperature.isHotterThan(Temperature.Hot)) {
+						planetType = PlanetType.JaniLithic;
+					} else if (temperature.isColderThan(Temperature.Cold)) {
+						planetType = PlanetType.GaianTundral;
+						if (hydrographics > 0) {
+							lifeType = lifeType.ComplexOcean;
+						} else {
+							lifeType = lifeType.Protozoa;
+						}
+					} else {
+						planetType = PlanetType.PostGaian;
+						if (hydrographics < 10) {
+							lifeType = LifeType.Protozoa;
+						} else if (hydrographics < 40) {
+							lifeType = LifeType.ComplexOcean;
+						} else {
+							lifeType = LifeType.SimpleLand;
+						}
+					}
+				}
 			}
-		} else if (atmospherePressure == AtmospherePressure.VeryThin) {
+		} else if (atmospherePressure.isDenserThan(AtmospherePressure.Dense)) {
+			if (radius < 3000) {
+				
+			} else if (radius < 5000) {
+				
+			} else if (radius < 8000) {
+				
+			}
 			planetType = PlanetType.EoArean;
 			lifeType = LifeType.SimpleLand;
 			if (temperature.isColderThan(Temperature.Cold)) {
@@ -545,6 +652,7 @@ public class Planet {
 				lifeType = LifeType.SimpleLand;
 			}
 		} else {
+			// Normal(ish) atmosphere pressure.
 			if (temperature.isColderThan(Temperature.Cold)) {
 				planetType = PlanetType.Europan;		
 				lifeType = LifeType.ComplexOcean;
@@ -1033,6 +1141,17 @@ public class Planet {
 	}
 	
 	public String toHTML() {
+		return toHTML(true);
+	}
+	
+	/**
+	 * Generate an output HTML string which describes the planet. If a header is
+	 * requested, then an HTML header is included, otherwise an HTML fragment is
+	 * returned for inserting into an existing document.
+	 * 
+	 * @return		String describing the planet.
+	 */
+	public String toHTML(boolean header) {
 		StringBuffer		buffer = new StringBuffer();
 
 		// Heading
@@ -1079,12 +1198,26 @@ public class Planet {
 			buffer.append("<p><b>Population:</b> "+format.format(population)+"</p>\n");
 			// Government
 			buffer.append("<p><b>Government:</b> "+government+"</p>\n");
-			text = getGlossaryText(glossary, "government-"+government.toString());
-			if (text != null) buffer.append("<p><i>"+text+"</i></p>");
+			notes = factory.getNotes(id, "government");
+			if (notes == null || notes.length == 0) {
+				text = getGlossaryText(glossary, "government-"+government.toString());
+				if (text != null) buffer.append("<p><i>"+text+"</i></p>");
+			} else {
+				for (String p : notes) {
+					buffer.append("<p><i>"+p+"</i></p>");
+				}
+			}
 			// Law level
 			buffer.append("<p><b>Law level:</b> "+lawLevel+"</p>\n");
-			text = getGlossaryText(glossary, "law-"+lawLevel);
-			if (text != null) buffer.append("<p><i>"+text+"</i></p>");
+			notes = factory.getNotes(id, "law");
+			if (notes == null || notes.length == 0) {
+				text = getGlossaryText(glossary, "law-"+lawLevel);
+				if (text != null) buffer.append("<p><i>"+text+"</i></p>");				
+			} else {
+				for (String p : notes) {
+					buffer.append("<p><i>"+p+"</i></p>");
+				}
+			}
 			// Tech level
 			buffer.append("<p><b>Tech level:</b> "+techLevel+"</p>\n");
 			notes = factory.getNotes(id, "tech");
@@ -1098,8 +1231,16 @@ public class Planet {
 			}
 			// Starport
 			buffer.append("<p><b>Starport:</b> "+starport+"</p>\n");
-			text = getGlossaryText(glossary, "starport-"+starport);
-			if (text != null) buffer.append("<p><i>"+text+"</i></p>");
+			notes = factory.getNotes(id, "starport");
+			if (notes == null || notes.length == 0) {
+				text = getGlossaryText(glossary, "starport-"+starport);
+				if (text != null) buffer.append("<p><i>"+text+"</i></p>");
+			} else {
+				for (String p : notes) {
+					buffer.append("<p><i>"+p+"</i></p>");
+				}
+			}
+			glossary.close();
 		}
 
 		buffer.append("<table width=\"100%\" border=\"0\"><tr><td style=\"background-color:black\">");
