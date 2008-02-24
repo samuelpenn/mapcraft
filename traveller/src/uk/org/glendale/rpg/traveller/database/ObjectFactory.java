@@ -427,7 +427,7 @@ public class ObjectFactory {
 		try {
 			rs = read("planet", "parent_id="+planetId+" and moon=1 order by distance");
 			while (rs.next()) {
-				Planet		planet = new Planet(rs);
+				Planet		planet = new Planet(this, rs);
 				list.add(planet);
 			}
 		} catch (SQLException e) {
@@ -647,7 +647,7 @@ public class ObjectFactory {
 		writer.close();
 		*/
 		
-		int		id = 10335;
+		int		id = 10409;
 		factory.cleanStarSystem(id);
 		StarSystem		system = factory.getStarSystem(id);
 		system.regenerate();
