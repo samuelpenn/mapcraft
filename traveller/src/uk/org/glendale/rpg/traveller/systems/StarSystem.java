@@ -638,6 +638,7 @@ public class StarSystem implements Comparable {
 		int				increase = star.getInnerLimit();
 		int				distance = star.getInnerLimit()+Die.die(increase, 2);
 		PlanetFactory	planetFactory = new PlanetFactory(factory, star);
+		boolean			mainWorldIsMoon = false;
 		
 		if (terrestrial <= 0) {
 			System.out.println("generatePlanets: Only "+terrestrial+" planets defined");
@@ -665,8 +666,14 @@ public class StarSystem implements Comparable {
 		
 		int			bestDistance = star.getEarthDistance();
 		int			closest = 0, nearestDistance = 100000000;
+		
+		if (bestDistance < 5) {
+			// The star is too cold to support a suitable world, so assume that
+			// the main world is actually around a gas giant.
+			mainWorldIsMoon = true;
+		}
 
-		for (int i=0; i < terrestrial+1; i++) {
+		for (int i=0; i < terrestrial+(mainWorldIsMoon?0:1); i++) {
 			Planet		planet = null;
 			String		planetName = name+" "+getRoman(planetNum++);
 
@@ -697,25 +704,49 @@ public class StarSystem implements Comparable {
 			System.out.println("Closest="+closest+", size="+planets.size()+", maxDistance="+maxDistance+", distance="+distance);
 		}
 		
-		int			mainDistance = (planets.elementAt(closest).getDistance() + bestDistance) / 2;
-		Planet		mainPlanet = new Planet(factory, id, uwp, star, name+" "+getRoman(closest+1), mainDistance);
-		mainPlanet.setId(planets.elementAt(closest).getId());
-		Description.setDescription(mainPlanet);
-		mainPlanet.persist();
-		planets.set(closest, mainPlanet);
-		
-		// Add descriptive notes for this world.
-		Description d = new Description(mainPlanet);
-		factory.addNote(mainPlanet.getId(), "tech", d.getDescription("techlevel.TL"+mainPlanet.getTechLevel()));
-		factory.addNote(mainPlanet.getId(), "law", d.getDescription("lawlevel.LL"+mainPlanet.getLawLevel()));
-		factory.addNote(mainPlanet.getId(), "government", d.getDescription("government."+mainPlanet.getGovernment()));
-		factory.addNote(mainPlanet.getId(), "starport", d.getDescription("starport."+mainPlanet.getStarport()));
-		
-		if (mainDistance > distance) {
-			distance = mainDistance;
+		if (!mainWorldIsMoon) {
+			int			mainDistance = (planets.elementAt(closest).getDistance() + bestDistance) / 2;
+			Planet		mainPlanet = new Planet(factory, id, uwp, star, name+" "+getRoman(closest+1), mainDistance);
+			mainPlanet.setId(planets.elementAt(closest).getId());
+			Description.setDescription(mainPlanet);
+			mainPlanet.persist();
+			planets.set(closest, mainPlanet);
+			
+			// Add descriptive notes for this world.
+			Description d = new Description(mainPlanet);
+			factory.addNote(mainPlanet.getId(), "tech", d.getDescription("techlevel.TL"+mainPlanet.getTechLevel()));
+			factory.addNote(mainPlanet.getId(), "law", d.getDescription("lawlevel.LL"+mainPlanet.getLawLevel()));
+			factory.addNote(mainPlanet.getId(), "government", d.getDescription("government."+mainPlanet.getGovernment()));
+			factory.addNote(mainPlanet.getId(), "starport", d.getDescription("starport."+mainPlanet.getStarport()));
+			
+			if (mainDistance > distance) {
+				distance = mainDistance;
+			}
 		}
 
 		distance+=100;
+		
+		int		mainJovian = 0;
+		boolean	largeJovian = false;
+		if (mainWorldIsMoon) {
+			Planet		planet = null;
+			String		planetName = name+" "+getRoman(planetNum++);
+			
+			largeJovian = true;
+			distance *= 1.5;
+			
+			planet = planetFactory.getLargeJovian(planetName, distance);
+			Description.setDescription(planet);
+			planet.persist();
+			planets.add(planet);
+			distance += increase + Die.die(increase, 2);
+			increase *= 2;
+			jovian--;
+
+			mainJovian = planet.getId();
+			System.out.println("Main world ["+planet.getId()+"] is a ["+planet.getType()+"]");
+		}
+		
 		for (int i=0; i < jovian; i++) {
 			Planet		planet = null;
 			String		planetName = name+" "+getRoman(planetNum++);
@@ -724,7 +755,19 @@ public class StarSystem implements Comparable {
 				break;
 			}
 			
-			planet = planetFactory.getColdJovian(planetName, distance);
+			if (largeJovian) {
+				// There should really only be one large jovian in the system.
+				planet = planetFactory.getSmallJovian(planetName, distance);
+			} else {
+				planet = planetFactory.getColdJovian(planetName, distance);
+				switch (planet.getType()) {
+				case EuJovian:
+				case SuperJovian:
+				case MacroJovian:
+					largeJovian = true;
+					break;
+				}
+			}
 			Description.setDescription(planet);
 			planet.persist();
 			planets.add(planet);
@@ -732,25 +775,23 @@ public class StarSystem implements Comparable {
 			increase *= 2;
 		}
 		
-		if (distance < star.getColdPoint()) {
-			return;
-		}
-
-		// Cold icy worlds in the Kuiper belt.
-		for (int i=0; i < kuiperian; i++) {
-			Planet		planet = null;
-			String		planetName = name+" "+getRoman(planetNum++);
-
-			if (maxDistance > 0 && distance > maxDistance) {
-				break;
+		if (distance >= star.getColdPoint()) {
+			// Cold icy worlds in the Kuiper belt.
+			for (int i=0; i < kuiperian; i++) {
+				Planet		planet = null;
+				String		planetName = name+" "+getRoman(planetNum++);
+	
+				if (maxDistance > 0 && distance > maxDistance) {
+					break;
+				}
+				
+				planet = planetFactory.getIceWorld(planetName, distance);
+				Description.setDescription(planet);
+				planet.persist();
+				planets.add(planet);
+				distance += increase + Die.die(increase, 2);
+				increase *= 3;			
 			}
-			
-			planet = planetFactory.getIceWorld(planetName, distance);
-			Description.setDescription(planet);
-			planet.persist();
-			planets.add(planet);
-			distance += increase + Die.die(increase, 2);
-			increase *= 3;			
 		}
 
 		// Having finished all the major worlds, now create any required moons.
@@ -758,7 +799,26 @@ public class StarSystem implements Comparable {
 			System.out.println("Creating moons for ["+planet.getName()+"]");
 			if (planet.getMoonCount() > 0) {
 				Planet[]	moons = planetFactory.getMoons(planet, planet.getMoonCount());
-				for (Planet moon : moons) {
+				
+				if (planet.getId() == mainJovian || moons.length > 0) {
+					// Need to make one of these moons the main one.
+					int		moonId = moons[0].getId();
+					Planet		mainMoon = new Planet(factory, id, uwp, star, moons[0].getName(), moons[0].getDistance(), planet.getTemperature());
+					mainMoon.setParentId(mainJovian);
+					mainMoon.setId(moonId);
+					Description.setDescription(mainMoon);
+					mainMoon.persist();
+					moons[0] = mainMoon;
+					
+					// Add descriptive notes for this world.
+					Description d = new Description(mainMoon);
+					factory.addNote(mainMoon.getId(), "tech", d.getDescription("techlevel.TL"+mainMoon.getTechLevel()));
+					factory.addNote(mainMoon.getId(), "law", d.getDescription("lawlevel.LL"+mainMoon.getLawLevel()));
+					factory.addNote(mainMoon.getId(), "government", d.getDescription("government."+mainMoon.getGovernment()));
+					factory.addNote(mainMoon.getId(), "starport", d.getDescription("starport."+mainMoon.getStarport()));
+				}
+				
+				for (Planet moon : moons) {					
 					Description.setDescription(moon);
 					moon.persist();
 					// Do we need to add it to the list of planets?
@@ -1443,66 +1503,15 @@ public class StarSystem implements Comparable {
 		}
 	}
 	
-	public String toHTML(boolean header) {
+	public String toHTML(String property) {
 		StringBuffer		buffer = new StringBuffer();
-		String				stylesheet = Config.getBaseUrl()+"css/systems.css";
-		Sector  			sector = null;
+		Sector				sector = null;
 		
 		try {
 			sector = new Sector(factory, getSectorId());
 		} catch (ObjectNotFoundException e) {
 			sector = null;
 		}
-		
-		if (header) {
-			buffer.append("<html>\n<head>\n<title>"+getName()+" System</title>\n");
-			buffer.append("<link rel=\"STYLESHEET\" type=\"text/css\" media=\"screen\" href=\""+stylesheet+"\" />\n");
-	        buffer.append("<script type=\"text/javascript\" src=\""+Config.getBaseUrl()+"scripts/system.js\"></script>\n");
-			buffer.append("</head><body>\n");
-		}
-		
-		buffer.append("<div id=\"header\">\n");
-		buffer.append("<h1>"+getName()+"</h1>\n");
-		
-		buffer.append("<p>\n");
-		if (sector != null) {
-			buffer.append(sector.getName()+" / "+sector.getSubSectorName(getX(), getY())+" - "+getXAsString()+getYAsString());
-		}
-		if (getAllegianceData() != null) {
-			buffer.append(" ("+getAllegianceData().getName()+")");
-		}
-		if (getZone() != Zone.Green) {
-			buffer.append(" / "+getZone().toString());
-		}
-		buffer.append("</p>\n");
-		buffer.append("</div>\n");
-		// Simple map of the whole solar system.
-		Vector<Planet>	planets = factory.getPlanetsBySystem(getId());
-		buffer.append("<div id=\"map\">\n");
-		int		lastX = 0, x = 0;
-		for (Star star : getStars()) {
-			String		image = Config.getBaseUrl()+"images/stars/"+star.getSpectralType().toString().substring(0, 1)+".png";
-			int			ssize = (int)Math.pow((star.getStarClass().getRadius() * 600000), 0.3);
-			lastX = 0;
-			buffer.append("<table><tr>");
-			
-			buffer.append("<td><img src=\""+image+"\" width=\""+ssize+"\" height=\""+ssize+"\" title=\""+star.getName()+"\"/></td>");
-			for (int i=0; i < planets.size(); i++) {
-				Planet		planet = planets.elementAt(i);
-				if (planet.getParentId() == star.getId() && !planet.isMoon()) {
-					x = planet.getDistance() / 3 - lastX;
-					lastX = planet.getDistance() / 3;
-					String		pimg = Config.getBaseUrl()+"planet/"+planet.getId()+".jpg?globe";
-					int			size = (int)Math.pow(planet.getRadius(), 0.3);
-					buffer.append("<td width=\""+x+"px\">");
-					buffer.append("<img src=\""+pimg+"\" width=\""+size+"\" height=\""+size+"\" title=\""+planet.getName()+"\" align=\"left\" valign=\"center\"/>");
-					buffer.append("</td>");
-				}
-			}
-			buffer.append("</tr></table>\n");
-		}
-		buffer.append("</div>\n");
-		
 		/*
 		 * Display trade information if this system has a populated world.
 		 */
@@ -1577,6 +1586,63 @@ public class StarSystem implements Comparable {
 			
 			buffer.append("</div>");
 		}
+		return buffer.toString();
+	}
+	
+	public String toHTML(boolean header) {
+		StringBuffer		buffer = new StringBuffer();
+		String				stylesheet = Config.getBaseUrl()+"css/systems.css";
+		Sector  			sector = null;
+		
+		if (header) {
+			buffer.append("<html>\n<head>\n<title>"+getName()+" System</title>\n");
+			buffer.append("<link rel=\"STYLESHEET\" type=\"text/css\" media=\"screen\" href=\""+stylesheet+"\" />\n");
+	        buffer.append("<script type=\"text/javascript\" src=\""+Config.getBaseUrl()+"scripts/system.js\"></script>\n");
+			buffer.append("</head><body>\n");
+		}
+		
+		buffer.append("<div id=\"header\">\n");
+		buffer.append("<h1>"+getName()+"</h1>\n");
+		
+		buffer.append("<p>\n");
+		if (sector != null) {
+			buffer.append(sector.getName()+" / "+sector.getSubSectorName(getX(), getY())+" - "+getXAsString()+getYAsString());
+		}
+		if (getAllegianceData() != null) {
+			buffer.append(" ("+getAllegianceData().getName()+")");
+		}
+		if (getZone() != Zone.Green) {
+			buffer.append(" / "+getZone().toString());
+		}
+		buffer.append("</p>\n");
+		buffer.append("</div>\n");
+		// Simple map of the whole solar system.
+		Vector<Planet>	planets = factory.getPlanetsBySystem(getId());
+		buffer.append("<div id=\"map\">\n");
+		int		lastX = 0, x = 0;
+		for (Star star : getStars()) {
+			String		image = Config.getBaseUrl()+"images/stars/"+star.getSpectralType().toString().substring(0, 1)+".png";
+			int			ssize = (int)Math.pow((star.getStarClass().getRadius() * 600000), 0.3);
+			lastX = 0;
+			buffer.append("<table><tr>");
+			
+			buffer.append("<td><img src=\""+image+"\" width=\""+ssize+"\" height=\""+ssize+"\" title=\""+star.getName()+"\"/></td>");
+			for (int i=0; i < planets.size(); i++) {
+				Planet		planet = planets.elementAt(i);
+				if (planet.getParentId() == star.getId() && !planet.isMoon()) {
+					x = planet.getDistance() / 3 - lastX;
+					lastX = planet.getDistance() / 3;
+					String		pimg = Config.getBaseUrl()+"planet/"+planet.getId()+".jpg?globe";
+					int			size = (int)Math.pow(planet.getRadius(), 0.3);
+					buffer.append("<td width=\""+x+"px\">");
+					buffer.append("<img src=\""+pimg+"\" width=\""+size+"\" height=\""+size+"\" title=\""+planet.getName()+"\" align=\"left\" valign=\"center\"/>");
+					buffer.append("</td>");
+				}
+			}
+			buffer.append("</tr></table>\n");
+		}
+		buffer.append("</div>\n");
+		
 		
 		buffer.append("<div id=\"stars\">\n");
 		buffer.append("<table id=\"tabs\" cellspacing=\"0\">\n");

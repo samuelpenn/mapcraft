@@ -82,15 +82,20 @@ public class PlanetFactory {
 		}
 		
 		// Only one of the following codes should be applied.
-		if (planet.getAtmospherePressure() == AtmospherePressure.None) {
-			planet.addTradeCode(TradeCode.Va);
-		} else if (planet.getLifeLevel() == LifeType.None && planet.getHydrographics() == 0) {
-			planet.addTradeCode(TradeCode.Ba);
-		} else if (planet.getHydrographics() == 0) {
-			planet.addTradeCode(TradeCode.De);
+		if (!planet.getType().isJovian()) {
+			if (planet.getAtmospherePressure() == AtmospherePressure.None) {
+				planet.addTradeCode(TradeCode.Va);
+			} else if (planet.getLifeLevel() == LifeType.None && planet.getHydrographics() == 0) {
+				planet.addTradeCode(TradeCode.Ba);
+			} else if (planet.getHydrographics() == 0) {
+				planet.addTradeCode(TradeCode.De);
+			}
 		}
 		if (planet.getHydrographics() > 95) {
 			planet.addTradeCode(TradeCode.Wa);
+		}
+		if (planet.getType().isBelt()) {
+			planet.addTradeCode(TradeCode.As);
 		}
 		
 		return planet;
@@ -169,7 +174,7 @@ public class PlanetFactory {
 	void defineCryoJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.NitrogenCompounds);
-		planet.setMoonCount(Die.d3(2));
+		planet.setMoonCount(Die.d4(1)+1);
 		setDayLength(planet, 0.25);
 		selectRingFeature(planet, false);
 	}
@@ -180,7 +185,7 @@ public class PlanetFactory {
 	void defineSubJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
-		planet.setMoonCount(Die.d4(2));
+		planet.setMoonCount(Die.d4(1)+1);
 		setDayLength(planet, 0.25);
 		selectRingFeature(planet, false);
 	}
@@ -191,7 +196,8 @@ public class PlanetFactory {
 	void defineEuJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
-		planet.setMoonCount(Die.d6(2));
+		planet.setTemperature(planet.getTemperature().getHotter());
+		planet.setMoonCount(Die.d4(1)+2);
 		setDayLength(planet, 0.25);
 		selectRingFeature(planet, false);
 	}
@@ -202,7 +208,8 @@ public class PlanetFactory {
 	void defineSuperJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
-		planet.setMoonCount(Die.d6(2));
+		planet.setTemperature(planet.getTemperature().getHotter().getHotter());
+		planet.setMoonCount(Die.d4(1)+3);
 		setDayLength(planet, 0.25);
 		selectRingFeature(planet, false);
 	}
@@ -213,7 +220,8 @@ public class PlanetFactory {
 	void defineMacroJovian(Planet planet) {
 		planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 		planet.setAtmosphereType(AtmosphereType.Hydrogen);
-		planet.setMoonCount(Die.d6(3));
+		planet.setTemperature(planet.getTemperature().getHotter().getHotter().getHotter());
+		planet.setMoonCount(Die.d4(1)+4);
 		setDayLength(planet, 0.25);
 		selectRingFeature(planet, false);
 	}
@@ -1279,8 +1287,11 @@ public class PlanetFactory {
 			case 7: case 8:
 				planet = getWorld(name, distance, PlanetType.Cerean);
 				break;
-			case 9: case 10:
+			case 9:
 				planet = getWorld(name, distance, PlanetType.Vestian);
+				break;
+			case 10:
+				planet = getWorld(name, distance, PlanetType.AsteroidBelt);
 				break;
 			}
 		} else {
@@ -1298,8 +1309,11 @@ public class PlanetFactory {
 			case 6: case 7:
 				planet = getWorld(name, distance, PlanetType.Stygian);
 				break;
-			case 8: case 9: case 10:
+			case 8: case 9:
 				planet = getWorld(name, distance, PlanetType.LithicGelidian);
+				break;
+			case 10:
+				planet = getWorld(name, distance, PlanetType.AsteroidBelt);
 				break;
 			}
 		}
@@ -1308,6 +1322,14 @@ public class PlanetFactory {
 		return planet;
 	}
 	
+	/**
+	 * Get one of the standard Jovian worlds (anything other than an EpiStellarJovian).
+	 * The actual type will depend on how close the planet is to be to its parent star.
+	 * 
+	 * @param name
+	 * @param distance
+	 * @return
+	 */
 	public Planet getColdJovian(String name, int distance) {
 		Planet					planet = null;
 		
@@ -1342,6 +1364,70 @@ public class PlanetFactory {
 		
 		return planet;		
 	}
+
+	public Planet getSmallJovian(String name, int distance) {
+		Planet					planet = null;
+		
+		if (distance < star.getEarthDistance()*10) {
+			switch (Die.d6()) {
+			case 1: case 2: case 3: case 4: case 5:
+				planet = getWorld(name, distance, PlanetType.SubJovian);
+				break;
+			case 6:
+				planet = getWorld(name, distance, PlanetType.EuJovian);
+				break;
+			}
+		} else if (distance < star.getEarthDistance()*10) {
+			switch (Die.d6()) {
+			case 1: case 2: case 3: case 4:
+				planet = getWorld(name, distance, PlanetType.CryoJovian);
+				break;
+			case 5: case 6:
+				planet = getWorld(name, distance, PlanetType.SubJovian);
+				break;
+			}
+		} else {
+			planet = getWorld(name, distance, PlanetType.CryoJovian);			
+		}
+		setDayLength(planet, 1.0);
+		
+		return planet;		
+	}
+	
+	/**
+	 * Get a large Jovian, warm enough to support a nice moon.
+	 */
+	public Planet getLargeJovian(String name, int distance) {
+		Planet					planet = null;
+		
+		if (distance < star.getEarthDistance()*10) {
+			switch (Die.d6()) {
+			case 1:
+				planet = getWorld(name, distance, PlanetType.EuJovian);
+				break;
+			case 2: case 3: case 4:
+				planet = getWorld(name, distance, PlanetType.SuperJovian);
+				break;
+			case 5: case 6:
+				planet = getWorld(name, distance, PlanetType.MacroJovian);
+				break;
+			}
+		} else if (distance < star.getEarthDistance()*10) {
+			switch (Die.d6()) {
+			case 1: case 2: case 3:
+				planet = getWorld(name, distance, PlanetType.SuperJovian);
+				break;
+			case 4: case 5: case 6:
+				planet = getWorld(name, distance, PlanetType.MacroJovian);
+				break;
+			}
+		} else {
+			planet = getWorld(name, distance, PlanetType.MacroJovian);			
+		}
+		setDayLength(planet, 1.0);
+		
+		return planet;		
+	}
 	
 	/**
 	 * Get a hot jovian world, close to its parent star. This will always be an
@@ -1371,14 +1457,23 @@ public class PlanetFactory {
 		Planet					planet = null;
 		
 		switch (Die.d6()) {
-		case 1: case 2: case 3:
+		case 1:
+			planet = getWorld(name, distance, PlanetType.IceBelt);
+			break;
+		case 2:
 			planet = getWorld(name, distance, PlanetType.Kuiperian);
 			break;
-		case 4: case 5:
+		case 3:
 			planet = getWorld(name, distance, PlanetType.LithicGelidian);
 			break;
+		case 4:
+			planet = getWorld(name, distance, PlanetType.Oortean);
+			break;
+		case 5:
+			planet = getWorld(name, distance, PlanetType.Iapetean);
+			break;
 		case 6:
-			planet = getWorld(name, distance, PlanetType.Europan);
+			planet = getWorld(name, distance, PlanetType.Mimean);
 			break;
 		}
 		setDayLength(planet, 2.0);
@@ -1414,7 +1509,8 @@ public class PlanetFactory {
 	 */
 	public Planet[] getMoons(Planet planet, int number) {
 		Planet[]		moons = new Planet[number];
-		int				distance = planet.getRadius() * 10;
+		int				distance = planet.getRadius() * (Die.d4()+1);
+		int				increment = distance / 2;
 
 		for (int i = 0; i < number; i++) {
 			Planet		moon = null;
@@ -1509,7 +1605,8 @@ public class PlanetFactory {
 			}
 			moons[i] = moon;
 			
-			distance += distance * 1.3;
+			distance += Die.die(increment, 2);
+			increment *= 1.3;
 		}
 		return moons;
 	}

@@ -342,6 +342,7 @@ public class Description {
 		}
 		
 		// Add description for any trade codes.
+		/*
 		for (String code : planet.getTradeCodes()) {
 			String	key = rootKey+".trade."+code;
 			if (phrases.getProperty(key) != null) {
@@ -353,7 +354,7 @@ public class Description {
 				}
 			}
 		}
-		
+		*/
 		return buffer.toString();
 	}
 	
@@ -372,7 +373,7 @@ public class Description {
 		ObjectFactory	factory = new ObjectFactory();
 		Planet		p = factory.getPlanet(171244);
 		Description d = new Description(p);
-		System.out.println(d.getDescription("government.Balkanization"));
+		System.out.println(d.getDescription("planet.AreanLacustric"));
 		factory.close();
 		System.exit(0);
 		

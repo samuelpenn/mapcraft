@@ -26,23 +26,40 @@ package uk.org.glendale.rpg.traveller.systems.codes;
  * @author Samuel Penn
  */
 public enum StarportType {
-	A(10, new double[] { 1.5, 1, 1, 0.5, 0.5, 0, 0, 0 }),
-	B(9, new double[] { 1, 1, 0.5, 0.5, 0, 0, -0.5, -1}),
-	C(8, new double[] { 1, 0.5, 0.5, 0, 0, -0.5, -1, -1.5}), 
-	D(7, new double[] { 0.5, 0.5, 0, 0, -0.5, -1, -1.5, -2}),
-	E(5, new double[] { 0.5, 0, 0, -0.5, -1, -1.5, -2, -2.5}),
-	X(0, new double[] { 0, 0, -2.5, -3, -3.5, -4, -4.5, -5});
+	A(10, 1000000, new double[] { 1.5, 1, 1, 0.5, 0.5, 0, 0, 0 }),
+	B(9, 100000, new double[] { 1, 1, 0.5, 0.5, 0, 0, -0.5, -1}),
+	C(8, 10000, new double[] { 1, 0.5, 0.5, 0, 0, -0.5, -1, -1.5}), 
+	D(7, 1000, new double[] { 0.5, 0.5, 0, 0, -0.5, -1, -1.5, -2}),
+	E(5, 0, new double[] { 0.5, 0, 0, -0.5, -1, -1.5, -2, -2.5}),
+	X(0, 0, new double[] { 0, 0, -2.5, -3, -3.5, -4, -4.5, -5});
 	
 	int			minTechLevel = 0;
+	int			minPopulation = 0;
 	double[]	wtnModifier = null;
 	
-	StarportType(int minTechLevel, double[] wtn) {
+	StarportType(int minTechLevel, int minPopulation, double[] wtn) {
 		this.minTechLevel = minTechLevel;
+		this.minPopulation = minPopulation;
 		this.wtnModifier = wtn;
 	}
 	
+	/**
+	 * Get the minimum tech level that is required to support a starport
+	 * of this type. Large starports generally require a good technology
+	 * base to be built upon, plus provide the resources to boost the
+	 * planet's own technology.
+	 */
 	public int getMinimumTechLevel() {
 		return minTechLevel;
+	}
+	
+	/**
+	 * Large starports not only require a large number of people to keep
+	 * them working, they attract a large number of people as well, since
+	 * they tend to be trade hubs.
+	 */
+	public int getMinimumPopulation() {
+		return minPopulation;
 	}
 	
 	/**

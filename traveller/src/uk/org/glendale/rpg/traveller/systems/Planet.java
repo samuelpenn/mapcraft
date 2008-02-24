@@ -239,6 +239,18 @@ public class Planet {
 		return 0;
 	}
 	
+	public String getShortPopulation() {
+		if (population < 1000) {
+			return ""+population;
+		} else if (population < 1000000) {
+			return ""+(population/1000)+"k";
+		} else if (population < 1000000000) {
+			return ""+(population/1000000)+"m";
+		}
+		
+		return ""+(population/1000000000)+"b";
+	}
+	
 	public void setPopulation(long population) {
 		this.population = population;
 	}
@@ -467,6 +479,55 @@ public class Planet {
 	}
 	
 	/**
+	 * Set up the planet using the UWP code. In this case, the planet is a moon,
+	 * so we need to base the temperature on some wacky stuff based on the
+	 * temperature of the Jovian world that is its parent.
+	 * 
+	 * @param factory
+	 * @param systemId
+	 * @param uwp
+	 * @param star
+	 * @param name
+	 * @param distance
+	 * @param temperature
+	 */
+	public Planet(ObjectFactory factory, int systemId, UWP uwp, Star star, String name, int distance, Temperature temperature) {
+		this.factory = factory;
+		this.systemId = systemId;
+		this.name = name;
+		this.starport = StarportType.valueOf(uwp.getStarPort());
+		this.planetType = PlanetType.Gaian;
+		this.distance = distance;
+		this.parentId = star.getId();
+		this.moon = true;
+
+		parseSize(uwp);
+		parseAtmosphere(uwp);
+		parseHydrographics(uwp);
+		parsePopulation(uwp);
+		parseGovernment(uwp);
+		parseLaw(uwp);
+		parseTechLevel(uwp);
+		parseBase(uwp);
+		parseTradeCodes(uwp);
+
+		if (population > 0) {
+			lifeType = LifeType.Extensive;
+		}
+
+		if (temperature.isHotterThan(Temperature.Warm)) {
+			this.temperature = Temperature.Warm;
+		} else if (temperature.isHotterThan(Temperature.Cold)) {
+			this.temperature = temperature.getColder();
+		} else {
+			this.temperature = temperature;
+		}
+
+		// Now perform some basic sanity checking.
+		sanityCheck(star);
+	}
+	
+	/**
 	 * Define the planet using the sec string.
 	 * 
 	 * @param sec		Data string describing a star system.
@@ -497,6 +558,7 @@ public class Planet {
 		}
 
 		// Now perform some basic sanity checking.
+		temperature = star.getOrbitTemperature((int)(distance * atmospherePressure.getEffectiveDistance()));
 		sanityCheck(star);
 	}
 	
@@ -508,7 +570,11 @@ public class Planet {
 	 * @param star		Star this planet orbits around.
 	 */
 	void sanityCheck(Star star) {
-		temperature = star.getOrbitTemperature((int)(distance * atmospherePressure.getEffectiveDistance()));
+		
+		if (population < starport.getMinimumPopulation()) {
+			population = starport.getMinimumPopulation() * Die.d6();
+		}
+		
 		if (radius == 0) {
 			planetType = PlanetType.AsteroidBelt;
 			lifeType = LifeType.None;
@@ -524,6 +590,56 @@ public class Planet {
 		if (isMoon()) {
 			// Is a moon.
 			// TODO: Implement.
+			
+			switch (atmospherePressure) {
+			case None:
+				lifeType = LifeType.None;
+				if (temperature.isColderThan(Temperature.Cool)) {
+					planetType = PlanetType.Europan;
+					lifeType = LifeType.ComplexOcean;
+				} else if (temperature.isColderThan(Temperature.Warm)) {
+					planetType = PlanetType.Cerean;
+				} else {
+					planetType = PlanetType.Vestian;
+				}
+				break;
+			case Trace:
+			case VeryThin:
+				if (temperature.isColderThan(Temperature.Cool)) {
+					planetType = PlanetType.Europan;
+					lifeType = LifeType.ComplexOcean;
+				} else if (temperature.isColderThan(Temperature.Warm)) {
+					if (atmosphereType.getSuitability() > 0.2) {
+						planetType = PlanetType.EoArean;
+						lifeType = LifeType.SimpleLand;
+					} else {
+						planetType = PlanetType.Arean;
+						lifeType = LifeType.None;
+					}
+				} else {
+					if (atmosphereType.getSuitability() > 0.2) {
+						planetType = PlanetType.PostGaian;
+						lifeType = LifeType.ComplexLand;
+					} else {
+						planetType = PlanetType.Arean;
+						lifeType = LifeType.None;
+					}
+				}
+				break;
+			case Thin:
+			case Standard:
+			case Dense:
+				planetType = PlanetType.PostGaian;
+				break;
+			default:
+				if (temperature.isColderThan(Temperature.Cool)) {
+					planetType = PlanetType.MesoTitanian;
+				} else {
+					planetType = PlanetType.Cytherean;
+				}
+				break;
+			}
+			
 		} else if (atmospherePressure == AtmospherePressure.None) {
 			// Any vacuum world.
 			if (radius < 2000) {
@@ -1139,7 +1255,7 @@ public class Planet {
 		
 		return buffer.toString();
 	}
-	
+		
 	public String toHTML() {
 		return toHTML(true);
 	}
@@ -1176,18 +1292,23 @@ public class Planet {
 
 		// Physical data
 		buffer.append("<p>\n");
-		buffer.append("<b>Distance:</b> "+distance+" "+(moon?"km":"MKm")+"; <b>Type:</b> "+planetType+"; <b>Radius:</b> "+radius+"km; ");
+		buffer.append("<b>Distance:</b> "+distance+" "+(moon?"km":"MKm")+"; <b>Type:</b> "+planetType+"; ");
 		NumberFormat format = NumberFormat.getInstance();
 		format.setMaximumFractionDigits(2);
-		buffer.append("<b>Gravity:</b> "+format.format(getSurfaceGravity())+"ms<sup>-2</sup>; <b>Day:</b> "+getDayAsString(false));
+		if (!planetType.isBelt()) {
+			buffer.append("<b>Radius:</b> "+radius+"km; ");
+			buffer.append("<b>Gravity:</b> "+format.format(getSurfaceGravity())+"ms<sup>-2</sup>; <b>Day:</b> "+getDayAsString(false));
+		}
 		buffer.append(" <b>Year:</b> "+getYearAsString(false));
 		buffer.append("</p>\n");
 
 		// Biosphere/Atmosphere
-		buffer.append("<p>");
-		buffer.append("<b>Atmosphere:</b> "+atmosphereType+"; <b>Pressure:</b> "+atmospherePressure+"; <b>Hydrographics:</b> "+hydrographics+"%; ");
-		buffer.append("<b>Temperature:</b> "+temperature+"; <b>Life:</b> "+lifeType);
-		buffer.append("</p>\n");
+		if (!planetType.isBelt()) {
+			buffer.append("<p>");
+			buffer.append("<b>Atmosphere:</b> "+atmosphereType+"; <b>Pressure:</b> "+atmospherePressure+"; <b>Hydrographics:</b> "+hydrographics+"%; ");
+			buffer.append("<b>Temperature:</b> "+temperature+"; <b>Life:</b> "+lifeType);
+			buffer.append("</p>\n");
+		}
 		
 		if (population > 0) {
 			// Civilisation

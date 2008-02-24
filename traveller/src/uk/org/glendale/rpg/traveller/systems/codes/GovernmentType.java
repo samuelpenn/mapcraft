@@ -18,32 +18,32 @@ package uk.org.glendale.rpg.traveller.systems.codes;
  *
  */
 public enum GovernmentType {
-	Anarchy("Anarchy"), 
-	Corporation("Bureacracy"),
-	ParticipatingDemocracy("Democracy"), 
-	SelfPerpetuatingOligarchy("Oligarchy"),
-	RepresentativeDemocracy("Democracy"), 
-	FeudalTechnocracy("Dictatorship"), 
-	Captive("Dictatorship"), 
-	Balkanization("Anarchy"),
-	CivilService("Bureacracy"),
-	ImpersonalBureaucracy("Bureacracy"), 
-	CharismaticLeader("Dictatorship"),
-	NonCharismaticLeader("Dictatorship"), 
-	CharismaticOligarchy("Oligarchy"), 
-	TheocraticDictatorship("Theocracy"),
-	TheocraticOligarchy("Theocracy"), 
-	TotalitarianOligarchy("Oligarchy"),
-	SmallStationOfFacility("Clan"), 
-	SplitControl("Clan"), SingleClan("Clan"), SingleMultiWorldClan("Clan"),
-	MajorClan("Clan"), VassalClan("Clan"), MajorVassalClan("Clan"), 
-	Family("Other"), Krurruna("Other"), Steppelord("Other"), 
-	SeptGoverning("Other"), UnsupervisedAnarchy("Anarchy"), SupervisedAnarchy("Anarchy"), Committee("Bureacracy"),
-	DroyneHierarchy("Oligarchy");
+	Anarchy("Ana"), 
+	Corporation("Cor"),
+	ParticipatingDemocracy("Dem"), 
+	SelfPerpetuatingOligarchy("Oli"),
+	RepresentativeDemocracy("Dem"), 
+	FeudalTechnocracy("FdT"), 
+	Captive("Cap"), 
+	Balkanization("Blk"),
+	CivilService("Civ"),
+	ImpersonalBureaucracy("Bur"), 
+	CharismaticLeader("Cha"),
+	NonCharismaticLeader("NCh"), 
+	CharismaticOligarchy("Oli"), 
+	TheocraticDictatorship("The"),
+	TheocraticOligarchy("The"), 
+	TotalitarianOligarchy("Oli"),
+	SmallStationOfFacility("Cln"), 
+	SplitControl("Cln"), SingleClan("Cln"), SingleMultiWorldClan("Cln"),
+	MajorClan("Cln"), VassalClan("Cln"), MajorVassalClan("Cln"), 
+	Family("Fam"), Krurruna("Kru"), Steppelord("Ste"), 
+	SeptGoverning("Sep"), UnsupervisedAnarchy("Ana"), SupervisedAnarchy("Ana"), Committee("Com"),
+	DroyneHierarchy("Dro");
 	
-	private String category = null;
-	private GovernmentType(String category) {
-		this.category = category;
+	private String abbreviation = null;
+	private GovernmentType(String abbreviation) {
+		this.abbreviation = abbreviation;
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public enum GovernmentType {
 	 * 
 	 * @return Category of this government type.
 	 */
-	public String getCategory() {
-		return category;
+	public String getAbbreviation() {
+		return abbreviation;
 	}
 }
