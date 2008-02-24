@@ -353,10 +353,16 @@ public class SubSectorImage {
 							}
 							
 							String	gov = mainWorld.getGovernment().getAbbreviation()+"/"+mainWorld.getLawLevel()+"/"+mainWorld.getShortPopulation();
-							plotText(getX(x, y) + (scale * 0.10), getY(x, y) - scale*0.5, gov, Font.PLAIN, (int)(scale*0.2), "#000000");
+							plotText(getX(x, y) + (scale * 0.08), getY(x, y) - scale*0.5, gov, Font.PLAIN, (int)(scale*0.2), "#000000");
 						}
 						if (system.hasWater(10)) {
 							image.paint(new URL(SYMBOL_BASE+"planet_water.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.6), iconSize, iconSize);
+						}
+						
+						if (system.hasNavalBase()) {
+							image.paint(new URL(SYMBOL_BASE+"navy.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.2), iconSize, iconSize);
+						} else if (system.hasScoutBase()) {
+							image.paint(new URL(SYMBOL_BASE+"scout.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.2), iconSize, iconSize);
 						}
 						
 						// Trade codes.

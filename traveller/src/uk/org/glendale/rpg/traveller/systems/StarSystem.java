@@ -182,6 +182,7 @@ public class StarSystem implements Comparable {
 		y = rs.getInt("y");
 		allegiance = rs.getString("allegiance");
 		zone = Zone.valueOf(rs.getString("zone"));
+		base = rs.getString("base");
 		uwpLine = rs.getString("uwp");
 	}
 	
@@ -358,10 +359,16 @@ public class StarSystem implements Comparable {
 	}
 	
 	public boolean hasNavalBase() {
+		if (base != null && base.equalsIgnoreCase("N")) {
+			return true;
+		}
 		return false;
 	}
 	
 	public boolean hasScoutBase() {
+		if (base != null && base.equalsIgnoreCase("S")) {
+			return true;
+		}
 		return false;
 	}
 	
@@ -796,11 +803,11 @@ public class StarSystem implements Comparable {
 
 		// Having finished all the major worlds, now create any required moons.
 		for (Planet planet : planets) {
-			System.out.println("Creating moons for ["+planet.getName()+"]");
 			if (planet.getMoonCount() > 0) {
+				System.out.println("Creating moons for ["+planet.getName()+"]");
 				Planet[]	moons = planetFactory.getMoons(planet, planet.getMoonCount());
 				
-				if (planet.getId() == mainJovian || moons.length > 0) {
+				if (planet.getId() == mainJovian && moons.length > 0) {
 					// Need to make one of these moons the main one.
 					int		moonId = moons[0].getId();
 					Planet		mainMoon = new Planet(factory, id, uwp, star, moons[0].getName(), moons[0].getDistance(), planet.getTemperature());
@@ -1004,7 +1011,9 @@ public class StarSystem implements Comparable {
 		if (uwpLine != null) {
 			data.put("uwp", uwpLine);
 		}
-
+		if (base != null) {
+			data.put("base", base);
+		}
 		int		auto = factory.persist("system", data);
 		// If stored for the first time, set our unique id.
 		if (id == 0) id = auto;

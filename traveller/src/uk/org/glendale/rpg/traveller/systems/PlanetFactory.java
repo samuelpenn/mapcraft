@@ -991,18 +991,22 @@ public class PlanetFactory {
 	
 	void defineEuTitanian(Planet planet) {
 		planet.setAtmosphereType(AtmosphereType.NitrogenCompounds);
-		switch (Die.d6()) {
-		case 1: case 2:
+		switch (Die.d8()) {
+		case 1:
 			planet.setAtmospherePressure(AtmospherePressure.Thin);
 			planet.setHydrographics(Die.d6());
 			break;
-		case 3: case 4:
+		case 2: case 3:
 			planet.setAtmospherePressure(AtmospherePressure.Standard);
 			planet.setHydrographics(Die.d8(2));
 			break;
-		case 5: case 6:
+		case 4: case 5: case 6:
 			planet.setAtmospherePressure(AtmospherePressure.Dense);
 			planet.setHydrographics(Die.d10(3));
+			break;
+		case 7: case 8:
+			planet.setAtmospherePressure(AtmospherePressure.VeryDense);
+			planet.setHydrographics(20 + Die.d10(3));
 			break;
 		}
 		
@@ -1014,17 +1018,17 @@ public class PlanetFactory {
 	void defineTitanLacustric(Planet planet) {
 		planet.setAtmosphereType(AtmosphereType.NitrogenCompounds);
 		switch (Die.d6()) {
-		case 1:
-			planet.setAtmospherePressure(AtmospherePressure.Thin);
-			planet.setHydrographics(Die.d6());
-			break;
-		case 2: case 3: case 4:
+		case 1: case 2:
 			planet.setAtmospherePressure(AtmospherePressure.Standard);
 			planet.setHydrographics(Die.d8(3));
 			break;
-		case 5: case 6:
+		case 3: case 4:
 			planet.setAtmospherePressure(AtmospherePressure.Dense);
 			planet.setHydrographics(Die.d10(5));
+			break;
+		case 5: case 6:
+			planet.setAtmospherePressure(AtmospherePressure.VeryDense);
+			planet.setHydrographics(30 + Die.d10(5));
 			break;
 		}
 		
@@ -1587,11 +1591,8 @@ public class PlanetFactory {
 						case 2: case 3:
 							moon = getWorld(name, distance, PlanetType.Mimean, planet);
 							break;
-						case 4:
+						case 4: case 5:
 							moon = getWorld(name, distance, PlanetType.Iapetean, planet);
-							break;
-						case 5:
-							moon = getWorld(name, distance, PlanetType.Vesperian, planet);
 							break;
 						case 6:
 							moon = getWorld(name, distance, PlanetType.Silicaceous, planet);

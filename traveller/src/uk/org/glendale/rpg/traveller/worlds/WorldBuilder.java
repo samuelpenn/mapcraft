@@ -1002,6 +1002,7 @@ public class WorldBuilder {
 		default:
 			throw new IllegalArgumentException("Unrecognised "+type);
 		}
+		wb.setPlanet(planet);
 		
 		return wb;
 	}
@@ -1058,6 +1059,14 @@ public class WorldBuilder {
 		factory.storePlanetGlobe(planet.getId(), wb.getWorldGlobe(2).save());				
 	}
 	
+	public static void imagePlanet(ObjectFactory factory, Planet planet) throws Exception {
+		WorldBuilder		wb = WorldBuilder.getBuilder(planet, 513, 257);
+		wb.generate();
+		SimpleImage		simple = wb.getWorldMap(2);
+		factory.storePlanetMap(planet.getId(), simple.save());
+		factory.storePlanetGlobe(planet.getId(), wb.getWorldGlobe(2).save());						
+	}
+	
 	public static void exampleGlobes() throws Exception {
 		for (PlanetType type : PlanetType.values()) {
 			Planet		planet = new Planet("Example", type, type.getRadius());
@@ -1078,13 +1087,17 @@ public class WorldBuilder {
 		System.out.println(GraphicsEnvironment.isHeadless());
 		
 		//createPlanetType(PlanetType.Hephaestian);
-		imagePlanet(2036);
+		ObjectFactory		factory = new ObjectFactory();
+		Vector<Planet>		planets = factory.getPlanetsBySystem(10373);
+		
+		for (Planet planet : planets) {
+			imagePlanet(factory, planet);
+		}
+		factory.close();
 		//imageUniverse(38);
 		//exampleGlobes();
 		System.exit(0);
 				
-		ObjectFactory		factory = new ObjectFactory();
-		Vector<Planet>		planets = factory.getPlanetsBySystem(10413);
 		//int	i = 1;
 		for (Planet planet : planets) {
 			if (planet.getId() == 68637) {

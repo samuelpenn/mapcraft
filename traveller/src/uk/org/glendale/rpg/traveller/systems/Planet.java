@@ -575,6 +575,31 @@ public class Planet {
 			population = starport.getMinimumPopulation() * Die.d6();
 		}
 		
+		switch (techLevel) {
+		case 0: case 1: case 2: case 3:
+		case 4: case 5: case 6:
+			// No population required.
+			break;
+		case 7: case 8:
+			// Need thousands of people.
+			if (population < 1000) {
+				population = Die.d6() * 1000;
+			}
+			break;
+		case 9: case 10:
+			// Need hundreds of thousands.
+			if (population < 100000) {
+				population = Die.d6() * 100000;
+			}
+			break;
+		case 11: case 12:
+			// Need tens of millions.
+			if (population < 10000000) {
+				population = Die.d6() * 10000000;
+			}
+			break;
+		}
+		
 		if (radius == 0) {
 			planetType = PlanetType.AsteroidBelt;
 			lifeType = LifeType.None;
@@ -629,7 +654,13 @@ public class Planet {
 			case Thin:
 			case Standard:
 			case Dense:
-				planetType = PlanetType.PostGaian;
+				if (temperature.isColderThan(Temperature.Cold)) {
+					planetType = PlanetType.GaianTundral;
+					lifeType = LifeType.ComplexOcean;
+					temperature = Temperature.VeryCold;
+				} else {
+					planetType = PlanetType.PostGaian;
+				}
 				break;
 			default:
 				if (temperature.isColderThan(Temperature.Cool)) {

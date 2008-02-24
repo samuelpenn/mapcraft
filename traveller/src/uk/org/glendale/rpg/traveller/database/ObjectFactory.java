@@ -311,7 +311,7 @@ public class ObjectFactory {
 		ResultSet			rs = null;
 	
 		try {
-			rs = read("star", "system_id="+systemId);
+			rs = read("star", "system_id="+systemId+" order by distance");
 			while (rs.next()) {
 				Star		star = new Star(rs);
 				list.add(star);
@@ -647,7 +647,7 @@ public class ObjectFactory {
 		writer.close();
 		*/
 		
-		int		id = 10409;
+		int		id = 10373;
 		factory.cleanStarSystem(id);
 		StarSystem		system = factory.getStarSystem(id);
 		system.regenerate();

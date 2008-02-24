@@ -206,6 +206,7 @@ public class Description {
 				}
 				
 				line = line.replaceFirst("\\(.*?\\)", option);
+				line = line.replaceAll("\\)", "");
 			}
 	
 			// Choosen a random option.
