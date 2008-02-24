@@ -26,6 +26,7 @@ import uk.org.glendale.rpg.traveller.Log;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.database.ObjectNotFoundException;
 import uk.org.glendale.rpg.traveller.sectors.Sector;
+import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.Star;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
 import uk.org.glendale.rpg.traveller.systems.codes.*;
@@ -331,19 +332,29 @@ public class SubSectorImage {
 					}
 					try {
 						int				iconSize = (scale / 4);
-						StarportType	starport = system.getBestStarport();
-						if (starport != StarportType.X) {
-							double	fontSize = scale * 0.25;
-							plotText(getX(x, y) + (scale * 0.45), getY(x, y) - scale*1.1, starport.toString(), Font.PLAIN, (int)fontSize, "#000000");
-						}
-						if (system.hasLife(LifeType.Extensive)) {
-							image.paint(new URL(SYMBOL_BASE+"life_extensive.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.4), iconSize, iconSize);
-						} else if (system.hasLife(LifeType.ComplexLand)) {
-							image.paint(new URL(SYMBOL_BASE+"life_land.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.4), iconSize, iconSize);
-						} else if (system.hasLife(LifeType.ComplexOcean)) {
-							image.paint(new URL(SYMBOL_BASE+"life_water.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.4), iconSize, iconSize);
-						}
+						Planet			mainWorld = system.getMainWorld();
 						
+						if (mainWorld != null && mainWorld.getPopulation() > 0) {
+							StarportType	starport = mainWorld.getStarport();
+							int				tl = mainWorld.getTechLevel();
+							if (starport != StarportType.X) {
+								double	fontSize = scale * 0.2;
+								plotText(getX(x, y) + (scale * 0.30), getY(x, y) - scale*1.1, starport.toString()+"/"+tl, Font.PLAIN, (int)fontSize, "#000000");
+							} else {
+								double	fontSize = scale * 0.2;
+								plotText(getX(x, y) + (scale * 0.30), getY(x, y) - scale*1.1, "-/"+tl, Font.PLAIN, (int)fontSize, "#000000");							
+							}
+							if (system.hasLife(LifeType.Extensive)) {
+								image.paint(new URL(SYMBOL_BASE+"life_extensive.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.4), iconSize, iconSize);
+							} else if (system.hasLife(LifeType.ComplexLand)) {
+								image.paint(new URL(SYMBOL_BASE+"life_land.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.4), iconSize, iconSize);
+							} else if (system.hasLife(LifeType.ComplexOcean)) {
+								image.paint(new URL(SYMBOL_BASE+"life_water.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.4), iconSize, iconSize);
+							}
+							
+							String	gov = mainWorld.getGovernment().getAbbreviation()+"/"+mainWorld.getLawLevel()+"/"+mainWorld.getShortPopulation();
+							plotText(getX(x, y) + (scale * 0.10), getY(x, y) - scale*0.5, gov, Font.PLAIN, (int)(scale*0.2), "#000000");
+						}
 						if (system.hasWater(10)) {
 							image.paint(new URL(SYMBOL_BASE+"planet_water.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.6), iconSize, iconSize);
 						}
