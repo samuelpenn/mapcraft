@@ -383,6 +383,10 @@ public class Sector {
 		return SubSector.getByCoordinate(x, y);
 	}
 	
+	/**
+	 * @param x		X coordinate of point in sector, 1-40
+	 * @param y		Y coordinate of point in sector, 1-32.
+	 */
 	public String getSubSectorName(int x, int y) {
 		SubSector		sub = getSubSector(x, y);
 		String			name = sub.toString();
@@ -965,9 +969,13 @@ public class Sector {
 	public static void regenerate(int id) throws ObjectNotFoundException, IOException {
 		ObjectFactory	factory = new ObjectFactory();
 		Sector			sector = new Sector(factory, id);
-		
+
 		for (StarSystem sys: sector.getSystems()) {
-			regenerateSystem(factory, sys.getId());
+			int		sysId = sys.getId();
+			factory.cleanStarSystem(sysId);
+			StarSystem		system = factory.getStarSystem(sysId);
+			system.regenerate();
+			//regenerateSystem(factory, sys.getId());
 		}
 		
 	}
@@ -977,8 +985,8 @@ public class Sector {
 		//createTravellerSub();
 		//createMortals();
 		//createSol();
-		//regenerateSystem(1);
-		populateUWPs();
+		regenerate(104);
+		//populateUWPs();
 		
 		System.exit(0);
 		

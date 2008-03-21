@@ -610,7 +610,10 @@ public class Planet {
 		}
 		
 		// Seen a few of these. Fix them.
-		if (hydrographics > 100) hydrographics = 100;
+		if (hydrographics >= 100) {
+			hydrographics = 100;
+			addTradeCode(TradeCode.Wa);
+		}
 
 		if (isMoon()) {
 			// Is a moon.
@@ -825,6 +828,91 @@ public class Planet {
 			lifeType = LifeType.Metazoa;
 		}
 		
+		/*
+		 * Finally, fix the trade codes.
+		 */
+		
+		// Physical codes.
+		removeTradeCode(TradeCode.Va);
+		removeTradeCode(TradeCode.Ba);
+		removeTradeCode(TradeCode.De);
+		removeTradeCode(TradeCode.Fl);
+		removeTradeCode(TradeCode.Ic);
+		if (atmospherePressure == AtmospherePressure.None) {
+			addTradeCode(TradeCode.Va);
+		} else if (hydrographics < 10) {
+			addTradeCode(TradeCode.De);
+		} else if (lifeType.isSimplerThan(LifeType.SimpleLand)) {
+			addTradeCode(TradeCode.Ba);
+		}
+		
+		// Hydrographical codes
+		if (hydrographics > 0) {
+			if (atmosphereType.isNonWater()) {
+				addTradeCode(TradeCode.Fl);
+			}
+			if (atmospherePressure.isThinnerThan(AtmospherePressure.VeryThin)) {
+				addTradeCode(TradeCode.Ic);
+			}
+			if (temperature.isColderThan(Temperature.Cold)) {
+				addTradeCode(TradeCode.Ic);
+			}
+		}
+		
+		// Civilisation codes.
+		removeTradeCode(TradeCode.Ag);
+		removeTradeCode(TradeCode.In);
+		removeTradeCode(TradeCode.Na);
+		removeTradeCode(TradeCode.Ni);
+		removeTradeCode(TradeCode.Hi);
+		removeTradeCode(TradeCode.Lo);
+		if (population > 0) {
+			// Population
+			if (population >= 1000000000) {
+				addTradeCode(TradeCode.Hi);
+			} else if (population < 100000) {
+				addTradeCode(TradeCode.Lo);
+			}
+			// Agriculture
+			if (lifeType.isMoreComplexThan(LifeType.SimpleLand)) {
+				if (!hasTradeCode(TradeCode.Lo) && !hasTradeCode(TradeCode.Hi)) {
+					if (hydrographics >= 40 && hydrographics <= 80) {
+						addTradeCode(TradeCode.Ag);
+					}
+				}
+			} else if (lifeType == LifeType.SimpleLand && population >= 100000000) {
+				addTradeCode(TradeCode.Na);
+			} else if (population >= 1000000) {
+				addTradeCode(TradeCode.Na);
+			}
+			// Industry
+			if (population >= 1000000000 && techLevel > 5) {
+				addTradeCode(TradeCode.In);
+			} else if (population < 1000000 || techLevel < 6) {
+				addTradeCode(TradeCode.Ni);
+			}
+			// Economy
+			int		economy = 0;
+			if (starport == StarportType.A) economy+=3;
+			if (starport == StarportType.B) economy+=2;
+			if (starport == StarportType.C) economy+=1;
+			if (techLevel < 7) economy--;
+			if (techLevel > 9) economy++;
+			if (techLevel > 11) economy++;
+			if (population >= 100000000L) economy++;
+			if (population >= 1000000000L) economy++;
+			if (atmosphereType.getSuitability() < 0.7) economy--;
+			if (atmospherePressure.getSuitability() < 0.5) economy--;
+			if (temperature.getSuitability() < 0.7) economy--;
+			if (hydrographics <= 30) economy--;
+			economy += government.getEconomyModifier();
+			
+			if (economy > 2) {
+				addTradeCode(TradeCode.Ri);
+			} else if (economy < -2) {
+				addTradeCode(TradeCode.Po);
+			}
+		}
 	}
 	
 	/**
@@ -1454,6 +1542,17 @@ public class Planet {
 		if (!hasTradeCode(code)) {
 			tradeCodes += " "+code.toString();
 			tradeCodes = tradeCodes.trim();
+		}
+	}
+	
+	/**
+	 * Remove the specified trade code if this planet has it. If the
+	 * planet does not already have the code, nothing is done.
+	 */
+	public void removeTradeCode(TradeCode code) {
+		if (hasTradeCode(code)) {
+			tradeCodes = tradeCodes.replaceAll(code.toString(), "");
+			tradeCodes = tradeCodes.replaceAll("  ", "");
 		}
 	}
 	

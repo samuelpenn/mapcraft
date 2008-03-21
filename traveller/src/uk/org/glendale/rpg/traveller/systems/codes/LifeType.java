@@ -27,5 +27,19 @@ package uk.org.glendale.rpg.traveller.systems.codes;
  * @author Samuel Penn
  */
 public enum LifeType {
-	None, Proteins, Protozoa, Metazoa, ComplexOcean, SimpleLand, ComplexLand, Extensive
+	None, Proteins, Protozoa, Metazoa, ComplexOcean, SimpleLand, ComplexLand, Extensive;
+	
+	/**
+	 * True iff this type of life is simpler than the one passed.
+	 */
+	public boolean isSimplerThan(LifeType type) {
+		return type.ordinal() > ordinal();
+	}
+
+	/**
+	 * True iff this type of life is more complex than the one passed.
+	 */
+	public boolean isMoreComplexThan(LifeType type) {
+		return type.ordinal() < ordinal();
+	}
 }

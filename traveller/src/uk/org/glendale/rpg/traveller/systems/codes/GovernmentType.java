@@ -18,32 +18,39 @@ package uk.org.glendale.rpg.traveller.systems.codes;
  *
  */
 public enum GovernmentType {
-	Anarchy("Ana"), 
-	Corporation("Cor"),
-	ParticipatingDemocracy("Dem"), 
-	SelfPerpetuatingOligarchy("Oli"),
-	RepresentativeDemocracy("Dem"), 
-	FeudalTechnocracy("FdT"), 
-	Captive("Cap"), 
-	Balkanization("Blk"),
-	CivilService("Civ"),
-	ImpersonalBureaucracy("Bur"), 
-	CharismaticLeader("Cha"),
-	NonCharismaticLeader("NCh"), 
-	CharismaticOligarchy("Oli"), 
-	TheocraticDictatorship("The"),
-	TheocraticOligarchy("The"), 
-	TotalitarianOligarchy("Oli"),
-	SmallStationOfFacility("Cln"), 
-	SplitControl("Cln"), SingleClan("Cln"), SingleMultiWorldClan("Cln"),
-	MajorClan("Cln"), VassalClan("Cln"), MajorVassalClan("Cln"), 
-	Family("Fam"), Krurruna("Kru"), Steppelord("Ste"), 
-	SeptGoverning("Sep"), UnsupervisedAnarchy("Ana"), SupervisedAnarchy("Ana"), Committee("Com"),
-	DroyneHierarchy("Dro");
+	Anarchy("An", -2, -2, -1), 
+	Corporation("Co", 0, +2, +1),
+	ParticipatingDemocracy("De", 0, 0, 0), 
+	SelfPerpetuatingOligarchy("Ol", 0, 0, 0),
+	RepresentativeDemocracy("De", 0, 0, 0), 
+	FeudalTechnocracy("Fd", +1, 0, -2), 
+	Captive("Ca", +2, -1, -1), 
+	Balkanization("Ba", 0, -1, 0),
+	CivilService("Bu", +1, -1, -1),
+	ImpersonalBureaucracy("Bu", +1, -1, 0), 
+	CharismaticLeader("Di", +1, 0, 0),
+	NonCharismaticLeader("Di", +2, -1, 0), 
+	CharismaticOligarchy("Ol", 0, 0, 0), 
+	TheocraticDictatorship("Th", +2, -2, -2),
+	TheocraticOligarchy("Th", +2, -1, -1), 
+	TotalitarianOligarchy("Ol", +2, -2, -2),
+	SmallStationOfFacility("Az", 0, -1, -1), 
+	SplitControl("Az", 0, 0, 0), SingleClan("Az", 0, 0, 0), SingleMultiWorldClan("Az", 0, 0, 0),
+	MajorClan("Az", 0, 0, 0), VassalClan("Az", 0, 0, 0), MajorVassalClan("Az", 0, 0, 0), 
+	Family("Kk", 0, 0, 0), Krurruna("Kk", 0, 0, 0), Steppelord("Kk", 0, 0, 0), 
+	SeptGoverning("Kk", 0, 0, 0), UnsupervisedAnarchy("An", -2, -2, -1), SupervisedAnarchy("An", -2, -1, -1), Committee("Ol", 0, 0, 0),
+	DroyneHierarchy("Dr", +2, -1, +1);
 	
 	private String abbreviation = null;
-	private GovernmentType(String abbreviation) {
+	private int		law = 0;
+	private int		economy = 0;
+	private int		tech = 0;
+	
+	private GovernmentType(String abbreviation, int law, int economy, int tech) {
 		this.abbreviation = abbreviation;
+		this.law = law;
+		this.economy = economy;
+		this.tech = 0;
 	}
 	
 	/**
@@ -55,5 +62,33 @@ public enum GovernmentType {
 	 */
 	public String getAbbreviation() {
 		return abbreviation;
+	}
+	
+	public int getLawModifier() {
+		return law;
+	}
+	
+	public int getMinimumLaw() {
+		switch (law) {
+		case 1:  return 3;
+		case 2:  return 5;
+		}
+		return 0;
+	}
+	
+	public int getMaximumLaw() {
+		switch (law) {
+		case -2: return 1;
+		case -1: return 3;
+		}
+		return 6;
+	}
+	
+	public int getEconomyModifier() {
+		return economy;
+	}
+	
+	public int getTechModifier() {
+		return tech;
 	}
 }

@@ -49,6 +49,18 @@ public enum AtmosphereType {
 		return suitability;
 	}
 	
+	public boolean isNonWater() {
+		switch (this) {
+		case Chlorine:
+		case Flourine:
+		case Exotic:
+		case SulphurCompounds:
+		case NitrogenCompounds:
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean isGaian() {
 		return (suitability > 0.1);
 	}

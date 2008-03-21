@@ -48,6 +48,7 @@ public class SubSectorImage {
 	private SimpleImage		image = null;
 	private int				scale = 32;
 	private int				verbosity = 0;
+	private boolean			standalone = false;
 
 	// Some simple constants.
 	static final double COS30 = Math.sqrt(3.0)/2.0;
@@ -58,7 +59,7 @@ public class SubSectorImage {
 	
 	enum HexSides { Top, TopRight, BottomRight, Bottom, BottomLeft, TopLeft };
 	
-	static String SYMBOL_BASE = "file:/home/sam/src/traveller/webapp/images/symbols/";
+	static String SYMBOL_BASE = "file:/home/sam/src/mapcraft/traveller/webapp/images/symbols/";
 	
 	private int		leftMargin = 0;
 	private int		topMargin = 0;
@@ -121,6 +122,21 @@ public class SubSectorImage {
 	
 	public int getScale() {
 		return scale;
+	}
+	
+	/**
+	 * Set whether this subsector map should be drawn as a standalone map. Maps
+	 * can be either tiled or standalone. A tiled map is designed to fit exactly
+	 * next to its neighbours, and will have half hexes drawn at the edges. A
+	 * standlone map only shows full hexes, and doesn't display systems which
+	 * belong to its neighbours.
+	 */
+	public void setStandalone(boolean standalone) {
+		this.standalone = standalone;
+	}
+	
+	public boolean isStandalone() {
+		return standalone;
 	}
 
 	/**
@@ -218,8 +234,16 @@ public class SubSectorImage {
 	private void drawBaseMap() throws ObjectNotFoundException {
 		int		hexWidth = (int)(scale + 1.0 * scale * COS60);
 		int		hexHeight = (int)(2.0 * scale * SIN60);
+		int		mapWidth = hexWidth * 8;
+		int		mapHeight = hexHeight * 10 + (int)(scale * SIN30 * 0.25);
+		
+		if (standalone) {
+			mapHeight += hexHeight * 0.55;
+			mapWidth += hexWidth * 0.4;
+		}
+		
 		//image = new SimpleImage(hexWidth * 8 + (int)(scale * COS60), hexHeight * 10, "FFFFFF");
-		image = new SimpleImage(hexWidth * 8, hexHeight * 10 + (int)(scale * SIN30 * 0.25), "FFFFFF");
+		image = new SimpleImage(mapWidth, mapHeight, "FFFFFF");
 		
 		Log.info("Draw map for ["+sectorId+"]");
 		
@@ -228,6 +252,15 @@ public class SubSectorImage {
 		
 		int		baseX = ssx*8;
 		int		baseY = ssy*10;
+		
+		int		startX = -1, startY = -1;
+		int		endX = 9, endY = 12;
+		
+		if (standalone) {
+			startX = startY = 1;
+			endX = 9;
+			endY = 11;
+		}
 		
 		ObjectFactory		factory = new ObjectFactory();
 		StarSystem			system = null;
@@ -238,8 +271,8 @@ public class SubSectorImage {
 		int					sectorX = sector.getX();
 		int					sectorY = sector.getY();
 		
-		for (int x = -1; x < 9; x++) {
-			for (int y = -1; y < 12; y++) {
+		for (int x = startX; x < endX; x++) {
+			for (int y = startY; y < endY; y++) {
 				int			id = sectorId;
 				int			sx = baseX + x;
 				int			sy = baseY + y;
@@ -300,7 +333,14 @@ public class SubSectorImage {
 					//System.out.println((baseX+x)+","+(baseY+y)+": "+system.getName()+" ("+x+","+y+")");
 					int		cx = (int)(getX(x, y) + scale*0.5); 		// X coordinate of centre.
 					int		cy = (int)(getY(x, y) - (scale * SIN60));	// Y coordinate of centre.
-					
+
+					String	colour = "#000000";
+					if (system.getZone() == StarSystem.Zone.Red) {
+						colour = "#FF0000";
+					} else if (system.getZone() == StarSystem.Zone.Amber) {
+						colour = "#FF8000";
+					}
+
 					Vector<Star>		stars = system.getStars();
 					Star				star = null;
 					switch (stars.size()) {
@@ -324,12 +364,7 @@ public class SubSectorImage {
 						break;
 					}
 
-					String	colour = "#000000";
-					if (system.getZone() == StarSystem.Zone.Red) {
-						colour = "#FF0000";
-					} else if (system.getZone() == StarSystem.Zone.Amber) {
-						colour = "#FF8000";
-					}
+
 					try {
 						int				iconSize = (scale / 4);
 						Planet			mainWorld = system.getMainWorld();
@@ -344,18 +379,19 @@ public class SubSectorImage {
 								double	fontSize = scale * 0.2;
 								plotText(getX(x, y) + (scale * 0.30), getY(x, y) - scale*1.1, "-/"+tl, Font.PLAIN, (int)fontSize, "#000000");							
 							}
-							if (system.hasLife(LifeType.Extensive)) {
-								image.paint(new URL(SYMBOL_BASE+"life_extensive.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.4), iconSize, iconSize);
-							} else if (system.hasLife(LifeType.ComplexLand)) {
-								image.paint(new URL(SYMBOL_BASE+"life_land.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.4), iconSize, iconSize);
-							} else if (system.hasLife(LifeType.ComplexOcean)) {
-								image.paint(new URL(SYMBOL_BASE+"life_water.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.4), iconSize, iconSize);
+							if (scale > 40) {
+								if (system.hasLife(LifeType.Extensive)) {
+									image.paint(new URL(SYMBOL_BASE+"life_extensive.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.4), iconSize, iconSize);
+								} else if (system.hasLife(LifeType.ComplexLand)) {
+									image.paint(new URL(SYMBOL_BASE+"life_land.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.4), iconSize, iconSize);
+								} else if (system.hasLife(LifeType.ComplexOcean)) {
+									image.paint(new URL(SYMBOL_BASE+"life_water.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.4), iconSize, iconSize);
+								}
+								String	gov = mainWorld.getGovernment().getAbbreviation()+"/"+mainWorld.getLawLevel()+"/"+mainWorld.getShortPopulation();
+								plotText(getX(x, y) + (scale * 0.08), getY(x, y) - scale*0.5, gov, Font.PLAIN, (int)(scale*0.2), "#000000");
 							}
-							
-							String	gov = mainWorld.getGovernment().getAbbreviation()+"/"+mainWorld.getLawLevel()+"/"+mainWorld.getShortPopulation();
-							plotText(getX(x, y) + (scale * 0.08), getY(x, y) - scale*0.5, gov, Font.PLAIN, (int)(scale*0.2), "#000000");
 						}
-						if (system.hasWater(10)) {
+						if (system.hasWater(10) && scale > 40) {
 							image.paint(new URL(SYMBOL_BASE+"planet_water.png"), (int)(cx + scale * 0.4), (int)(cy - scale * 0.6), iconSize, iconSize);
 						}
 						
@@ -372,11 +408,13 @@ public class SubSectorImage {
 						int		tradeX = (int)(cx - scale * 0.65);
 						int		tradeY = (int)(cy - scale * 0.6);
 						
-						for (int tc = 0; tc < codes.length; tc++) {
-							if (system.hasTradeCode(codes[tc])) {
-								String		img = "trade_"+codes[tc].toString().toLowerCase()+".png";
-								image.paint(new URL(SYMBOL_BASE+img), tradeX, tradeY, iconSize, iconSize);
-								tradeY += iconSize + 1;
+						if (scale > 40) {
+							for (int tc = 0; tc < codes.length; tc++) {
+								if (system.hasTradeCode(codes[tc])) {
+									String		img = "trade_"+codes[tc].toString().toLowerCase()+".png";
+									image.paint(new URL(SYMBOL_BASE+img), tradeX, tradeY, iconSize, iconSize);
+									tradeY += iconSize + 1;
+								}
 							}
 						}
 					} catch (MalformedURLException e) {
@@ -386,14 +424,25 @@ public class SubSectorImage {
 					double	fontSize = scale * 0.2;
 					int		len = 0;
 					
+					if (scale < 40) fontSize += 3;
+					
 					try {
 						len = image.getTextWidth(system.getName(), Font.BOLD, (int)fontSize);
 					} catch (Throwable e) {
 						Log.error(e);
 					}
 					
-					plotText(getX(x, y) + scale * 0.5 - (len/2), getY(x, y) - scale * 0.2, 
-							 system.getName(), Font.BOLD, (int)fontSize, colour);
+					double  tx = getX(x, y) + scale * 0.5 - (len/2);
+					double  ty = getY(x, y) - scale * 0.2;
+					int		weight = Font.BOLD;
+					
+					if (scale < 40) {
+						weight = Font.PLAIN;
+						tx = getX(x, y) + scale * 0.5 - (len/2);
+						ty = getY(x, y) - scale * 0.4;
+					}
+					
+					plotText(tx, ty, system.getName(), weight, (int)fontSize, colour);
 				}
 			}
 		}
@@ -410,12 +459,24 @@ public class SubSectorImage {
 		Log.init(3);
 		Log.info("Hello");
 		//int		id = 1; // Full Thrust
-		int		id = 89; // Traveller;
+		int		id = 103; // Traveller;
+		id=87;
+		Sector	sector = new Sector(id);
 		for (SubSector ss : SubSector.values()) {
 			SubSectorImage		sub = new SubSectorImage(id, ss);
-			sub.setScale(128);
-			sub.getImage().save(new File("/home/sam/tmp/subsector/ss_"+ss.name()+".jpg"));
-			break;
+			sub.setScale(64);
+			sub.setStandalone(true);
+			sub.getImage().save(new File("/home/sam/tmp/maps/subsectors/ss_"+ss.name()+".jpg"));
+			
+			FileWriter	writer = new FileWriter("/home/sam/tmp/maps/subsectors/ss_"+ss.name()+".html");
+			
+			String title = sector.getName()+" / "+sector.getSubSectorName(ss.getX()*8 + 1, ss.getY()*10 + 1);
+			writer.write("<html><head><title>"+title+"</title></head><body>");
+			writer.write("<p style=\"margin:0pt\">"+title+"</p>");
+			writer.write("<img src=\"ss_"+ss.name()+".jpg\"/>");
+			
+			writer.write("</body></html>");
+			writer.close();
 		}
 		
 	}

@@ -12,6 +12,7 @@
 package uk.org.glendale.rpg.traveller.servlets;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import uk.org.glendale.rpg.traveller.Config;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.database.ObjectNotFoundException;
+import uk.org.glendale.rpg.traveller.map.SubSectorImage;
 import uk.org.glendale.rpg.traveller.sectors.Sector;
 import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.Star;
@@ -337,6 +339,20 @@ public class Sectors extends HttpServlet {
 			int		xoff = ss.getXOffset();
 			int		yoff = ss.getYOffset();
 			buffer.append("<h3>"+sector.getSubSectorName(xoff, yoff)+"</h3>\n");
+			
+			/*
+			String		mapPath = "images/subsectors/"+sector.getId()+"-"+ss+"x32o.jpg";
+			System.out.println(mapPath);
+			File		file = new File(mapPath);
+        	SubSectorImage.setSymbolBase("images/symbols/");
+        	SubSectorImage		map = new SubSectorImage(sector.getId(), ss.getX(), ss.getY());
+
+        	try {
+        		map.getImage().save(file);
+        	} catch (Throwable t) {
+        		t.printStackTrace();
+        	}
+			*/
 
 			buffer.append("<table>");
 			buffer.append("<tr><th>XY</th><th>System</th><th>Planets</th><th>Population</th><th>TL</th></tr>\n");

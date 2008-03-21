@@ -372,9 +372,12 @@ public class Description {
 	 */
 	public static void main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
-		Planet		p = factory.getPlanet(171244);
+		Planet		p = factory.getPlanet(176110);
 		Description d = new Description(p);
-		System.out.println(d.getDescription("planet.AreanLacustric"));
+		Description.setDescription(p);
+		p.persist();
+		System.out.println(p.getHydrographics());
+		System.out.println(d.getDescription("planet.Gaian"));
 		factory.close();
 		System.exit(0);
 		
