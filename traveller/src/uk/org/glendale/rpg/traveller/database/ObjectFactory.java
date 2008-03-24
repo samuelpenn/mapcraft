@@ -21,6 +21,8 @@ import java.sql.*;
 import java.util.*;
 
 import uk.org.glendale.database.Database;
+import uk.org.glendale.rpg.traveller.civilisation.trade.Commodity;
+import uk.org.glendale.rpg.traveller.civilisation.trade.Trade;
 import uk.org.glendale.rpg.traveller.sectors.Sector;
 import uk.org.glendale.rpg.traveller.systems.*;
 
@@ -88,6 +90,7 @@ public class ObjectFactory {
 				db.delete(table, query);
 				if (tables != null) {
 					for (int i=0; i < tables.length; i++) {
+						System.out.println("Deleting ["+tables[i]+"] where ["+table+"_id="+id+"]");
 						db.delete(tables[i], table+"_id="+id);
 					}
 				}
@@ -637,6 +640,89 @@ public class ObjectFactory {
 		db.delete("star", "system_id="+id);
 	}
 	
+	public Hashtable<Integer,Commodity> getAllCommodities() {
+		String					sql = "select * from commodity";
+		ResultSet				rs = null;
+		Hashtable<Integer,Commodity>	list = new Hashtable<Integer,Commodity>();
+		
+		try {
+			rs = db.query(sql);
+			while (rs.next()) {
+				Commodity	c = new Commodity(rs);
+				list.put(c.getId(), c);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
+	public Hashtable<Integer,Long> getCommodities(int planet_id) {
+		String					sql = "select commodity_id, amount from trade where planet_id="+planet_id;
+		ResultSet				rs = null;
+		Hashtable<Integer,Long>	list = new Hashtable<Integer,Long>();
+		
+		try {
+			rs = db.query(sql);
+			while (rs.next()) {
+				list.put(rs.getInt("commodity_id"), rs.getLong("amount"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
+	public Commodity getCommodity(String name) {
+		String		sql = "select * from commodity where name=?";
+		ResultSet	rs = null;
+		Commodity	c = null;
+		
+		try {
+			rs = db.query(sql, name);
+			if (rs.next()) {
+				c = new Commodity(rs);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return c;
+	}
+	
+	public void storeResources(int planet_id, Hashtable<String,Integer> resources) {
+		// Delete any existing resources first.
+		db.delete("resources", "planet_id="+planet_id);
+		
+		for (String s : resources.keySet()) {
+			Commodity	c = getCommodity(s);
+			
+			if (c != null) {
+				Hashtable<String,Object> data = new Hashtable<String,Object>();
+				data.put("planet_id", planet_id);
+				data.put("commodity_id", c.getId());
+				data.put("density", resources.get(s));
+				
+				try {
+					db.insert("resources", data);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+	
+	public Trade getTrade(int planet_id) {
+		Trade		trade = null;
+		
+		return trade;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		ObjectFactory		factory = new ObjectFactory();
 		/*
@@ -647,7 +733,7 @@ public class ObjectFactory {
 		writer.close();
 		*/
 		
-		int		id = 10373;
+		int		id = 14580;
 		factory.cleanStarSystem(id);
 		StarSystem		system = factory.getStarSystem(id);
 		system.regenerate();

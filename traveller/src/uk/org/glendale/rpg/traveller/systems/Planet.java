@@ -22,6 +22,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import uk.org.glendale.rpg.traveller.Config;
+import uk.org.glendale.rpg.traveller.civilisation.trade.Commodity;
 import uk.org.glendale.rpg.traveller.database.*;
 import uk.org.glendale.rpg.traveller.glossary.GlossaryEntry;
 import uk.org.glendale.rpg.traveller.systems.codes.*;
@@ -262,6 +263,9 @@ public class Planet {
 		return day;
 	}
 	
+	/**
+	 * Set the length of the day, in seconds.
+	 */
 	public void setDay(int day) {
 		this.day = day;
 	}
@@ -1331,6 +1335,11 @@ public class Planet {
 		
 		int auto = factory.persist("planet", data);
 		if (id == 0) id = auto;
+		
+		// If the planet has resources set, then write them out.
+		if (resources != null) {
+			factory.storeResources(id, resources);
+		}
 	}
 
 	/**
@@ -1661,4 +1670,23 @@ public class Planet {
 		
 	}
 	
+	private Hashtable<String,Integer>		resources = null;
+	
+	/**
+	 * Add to the list of resources for this world. Currently, this is a
+	 * write-only list. If any resources are set, they are written to the
+	 * database when the world is persisted, overwriting any resources
+	 * already defined. It is expected that the data is processed elsewhere.
+	 * The resource name must match one of the defined commodities, though
+	 * checking is only done when the list is persisted.
+	 * 
+	 * @param resource		Name of resource.
+	 * @param value			Quantity of resource, from 1 to 10.
+	 */
+	public void addResource(String resource, int value) {
+		if (resources == null) {
+			resources = new Hashtable<String,Integer>();
+		}
+		resources.put(resource, value);
+	}
 }

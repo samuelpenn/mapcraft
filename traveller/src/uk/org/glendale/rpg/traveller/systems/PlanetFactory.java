@@ -260,12 +260,22 @@ public class PlanetFactory {
 			planet.setAtmosphereType(AtmosphereType.SulphurCompounds);
 			if (planet.getRadius() > 3000) {
 				planet.setAtmospherePressure(AtmospherePressure.Standard);
+				if (Die.d4()==1) planet.addResource("Pentric ore", 1);
 			} else {
 				planet.setAtmospherePressure(AtmospherePressure.Thin);
 			}
 			break;
 		}
 		planet.setTemperature(planet.getTemperature().getHotter());
+		
+		// Mineral resources.
+		planet.addResource("Silicate ore", 3+Die.d6());
+		planet.addResource("Carbonic ore", 2+Die.d3());
+		planet.addResource("Magnesite ore", 3+Die.d4());
+		if (Die.d2()==1) planet.addResource("Apicene ore", Die.d3());
+		if (star.getStarForm() == StarForm.WhiteDwarf && Die.d6() == 1) {
+			planet.addResource("Xithricate ore", Die.d2());
+		}
 	}
 
 	/**
@@ -278,9 +288,85 @@ public class PlanetFactory {
 			planet.setAtmosphereType(AtmosphereType.Hydrogen);
 			planet.setAtmospherePressure(AtmospherePressure.Trace);			
 		}
+		
+		// Mineral resources.
+		planet.addResource("Silicate ore", 5+Die.d3());
+		planet.addResource("Ferric ore", 5+Die.d4());
+		planet.addResource("VanAzek ore", 3+Die.d4());
+		if (Die.d2()==1) planet.addResource("Lanthanic ore", Die.d6());
+		if (star.getStarForm() == StarForm.WhiteDwarf) {
+			planet.addResource("Xithricate ore", Die.d4()+1);
+		}
 	}
 	
+	/**
+	 * Such worlds have lost their outer mantle, leaving just a dense core.
+	 * Mostly iron rich, they are battered and broken worlds, generally
+	 * found close to a star.
+	 */
+	void defineHadean(Planet planet) {
+		if (planet.getRadius() > 2000) {
+			planet.setAtmosphereType(AtmosphereType.Hydrogen);
+			planet.setAtmospherePressure(AtmospherePressure.Trace);			
+		}
+		
+		// Mineral resources.
+		planet.addResource("Silicate ore", 2+Die.d3());
+		planet.addResource("Ferric ore", 6+Die.d3());
+		planet.addResource("VanAzek ore", 4+Die.d4());
+		planet.addResource("Lanthanic ore", Die.d3());
+		if (Die.d2()==1) planet.addResource("Pyronic ore", Die.d4());
+		if (star.getStarForm() == StarForm.WhiteDwarf) {
+			planet.addResource("Xithricate ore", Die.d4()+1);
+		}
+	}
+	
+	/**
+	 * A chlorine world, less than a billion years old. It is in the early
+	 * stages of formation, and has little or no life.
+	 */
+	void defineEoChloritic(Planet planet) {
+		// Atmosphere type
+		switch (Die.d6()) {
+		case 1: case 2: case 3:
+			planet.setAtmosphereType(AtmosphereType.Primordial);
+			break;
+		case 4: case 5:
+			planet.setAtmosphereType(AtmosphereType.NitrogenCompounds);
+			break;
+		case 6:
+			planet.setAtmosphereType(AtmosphereType.OrganicToxins);
+			break;
+		}
 
+		// Atmosphere pressure
+		switch (Die.d6()) {
+		case 1: case 2: case 3: case 4:
+			planet.setAtmospherePressure(AtmospherePressure.Standard);
+			break;
+		case 5:
+			planet.setAtmospherePressure(AtmospherePressure.Dense);
+			break;
+		case 6:
+			planet.setAtmospherePressure(AtmospherePressure.Thin);
+			break;
+		}
+		planet.setTemperature(star.getOrbitTemperature(planet.getEffectiveDistance()));
+		
+		planet.setHydrographics(Die.d20() * 2);
+		switch (Die.d8()) {
+		case 1: case 2: case 3: case 4:
+			planet.setLifeLevel(LifeType.Proteins);
+			break;
+		case 5: case 6:
+			planet.setLifeLevel(LifeType.Protozoa);
+			break;
+		case 7: case 8:
+			planet.setLifeLevel(LifeType.Metazoa);
+			break;
+		}
+		setDayLength(planet, 1.0);
+	}
 
 	/**
 	 * Primal Earth-like worlds with thick atmospheres and early oceans. There may
@@ -327,10 +413,28 @@ public class PlanetFactory {
 			break;
 		}
 		setDayLength(planet, 1.0);
+		
+		// Mineral resources.
+		planet.addResource("Silicate ore", 6);
+		planet.addResource("Carbonic ore", 5);
+		planet.addResource("Ferric ore", 4);
+		if (planet.getHydrographics() >= 10) {
+			planet.addResource("Aquean ore", planet.getHydrographics()/10);
+		}
+		if (Die.d10() == 1) {
+			planet.addResource("VanAzek ore", Die.d3());
+		}
+		if (Die.d10() == 1) {
+			planet.addResource("Pentric ore", 1);
+		}
+		if (star.getStarForm() == StarForm.WhiteDwarf && Die.d6() == 1) {
+			planet.addResource("Xithricate ore", Die.d2());
+		}
 	}
 
 	/**
-	 * Primal Earth-like world where life is beginning to take hold.
+	 * Primal Earth-like world where life is beginning to take hold. Age is
+	 * a billion to a few billion years old.
 	 */
 	void defineMesoGaian(Planet planet) {
 		// Atmosphere type
@@ -370,6 +474,26 @@ public class PlanetFactory {
 			break;
 		}
 		setDayLength(planet, 1.0);
+
+		// Mineral resources.
+		planet.addResource("Silicate ore", 6);
+		planet.addResource("Carbonic ore", 5);
+		planet.addResource("Ferric ore", 4);
+		if (planet.getHydrographics() >= 10) {
+			planet.addResource("Aquean ore", planet.getHydrographics()/10);
+		}
+		if (Die.d10() == 1) {
+			planet.addResource("VanAzek ore", Die.d3());
+		}
+		if (Die.d10() == 1) {
+			planet.addResource("Pentric ore", 1);
+		}
+		if (star.getStarForm() == StarForm.WhiteDwarf && Die.d6() == 1) {
+			planet.addResource("Xithricate ore", Die.d2());
+		}
+		if (planet.getLifeLevel() == LifeType.ComplexOcean) {
+			planet.addResource("Seafood", Die.d2());
+		}
 	}
 
 	/**
@@ -415,6 +539,24 @@ public class PlanetFactory {
 		planet.setHydrographics(Die.d20() * 4);
 		planet.setLifeLevel(LifeType.ComplexOcean);
 		setDayLength(planet, 1.0);
+
+		// Mineral resources.
+		planet.addResource("Silicate ore", 6);
+		planet.addResource("Carbonic ore", 5);
+		planet.addResource("Ferric ore", 4);
+		if (planet.getHydrographics() >= 10) {
+			planet.addResource("Aquean ore", planet.getHydrographics()/10);
+		}
+		if (Die.d10() == 1) {
+			planet.addResource("VanAzek ore", Die.d3());
+		}
+		if (Die.d10() == 1) {
+			planet.addResource("Pentric ore", 1);
+		}
+		if (star.getStarForm() == StarForm.WhiteDwarf && Die.d6() == 1) {
+			planet.addResource("Xithricate ore", Die.d2());
+		}
+		planet.addResource("Seafood", 3+Die.d4());
 	}
 
 	/**
@@ -460,10 +602,27 @@ public class PlanetFactory {
 		planet.setHydrographics(Die.d20() * 2);
 		planet.setLifeLevel(LifeType.SimpleLand);
 		setDayLength(planet, 1.0);
+
+		// Mineral resources.
+		planet.addResource("Silicate ore", 6);
+		planet.addResource("Carbonic ore", 5);
+		planet.addResource("Ferric ore", 4);
+		if (planet.getHydrographics() >= 10) {
+			planet.addResource("Aquean ore", planet.getHydrographics()/10);
+		}
+		if (Die.d10() == 1) {
+			planet.addResource("VanAzek ore", Die.d3());
+		}
+		if (Die.d10() == 1) {
+			planet.addResource("Pentric ore", 1);
+		}
+		planet.addResource("Seafood", 3+Die.d4());
+		planet.addResource("Vegetables", 2+Die.d3());
+		planet.addResource("Meat", Die.d2());
 	}
 
 	/**
-	 * Primal Earth-like world where life is just beginning to take hold on
+	 * Primal Mars-like world where life is just beginning to take hold on
 	 * land. However, the world has become too cold, and is beginning to
 	 * freeze. Life is unlikely to evolve into anything more complex.
 	 */
@@ -502,12 +661,27 @@ public class PlanetFactory {
 			break;
 		case 4: case 5:
 			planet.setLifeLevel(LifeType.ComplexOcean);
+			planet.addResource("Seafood", 1+Die.d3());
 			break;
 		case 6:
 			planet.setLifeLevel(LifeType.SimpleLand);
+			planet.addResource("Seafood", 2+Die.d3());
+			planet.addResource("Vegetables", 1+Die.d4());
+			planet.addResource("Meat", Die.d2());
 			break;
 		}
 		setDayLength(planet, 1.0);
+
+		// Mineral resources.
+		planet.addResource("Silicate ore", 6);
+		planet.addResource("Carbonic ore", 4);
+		planet.addResource("Ferric ore", 3);
+		if (planet.getHydrographics() >= 10) {
+			planet.addResource("Aquean ore", planet.getHydrographics()/10);
+		}
+		if (Die.d10() == 1) {
+			planet.addResource("VanAzek ore", Die.d2());
+		}
 	}
 
 	/**
@@ -545,6 +719,14 @@ public class PlanetFactory {
 			planet.setHydrographics(Die.d4());
 		}
 		setDayLength(planet, 1.0);
+
+		// Mineral resources.
+		planet.addResource("Silicate ore", 6);
+		planet.addResource("Carbonic ore", 4);
+		planet.addResource("Ferric ore", 3);
+		if (Die.d10() == 1) {
+			planet.addResource("VanAzek ore", Die.d2());
+		}
 	}
 	
 	/**
@@ -554,10 +736,7 @@ public class PlanetFactory {
 	void defineCytherean(Planet planet) {
 		// Atmosphere type
 		switch (Die.d6()) {
-		case 1:
-			planet.setAtmosphereType(AtmosphereType.Pollutants);
-			break;
-		case 2: case 3: case 4:
+		case 1: case 2: case 3: case 4:
 			planet.setAtmosphereType(AtmosphereType.CarbonDioxide);
 			break;
 		case 5: case 6:
@@ -567,16 +746,23 @@ public class PlanetFactory {
 
 		// Atmosphere pressure
 		switch (Die.d6()) {
-		case 1:
+		case 1: case 2:
 			planet.setAtmospherePressure(AtmospherePressure.Dense);
 			break;
-		case 2: case 3: case 4: case 5: case 6:
+		case 3: case 4: case 5: case 6:
 			planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 			break;
 		}
 		// Permanent opaque cloud cover.
 		planet.addFeature(PlanetFeature.DenseClouds);
 		planet.setTemperature(star.getOrbitTemperature(planet.getEffectiveDistance()));
+
+		// Mineral resources.
+		planet.addResource("Silicate ore", 6);
+		planet.addResource("Ferric ore", 3);
+		planet.addResource("Pentric ore", Die.d4());
+		if (Die.d10() == 1) planet.addResource("VanAzek ore", Die.d3());
+		if (Die.d8() == 1) planet.addResource("Heliocene ore", Die.d2());
 	}
 	
 	/**
@@ -588,7 +774,7 @@ public class PlanetFactory {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1:
-			planet.setAtmosphereType(AtmosphereType.Pollutants);
+			planet.setAtmosphereType(AtmosphereType.InertGases);
 			break;
 		case 2: case 3: case 4:
 			planet.setAtmosphereType(AtmosphereType.CarbonDioxide);
@@ -599,23 +785,39 @@ public class PlanetFactory {
 		}
 
 		// Atmosphere pressure
-		switch (Die.d6()) {
+		switch (Die.d8()) {
 		case 1:
-			planet.setAtmospherePressure(AtmospherePressure.Standard);
+			planet.setAtmospherePressure(AtmospherePressure.VeryThin);
 			break;
 		case 2: case 3: case 4:
-			planet.setAtmospherePressure(AtmospherePressure.Dense);
+			planet.setAtmospherePressure(AtmospherePressure.Thin);
 			break;
 		case 5: case 6:
-			planet.setAtmospherePressure(AtmospherePressure.VeryDense);
+			planet.setAtmospherePressure(AtmospherePressure.Standard);
 			break;
-		}
-		if (Die.d6() < 4) {
-			// Thick cloud cover (rather than Venus' dense cloud cover.
+		case 7:
 			planet.addFeature(PlanetFeature.ThickClouds);
+			planet.setAtmospherePressure(AtmospherePressure.Standard);
+			break;
+		case 8:
+			planet.addFeature(PlanetFeature.ThickClouds);
+			if (planet.getAtmosphereType() != AtmosphereType.CarbonDioxide) {
+				planet.setAtmospherePressure(AtmospherePressure.Dense);
+			} else {
+				planet.setAtmospherePressure(AtmospherePressure.Standard);
+			}
+			break;
 		}
 
 		planet.setTemperature(star.getOrbitTemperature(planet.getEffectiveDistance()));		
+
+		// Mineral resources.
+		planet.addResource("Silicate ore", 6);
+		planet.addResource("Carbonic ore", 2);
+		planet.addResource("Ferric ore", 3);
+		if (Die.d10() == 1) planet.addResource("VanAzek ore", Die.d3());
+		if (Die.d6() == 1) planet.addResource("Heliocene ore", Die.d2());
+		if (Die.d4() == 1) planet.addResource("Pentric ore", Die.d3());
 	}
 	
 	/**
@@ -627,7 +829,7 @@ public class PlanetFactory {
 		// Atmosphere type
 		switch (Die.d6()) {
 		case 1: case 2:
-			planet.setAtmosphereType(AtmosphereType.Pollutants);
+			planet.setAtmosphereType(AtmosphereType.NitrogenCompounds);
 			break;
 		case 3: case 4: case 5:
 			planet.setAtmosphereType(AtmosphereType.CarbonDioxide);
@@ -638,23 +840,49 @@ public class PlanetFactory {
 		}
 
 		// Atmosphere pressure
-		switch (Die.d6()) {
-		case 1:
+		switch (Die.d8()) {
+		case 1: case 2: case 3:
 			planet.setAtmospherePressure(AtmospherePressure.VeryThin);
 			break;
-		case 2: case 3: case 4:
+		case 4: case 5: case 6:
 			planet.setAtmospherePressure(AtmospherePressure.Thin);
 			break;
-		case 5: case 6:
+		case 7:
+			planet.setAtmospherePressure(AtmospherePressure.Standard);
+			if (planet.getAtmosphereType() == AtmosphereType.NitrogenCompounds) {
+				planet.setLifeLevel(LifeType.Protozoa);				
+			}
+			break;
+		case 8:
+			planet.addFeature(PlanetFeature.ThickClouds);
 			planet.setAtmospherePressure(AtmospherePressure.Standard);
 			break;
 		}
-		if (Die.d6() == 1) {
-			// Thick cloud cover (rather than Venus' dense cloud cover.
-			planet.addFeature(PlanetFeature.ThickClouds);
-		}
 
 		planet.setTemperature(star.getOrbitTemperature(planet.getEffectiveDistance()));
+		if (planet.getDistance() < 50) {
+			// Set the world to be tidelocked.
+			int		period = (int)star.getOrbitPeriod(planet.getDistance());
+			switch (Die.d6()) {
+			case 1: case 2:
+				planet.setDay(period);
+				break;
+			case 3: case 4:
+				planet.setDay(period/2);
+				break;
+			case 5: case 6:
+				planet.setDay((int)(period * 1.5));
+				break;
+			}
+		}
+
+		// Mineral resources.
+		planet.addResource("Silicate ore", 5);
+		planet.addResource("Carbonic ore", 1);
+		planet.addResource("Ferric ore", 3);
+		if (Die.d6() == 1) planet.addResource("VanAzek ore", Die.d4());
+		if (Die.d6() == 1) planet.addResource("Heliocene ore", Die.d2());
+		if (Die.d4() == 1) planet.addResource("Pentric ore", Die.d3());
 	}
 	
 	/**
@@ -685,9 +913,27 @@ public class PlanetFactory {
 			planet.setAtmospherePressure(AtmospherePressure.VeryDense);
 			break;
 		}
+		
+		switch (Die.d6(3)) {
+		case 3:
+			planet.setLifeLevel(LifeType.Metazoa);
+			break;
+		case 4:
+			planet.setLifeLevel(LifeType.Protozoa);
+			break;
+		case 5:
+			planet.setLifeLevel(LifeType.Proteins);
+			break;
+		default:
+			planet.setLifeLevel(LifeType.None);
+		}
+		
 		planet.setTemperature(star.getOrbitTemperature(planet.getEffectiveDistance()));		
 		planet.setHydrographics(100);
-		setDayLength(planet, 1.0);
+		setDayLength(planet, 2.0);
+
+		// Mineral resources.
+		planet.addResource("Aquean ore", 5);
 	}
 
 	/**
@@ -740,7 +986,7 @@ public class PlanetFactory {
 		default:
 			planet.setLifeLevel(LifeType.Extensive);
 		}
-		setDayLength(planet, 1.0);
+		planet.setDay(71000 + Die.die(15000, 2));
 	}
 
 	/**
@@ -787,7 +1033,7 @@ public class PlanetFactory {
 		default:
 			planet.setLifeLevel(LifeType.ComplexLand);
 		}
-		setDayLength(planet, 1.0);
+		planet.setDay(71000 + Die.die(15000, 2));
 	}
 
 	/**
@@ -835,7 +1081,7 @@ public class PlanetFactory {
 		default:
 			planet.setLifeLevel(LifeType.ComplexOcean);
 		}
-		setDayLength(planet, 1.0);
+		planet.setDay(75000 + Die.die(50000, 3));
 	}
 
 	/**
@@ -871,7 +1117,7 @@ public class PlanetFactory {
 		
 		planet.setHydrographics(Die.d10());
 		planet.setLifeLevel(LifeType.Metazoa);
-		setDayLength(planet, 1.0);
+		planet.setDay(71000 + Die.die(20000, 2));
 	}
 
 	/**

@@ -993,6 +993,60 @@ public class StarSystem implements Comparable {
 	}
 	
 	/**
+	 * Once a star system has been generated, we probably have a single main
+	 * world. Now need to think how the rest of the system is populated. There
+	 * are probably mining colonies, small research outposts and general
+	 * business and communities all over the place.
+	 * 
+	 * Types of communities:
+	 *   Scientific research
+	 *   Industrial research
+	 *   Mining
+	 *   Colony
+	 *   Waystation
+	 *   Military base
+	 */
+	private void populateSystem() {
+		Planet		mainWorld = getMainWorld();
+		if (mainWorld == null) {
+			// No populated world, so don't bother.
+			return;
+		}
+		int				techLevel = mainWorld.getTechLevel();
+		StarportType	port = mainWorld.getStarport();
+		long			population = mainWorld.getPopulation();
+		
+		if (techLevel < 9) return;
+		switch (port) {
+		case X: case E:
+			population /= 100000;
+			break;
+		case D:
+			population /= 1000;
+			break;
+		case C:
+			population /= 10;
+			break;
+		}
+		
+		for (Planet p : planets) {
+			if (p.getPopulation() > 0) {
+				// Already populated, so ignore.
+				continue;
+			}
+			// Base first decision on the temperature.
+			switch (p.getTemperature()) {
+			case UltraHot:
+			case ExtremelyHot:
+				break;
+			case VeryHot:
+			case Hot:
+				break;
+			}
+		}
+	}
+	
+	/**
 	 * Store all data for this star system in the database. This includes any data on stars
 	 * and planets associated with the system.
 	 */
@@ -1832,10 +1886,20 @@ public class StarSystem implements Comparable {
 	main(String[] args) throws Exception {
 		//UWP		uwp = new UWP("eC Mirriam            0303 B9998A6-A B                 A 534 Im G2 V");
 		
+		/*
+		 *  ! This bit is broken, see ObjectFactory.main() instead
+		 *
 		ObjectFactory	factory = new ObjectFactory();
-		StarSystem		ss = new StarSystem(factory, 10335);
+		try {
+			StarSystem		ss = new StarSystem(factory, 14580);
+			ss.clean();
+			ss.regenerate();
+		} finally {
+			factory.close();
+		}
+		*/
 		
-		ss.toHTML();
+		//ss.toHTML();
 		/*
 		for (Planet planet : ss.getPlanets()) {
 			System.out.println(planet.getName());

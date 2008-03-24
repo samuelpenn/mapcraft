@@ -24,6 +24,7 @@ public enum TradeCode {
 	Mi ("Mining Colony"),
 	Re ("Research Colony"),
 	Pi ("Pirate base"),
+	Co ("Local Colony"),
 	Ba ("Barren"),
 	Lo ("Low Population"),
 	Hi ("High Population"),

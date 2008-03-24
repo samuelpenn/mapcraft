@@ -48,22 +48,40 @@ public enum PlanetType {
 	Europan(Category.Dwarf, 2.5, 1500), 		// Europa
 	Stygian(Category.Dwarf, 2.5, 2000), 		// Now frozen after death of star.
 	LithicGelidian(Category.Dwarf, 2.0, 2000),  // Rock/ice worlds, often moons. Ganymede/Callisto
-	
-	Hermian(Category.Terrestrial, 5.0, 2500), 		// Mercury
+
+	// Gaian type worlds
 	EoGaian(Category.Terrestrial, 5.5, 6500, Habitability.Difficult),
 	MesoGaian(Category.Terrestrial, 5.5, 6500, Habitability.Difficult), 
 	ArchaeoGaian(Category.Terrestrial, 5.5, 6500, Habitability.Difficult), 
+	Gaian(Category.Terrestrial, 5.5, 6500, Habitability.Hospitable), 
+	GaianTundral(Category.Terrestrial, 5.5, 6200, Habitability.Unpleasant), 
+	PostGaian(Category.Terrestrial, 5.5, 6500, Habitability.Unpleasant),
+	
+	// Chlorine worlds
+	EoChloritic(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+	MesoChloritic(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+	ArchaeoChloritic(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+	Chloritic(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+	ChloriticTundral(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+	PostChloritic(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+	
+	// Sulphur worlds
+	EoThio(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+	MesoThio(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+	ArchaeoThio(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+	Thio(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+	ThioTundral(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+	PostThio(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+
+	Hermian(Category.Terrestrial, 5.0, 2500), 		// Mercury
 	EoArean(Category.Terrestrial, 5.0, 5500, Habitability.Difficult), 
 	AreanLacustric(Category.Terrestrial, 4.5, 3500), 
 	Arean(Category.Terrestrial, 4.5, 3500),
 	Cytherean(Category.Terrestrial, 5.5, 6200, Habitability.Hostile),    // Venus
 	Phosphorian(Category.Terrestrial, 5.5, 6200, Habitability.Hostile),  // Cloudless Venus
 	JaniLithic(Category.Terrestrial, 5.5, 5500, Habitability.Hostile),   // Dry, hot, atmosphere.
-	Pelagic(Category.Terrestrial, 6.0, 7500, Habitability.Hostile), 
-	Gaian(Category.Terrestrial, 5.5, 6500, Habitability.Hospitable), 
-	GaianTundral(Category.Terrestrial, 5.5, 6200, Habitability.Unpleasant), 
+	Pelagic(Category.Terrestrial, 6.0, 7500, Habitability.Hostile),
 	Panthalassic(Category.Terrestrial, 5.5, 6000), 
-	PostGaian(Category.Terrestrial, 5.5, 6500, Habitability.Unpleasant), 
 	
 	CryoJovian(Category.Jovian, 1.1, 50000, Habitability.VeryHostile),
 	SubJovian(Category.Jovian, 0.8, 70000, Habitability.VeryHostile), 
