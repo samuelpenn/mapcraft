@@ -1,0 +1,135 @@
+How will trading work?
+
+High tech goods based on tech level, rather than having different TL
+versions of the same good.
+
+e.g.:
+
+TL6: Mechanical Computers
+TL7: Electronic Computers
+TL8: Micro Computers
+TL9: Advanced Computers
+
+
+Basic stuff:
+
+Food
+Textiles
+Minerals
+Alloys
+Machinary
+Computers
+
+Minerals
+
+Silicate - Basic rocks/olvine
+Carbonic - Organic/Plastics
+Ferric   - Metals
+Uranic   - Radioactives
+Argen    - Precious metals
+Aquam    - Water/Hydrogen/Oxygen
+
+
+Basic Goods
+
+			Tech	Requirements
+Food		1
+Textiles	1
+Silicate	2
+Argen		2
+Ferric		3
+Carbonic	3
+Aquam		5
+Uranic		6
+Gemstones
+
+Agricultural Goods
+
+Product					Tech	Requirements
+
+Vegetables				1		-
+Meat					1		-
+Civilian Textiles		1		-
+Commercial Textiles		4		2 Civilian Textiles
+Natural Dyes			1		2 Vegetables
+Alchohol				1		2 Vegetables
+Simple crafts			2		-
+Natural Wood			1		-
+
+Basic Manufacturing
+
+Product				Tech	Requirements
+
+Iron		   		3		4 Ferric, 1 Silicate
+Steel				7		5 Ferric, 1 Carbonic, 1 Silicate
+Refined Steel		8		7 Ferric, 2 Carbonic, 1 Silicate
+
+
+
+Very Very Simple Trade System
+
+Product				Type	TL		Rate		Requires
+
+Food				Ag		1		10			-
+Textiles			Ag		1		50			-
+Minerals			Mi		3		100			-
+Precious Metals		Mi		3		1000		-
+
+Radioactives		In		6		1000		10 Minerals
+Alloys				In		5		1000		5 Minerals
+Machinary			In		5		1000		3 Alloys
+Electronics			In		7		1000		2 Machinary, 2 Alloys, 1 Precious Metals
+Computers			In		8		1000		3 Electronics, 1 Precious Metals
+
+
+Trade Good Codes
+
+D0-D9: Measurement of demand per head of population.
+    0: 1/1,000,000,000
+    1: 1/100,000,000
+    2: 1/10,000,000
+    3: 1/1,000,000
+    4: 1/100,000
+    5: 1/10,000
+    6: 1/1,000
+    7: 1/100
+    8: 1/10
+    9: 1/1
+
+P0-P9: Measurement of rate of production per head of population. As per demand.
+
+T0-TB: Tech level required for production. TLs 10+ use hex.
+
+L0-L6: Considered illegal at that law level or above.
+LI: Imperium considers good to be illegal.
+
+Lo: Low-tech good, only required on low tech worlds (1-6)
+Mi: Mid-tech good, only required on mid tech worlds (6-9)
+Hi: High-tech good, only required on high tech worlds (8-11)
+Ul: Ultra-tech good, only required on ultra tech worlds (11+)
+
+In: Only required by industrial worlds
+Ag: Only required by agricultural worlds
+Sp: Required by space ports
+
+Vi: Vital, will be willing to pay lots
+Lu: Luxury, demand drops rapidly if price goes up
+Pe: Perishable
+Fr: Fragile
+Hz: Hazardous
+HZ: Highly hazardous
+
+Product			Cost		Codes
+
+Food			1,000		D8 P8 Vi Pe
+Textiles		3,000		D6 P7 Vi
+Minerals		2,500		D5 P6 In
+Alloys			10,000		D4 P5 In T5
+Machinary		50,000		D3 P4 T6
+
+
+Industrial:   212031   Irlariir/2520
+Agricultural: 212304   Plateau/2620
+
+
+

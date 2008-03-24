@@ -87,3 +87,79 @@ create table map (planet_id int not null, image longblob not null, primary key(p
 create table globe (planet_id int not null, image longblob not null, primary key(planet_id));
 
 create table note (id int auto_increment not null, planet_id int not null, property varchar(16), message text, primary key(id));
+
+#
+# Radical stuff
+#
+
+create table ship (id int auto_increment not null, name varchar(64) not null, type varchar(64) not null,
+                   system_id int not null,
+                   planet_id int not null,
+                   nextevent bigint not null,
+                   status varchar(8) default 'Docked',
+				   displacement int not null,
+				   jump int not null,
+				   accl int not null,
+				   cargo int not null,
+				   flag varchar(64) default 'Imperium',
+				   PRIMARY KEY(id), 
+				   FOREIGN KEY (system_id) REFERENCES system(id)
+				   FOREIGN KEY (planet_id) REFERENCES planet(id));
+
+CREATE TABLE commodity (id int auto_increment not null,
+                   name varchar(64) not null,
+                   source varchar(4) not null,
+                   cost int not null, dt int default 0,
+                   production int not null, consumption int not null,
+                   law int default 6, tech int default 0,
+                   codes varchar(64) not null,
+                   PRIMARY KEY(id), UNIQUE KEY(name))
+                   ENGINE=INNODB;
+
+# Basic goods
+INSERT INTO commodity VALUES(0, 'Food', 'Ag', 1000, 1, 8, 8, 6, 1, 'Vi Pe Tl');
+INSERT INTO commodity VALUES(0, 'Textiles', 'Ag', 3000, 1, 7, 6, 6, 1, 'Vi');
+INSERT INTO commodity VALUES(0, 'Minerals', 'Mi', 1000, 1, 6, 5, 6, 3, 'In');
+INSERT INTO commodity VALUES(0, 'Alloys', 'In', 1000, 1, 5, 4, 6, 5, 'In Tl');
+INSERT INTO commodity VALUES(0, 'Machinary', 'In', 1000, 1, 4, 3, 6, 6, 'Tl');
+
+# Basic ores
+INSERT INTO commodity VALUES(0, 'Ferric ore', 'Mi', 200, 1, 5, 0, 6, 2, 'In');
+INSERT INTO commodity VALUES(0, 'Carbonic ore', 'Mi', 100, 1, 6, 0, 6, 3, 'In');
+INSERT INTO commodity VALUES(0, 'Silicate ore', 'Mi', 50, 1, 6, 0, 6, 3, 'In');
+INSERT INTO commodity VALUES(0, 'Aquean ore', 'Mi', 75, 1, 5, 0, 6, 6, 'In');
+
+# Rare ores
+INSERT INTO commodity VALUES(0, 'VanAzek ore', 'Mi', 500, 1, 4, 0, 6, 8, 'In');
+INSERT INTO commodity VALUES(0, 'Pentric ore', 'Mi', 700, 1, 3, 0, 6, 8, 'In');
+INSERT INTO commodity VALUES(0, 'Krysite ore', 'Mi', 600, 1, 4, 0, 6, 8, 'In');
+INSERT INTO commodity VALUES(0, 'Ishik ore', 'Mi', 600, 1, 3, 0, 6, 8, 'In');
+
+# Very rare ores
+INSERT INTO commodity VALUES(0, 'Xithricate ore', 'Mi', 1500, 1, 2, 0, 6, 9, 'In');
+INSERT INTO commodity VALUES(0, 'Lanthanic ore', 'Mi', 2000, 1, 1, 0, 6, 10, 'In Hz');
+INSERT INTO commodity VALUES(0, 'Heliocene ore', 'Mi', 2500, 1, 1, 0, 6, 9, 'In');
+INSERT INTO commodity VALUES(0, 'Apicene ore', 'Mi', 1200, 1, 1, 0, 6, 9, 'In Hz');
+INSERT INTO commodity VALUES(0, 'Magnesite ore', 'Mi', 1700, 1, 2, 0, 6, 8, 'In');
+INSERT INTO commodity VALUES(0, 'Pyronic ore', 'Mi', 1500, 1, 2, 0, 6, 9, 'In Hz');
+INSERT INTO commodity VALUES(0, 'Denic ore', 'Mi', 900, 1, 1, 0, 6, 8, 'In Hz');
+INSERT INTO commodity VALUES(0, 'Oorcine ore', 'Mi', 1000, 1, 2, 0, 6, 10, 'In Fr');
+
+# Basic agricultural resources
+INSERT INTO commodity VALUES(0, 'Vegetables', 'Ag', 100, 1, 8, 8, 6, 1, 'Vi Pe Tl');
+INSERT INTO commodity VALUES(0, 'Fruits', 'Ag', 150, 1, 8, 8, 6, 1, 'Vi Pe Tl');
+INSERT INTO commodity VALUES(0, 'Meat', 'Ag', 350, 1, 8, 8, 6, 1, 'Vi Pe Tl');
+INSERT INTO commodity VALUES(0, 'Seafood', 'Ag', 250, 1, 8, 8, 6, 1, 'Vi Pe Tl');
+
+
+CREATE TABLE resources (planet_id INT NOT NULL, commodity_id INT NOT NULL, density INT NOT NULL,
+                        UNIQUE KEY(planet_id, commodity_id)) ENGINE=INNODB;
+
+
+CREATE TABLE trade (id INT AUTO_INCREMENT NOT NULL, planet_id INT NOT NULL,
+                    commodity_id int not null, amount int not null,
+                    PRIMARY KEY(id),
+                    FOREIGN KEY(planet_id) REFERENCES planet(id),
+                    FOREIGN KEY(commodity_id) REFERENCES commodity(id))
+                    ENGINE=INNODB;
+					
