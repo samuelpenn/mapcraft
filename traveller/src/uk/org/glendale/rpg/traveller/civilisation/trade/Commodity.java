@@ -45,26 +45,37 @@ public class Commodity {
 		return source;
 	}
 	
+	// Constants to make some of the lookup tables more readable.
+	private static final long BILLION  = 1000000000;
+	private static final long MILLION  = 1000000;
+	private static final long THOUSAND = 1000;
+	
 	/**
 	 * Get the production rate for this good, in terms of number of people
 	 * required to produce it. High numbers means fewer items will be
 	 * produced for a given population size.
 	 * 
-	 * Internally, this is stored as a value from 0 to 9,.where 0 is very
-	 * hard to make, and 9 is very easy to make.
+	 * Internally, this is stored as a value from 0 upwards, normally in
+	 * the range 1-9, though values up to 15 are possible.
 	 */
 	public long getProductionRate() {
 		switch (productionRate) {
-		case 0: return 2500000000L;
-		case 1: return 500000000;
-		case 2: return 100000000;
-		case 3: return 12500000;
-		case 4: return 2500000;
-		case 5: return 500000;
-		case 6: return 100000;
-		case 7: return 25000;
-		case 8: return 10000;
-		case 9: return 5000;
+		case 0:  return 1 * BILLION;
+		case 1:  return 100 * MILLION;
+		case 2:  return 10 * MILLION;
+		case 3:  return 1 * MILLION;
+		case 4:  return 200 * THOUSAND;
+		case 5:  return 40 * THOUSAND;
+		case 6:  return 10 * THOUSAND;
+		case 7:  return 3 * THOUSAND;
+		case 8:  return 1 * THOUSAND;
+		case 9:  return 500;
+		case 10: return 250;
+		case 11: return 150;
+		case 12: return 100;
+		case 13: return 75;
+		case 14: return 50;
+		case 15: return 25;
 		}
 		return 1;
 	}
@@ -74,19 +85,28 @@ public class Commodity {
 	 * This is the proportion of people who require the good, so a value
 	 * of 1000, means 1 in 1000 people want it. Low numbers are more in
 	 * demand than high numbers.
+	 * 
+	 * A good like food, which everybody needs, is rated at 10. Most goods
+	 * will be lower than this.
 	 */
 	public long getConsumptionRate() {
 		switch (consumptionRate) {
-		case 0: return 2500000000L;
-		case 1: return 500000000;
-		case 2: return 100000000;
-		case 3: return 12500000;
-		case 4: return 2500000;
-		case 5: return 500000;
-		case 6: return 100000;
-		case 7: return 25000;
-		case 8: return 10000;
-		case 9: return 5000;
+		case 0:  return 1 * BILLION;
+		case 1:  return 100 * MILLION;
+		case 2:  return 10 * MILLION;
+		case 3:  return 1 * MILLION;
+		case 4:  return 200 * THOUSAND;
+		case 5:  return 40 * THOUSAND;
+		case 6:  return 10 * THOUSAND;
+		case 7:  return 3 * THOUSAND;
+		case 8:  return 1 * THOUSAND;
+		case 9:  return 500;
+		case 10: return 250;
+		case 11: return 150;
+		case 12: return 100;
+		case 13: return 75;
+		case 14: return 50;
+		case 15: return 25;
 		}
 		return 1;
 	}

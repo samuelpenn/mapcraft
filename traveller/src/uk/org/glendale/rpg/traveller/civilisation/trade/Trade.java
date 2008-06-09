@@ -26,7 +26,7 @@ public class Trade {
 		
 		commodities = factory.getAllCommodities();
 		
-		Hashtable<Integer,Long>	amounts = factory.getCommodities(planet.getId());
+		Hashtable<Integer,Long>	amounts = factory.getCommoditiesByPlanet(planet.getId());
 		
 		for (int key : amounts.keySet()) {
 			long		amount = amounts.get(key);
@@ -39,6 +39,104 @@ public class Trade {
 		return planet;
 	}
 	
+	private long getWorkersRequired(Commodity c) {
+		return getWorkersRequired(c, 10);
+	}
+	
+	private long getWorkersRequired(Commodity c, int density) {
+		if (density < 1) {
+			return Long.MAX_VALUE;
+		} else if (density > 10) {
+			density = 10;
+		}
+		
+		long		workersRequired = c.getProductionRate() * 1000 / (int)Math.pow(density, 3);
+		
+		if (planet.getTechLevel() < c.getTechLevel()-1) {
+			// Tech level is way too low, return infinite number of workers.
+			return Long.MAX_VALUE;
+		} else if (planet.getTechLevel() == c.getTechLevel()-1) {
+			// May be able to make something, unless commodity is heavily TL dependant.
+			if (c.hasCode(CommodityCode.Tl)) {
+				return Long.MAX_VALUE;
+			}
+			workersRequired *= 5;
+		} else if (planet.getTechLevel() > c.getTechLevel()) {
+			if (c.hasCode(CommodityCode.Tl)) {
+				workersRequired /= (1 + planet.getTechLevel() - c.getTechLevel());
+			} else {
+				workersRequired /= Math.sqrt(1 + planet.getTechLevel() - c.getTechLevel());
+			}
+		}
+		
+		if (c.getSource() == Source.Ag) {
+			if (planet.hasTradeCode(TradeCode.Ag)) {
+				workersRequired /= 2;
+			} else if (planet.hasTradeCode(TradeCode.Na)) {
+				workersRequired *= 3;
+			}
+		} else if (c.getSource() == Source.In) {
+			if (planet.hasTradeCode(TradeCode.In)) {
+				workersRequired /= 2;
+			} else if (planet.hasTradeCode(TradeCode.Ni)) {
+				workersRequired *= 10;
+			} else {
+				workersRequired *= 3;
+			}
+		} else if (c.getSource() == Source.Mi) {
+			if (planet.hasTradeCode(TradeCode.Mi)) {
+				// This is assumed to be a dedicated mining colony, where
+				// everyone is focused on mining, so less support people
+				// are needed.
+				workersRequired /= 100;
+			} else if (planet.hasTradeCode(TradeCode.In)) {
+				// No change.
+			} else if (planet.hasTradeCode(TradeCode.Ni)) {
+				workersRequired *= 4;
+			} else if (planet.hasTradeCode(TradeCode.Ag)) {
+				workersRequired *= 2;
+			}
+		}
+		
+		if (planet.getLawLevel() > c.getLegality()) {
+			workersRequired *= Math.pow(10, planet.getLawLevel() - c.getLegality());
+		}
+		
+		return workersRequired;
+	}
+	
+	/**
+	 * Work out what resources are gathered this week from the planet's
+	 * stock of natural resources.
+	 */
+	public void gatherResources() {
+		Hashtable<Integer,Integer> list = factory.getResources(planet.getId());
+		
+		// For each commodity, work out how much is gathered.
+		System.out.println("Production rates");
+		for (int i : list.keySet()) {
+			Commodity	c = commodities.get(i); 
+			
+			if (c == null) {
+				c = factory.getCommodity(i);
+			}
+			
+			int			density = list.get(i);
+			long		workersRequired = getWorkersRequired(c, density);
+			long		produced = planet.getPopulation() / workersRequired;
+			
+			System.out.println("  "+c.getName() + "("+c.getAmount()+") - "+produced);
+			c.setAmount(c.getAmount() + produced);
+			factory.setCommodity(planet.getId(), c.getId(), c.getAmount());
+		}
+	}
+	
+	public void consumeResources() {
+		for (int i : commodities.keySet()) {
+			Commodity	c = commodities.get(i); 
+		}
+	}
+
 	public void productionAbility() {
 		for (int id : commodities.keySet()) {
 			Commodity		c = commodities.get(id);
@@ -205,9 +303,11 @@ public class Trade {
 	
 	public static void main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
-		//Planet			planet = factory.getPlanet(212031);
-		
 		try {
+			Planet			planet = factory.getPlanet(214841);
+			Trade			trade = new Trade(factory, planet);
+			trade.gatherResources();
+			/*
 			for (int id : new int[] { 212031, 212304} ) {
 				Planet			planet = factory.getPlanet(id);
 				Trade			trade = new Trade(factory, planet);
@@ -226,7 +326,7 @@ public class Trade {
 			
 			Sector sector = new Sector(factory, 104);
 			System.out.println(sector.getBTN(factory.getPlanet(212031), factory.getPlanet(212304)));
-			
+			*/
 		} finally {
 			factory.close();
 			factory = null;

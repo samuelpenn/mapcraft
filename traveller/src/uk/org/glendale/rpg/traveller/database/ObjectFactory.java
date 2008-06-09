@@ -578,6 +578,8 @@ public class ObjectFactory {
 		String						table = "note";
 		Hashtable<String,Object>	data = new Hashtable<String,Object>();
 
+		System.out.println("addNote: "+planetId+" - "+property);
+		
 		data.put("planet_id", planetId);
 		if (property != null) {
 			data.put("property", property);
@@ -659,7 +661,12 @@ public class ObjectFactory {
 		return list;
 	}
 	
-	public Hashtable<Integer,Long> getCommodities(int planet_id) {
+	/**
+	 * Get all the commodities for a given planet.
+	 * 
+	 * @param planet_id		Id of the planet to get commodities list for.
+	 */
+	public Hashtable<Integer,Long> getCommoditiesByPlanet(int planet_id) {
 		String					sql = "select commodity_id, amount from trade where planet_id="+planet_id;
 		ResultSet				rs = null;
 		Hashtable<Integer,Long>	list = new Hashtable<Integer,Long>();
@@ -677,6 +684,38 @@ public class ObjectFactory {
 		return list;
 	}
 	
+	public void setCommodity(int planet_id, int commodity_id, long amount) {
+		String			where = "planet_id="+planet_id+" and commodity_id="+commodity_id;
+		Hashtable<String,Object>		data = new Hashtable<String,Object>();
+		
+		data.put("planet_id", planet_id);
+		data.put("commodity_id", commodity_id);
+		data.put("amount", amount);
+		try {
+			db.replace("trade", data, where);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Hashtable<Integer,Integer> getResources(int planet_id) {
+		String					sql = "select commodity_id, density from resources where planet_id="+planet_id;
+		ResultSet				rs = null;
+		Hashtable<Integer,Integer>	list = new Hashtable<Integer,Integer>();
+		
+		try {
+			rs = db.query(sql);
+			while (rs.next()) {
+				list.put(rs.getInt("commodity_id"), rs.getInt("density"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return list;		
+	}
+	
 	public Commodity getCommodity(String name) {
 		String		sql = "select * from commodity where name=?";
 		ResultSet	rs = null;
@@ -684,6 +723,23 @@ public class ObjectFactory {
 		
 		try {
 			rs = db.query(sql, name);
+			if (rs.next()) {
+				c = new Commodity(rs);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return c;
+	}
+
+	public Commodity getCommodity(int id) {
+		String		sql = "select * from commodity where id=?";
+		ResultSet	rs = null;
+		Commodity	c = null;
+		
+		try {
+			rs = db.query(sql, id);
 			if (rs.next()) {
 				c = new Commodity(rs);
 			}
@@ -716,12 +772,7 @@ public class ObjectFactory {
 		}
 
 	}
-	
-	public Trade getTrade(int planet_id) {
-		Trade		trade = null;
 		
-		return trade;
-	}
 	
 	public static void main(String[] args) throws Exception {
 		ObjectFactory		factory = new ObjectFactory();
