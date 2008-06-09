@@ -19,6 +19,7 @@ import java.util.*;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
+import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 
 /**
@@ -88,7 +89,6 @@ public class Description {
 		
 	public Description(Planet planet) {
 		this.planet = planet;
-		
 	}
 	
 	private Description() {

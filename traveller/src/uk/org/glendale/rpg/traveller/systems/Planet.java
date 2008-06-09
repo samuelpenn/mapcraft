@@ -207,6 +207,8 @@ public class Planet {
 	}
 	
 	public void setLawLevel(int lawLevel) {
+		if (lawLevel < 0) lawLevel = 0;
+		if (lawLevel > 6) lawLevel = 6;
 		this.lawLevel = lawLevel;
 	}
 	
@@ -253,6 +255,7 @@ public class Planet {
 	}
 	
 	public void setPopulation(long population) {
+		if (population < 0) population = 0;
 		this.population = population;
 	}
 	
@@ -611,6 +614,12 @@ public class Planet {
 		} else if (population > 0) {
 			planetType = PlanetType.Gaian;
 			lifeType = LifeType.Extensive;
+			if (hydrographics < 10) {
+				planetType = PlanetType.PostGaian;
+				lifeType = LifeType.SimpleLand;
+			} else if (hydrographics < 30) {
+				lifeType = LifeType.ComplexLand;
+			}
 		}
 		
 		// Seen a few of these. Fix them.
@@ -799,8 +808,14 @@ public class Planet {
 			planetType = PlanetType.EoArean;
 			lifeType = LifeType.SimpleLand;
 			if (temperature.isColderThan(Temperature.Cold)) {
-				planetType = PlanetType.Europan;		
-				lifeType = LifeType.ComplexOcean;
+				planetType = PlanetType.EuTitanian;
+				if (Die.d6() < 3) {
+					lifeType = LifeType.SimpleLand;
+				} else {
+					lifeType = LifeType.ComplexOcean;
+				}
+				atmosphereType = AtmosphereType.NitrogenCompounds;
+				addTradeCode(TradeCode.Fl);
 			} else if (temperature.isColderThan(Temperature.Cool)) {
 				planetType = PlanetType.AreanLacustric;
 				lifeType = LifeType.SimpleLand;
@@ -818,15 +833,16 @@ public class Planet {
 		
 		if (atmosphereType == AtmosphereType.SulphurCompounds) {
 			// Venus like world.
-			planetType = PlanetType.Cytherean;
+			planetType = PlanetType.Phosphorian;
 			lifeType = LifeType.None;
 			if (hydrographics == 100) {
 				// Very hot, dense atmosphere, water world.
 				planetType = PlanetType.Pelagic;
 			}
 		} else if (atmosphereType == AtmosphereType.Chlorine) {
-			planetType = PlanetType.EoGaian;
-			lifeType = LifeType.None;
+			planetType = PlanetType.Chloritic;
+			lifeType = LifeType.SimpleLand;
+			addTradeCode(TradeCode.Fl);
 		} else if (atmosphereType == AtmosphereType.NitrogenCompounds) {
 			planetType = PlanetType.MesoGaian;
 			lifeType = LifeType.Metazoa;
@@ -1416,7 +1432,6 @@ public class Planet {
 			buffer.append(" ("+id+")\n");
 			buffer.append("</p>\n");
 		}
-		
 
 		// Physical data
 		buffer.append("<p>\n");

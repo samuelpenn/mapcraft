@@ -28,6 +28,7 @@ import uk.org.glendale.rpg.traveller.sectors.Allegiance;
 import uk.org.glendale.rpg.traveller.sectors.Sector;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
+import uk.org.glendale.rpg.traveller.systems.codes.GovernmentType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
 import uk.org.glendale.rpg.traveller.systems.codes.StarClass;
 import uk.org.glendale.rpg.traveller.systems.codes.StarForm;
@@ -202,7 +203,8 @@ public class StarSystem implements Comparable {
 				generatePlanets(i);
 			}
 		}
-
+		System.out.println("\nBEGIN COLONISATION\n");
+		populateSystem();
 		persist();		
 	}
 	
@@ -406,7 +408,7 @@ public class StarSystem implements Comparable {
 				generatePlanets(i);
 			}
 		}
-		
+		populateSystem();
 		persist();
 	}
 	
@@ -1015,14 +1017,19 @@ public class StarSystem implements Comparable {
 		int				techLevel = mainWorld.getTechLevel();
 		StarportType	port = mainWorld.getStarport();
 		long			population = mainWorld.getPopulation();
+		boolean			localColonies = true;
 		
-		if (techLevel < 9) return;
+		if (techLevel < 9) {
+			localColonies = false;
+		}
 		switch (port) {
 		case X: case E:
 			population /= 100000;
+			localColonies = false;
 			break;
 		case D:
 			population /= 1000;
+			localColonies = false;
 			break;
 		case C:
 			population /= 10;
@@ -1034,6 +1041,45 @@ public class StarSystem implements Comparable {
 				// Already populated, so ignore.
 				continue;
 			}
+			if (p.getType().isJovian()) {
+				// Gas giants aren't ever populated.
+				continue;
+			}
+			
+			if (p.getType().isBelt()) {
+				// This is an asteroid belt. There will probably be mining.
+				p.addTradeCode(TradeCode.Mi);
+				if (localColonies) {
+					System.out.println("Populating colony "+p.getName());
+					p.setPopulation(population / Die.d6(2));
+					p.setGovernment(mainWorld.getGovernment());
+					p.setStarport(port.getWorse());
+					p.setLawLevel(mainWorld.getLawLevel()-1);
+					p.setTechLevel(techLevel);
+					p.persist();
+				} else {
+					
+				}
+				
+				continue;
+			}
+			if (p.getLifeLevel().isMoreComplexThan(LifeType.ComplexOcean)) {
+				if (!p.hasTradeCode(TradeCode.Fl)) {
+					if (localColonies) {
+						System.out.println("Populating colony "+p.getName());
+						p.setPopulation(population / Die.d6(4));
+						p.setGovernment(mainWorld.getGovernment());
+						p.setStarport(port.getWorse());
+						p.setLawLevel(mainWorld.getLawLevel());
+						p.setTechLevel(techLevel-1);
+						p.persist();
+					} else {
+						
+					}
+					continue;
+				}
+			}
+			
 			// Base first decision on the temperature.
 			switch (p.getTemperature()) {
 			case UltraHot:
@@ -1042,6 +1088,14 @@ public class StarSystem implements Comparable {
 			case VeryHot:
 			case Hot:
 				break;
+			case Cold:
+			case VeryCold:
+				break;
+			case ExtremelyCold:
+			case UltraCold:
+				break;
+			default:
+				// Standard thing.
 			}
 		}
 	}
@@ -1881,9 +1935,19 @@ public class StarSystem implements Comparable {
 		planet.persist();
 		persist();
 	}
-
+	
 	public static void
 	main(String[] args) throws Exception {
+		ObjectFactory	factory = new ObjectFactory();
+		
+		StarSystem		sys = new StarSystem(factory, 10310);
+		long			start = System.currentTimeMillis();
+		sys.toHTML(true);
+		long			end = System.currentTimeMillis();
+		
+		System.out.println("Took: "+(end-start)+"ms");
+		factory.close();
+		
 		//UWP		uwp = new UWP("eC Mirriam            0303 B9998A6-A B                 A 534 Im G2 V");
 		
 		/*
