@@ -48,6 +48,8 @@ public enum PlanetFeature {
 	HeavilyCratered("Cr"),
 	Volcanic("Vo"),
 	ExtremeVolcanism("Vx"),
+	CryoVolcanism("Cv"),
+	TidalStressMarks("Ts"),
 	FastRotation("FR");
 	
 	private String 					code = null;

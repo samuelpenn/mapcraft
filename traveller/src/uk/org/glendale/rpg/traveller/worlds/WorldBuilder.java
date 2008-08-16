@@ -53,6 +53,10 @@ public class WorldBuilder {
 	protected		int			height = 128+1;
 	
 	protected		int[][]		map = null;
+	// Use the following to calculate how many squares there are of
+	// each height. Can be used to find distribution stats quite
+	// quickly.
+	protected		int[]		heightBuckets = new int[100];
 	
 	protected 		Planet		planet = null;
 	protected		int			hydrographics = 0;
@@ -161,7 +165,18 @@ public class WorldBuilder {
 		map[x][y] = (value/1000) * 1000 + h;
 	}
 
-	protected void setTerrain(int x, int y, Terrain t) {		
+	protected void setTerrain(int x, int y, Terrain t) {
+		if (y < 0) {
+			y = 0;
+			x = width - x;
+		}
+		if (y >= height) {
+			y = height-1;
+			x = width - x;
+		}
+		if (x < 0) x += width;
+		if (x >= width) x -= width;
+		
 		int		value = map[x][y];
 		map[x][y] = t.getIndex()*1000 + value%1000;
 	}
@@ -214,6 +229,8 @@ public class WorldBuilder {
 				h[x][y] = -1;
 			}
 		}
+		
+		for (int i=0; i < 100; i++) heightBuckets[i] = 0;
 		
 		// Now start at the four corners. Actually, there are only two
 		// distinct corners since the map wraps around East-West.
@@ -304,6 +321,7 @@ public class WorldBuilder {
 			for (int y=0; y < height; y++) {
 				setHeight(x, y, h[x][y]);
 				setTerrain(x, y, land);
+				heightBuckets[h[x][y]]++;
 			}
 		}		
 		

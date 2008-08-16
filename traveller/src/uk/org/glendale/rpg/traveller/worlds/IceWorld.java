@@ -23,6 +23,7 @@ import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
+import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.utils.Die;
@@ -36,22 +37,26 @@ import uk.org.glendale.rpg.utils.Die;
  * @author Samuel Penn.
  */
 class IceWorld extends WorldBuilder {
-	private PlanetType		type = PlanetType.Selenian;
-	private Terrain			terrain = null;
-	private Terrain[]		lava = null;
-	private Terrain			ejecta = null;
-	private Terrain			impact = null;
-	private Terrain			highlands = null;
+	private PlanetType		type = PlanetType.Europan;
+	
+	// Ice worlds commonly have the following terrain types.
+
+	private Terrain			cleanIce = null;  // Base ice types.
+	private Terrain			impureIce = null; // Coloured by impurities.
+	private Terrain			ejecta = null;    // Thrown up by impacts.
+	private Terrain			snow = null;      // Freshly laid ice/snow.
+	private Terrain			rock = null;      // Actual rock.
+	private Terrain			flatIce = null;
+	
 	private	int				craters = 500;
-	private int				bumps = 0;
+	private int				stressMarks = 0;  // Straight lines which cross the surface.
+	private int				impureLimit = 0;  // This height or lower, use impure.
 	
 	private int				craterSize = 12;
 	private double			craterDepth = 0.7;
-	
-	private int				flats = 0;
-	private int				flatSize = 0;
-	
-	private int				highlandLower = 0;
+	private int				volcanoes = 0;
+	private int				volcanoDensity = 0;
+	private int				volcanoRadius = 0;
 	
 	private FloodPlain[]	plains = null;
 		
@@ -61,7 +66,6 @@ class IceWorld extends WorldBuilder {
 	}
 
 	private Canvas		canvas = null;
-	private int[][]		waterMap = null;
 	
 	public boolean useImage = false;
 	
@@ -118,50 +122,59 @@ class IceWorld extends WorldBuilder {
 		// Firstly, set basic variables.
 		switch (type) {
 		case LithicGelidian:
-			terrain = Terrain.create("LithicGelidian", 0, 0, 0, 3, 2, 1.5, false);
-			impact = Terrain.create("LithicGelidianImpact", 25, 20, 0, 3, 2, 1, false);
+			cleanIce = Terrain.create("LithicGelidian", 0, 0, 0, 3, 2, 1.5, false);
+			impureIce = Terrain.create("LithicGelidianImpact", 25, 20, 0, 3, 2, 1, false);
 			craters = 100;
 			craterSize = 10;
 			craterDepth = 0.8;
 			break;
 		case Europan:
-			terrain = Terrain.create("Ice", 150, 150, 150, 1, 1, 1, false);
+			cleanIce = Terrain.create("Ice", 140, 140, 150, 1, 1, 1, false);
+			impureIce = Terrain.create("Dirty Ice", 120, 60, 40, 1.2, 1.4, 1.6, false);
+			ejecta = Terrain.create("Ejecta", 150, 150, 160, 2, 2, 2, false);
+			snow = Terrain.create("Flat Ice", 240, 240, 255, 0.1, 0.1, 0.1, false);
+			
+			// We want about half the map to be 'impure' ice. Find a suitable
+			// height (before any alterations) which gives us this.
+			impureLimit = 40;
+			int halfMapSize = width * height / 2;
+			for (int i=0; i < 100; i++) {
+				halfMapSize -= heightBuckets[i];
+				if (halfMapSize < 0) {
+					impureLimit = i;
+					break;
+				}
+			}
+			// Few craters, due to active cryology.
+			craters = Die.d6()*2;
+			if (planet.hasFeature(PlanetFeature.HeavilyCratered)) {
+				craters *= 3;
+			}
+			// Tidal stress marks.
+			if (planet.hasFeature(PlanetFeature.TidalStressMarks)) {
+				stressMarks = Die.d10() * 5;
+			}
+			// Active cryovolcanism
+			if (planet.hasFeature(PlanetFeature.CryoVolcanism)) {
+				volcanoes = Die.d6()+2;
+				volcanoRadius = 15 + Die.d10(2);
+				volcanoDensity = 500 + Die.d8(2) * 100;
+			}
 			break;
 		case EuTitanian:
 		case MesoTitanian:
 		case TitaniLacustric:
-			terrain = Terrain.create("Ice", 50, 50, 50, 1, 1, 1, false);
+			cleanIce = Terrain.create("Ice", 50, 50, 50, 1, 1, 1, false);
 			break;
 		case Iapetean:
-			terrain = Terrain.create("Ice", 150, 150, 150, 1, 1, 1, false);
+			cleanIce = Terrain.create("Ice", 150, 150, 150, 1, 1, 1, false);
 			break;
 		case JaniLithic:
-			terrain = Terrain.create("Ice", 150, 150, 150, 1, 1, 1, false);
+			cleanIce = Terrain.create("Ice", 150, 150, 150, 1, 1, 1, false);
 			break;
 		case Tritonic:
-			terrain = Terrain.create("Ice", 150, 150, 150, 1, 1, 1.2, false);
+			cleanIce = Terrain.create("Ice", 150, 150, 150, 1, 1, 1.2, false);
 			break;
-		}
-	}
-	
-	private void bumps(int number, int size) {
-		for (int bump = 0; bump < number; bump++) {
-			int		px = Die.die(width);
-			int		py = Die.die((int)(height*0.8)) + (int)(height * 0.2);
-
-			for (int x=0; x < width; x++) {
-				for (int y=0; y < height; y++) {
-					int		dx = Math.abs(px - x);
-					if (dx > width/2) {
-						dx -= width;
-					}
-					int		dy = py - y;
-					int		d = (int)(Math.sqrt(dx*dx + dy*dy));
-					int		inc = (int)(size * Math.sin(d/20.0));
-					
-					setHeight(x, y, getHeight(x, y)+inc);
-				}
-			}
 		}
 	}
 	
@@ -237,119 +250,24 @@ class IceWorld extends WorldBuilder {
 		}
 	}
 	
-	/**
-	 * Generate a number of larva flats of a given size at random points
-	 * on the planet's surface.
-	 */
-	private void basaltFlats(int number, int size, Terrain l) {
-		for (int flat=0; flat < number; flat++) {
-			int		x = Die.die(width);
-			int		y = Die.die((int)(height*0.8)) + (int)(height * 0.2);
-			
-			setHeight(x, y, getHeight(x, y) + 10);
-			generateLava(x, y, getHeight(x, y), size, l);
-		}
-	}
-	
-	/**
-	 * Recursively generate lava flats, until we hit another lava flat
-	 * or the size counter drops below zero.
-	 */
-	private void generateLava(int x, int y, int h, int size, Terrain l) {
-		if (size < 0) {
-			return;
-		}
-		if (x < 0) x += width;
-		if (x >= width) x -= width;
-		if (y < 0 || y >= height) return;
-		
-		if (getTerrain(x, y) == l) return;
-		setTerrain(x, y, l);
-		
-		try {
-			if (getHeight(x-1, y) <= h) {
-				setHeight(x-1, y, (getHeight(x-1, y)*2 + h)/3);
-				generateLava2(x-1, y, h, size - Die.d2(), l);
-			}
-			if (getHeight(x+1, y) <= h) {
-				setHeight(x+1, y, (getHeight(x+1, y)*2 + h)/3);
-				generateLava2(x+1, y, h, size - Die.d2(), l);
-			}
-			if (getHeight(x, y+1) <= h) {
-				setHeight(x, y+1, (getHeight(x, y+1)*2 + h)/3);
-				generateLava2(x, y+1, h, size - Die.d2(), l);
-			}
-			if (getHeight(x, y-1) <= h) {
-				setHeight(x, y-1, (getHeight(x, y-1)*2 + h)/3);
-				generateLava2(x, y-1, h, size - Die.d2(), l);
-			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			System.out.println("generateLava: "+x+","+y);
-		}
-	}
-
-	/**
-	 * The same as generataLava(), except the order is reversed.
-	 * If we don't do this, we get lateral bias in the growth of the
-	 * flat. There's probably a better way of doing this.
-	 */
-	private void generateLava2(int x, int y, int h, int size, Terrain l) {
-		if (size < 0) {
-			return;
-		}
-		if (x < 0) x += width;
-		if (x >= width) x -= width;
-		if (y < 0 || y >= height) return;
-		
-		if (getTerrain(x, y) == l) return;
-		setTerrain(x, y, l);
-		
-		try {
-			if (getHeight(x, y-1) <= h) {
-				setHeight(x, y-1, (getHeight(x, y-1)*2 + h)/3);
-				generateLava(x, y-1, h, size - Die.d2(), l);
-			}
-			if (getHeight(x, y+1) <= h) {
-				setHeight(x, y+1, (getHeight(x, y+1)*2 + h)/3);
-				generateLava(x, y+1, h, size - Die.d2(), l);
-			}
-			if (getHeight(x+1, y) <= h) {
-				setHeight(x+1, y, (getHeight(x+1, y)*2 + h)/3);
-				generateLava(x+1, y, h, size - Die.d2(), l);
-			}
-			if (getHeight(x-1, y) <= h) {
-				setHeight(x-1, y, (getHeight(x-1, y)*2 + h)/3);
-				generateLava(x-1, y, h, size - Die.d2(), l);
-			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			System.out.println("generateLava: "+x+","+y);
-		}
-	}
-		
 	public void generate() {
 		// Now set the colours.
 		for (int y=0; y < height; y++) {
+			int		limit = impureLimit;
+			if (y < 50) limit -= (50 - y);
+			if (y > (height - 50)) limit -= (50 - (height - y));
 			for (int x=0; x < width; x++) {
-				setTerrain(x, y, terrain);
-				if (highlands != null && getHeight(x, y) >= highlandLower) {
-					setTerrain(x, y, highlands);
+				setTerrain(x, y, cleanIce);
+				if (impureIce != null && getHeight(x, y) <= limit) {
+					setTerrain(x, y, impureIce);
 				}
 			}
 		}
-		// Bumpy?
-		if (bumps > 0) {
-			bumps(bumps, 25);
-		}
 		
 		// Let's have some asteroid impacts.
-		impacts(craters, craterSize, craterDepth, impact, ejecta);
-
-		// If there are flats defined, then generate some.
-		if (lava != null) {
-			for (Terrain l : lava) {
-				basaltFlats(flats, flatSize, l);
-			}
-		}
+		if (craters > 0) impacts(craters, craterSize, craterDepth, impureIce, ejecta);
+		if (stressMarks > 0) createStressMarks(stressMarks, impureIce);
+		if (volcanoes > 0) createVolcanoes(volcanoes, volcanoRadius, volcanoDensity, snow);
 		
 		if (plains != null) {
 			for (FloodPlain p : plains) {
@@ -358,12 +276,72 @@ class IceWorld extends WorldBuilder {
 			}
 		}
 	}
+	
+	/**
+	 * Stress marks are lines which criss-cross the surface of the world,
+	 * caused by tidal forces cracking the crust. They are common on
+	 * Europan worlds, where they tend to be dark. They are generated as
+	 * mostly straight lines of random length. 
+	 * 
+	 * @param stressMarks		Number of stress lines.
+	 * @param terrain			Type of terrain to use for these lines.
+	 */
+	private void createStressMarks(int stressMarks, Terrain terrain) {
+		for (int i=0; i < stressMarks; i++) {
+			double	x = Die.rollZero(width);
+			double	y = Die.rollZero(height);
+			double	xd = Die.d10()/10.0;
+			double	yd = Die.d10()/20.0;
+			
+			if (x > width/2) xd *= -1;
+			if (y > height/2) yd *= -1;
+			
+			int		length = width/2 + Die.rollZero(width);
+			
+			for (; length > 0; length--) {
+				int		xx = (int)x+Die.d2()-Die.d2();
+				int		yy = (int)y+Die.d2()-Die.d2();
 
+				setTerrain(xx, yy, terrain);
+				setHeight(xx, yy, (int)(getHeight(xx, yy) * 0.5));
+				x += xd;
+				y += yd;
+				
+				xd += (Die.d10() - Die.d10()) / 1000.0; 
+				yd += (Die.d10() - Die.d10()) / 1000.0;
+				
+				if (y <= 0 || y >= height-1) {
+					yd *= -1;
+					xd *= -1;
+					if (y <= 0) y = 0;
+					if (y >= height-1) y = height-1;
+					x += (width/2);
+					if (x > width) x -= width;
+				}
+			}
+		}
+	}
+	
+	private void createVolcanoes(int number, int radius, int density, Terrain terrain) {
+		for (int i=0; i < number; i++) {
+			int		x = Die.rollZero(width);
+			int		y = Die.rollZero(height/2) + height/4;
+			
+			for (int j=0; j < density; j++) {
+				int		px = x + Die.rollZero(radius)*2 - Die.rollZero(radius);
+				int		py = y + Die.rollZero(radius) - Die.rollZero(radius);
+				setTerrain(px, py, snow);
+			}
+		}
+	}
+	
 	public static void main(String[] args) throws Exception {
-		Planet	p = new Planet("Bob", PlanetType.Hephaestian, 4000);
+		Planet	p = new Planet("Bob", PlanetType.Europan, 4000);
+		p.setTilt(22);
+		p.setTemperature(Temperature.VeryCold);
+		p.addFeature(PlanetFeature.TidalStressMarks);
+		
 		IceWorld w = new IceWorld(p, 513, 257);
-		w.planet.setTilt(22);
-		w.planet.setTemperature(Temperature.Standard);
 		//g.draw();
 		w.generate();
 		//g.getWorldMap(2).save(new File("/home/sam/gaian.jpg"));
