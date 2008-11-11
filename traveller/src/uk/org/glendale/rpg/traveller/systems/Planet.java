@@ -1222,9 +1222,9 @@ public class Planet {
 		if (features == null) {
 			features = EnumSet.noneOf(PlanetFeature.class);
 		}
-		if (feature.excludedBy(features)) {
+		//if (feature.excludedBy(features)) {
 			//return false;
-		}
+		//}
 		this.features.add(feature);
 		return true;
 	}
@@ -1267,7 +1267,7 @@ public class Planet {
 		this.distance = distance;
 		this.planetType = planetType;
 		this.starport = StarportType.X;
-		this.radius = Die.d6(2) * 500;
+		this.radius = planetType.getRadius();
 		
 		switch (planetType) {
 		case Cerean:

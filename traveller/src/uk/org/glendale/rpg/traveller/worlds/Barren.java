@@ -15,6 +15,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
@@ -23,6 +24,7 @@ import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
+import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.utils.Die;
@@ -70,6 +72,13 @@ import uk.org.glendale.rpg.utils.Die;
  * 
  * 	 Active, volcanic world like Io.
  * 
+ * Unique Features:
+ * 
+ * Baren worlds may (rarely) have the following unique features:
+ * UA: One side of the world is heavily blackened.
+ * UB: A circle of blackness on the equator.
+ * 
+ * 
  * @author Samuel Penn.
  */
 class Barren extends WorldBuilder {
@@ -87,6 +96,7 @@ class Barren extends WorldBuilder {
 	
 	private int				flats = 0;
 	private int				flatSize = 0;
+	private int				stressMarks = 0;
 	
 	private int				highlandLower = 0;
 	
@@ -136,6 +146,34 @@ class Barren extends WorldBuilder {
 	private void draw() {
 		//canvas.paint(canvas.getGraphics());		
 	}
+
+	/**
+	 * Selenian worlds are dry, barren worlds like the Moon. They are
+	 * rocky, dusty and often heavily cratered from meteorite impacts.
+	 * They are geologically dead, and have a rock core with few metals.
+	 */
+	private void processSelenian() {
+		terrain = Terrain.create("Selenian", 100, 100, 100, 1.5, 1.5, 1.5, false);
+		lava = new Terrain[] { Terrain.create("SelenianFlats", 140, 140, 140, -0.25, -0.25, -0.25, false) };
+		ejecta = Terrain.create("SelenianEjecta", 130, 130, 130, 2, 2, 2, false);
+		impact = Terrain.create("SelenianImpact", 100, 100, 100, 1, 1, 1, false);
+		craters = 300 + Die.d100(4);
+		flats = Die.d10();
+		flatSize = Die.d100(5);
+		
+		if (planet.hasFeature(PlanetFeature.HeavilyCratered)) {
+			craters *= 3;
+			craterSize *= 0.75;
+		} else if (planet.hasFeature(PlanetFeature.Smooth)) {
+			// Planet is smooth, with a dusty surface which has filled in
+			// most old craters.
+			craters /= 10;
+			craterSize *= 0.5;
+		}
+		if (planet.hasFeature(PlanetFeature.TidalStressMarks)) {
+			stressMarks = 3 + Die.d6();
+		}
+	}
 	
 	
 	Barren(Planet planet, int width, int height) {
@@ -155,23 +193,15 @@ class Barren extends WorldBuilder {
 		// Firstly, set basic variables.
 		switch (type) {
 		case Selenian:
-			terrain = Terrain.create("Selenian", 100, 100, 100, 1.5, 1.5, 1.5, false);
-			lava = new Terrain[] { Terrain.create("SelenianFlats", 140, 140, 140, -0.25, -0.25, -0.25, false) };
-			ejecta = Terrain.create("SelenianEjecta", 130, 130, 130, 2, 2, 2, false);
-			impact = Terrain.create("SelenianImpact", 100, 100, 100, 1, 1, 1, false);
-			flats = Die.d10();
-			flatSize = Die.d100(5);
+			processSelenian();
 			break;
 		case Hermian:
 			terrain = Terrain.create("Hermian", 230, 180, 115, -1, -1, -1, false);
-//			lava = new Terrain[] { Terrain.create("HermianFlats", 210, 190, 135, -0.7, -1, -1, false) };
 			impact = Terrain.create("HermianImpact", 230, 180, 115, -0.75, -1, -1, false);
 			craters = 500;
 			craterSize = 7;
 			craterDepth = 0.7;
 			plains = new FloodPlain[] { new FloodPlain(Terrain.create("HermianLava", 210, 190, 135, -0.7, -1, -1, false), 50, 15)};
-//			flats = Die.d8();
-//			flatSize = Die.d100(3);
 			break;
 		case Ferrinian:
 			terrain = Terrain.create("Ferrinian", 120, 120, 50, 3, 2, 2, false);
@@ -216,7 +246,6 @@ class Barren extends WorldBuilder {
 			bumps = Die.d4(1);
 		case Kuiperian:
 			terrain = Terrain.create("KuiperianIces", 100, 75, 50, 1.5, 1.5, 1, false);
-			//impact = Terrain.create("KuiperianDark", 25, 25, 25, 2, 2, 0.5, false);
 			craters = Die.d100();
 			ejecta = Terrain.create("KuiperianEjecta", 100, 75, 50, 3, 3, 2, false);
 			lava = new Terrain[] { Terrain.create("KuiperianLava", 50, 20, 10, 0.5, 0.5, 0.5, false) };
@@ -233,10 +262,27 @@ class Barren extends WorldBuilder {
 			plains = new FloodPlain[] { new FloodPlain(Terrain.create("HephaestianIces", 150, 100, 25, 2.5, 2.5, 3, false), 100, 25),
 					                    new FloodPlain(Terrain.create("HephaestianLava", 150, 75, 0, 4, 1.5, 1.5, false), 25, 10) };
 			
-			//highlands = Terrain.create("HephaestianHighlands", 100, 50, 0, 1, 0.75, 0.5, false);
-			//highlands = Terrain.create("HephaestianHighlands", 0, 0, 0, 0.1, 0.1, 0.1, false);
-			//highlandLower = 50;
 			break;
+		}
+	}
+	
+	/**
+	 * Add tidal stress marks to the world. These are caused by gravitational
+	 * flexing which breaks the planet's crust. Normally around the poles.
+	 * They are represented as 'impact' terrain.
+	 */
+	private void stressMarks(int number) {
+		for (int i=0; i < number; i++) {
+			int		x = Die.die(width-1);
+			int		y = 20 + Die.d20(2);
+			int		length = 20 + Die.d8(number);
+			
+			for ( ; length > 0; length--) {
+				setTerrain(x, y, impact); setTerrain(x-1, y, impact); setTerrain(x+1, y, impact);
+				setHeight(x, y, 0.5); setHeight(x-1, y, 0.5); setHeight(x+1, y, 0.5);
+				y++;
+				x += Die.d2() - Die.d2();
+			}
 		}
 	}
 	
@@ -421,7 +467,10 @@ class Barren extends WorldBuilder {
 			System.out.println("generateLava: "+x+","+y);
 		}
 	}
-		
+	
+	/**
+	 * Actually do the generation of the map given the set parameters.
+	 */
 	public void generate() {
 		// Now set the colours.
 		for (int y=0; y < height; y++) {
@@ -453,16 +502,38 @@ class Barren extends WorldBuilder {
 				draw();
 			}
 		}
+		
+		if (stressMarks > 0) {
+			System.out.println(stressMarks);
+			stressMarks(stressMarks);
+		}
+		
+		// Unique Features
+		if (planet.hasFeature(PlanetFeature.UA)) {
+			Terrain		black = Terrain.create("Black", 25, 25, 25, 0.2, 0.2, 0.2, false);
+			int		mid = width/2, left = 0;
+			for (int y=0; y < height; y++) {
+				mid += Die.d4() - Die.d4();
+				left += Die.d4() - Die.d4();
+				for (int x=left; x < mid; x++) {
+					setTerrain(x, y, black);
+				}
+			}
+		}
 	}
 
 	public static void main(String[] args) throws Exception {
-		Planet	p = new Planet("Bob", PlanetType.Hephaestian, 4000);
+		Planet	p = new Planet("Bob", PlanetType.Selenian, 4000);
+		p.setTilt(22);
+		p.setTemperature(Temperature.Standard);
+		p.addFeature(PlanetFeature.HeavilyCratered);
+		p.addFeature(PlanetFeature.TidalStressMarks);
 		Barren w = new Barren(p, 513, 257);
-		w.planet.setTilt(22);
-		w.planet.setTemperature(Temperature.Standard);
 		//g.draw();
 		w.generate();
-		//g.getWorldMap(2).save(new File("/home/sam/gaian.jpg"));
-		Thread.sleep(10000);
+		
+		GraphicsEnvironment.isHeadless();
+		w.getWorldMap(4).save(new java.io.File("/home/sam/gaian.jpg"));
+		//Thread.sleep(10000);
 	}
 }

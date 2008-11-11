@@ -319,6 +319,35 @@ public class PlanetFactory {
 	}
 	
 	/**
+	 * A small world similar to our moon. Not particularly dense, no
+	 * atmosphere and very dry. Tends to be heavily cratered, with
+	 * old lava beds. No recent geological activity.
+	 */
+	void defineSelenian(Planet planet) {
+		// Surface features.
+		switch (Die.d6(2)) {
+		case 2:
+			// Probably caused by near-collision.
+			planet.addFeature(PlanetFeature.TidalStressMarks);
+			break;
+		case 3:
+			planet.addFeature(PlanetFeature.Smooth);
+			break;
+		case 4:
+			planet.addFeature(PlanetFeature.FastRotation);
+			break;
+		case 5: case 6:
+			planet.addFeature(PlanetFeature.HeavilyCratered);
+			break;
+		case 12:
+			planet.addFeature(PlanetFeature.GiantCrater);
+			break;
+		default:
+			// Nothing special.
+		}
+	}
+	
+	/**
 	 * A chlorine world, less than a billion years old. It is in the early
 	 * stages of formation, and has little or no life.
 	 */

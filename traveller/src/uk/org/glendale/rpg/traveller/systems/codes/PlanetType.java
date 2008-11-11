@@ -44,7 +44,7 @@ public enum PlanetType {
 	UtgardiLacustric(Category.Dwarf, 2.0, 1800, Habitability.Hostile),// Ammonia
 	
 	Ferrinian(Category.Dwarf, 6.0, 1800), 		// Iron rich
-	Selenian(Category.Dwarf, 7.0, 1700), 		// Moon
+	Selenian(Category.Dwarf, 3.3, 1700), 		// Moon
 	Europan(Category.Dwarf, 2.5, 1500), 		// Europa
 	Stygian(Category.Dwarf, 2.5, 2000), 		// Now frozen after death of star.
 	LithicGelidian(Category.Dwarf, 2.0, 2000),  // Rock/ice worlds, often moons. Ganymede/Callisto

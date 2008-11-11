@@ -43,6 +43,7 @@ class IceWorld extends WorldBuilder {
 
 	private Terrain			cleanIce = null;  // Base ice types.
 	private Terrain			impureIce = null; // Coloured by impurities.
+	private Terrain			ravine = null;
 	private Terrain			ejecta = null;    // Thrown up by impacts.
 	private Terrain			snow = null;      // Freshly laid ice/snow.
 	private Terrain			rock = null;      // Actual rock.
@@ -51,6 +52,7 @@ class IceWorld extends WorldBuilder {
 	private	int				craters = 500;
 	private int				stressMarks = 0;  // Straight lines which cross the surface.
 	private int				impureLimit = 0;  // This height or lower, use impure.
+	private boolean			ravines = false;  // Stress marks are wide ravines.
 	
 	private int				craterSize = 12;
 	private double			craterDepth = 0.7;
@@ -122,13 +124,21 @@ class IceWorld extends WorldBuilder {
 		// Firstly, set basic variables.
 		switch (type) {
 		case LithicGelidian:
-			cleanIce = Terrain.create("LithicGelidian", 0, 0, 0, 3, 2, 1.5, false);
-			impureIce = Terrain.create("LithicGelidianImpact", 25, 20, 0, 3, 2, 1, false);
-			craters = 100;
+			// Rocky core, extensive icy mantle.
+			int		r = 120+Die.d20()-Die.d20();
+			int		g = 120+Die.d20()-Die.d20();
+			int		b = 120+Die.d20()-Die.d20();
+			cleanIce = Terrain.create("LithicGelidian", r, g, b, 1.1, 1.1, 1, false);
+			impureIce = Terrain.create("LithicGelidianImpact", r, g, b, 1, 1, 1, false);
+			ravine = Terrain.create("Ravines", r, g, b, 1, 1, 1, false);
+			ejecta = Terrain.create("LithicGelidianEjecta", r, g, b, 1.5, 1.5, 1.2, false);
+			craters = 1000;
 			craterSize = 10;
 			craterDepth = 0.8;
+			ravines = true;
 			break;
 		case Europan:
+			// Worlds like Europa: rock core, water mantle, ice crust.
 			cleanIce = Terrain.create("Ice", 140, 140, 150, 1, 1, 1, false);
 			impureIce = Terrain.create("Dirty Ice", 120, 60, 40, 1.2, 1.4, 1.6, false);
 			ejecta = Terrain.create("Ejecta", 150, 150, 160, 2, 2, 2, false);
@@ -147,13 +157,6 @@ class IceWorld extends WorldBuilder {
 			}
 			// Few craters, due to active cryology.
 			craters = Die.d6()*2;
-			if (planet.hasFeature(PlanetFeature.HeavilyCratered)) {
-				craters *= 3;
-			}
-			// Tidal stress marks.
-			if (planet.hasFeature(PlanetFeature.TidalStressMarks)) {
-				stressMarks = Die.d10() * 5;
-			}
 			// Active cryovolcanism
 			if (planet.hasFeature(PlanetFeature.CryoVolcanism)) {
 				volcanoes = Die.d6()+2;
@@ -161,13 +164,25 @@ class IceWorld extends WorldBuilder {
 				volcanoDensity = 500 + Die.d8(2) * 100;
 			}
 			break;
+		case Iapetean:
+			cleanIce = Terrain.create("Ice", 150, 150, 150, 1, 1, 1, false);
+			impureIce = Terrain.create("CraterIce", 150, 150, 150, 1, 1, 1.1, false);
+			ejecta = Terrain.create("Ejecta", 160, 160, 170, 1, 1, 1, false);
+			craters = 1000;
+			craterSize = 4;
+			craterDepth = 0.8;
+			
+			for (int y=0; y < height; y++) {
+				for (int x=0; x < width; x++) {
+					setHeight(x, y, (getHeight(x, y)/20)*20);
+				}
+			}
+			
+			break;
 		case EuTitanian:
 		case MesoTitanian:
 		case TitaniLacustric:
 			cleanIce = Terrain.create("Ice", 50, 50, 50, 1, 1, 1, false);
-			break;
-		case Iapetean:
-			cleanIce = Terrain.create("Ice", 150, 150, 150, 1, 1, 1, false);
 			break;
 		case JaniLithic:
 			cleanIce = Terrain.create("Ice", 150, 150, 150, 1, 1, 1, false);
@@ -175,6 +190,15 @@ class IceWorld extends WorldBuilder {
 		case Tritonic:
 			cleanIce = Terrain.create("Ice", 150, 150, 150, 1, 1, 1.2, false);
 			break;
+		}
+		
+		// Define effects of common features, if they are present.
+		if (planet.hasFeature(PlanetFeature.HeavilyCratered)) {
+			craters *= 3;
+		}
+		// Tidal stress marks.
+		if (planet.hasFeature(PlanetFeature.TidalStressMarks)) {
+			stressMarks = Die.d10() * 5;
 		}
 	}
 	
@@ -266,7 +290,13 @@ class IceWorld extends WorldBuilder {
 		
 		// Let's have some asteroid impacts.
 		if (craters > 0) impacts(craters, craterSize, craterDepth, impureIce, ejecta);
-		if (stressMarks > 0) createStressMarks(stressMarks, impureIce);
+		if (stressMarks > 0) {
+			if (ravines) {
+				createRavines(stressMarks/3, ravine, ejecta);
+			} else {
+				createStressMarks(stressMarks, impureIce);
+			}
+		}
 		if (volcanoes > 0) createVolcanoes(volcanoes, volcanoRadius, volcanoDensity, snow);
 		
 		if (plains != null) {
@@ -303,6 +333,48 @@ class IceWorld extends WorldBuilder {
 				int		yy = (int)y+Die.d2()-Die.d2();
 
 				setTerrain(xx, yy, terrain);
+				setHeight(xx, yy, (int)(getHeight(xx, yy) * 0.75));
+				x += xd;
+				y += yd;
+				
+				xd += (Die.d10() - Die.d10()) / 1000.0; 
+				yd += (Die.d10() - Die.d10()) / 1000.0;
+				
+				if (y <= 0 || y >= height-1) {
+					yd *= -1;
+					xd *= -1;
+					if (y <= 0) y = 0;
+					if (y >= height-1) y = height-1;
+					x += (width/2);
+					if (x > width) x -= width;
+				}
+			}
+		}		
+	}
+	
+	private void setRavine(int x, int y, Terrain terrain, double depth) {
+		if (getTerrain(x, y) == terrain) return;
+		setTerrain(x, y, terrain);
+		setHeight(x, y, depth);
+	}
+	
+	private void createRavines(int stressMarks, Terrain terrain, Terrain ejecta) {
+		for (int i=0; i < stressMarks; i++) {
+			double	x = Die.rollZero(width);
+			double	y = Die.rollZero(height);
+			double	xd = Die.d10()/30.0;
+			double	yd = Die.d10()/30.0;
+			
+			if (x > width/2) xd *= -1;
+			if (y > height/2) yd *= -1;
+			
+			int		length = width/4 + Die.rollZero(width/4);
+			
+			for (; length > 0; length--) {
+				int		xx = (int)x+Die.d2()-Die.d2();
+				int		yy = (int)y+Die.d2()-Die.d2();
+
+				setTerrain(xx, yy, terrain);
 				setHeight(xx, yy, (int)(getHeight(xx, yy) * 0.5));
 				x += xd;
 				y += yd;
@@ -317,6 +389,41 @@ class IceWorld extends WorldBuilder {
 					if (y >= height-1) y = height-1;
 					x += (width/2);
 					if (x > width) x -= width;
+				}
+			}
+		}		
+		
+		int		ravineSize = 2 + Die.d6();
+		double	depth = 0.5;
+		for (int i=0; i < ravineSize; i++) {
+			for (int y=0; y < height; y++) {
+				for (int x=0; x < width; x++) {
+					if (getTerrain(x, y) != terrain || Die.d2() == 1) {
+						continue;
+					}
+					setRavine(x-1, y, terrain, depth);
+					setRavine(x+1, y, terrain, depth);
+					setRavine(x, y-1, terrain, depth);
+					setRavine(x, y+1, terrain, depth);
+				}
+			}
+			draw();
+			depth += 0.1;
+		}
+
+		for (int y=0; y < height; y++) {
+			for (int x=0; x < width; x++) {
+				if (getTerrain(x, y) == terrain) {
+					continue;
+				}
+				boolean		edgeOfRavine = false;
+				if (getTerrain(x-1, y) == terrain) edgeOfRavine = true;
+				if (getTerrain(x+1, y) == terrain) edgeOfRavine = true;
+				if (getTerrain(x, y-1) == terrain) edgeOfRavine = true;
+				if (getTerrain(x, y+1) == terrain) edgeOfRavine = true;
+				if (edgeOfRavine) {
+					setTerrain(x, y, ejecta);
+					setHeight(x, y, 1.5);
 				}
 			}
 		}
@@ -336,10 +443,10 @@ class IceWorld extends WorldBuilder {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		Planet	p = new Planet("Bob", PlanetType.Europan, 4000);
+		Planet	p = new Planet("Bob", PlanetType.Iapetean, 2000);
 		p.setTilt(22);
 		p.setTemperature(Temperature.VeryCold);
-		p.addFeature(PlanetFeature.TidalStressMarks);
+		//p.addFeature(PlanetFeature.TidalStressMarks);
 		
 		IceWorld w = new IceWorld(p, 513, 257);
 		//g.draw();

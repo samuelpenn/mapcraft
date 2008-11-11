@@ -50,11 +50,23 @@ public enum PlanetFeature {
 	ExtremeVolcanism("Vx"),
 	CryoVolcanism("Cv"),
 	TidalStressMarks("Ts"),
-	FastRotation("FR");
+	FastRotation("FR"),
+	EquatorialRidge("Re"),
+	PolarRidge("Rp"),
+	Smooth("Sm"),
+	GiantCrater("Gc"), // Large crater on the equator, big collision.
+	// Finally, the following are unique codes which vary depending
+	// on the type of the world. They represent very rare features.
+	UA, UB, UC, UD, UE, UF, UG, UH, UI, UJ, UK, UL, UM, 
+	UN, UO, UP, UQ, UR, US, UT, UU, UV, UW, UX, UY, UZ;
 	
 	private String 					code = null;
 	private EnumSet<PlanetFeature>	excludes = null;
-		
+	
+	PlanetFeature() {
+		this.code = this.name();
+	}
+	
 	PlanetFeature(String code, PlanetFeature...exclusions) {
 		this.code = code;
 		/*

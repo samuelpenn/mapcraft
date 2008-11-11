@@ -164,6 +164,20 @@ public class WorldBuilder {
 		
 		map[x][y] = (value/1000) * 1000 + h;
 	}
+	
+	/**
+	 * Multiply the height at the given point by the scale specified.
+	 * A scale of 1.0 will have no effect, lower values will reduce
+	 * the height of the point, larger values increase it.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param scale
+	 */
+	protected void setHeight(int x, int y, double scale) {
+		int		height = (int)(getHeight(x, y) * scale);
+		setHeight(x, y, height);
+	}
 
 	protected void setTerrain(int x, int y, Terrain t) {
 		if (y < 0) {
@@ -837,12 +851,13 @@ public class WorldBuilder {
 
 		BoundingSphere bounds = new BoundingSphere (new Point3d (0, 0.0, 5), 5.0);
 		Color3f lightColour = new Color3f(1.0f, 1.0f, 1.0f);
-		Vector3f lightDirection = new Vector3f(0.0f, 0.0f, -1f);
+		Color3f ambientColour = new Color3f(0.5f, 0.5f, 0.5f);
+		Vector3f lightDirection = new Vector3f(0.0f, 0f, -1f);
 		DirectionalLight light1 = new DirectionalLight(lightColour, lightDirection);
 		light1.setInfluencingBounds(bounds);
 		root.addChild(light1);
 		
-	    AmbientLight ambientLightNode = new AmbientLight (lightColour);
+	    AmbientLight ambientLightNode = new AmbientLight (ambientColour);
 	    ambientLightNode.setInfluencingBounds (bounds);
 	    root.addChild (ambientLightNode);
 
