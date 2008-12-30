@@ -39,7 +39,23 @@ public class PlanetFactory {
 	private static final String FERRIC = "Ferric ore";
 	private static final String CARBONIC = "Carbonic ore";
 	private static final String SILICATE = "Silicate ore";
-	private static final String AQUEAN = "Aquean ore";
+	private static final String AQUAM = "Aquean ore";
+	
+	private static final String KRYSITE = "Krysite ore";
+	private static final String MAGNESITE = "Magnesite ore";
+	private static final String ERICATE = "Ericate ore";
+	
+	private static final String HELIACATE = "Heliacate ore";
+	private static final String ACENITE = "Acenite ore";
+	private static final String PARDENIC = "Pardenic ore";
+	
+	private static final String VARDONNEK = "Vardonnek ore";
+	private static final String LARATHIC = "Larathic ore";
+	private static final String XITHANTITE = "Xithantite ore";
+	
+	private static final String DORIC = "Doric ore";
+	private static final String ISKINE = "Iskine ore";
+	private static final String OORCINE = "Oorcine ore"; 
 	
 	public PlanetFactory(ObjectFactory factory, Star star) {
 		this.factory = factory;
@@ -282,8 +298,10 @@ public class PlanetFactory {
 		planet.setTemperature(planet.getTemperature().getHotter());
 		
 		// Mineral resources.
-		planet.addResource(SILICATE, 3+Die.d6());
-		planet.addResource(CARBONIC, 2+Die.d3());
+		planet.addResource(SILICATE, 50+Die.d20());
+		planet.addResource(CARBONIC, 40+Die.d20());
+		planet.addResource(MAGNESITE, 25+Die.d10());
+		planet.addResource(ACENITE, 5+Die.d10());
 	}
 
 	/**
@@ -298,8 +316,14 @@ public class PlanetFactory {
 		}
 		
 		// Mineral resources.
-		planet.addResource(SILICATE, 5+Die.d3());
-		planet.addResource(FERRIC, 5+Die.d4());
+		planet.addResource(SILICATE, 30+Die.d20());
+		planet.addResource(FERRIC, 50+Die.d20());
+		planet.addResource(VARDONNEK, 25+Die.d10());
+		planet.addResource(LARATHIC, 5+Die.d10());
+		
+		if (star.getStarForm() == StarForm.WhiteDwarf) {
+			planet.addResource(XITHANTITE, Die.d20());
+		}
 	}
 	
 	/**
@@ -314,8 +338,14 @@ public class PlanetFactory {
 		}
 		
 		// Mineral resources.
-		planet.addResource(SILICATE, 2+Die.d3());
-		planet.addResource(FERRIC, 6+Die.d3());
+		planet.addResource(SILICATE, 10+Die.d20(2));
+		planet.addResource(FERRIC, 50+Die.d20(2));
+		planet.addResource(VARDONNEK, 20+Die.d20());
+		planet.addResource(LARATHIC, 5+Die.d20(3));
+
+		if (star.getStarForm() == StarForm.WhiteDwarf) {
+			planet.addResource(XITHANTITE, Die.d8());
+		}
 	}
 	
 	/**
@@ -344,6 +374,12 @@ public class PlanetFactory {
 			break;
 		default:
 			// Nothing special.
+		}
+		
+		// Mineral resources.
+		planet.addResource(SILICATE, 20+Die.d20());
+		if (planet.getTemperature().isColderThan(Temperature.Standard)) {
+			planet.addResource(AQUAM, Die.d6());
 		}
 	}
 	
@@ -445,7 +481,7 @@ public class PlanetFactory {
 		planet.addResource(CARBONIC, 5);
 		planet.addResource(FERRIC, 4);
 		if (planet.getHydrographics() >= 10) {
-			planet.addResource(AQUEAN, planet.getHydrographics()/10);
+			planet.addResource(AQUAM, planet.getHydrographics()/10);
 		}
 	}
 
@@ -497,7 +533,7 @@ public class PlanetFactory {
 		planet.addResource(CARBONIC, 5);
 		planet.addResource(FERRIC, 4);
 		if (planet.getHydrographics() >= 10) {
-			planet.addResource(AQUEAN, planet.getHydrographics()/10);
+			planet.addResource(AQUAM, planet.getHydrographics()/10);
 		}
 		if (planet.getLifeLevel() == LifeType.ComplexOcean) {
 			planet.addResource(SEAFOOD, Die.d2());
@@ -553,7 +589,7 @@ public class PlanetFactory {
 		planet.addResource(CARBONIC, 5);
 		planet.addResource(FERRIC, 4);
 		if (planet.getHydrographics() >= 10) {
-			planet.addResource(AQUEAN, planet.getHydrographics()/10);
+			planet.addResource(AQUAM, planet.getHydrographics()/10);
 		}
 		planet.addResource(SEAFOOD, 3+Die.d4());
 	}
@@ -607,7 +643,7 @@ public class PlanetFactory {
 		planet.addResource(CARBONIC, 5);
 		planet.addResource(FERRIC, 4);
 		if (planet.getHydrographics() >= 10) {
-			planet.addResource(AQUEAN, planet.getHydrographics()/10);
+			planet.addResource(AQUAM, planet.getHydrographics()/10);
 		}
 		planet.addResource(SEAFOOD, 3+Die.d4());
 		planet.addResource(VEGETABLES, 2+Die.d3());
@@ -670,7 +706,7 @@ public class PlanetFactory {
 		planet.addResource(CARBONIC, 4);
 		planet.addResource(FERRIC, 3);
 		if (planet.getHydrographics() >= 10) {
-			planet.addResource(AQUEAN, planet.getHydrographics()/10);
+			planet.addResource(AQUAM, planet.getHydrographics()/10);
 		}
 	}
 
@@ -911,7 +947,7 @@ public class PlanetFactory {
 		setDayLength(planet, 2.0);
 
 		// Mineral resources.
-		planet.addResource(AQUEAN, 5);
+		planet.addResource(AQUAM, 5);
 	}
 
 	/**

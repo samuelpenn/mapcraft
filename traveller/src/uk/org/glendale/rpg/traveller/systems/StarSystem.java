@@ -1550,6 +1550,12 @@ public class StarSystem implements Comparable {
 		}
 		buffer.append("</allegiance>");
 		
+		int		shipCount = factory.countShipsInSystem(id);
+		if (shipCount > 0) {
+			buffer.append("  <ships count=\""+shipCount+"\">\n");
+			buffer.append("  </ships>\n");
+		}
+		
 		if (stars == null && planets == null) {
 			// If no stars and planets, just output basic system info.
 		} else {
