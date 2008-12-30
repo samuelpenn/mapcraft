@@ -21,8 +21,10 @@ import java.sql.*;
 import java.util.*;
 
 import uk.org.glendale.database.Database;
+import uk.org.glendale.rpg.traveller.civilisation.Ship;
 import uk.org.glendale.rpg.traveller.civilisation.trade.Commodity;
 import uk.org.glendale.rpg.traveller.civilisation.trade.Trade;
+import uk.org.glendale.rpg.traveller.database.Simulation.LogType;
 import uk.org.glendale.rpg.traveller.sectors.Sector;
 import uk.org.glendale.rpg.traveller.systems.*;
 
@@ -34,7 +36,7 @@ import uk.org.glendale.rpg.traveller.systems.*;
  *
  */
 public class ObjectFactory {
-	private Database				db = null;
+	protected Database				db = null;
 	private static ObjectFactory	instance = null;
 	private static final int		RECYCLE = 10;
 	private static int				connectionCount = 0;
@@ -642,6 +644,29 @@ public class ObjectFactory {
 		db.delete("star", "system_id="+id);
 	}
 	
+	/**
+	 * Counts the number of starships currently in the specified star system.
+	 * Does not include ships currently in jump transit to or from the system.
+	 */
+	public int countShipsInSystem(int systemId) {
+		int		count = 0;
+		
+		ResultSet rs = null;
+		
+		try {
+			rs = db.query("select count(*) from ship where system_id="+systemId);
+			if (rs.next()) {
+				count = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.close(rs);
+		}
+		
+		return count;
+	}
+	
 	public Hashtable<Integer,Commodity> getAllCommodities() {
 		String					sql = "select * from commodity";
 		ResultSet				rs = null;
@@ -772,7 +797,23 @@ public class ObjectFactory {
 		}
 
 	}
+	
+	public Ship getShip(int id) {
+		String		sql = "select * from ship where id=?";
+		ResultSet	rs = null;
+		Ship		ship = null;
 		
+		try {
+			rs = db.query(sql, id);
+			if (rs.next()) {
+				ship = new Ship(rs);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return ship;
+	}
 	
 	public static void main(String[] args) throws Exception {
 		ObjectFactory		factory = new ObjectFactory();

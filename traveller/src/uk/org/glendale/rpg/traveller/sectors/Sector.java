@@ -969,15 +969,18 @@ public class Sector {
 	public static void regenerate(int id) throws ObjectNotFoundException, IOException {
 		ObjectFactory	factory = new ObjectFactory();
 		Sector			sector = new Sector(factory, id);
-
+		
+		System.out.println(sector.getName());
+		
 		for (StarSystem sys: sector.getSystems()) {
+			System.out.println(" > "+sys.getName());
 			int		sysId = sys.getId();
 			factory.cleanStarSystem(sysId);
 			StarSystem		system = factory.getStarSystem(sysId);
 			system.regenerate();
 			//regenerateSystem(factory, sys.getId());
 		}
-		
+
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -985,7 +988,7 @@ public class Sector {
 		//createTravellerSub();
 		//createMortals();
 		//createSol();
-		regenerate(104);
+		regenerate(1);
 		//populateUWPs();
 		
 		System.exit(0);
