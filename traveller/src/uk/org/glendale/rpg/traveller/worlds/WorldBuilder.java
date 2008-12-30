@@ -196,9 +196,6 @@ public class WorldBuilder {
 	}
 	
 	protected int getHeight(int x, int y) {
-		if (x < 0) x += width;
-		if (x >= width) x -= width;
-		
 		if (y < 0) {
 			y = 0;
 			x = width - x;
@@ -207,6 +204,8 @@ public class WorldBuilder {
 			y = height-1;
 			x = width - x;
 		}
+		if (x < 0) x += width;
+		if (x >= width) x -= width;
 		return map[x][y] % 1000;
 	}
 	

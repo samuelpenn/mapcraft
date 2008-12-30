@@ -17,6 +17,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.MouseListener;
+import java.io.File;
 
 import javax.swing.JFrame;
 
@@ -146,6 +147,27 @@ class Barren extends WorldBuilder {
 	private void draw() {
 		//canvas.paint(canvas.getGraphics());		
 	}
+	
+	/**
+	 * Large craters are huge depressions. They don't change the terrain
+	 * type, but lower a roughly circular area.
+	 */
+	private void addLargeCraters(int number) {
+		for (int crater=0; crater < number; crater++) {
+			int		cx = Die.rollZero(width);
+			int		cy = Die.rollZero(height/2) + height/4;
+			int		radius = Die.d20(5);
+			
+			for (int x=cx-radius-1; x < cx+radius+1; x++) {
+				for (int y=cy-radius-1; y < cy+radius+1; y++) {
+					int		d = (int)Math.sqrt((cx-x) * (cx-x) + (cy-y) * (cy-y));
+					if ((d + getHeight(x, y)/2) < radius) {
+						setHeight(x, y, 0.5);
+					}
+				}
+			}
+		}
+	}
 
 	/**
 	 * Selenian worlds are dry, barren worlds like the Moon. They are
@@ -153,13 +175,21 @@ class Barren extends WorldBuilder {
 	 * They are geologically dead, and have a rock core with few metals.
 	 */
 	private void processSelenian() {
-		terrain = Terrain.create("Selenian", 100, 100, 100, 1.5, 1.5, 1.5, false);
+		terrain = Terrain.create("Selenian", 50, 50, 50, 2, 2, 2, false);		
+		addLargeCraters(Die.d6(2));
+		
+		
 		lava = new Terrain[] { Terrain.create("SelenianFlats", 140, 140, 140, -0.25, -0.25, -0.25, false) };
 		ejecta = Terrain.create("SelenianEjecta", 130, 130, 130, 2, 2, 2, false);
 		impact = Terrain.create("SelenianImpact", 100, 100, 100, 1, 1, 1, false);
 		craters = 300 + Die.d100(4);
 		flats = Die.d10();
 		flatSize = Die.d100(5);
+		
+		ejecta = impact = null;
+		lava = null;
+		craters = flats = 0;
+		
 		
 		if (planet.hasFeature(PlanetFeature.HeavilyCratered)) {
 			craters *= 3;
@@ -523,17 +553,27 @@ class Barren extends WorldBuilder {
 	}
 
 	public static void main(String[] args) throws Exception {
+		
+		
 		Planet	p = new Planet("Bob", PlanetType.Selenian, 4000);
 		p.setTilt(22);
 		p.setTemperature(Temperature.Standard);
-		p.addFeature(PlanetFeature.HeavilyCratered);
-		p.addFeature(PlanetFeature.TidalStressMarks);
-		Barren w = new Barren(p, 513, 257);
-		//g.draw();
-		w.generate();
+		//p.addFeature(PlanetFeature.HeavilyCratered);
+		//p.addFeature(PlanetFeature.TidalStressMarks);
 		
-		GraphicsEnvironment.isHeadless();
-		w.getWorldMap(4).save(new java.io.File("/home/sam/gaian.jpg"));
-		//Thread.sleep(10000);
+		
+		String		path = "/home/sam/tmp/planets/"+p.getType();
+		File		d = new File(path);
+		if (!d.exists()) {
+			d.mkdirs();
+		}
+		
+		for (int i=0; i < 10; i++) {
+			Barren w = new Barren(p, 513, 257);
+			w.generate();
+			
+			GraphicsEnvironment.isHeadless();
+			w.getWorldMap(4).save(new java.io.File(path+"/image"+i+".jpg"));
+		}
 	}
 }
