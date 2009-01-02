@@ -635,19 +635,41 @@ public class PlanetFactory {
 		planet.setTemperature(star.getOrbitTemperature(planet.getEffectiveDistance()));
 
 		planet.setHydrographics(Die.d20() * 2);
-		planet.setLifeLevel(LifeType.SimpleLand);
+		
+		switch (Die.d6(2)) {
+		case 2: case 3: case 4:
+			planet.setLifeLevel(LifeType.None);
+			break;
+		case 5:
+			planet.setLifeLevel(LifeType.Proteins);
+			break;
+		case 6:
+			planet.setLifeLevel(LifeType.Protozoa);
+			break;
+		case 7:
+			planet.setLifeLevel(LifeType.Metazoa);
+			planet.addResource(SEAFOOD, 5+Die.d10());
+			break;
+		case 8: case 9: case 10:
+			planet.setLifeLevel(LifeType.ComplexOcean);
+			planet.addResource(SEAFOOD, 10+Die.d20(2));
+			break;
+		case 11: case 12:
+			planet.setLifeLevel(LifeType.SimpleLand);
+			planet.addResource(SEAFOOD, 20+Die.d20(2));
+			planet.addResource(VEGETABLES, 10+Die.d20(2));
+			planet.addResource(MEAT, 5+Die.d10());
+			break;
+		}
 		setDayLength(planet, 1.0);
 
 		// Mineral resources.
-		planet.addResource(SILICATE, 6);
-		planet.addResource(CARBONIC, 5);
-		planet.addResource(FERRIC, 4);
-		if (planet.getHydrographics() >= 10) {
-			planet.addResource(AQUAM, planet.getHydrographics()/10);
+		planet.addResource(SILICATE, 40 + Die.d20(2));
+		planet.addResource(CARBONIC, Die.d20());
+		planet.addResource(FERRIC, 10 + Die.d20());
+		if (planet.getHydrographics() > 0) {
+			planet.addResource(AQUAM, planet.getHydrographics());
 		}
-		planet.addResource(SEAFOOD, 3+Die.d4());
-		planet.addResource(VEGETABLES, 2+Die.d3());
-		planet.addResource(MEAT, Die.d2());
 	}
 
 	/**

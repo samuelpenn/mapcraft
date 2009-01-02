@@ -15,6 +15,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import uk.org.glendale.rpg.traveller.civilisation.ship.Role;
+import uk.org.glendale.rpg.traveller.civilisation.trade.TradeGood;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.database.ObjectNotFoundException;
 import uk.org.glendale.rpg.traveller.database.Simulation;
@@ -33,7 +35,7 @@ public class Ship {
 	private String		type;
 	private String		flag;
 	private int			displacement;
-	private int			cargo;
+	private int			cargoCapacity;
 	private int			jump;
 	private int			accl;
 	private ShipStatus	status;
@@ -41,6 +43,10 @@ public class Ship {
 	private int			planetId;
 	private long		nextEvent = 0;
 	private long		inService = 0;
+	private String		role = null;
+	private int			cash = 0;
+	
+	private Hashtable<Integer,TradeGood>	cargo = null;
 	
 	public enum ShipStatus {
 		Virtual,
@@ -52,13 +58,16 @@ public class Ship {
 		Jump;
 	}
 	
-	public Ship(String name, String type, int displacement, int jump, int cargo) {
+	public Ship(String name, String type, int displacement, int jump, int accl, int cargo) {
 		this.name = name;
 		this.type = type;
 		this.displacement = displacement;
-		this.cargo = cargo;
+		this.cargoCapacity = cargo;
 		this.jump = jump;
+		this.accl = accl;
 		
+		role = "Roving";
+		cash = 100;
 		status = ShipStatus.Virtual;
 		systemId = 0;
 		planetId = 0;
@@ -73,12 +82,14 @@ public class Ship {
 		planetId = rs.getInt("planet_id");
 		status = ShipStatus.valueOf(rs.getString("status"));
 		displacement = rs.getInt("displacement");
-		cargo = rs.getInt("cargo");
+		cargoCapacity = rs.getInt("cargo");
 		jump = rs.getInt("jump");
 		flag = rs.getString("flag");
 		nextEvent = rs.getLong("nextevent");
 		inService = rs.getLong("inservice");
 		accl = rs.getInt("accl");
+		role = rs.getString("role");
+		cash = rs.getInt("cash");
 	}
 
 	public void persist(ObjectFactory factory) {
@@ -91,12 +102,14 @@ public class Ship {
 		data.put("planet_id", planetId);
 		data.put("status", status.toString());
 		data.put("displacement", displacement);
-		data.put("cargo", cargo);
+		data.put("cargo", cargoCapacity);
 		data.put("jump", jump);
 		data.put("flag", flag);
 		data.put("nextEvent", nextEvent);
 		data.put("inservice", inService);
 		data.put("accl", accl);
+		data.put("role", role);
+		data.put("cash", cash);
 		
 		int auto = factory.persist("ship", data);
 		if (id == 0) id = auto;
@@ -145,6 +158,10 @@ public class Ship {
 		return accl;
 	}
 	
+	public String getRole() {
+		return role;
+	}
+	
 	public void setNextEvent(long nextEvent) {
 		this.nextEvent = nextEvent;
 	}
@@ -168,7 +185,57 @@ public class Ship {
 	public void setStatus(ShipStatus status) {
 		this.status = status;
 	}
+	
+	public int getCash() {
+		return cash;
+	}
+	
+	public void setCash(int cash) {
+		this.cash = cash;
+	}
+	
+	public int getCargoCapacity() {
+		return cargoCapacity;
+	}
+	
+	public int getCargoUsed() {
+		int		used = 0;
+		
+		if (cargo != null) {
+			for (int i : cargo.keySet()) {
+				used += cargo.get(i).getAmount();
+			}
+		}
+		
+		return used;
+	}
+	
+	public void setCargo(Hashtable<Integer,TradeGood> cargo) {
+		this.cargo = cargo;
+	}
 
+	public Hashtable<Integer,TradeGood> getCargo() {
+		return cargo;
+	}
+	
+	public void addCargo(TradeGood good) {
+		if (cargo == null) {
+			cargo = new Hashtable<Integer,TradeGood>();
+		}
+		cargo.put((int)(Integer.MIN_VALUE * Math.random()), good);
+	}
+	
+	public void modifyCargo(int id, int amount) {
+		if (cargo != null) {
+			if (amount == 0) {
+				cargo.remove(id);
+			} else {
+				TradeGood good = cargo.get(id);
+				good.setAmount(good.getAmount() + amount);
+				if (good.getAmount() < 0) cargo.remove(id);
+			}
+		}
+	}
 	
 	public ArrayList<StarSystem> getSystemsInJumpRange(ObjectFactory factory) {
 		ArrayList<StarSystem>	list = new ArrayList<StarSystem>();
@@ -235,56 +302,59 @@ public class Ship {
 			eventTime = (eventTime + actualTime) / 2;
 		}
 		
-		StarSystem		currentSystem = null;
-		if (getSystemId() != 0) {
-			try {
-				currentSystem = factory.getStarSystem(Math.abs(getSystemId()));
-			} catch (ObjectNotFoundException e) {
-				e.printStackTrace();
+		try {
+			Class	roleClass = Class.forName("uk.org.glendale.rpg.traveller.civilisation.ship."+role);
+			Role	model = (Role)roleClass.newInstance();
+			model.init(this, simulation, factory, eventTime);
+			
+			switch (getStatus()) {
+			case Docked:
+				model.docked();
+				break;
+			case FlightOut:
+				model.flightOut();
+				break;
+			case FlightIn:
+				model.flightIn();
+				break;
+			case Jump:
+				model.inJump();
+				break;
+			case Orbit:
+				model.inOrbit();
+				break;
+			case Planet:
+				model.planetSide();
+				break;
 			}
-		}
-		
-		switch (getStatus()) {
-		case Docked:
-			if (Die.d6() == 1) {
-				setStatus(Ship.ShipStatus.Flight);
-				setNextEvent(eventTime + (12 * 3600 * 10 / getAcceleration()));
-				System.out.println("Launches");
-				simulation.log(getId(), getSystemId(), getPlanetId(), eventTime, Simulation.LogType.UnDock, "Undocks");
-			} else {
-				setNextEvent(eventTime + Die.d12(2)*3600);
-				System.out.println("Remains docked");
-			}
-			break;
-		case Flight:
-			ArrayList<StarSystem>	destinations = getSystemsInJumpRange(factory);
-			System.out.println("Jump destinations: "+destinations.size());
-			StarSystem		destination = destinations.get(Die.rollZero(destinations.size()));
-			setStatus(Ship.ShipStatus.Jump);
-			setSystemId(-destination.getId());
-			setPlanetId(0);
-			// Jump time is 168 hours +- 10%
-			int		jumpTime = 168*3600 + Die.rollZero(168*360) - Die.rollZero(168*360);
-			setNextEvent(eventTime + jumpTime);
-			System.out.println("Begin jump to ["+destination.getName()+"]");
-			simulation.log(getId(), currentSystem.getId(), 0, eventTime, Simulation.LogType.JumpOut, "Jumps for "+destination.getName());
-			break;
-		case Jump:
-			setSystemId(currentSystem.getId());
-			setPlanetId(currentSystem.getMainWorld().getId());
-			setStatus(Ship.ShipStatus.Docked);
-			setNextEvent(eventTime + (48 * 3600 * 10 / getAcceleration()));
-			System.out.println("Docking");
-			simulation.log(getId(), getSystemId(), getPlanetId(), eventTime, Simulation.LogType.JumpIn, "Arrives at "+currentSystem.getName());
-			break;
+			persist(factory);
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}		
-		persist(factory);
 	}
 	
 	public static void main(String[] args) {
 		ObjectFactory		factory = new ObjectFactory();
 		
-		Ship			ship = factory.getShip(1);
-		System.out.println(ship.name);
+		
+		String[] names = { "Child of Adkynson", "Child of Free Enterprise", "Child of Boccob",
+				           "Child of Lust", "Child of Greed", "Child of Liberty", "Child of Mathematics",
+				           "Child of Vacuum", "Child of the Stars", "Child of Serendipity" };
+		
+		for (int i=0; i < names.length; i++) {
+			Ship	ship = new Ship(names[i], "Adder", 100, 1, 30, 30);
+			ship.setSystemId(14132);
+			ship.setPlanetId(174453);
+			ship.setStatus(ShipStatus.Docked);
+			
+			ship.persist(factory);
+		}
 	}
 }

@@ -24,6 +24,7 @@ import uk.org.glendale.database.Database;
 import uk.org.glendale.rpg.traveller.civilisation.Ship;
 import uk.org.glendale.rpg.traveller.civilisation.trade.Commodity;
 import uk.org.glendale.rpg.traveller.civilisation.trade.Trade;
+import uk.org.glendale.rpg.traveller.civilisation.trade.TradeGood;
 import uk.org.glendale.rpg.traveller.database.Simulation.LogType;
 import uk.org.glendale.rpg.traveller.sectors.Sector;
 import uk.org.glendale.rpg.traveller.systems.*;
@@ -687,19 +688,25 @@ public class ObjectFactory {
 	}
 	
 	/**
-	 * Get all the commodities for a given planet.
+	 * Get all the commodities available for a given planet, including
+	 * the amount available and the base price. This is what the planet
+	 * currently has in stock, available ready to be sold.
 	 * 
 	 * @param planet_id		Id of the planet to get commodities list for.
 	 */
-	public Hashtable<Integer,Long> getCommoditiesByPlanet(int planet_id) {
-		String					sql = "select commodity_id, amount from trade where planet_id="+planet_id;
+	public Hashtable<Integer,TradeGood> getCommoditiesByPlanet(int planet_id) {
+		String					sql = "select commodity_id, amount, price from trade where planet_id="+planet_id;
 		ResultSet				rs = null;
-		Hashtable<Integer,Long>	list = new Hashtable<Integer,Long>();
+		Hashtable<Integer,TradeGood>	list = new Hashtable<Integer,TradeGood>();
 		
 		try {
 			rs = db.query(sql);
 			while (rs.next()) {
-				list.put(rs.getInt("commodity_id"), rs.getLong("amount"));
+				int		id = rs.getInt("commodity_id");
+				int		amount = rs.getInt("amount");
+				int		price = rs.getInt("price");
+				
+				list.put(rs.getInt("commodity_id"), new TradeGood(id, amount, price));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -709,20 +716,71 @@ public class ObjectFactory {
 		return list;
 	}
 	
-	public void setCommodity(int planet_id, int commodity_id, long amount) {
+	public void setCommodity(int planet_id, int commodity_id, long amount, int price) {
 		String			where = "planet_id="+planet_id+" and commodity_id="+commodity_id;
 		Hashtable<String,Object>		data = new Hashtable<String,Object>();
 		
 		data.put("planet_id", planet_id);
 		data.put("commodity_id", commodity_id);
 		data.put("amount", amount);
+		data.put("price", price);
 		try {
 			db.replace("trade", data, where);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * Add a commodity to a planet's reserves. If the amount added is negative, then
+	 * the commodity is taken away.
+	 * 
+	 * @param planet_id
+	 * @param commodity_id
+	 * @param amount
+	 * @param price
+	 * 
+	 * @return		Amount of goods actually sold.
+	 */
+	public int addCommodity(int planetId, int commodityId, int amount, int price) {
+		String					sql = "select amount,price from trade where planet_id="+planetId+" and commodity_id="+commodityId;
+		ResultSet				rs = null;
+		TradeGood				good = null;
+		
+		try {
+			rs = db.query(sql);
+			if (rs.next()) {
+				int		a = rs.getInt("amount");
+				int		p = rs.getInt("price");
+				
+				good = new TradeGood(commodityId, a, p);
+			} else {
+				good = new TradeGood(commodityId, 0, price);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		good.setAmount(good.getAmount()+amount);
+		if (good.getAmount() < 0) {
+			amount = amount + good.getAmount();
+			good.setAmount(0);
+		}
+		
+		setCommodity(planetId, commodityId, good.getAmount(), good.getPrice());
+
+		return amount;
+	}
 	
+	/**
+	 * Get resources being produced on the specified planet.
+	 * List is returned as a hashtable, with the commodity id as the
+	 * key, and the value stored the density of the resources (1-100).
+	 * 
+	 * @param planet_id		Planet that is to be searched.
+	 * @return				List of resources and their densities.
+	 */
 	public Hashtable<Integer,Integer> getResources(int planet_id) {
 		String					sql = "select commodity_id, density from resources where planet_id="+planet_id;
 		ResultSet				rs = null;
@@ -731,6 +789,9 @@ public class ObjectFactory {
 		try {
 			rs = db.query(sql);
 			while (rs.next()) {
+				int		id = rs.getInt("commodity_id");
+				int		density = rs.getInt("density");
+				
 				list.put(rs.getInt("commodity_id"), rs.getInt("density"));
 			}
 		} catch (SQLException e) {
@@ -812,9 +873,61 @@ public class ObjectFactory {
 			e.printStackTrace();
 		}
 		
+		if (ship != null) {
+			ship.setCargo(getShipCargo(id));
+		}
+		
 		return ship;
 	}
 	
+	public Hashtable<Integer,TradeGood> getShipCargo(int shipId) {
+		String		sql = "select id, commodity_id,amount,price,planet_id from cargo where ship_id=?";
+		ResultSet	rs = null;
+		Hashtable<Integer,TradeGood> list = new Hashtable<Integer,TradeGood>();
+		
+		try {
+			rs = db.query(sql, shipId);
+			if (rs.next()) {
+				int		id = rs.getInt("id");
+				int		commodityId = rs.getInt("commodity_id");
+				int		amount = rs.getInt("amount");
+				int		price = rs.getInt("price");
+				int		planetId = rs.getInt("planet_id");
+				
+				TradeGood	good = new TradeGood(id, commodityId, amount, price, planetId);
+				list.put(id, good);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return list;		
+	}
+	
+	public void setShipCargo(int shipId, Hashtable<Integer, TradeGood> cargo) {
+		db.delete("cargo", "ship_id="+shipId);
+		
+		for (int id : cargo.keySet()) {
+			TradeGood	good = cargo.get(id);
+			
+			if (good != null) {
+				Hashtable<String,Object> data = new Hashtable<String,Object>();
+				data.put("id", 0);
+				data.put("ship_id", shipId);
+				data.put("commodity_id", good.getCommodityId());
+				data.put("amount", good.getAmount());
+				data.put("price", good.getPrice());
+				data.put("planet_id", good.getPlanetId());
+				
+				try {
+					db.insert("cargo", data);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}	
+	}
+
 	public static void main(String[] args) throws Exception {
 		ObjectFactory		factory = new ObjectFactory();
 		/*

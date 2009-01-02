@@ -26,12 +26,14 @@ public class Trade {
 		
 		commodities = factory.getAllCommodities();
 		
-		Hashtable<Integer,Long>	amounts = factory.getCommoditiesByPlanet(planet.getId());
+		Hashtable<Integer,TradeGood>	amounts = factory.getCommoditiesByPlanet(planet.getId());
 		
 		for (int key : amounts.keySet()) {
-			long		amount = amounts.get(key);
+			TradeGood	good = amounts.get(key);
+			
 			Commodity	c = commodities.get(key);
-			c.setAmount(amount);
+			c.setAmount(good.amount);
+			c.setActualPrice(good.price);
 		}
 	}
 		
@@ -40,17 +42,17 @@ public class Trade {
 	}
 	
 	private long getWorkersRequired(Commodity c) {
-		return getWorkersRequired(c, 10);
+		return getWorkersRequired(c, 100);
 	}
 	
 	private long getWorkersRequired(Commodity c, int density) {
 		if (density < 1) {
 			return Long.MAX_VALUE;
-		} else if (density > 10) {
-			density = 10;
+		} else if (density > 100) {
+			density = 100;
 		}
 		
-		long		workersRequired = c.getProductionRate() * 1000 / (int)Math.pow(density, 3);
+		long		workersRequired = c.getProductionRate() * 10000 / (int)Math.pow(density, 2);
 		
 		if (planet.getTechLevel() < c.getTechLevel()-1) {
 			// Tech level is way too low, return infinite number of workers.
@@ -106,6 +108,76 @@ public class Trade {
 	}
 	
 	/**
+	 * Get the amount of local demand for the given commodity. Demand is
+	 * how many units of the commodity will be 'consumed' each week.
+	 * 
+	 * @param c		Commodity to calculate demand for.
+	 * 
+	 * @return		Demand, as number of units to consume per week.
+	 */
+	private long getLocalDemand(Commodity c) {
+		long		consumersAvailable = planet.getPopulation() / c.getConsumptionRate();
+
+		// If the commodity has tech level restrictions, then reduce demand
+		// based on how far out this planet is, if required. Note that a
+		// commodity can apply to one or more tech ranges, or all of them if
+		// none is specified.
+		if (c.hasCode(CommodityCode.Lo) || c.hasCode(CommodityCode.Mi) || c.hasCode(CommodityCode.Hi) || c.hasCode(CommodityCode.Ul)) {
+			int		min = 15, max = 0;
+			if (c.hasCode(CommodityCode.Lo)) {
+				min = 1; max = 5;
+			}
+			if (c.hasCode(CommodityCode.Mi)) {
+				min = Math.min(min, 6);
+				max = Math.max(max, 8);
+			}
+			if (c.hasCode(CommodityCode.Hi)) {
+				min = Math.min(min, 8);
+				max = Math.max(max, 10);
+			}
+			if (c.hasCode(CommodityCode.Ul)) {
+				min = Math.min(min, 10);
+				max = 15;
+			}
+			if (c.getTechLevel() < min) {
+				consumersAvailable /= 10^(min-c.getTechLevel());
+			}
+			if (c.getTechLevel() > max) {
+				consumersAvailable /= 10^(min-c.getTechLevel());
+			}
+		}
+
+		if (c.hasCode(CommodityCode.Ag)) {
+			// Commodity is of use to agricultural worlds.
+			if (planet.hasTradeCode(TradeCode.Na)) {
+				consumersAvailable /= 100;
+			} else if (!planet.hasTradeCode(TradeCode.Ag)) {
+				consumersAvailable /= 10;
+			} 
+		}
+		if (c.hasCode(CommodityCode.In)) {
+			// Commodity is of use to industrial worlds.
+			if (planet.hasTradeCode(TradeCode.Ni)) {
+				consumersAvailable /= 100;
+			} else if (!planet.hasTradeCode(TradeCode.In)) {
+				consumersAvailable /= 10;
+			} 
+		}
+		if (c.hasCode(CommodityCode.Mn)) {
+			// Specialist mining tools.
+			if (!planet.hasTradeCode(TradeCode.Mi)) {
+				consumersAvailable /= 1000;
+			}
+		}
+		
+		if (planet.getLawLevel() > c.getLegality()) {
+			consumersAvailable /= 100^(planet.getLawLevel() - c.getLegality());
+		}
+		
+		return consumersAvailable;
+	}
+	
+	/**
 	 * Work out what resources are gathered this week from the planet's
 	 * stock of natural resources.
 	 */
@@ -125,15 +197,44 @@ public class Trade {
 			long		workersRequired = getWorkersRequired(c, density);
 			long		produced = planet.getPopulation() / workersRequired;
 			
+			long		amount = c.getAmount();
+			if (c.hasCode(CommodityCode.Pe)) {
+				amount *= 0.5;
+			} else {
+				amount *= 0.95;
+			}
+			c.setAmount(amount + produced);
 			System.out.println("  "+c.getName() + "("+c.getAmount()+") - "+produced);
-			c.setAmount(c.getAmount() + produced);
-			factory.setCommodity(planet.getId(), c.getId(), c.getAmount());
+			factory.setCommodity(planet.getId(), c.getId(), c.getAmount(), c.getActualPrice());
 		}
 	}
 	
+
+	
 	public void consumeResources() {
-		for (int i : commodities.keySet()) {
-			Commodity	c = commodities.get(i); 
+		Hashtable<Integer,Integer> list = factory.getResources(planet.getId());
+
+		System.out.println("Consumption rates");
+		for (int i : list.keySet()) {
+			Commodity	c = commodities.get(i);
+			
+			System.out.println("  "+c.getName()+" ("+c.getAmount()+" @ "+c.getCost()+"Cr)");
+			
+			if (c == null) {
+				c = factory.getCommodity(i);
+			}
+			long		demand = getLocalDemand(c);			
+			long		amount = c.getAmount();
+			
+			int		basePrice = getStandardPrice(c.getId());
+			c.setActualPrice(basePrice);
+			if (demand > amount) {
+				c.setAmount(0);
+			} else {
+				c.setAmount(amount - demand);
+			}
+			//System.out.println("  "+c.getName() + "("+c.getAmount()+") - "+demand+" = "+basePrice+"Cr");
+			factory.setCommodity(planet.getId(), c.getId(), c.getAmount(), c.getActualPrice());
 		}
 	}
 
@@ -301,12 +402,79 @@ public class Trade {
 		}
 	}
 	
+	/**
+	 * Get the price at which the a commodity can be sold for.
+	 *  
+	 * @param commodityId		Commodity to try to sell.
+	 */
+	public int getStandardPrice(int commodityId) {
+		int								price = 0;
+		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
+		Commodity						c = factory.getCommodity(commodityId);
+		long							amount = 0;
+
+		// If the planet has any already in stock, find the amount available.
+		for (int i : goods.keySet()) {
+			if (goods.get(i).getCommodityId() == commodityId) {
+				amount = goods.get(i).getAmount();
+				break;
+			}
+		}
+		
+		// Get the level of demand for the item.
+		long		demand = getLocalDemand(c);
+		System.out.println("    Demand: "+demand+"/"+amount);
+
+		// Work out prices.
+		price = c.getCost();
+		if (amount > 0) {
+			double var = Math.pow(1.0*demand/amount, 1.0/3.0);
+			if (var > 5) var = 5;
+			if (var < 0.2) var = 0.2;
+			
+			price *= var;
+		} else if (demand > 10) {
+			System.out.println("    "+Math.log10(demand));
+			price *= Math.log10(demand);
+		} else if (demand > 0) {
+			// Just use the base price.
+		} else {
+			// Nobody wants it, so can't be sold for very much.
+			price /= 10;
+		}
+		System.out.println("    Price: "+price);
+		
+		return price;
+	}
+	
+	public int getPricePlanetSellsAt(int commodityId) {
+		return getStandardPrice(commodityId);
+	}
+
+	public int getPricePlanetBuysAt(int commodityId) {
+		return (int)(getStandardPrice(commodityId) * 1.1);
+	}
+	
+	public int sellToPlanet(int commodityId, int amount) {
+		int		price = 0;
+		
+		
+		
+		return price;
+	}
+
+	public int buyFromPlanet(int commodityId, int amount) {
+		int		price = 0;
+		return price;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
 		try {
-			Planet			planet = factory.getPlanet(214841);
+			Planet			planet = factory.getPlanet(174453);
 			Trade			trade = new Trade(factory, planet);
 			trade.gatherResources();
+			trade.consumeResources();
 			/*
 			for (int id : new int[] { 212031, 212304} ) {
 				Planet			planet = factory.getPlanet(id);

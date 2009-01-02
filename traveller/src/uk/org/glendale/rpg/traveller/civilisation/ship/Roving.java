@@ -1,11 +1,15 @@
 package uk.org.glendale.rpg.traveller.civilisation.ship;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import uk.org.glendale.rpg.traveller.civilisation.Ship;
+import uk.org.glendale.rpg.traveller.civilisation.trade.Commodity;
+import uk.org.glendale.rpg.traveller.civilisation.trade.Trade;
+import uk.org.glendale.rpg.traveller.civilisation.trade.TradeGood;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.database.ObjectNotFoundException;
 import uk.org.glendale.rpg.traveller.database.Simulation;
+import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
 import uk.org.glendale.rpg.utils.Die;
 
@@ -44,6 +48,61 @@ public class Roving implements Role {
 	 * or leave in order to jump out of system.
 	 */
 	public void docked() {
+		Planet		planet = currentSystem.getMainWorld();
+
+		// Attempt some very basic trade.
+		if (ship.getCargoCapacity() > 0) {
+			// Do we have anything to sell?
+			Hashtable<Integer,TradeGood>	cargo = ship.getCargo();
+			Trade							trade = new Trade(factory, planet);
+			if (cargo.size() > 0) {
+				for (int i : cargo.keySet()) {
+					TradeGood		good = cargo.get(i);
+					int				sellPrice = trade.getPricePlanetBuysAt(good.getCommodityId());
+					System.out.println("Ship has "+good.getAmount()+"dt of "+good.getId()+" at "+good.getPrice());
+					System.out.println("Can be sold at "+planet.getName()+" for "+sellPrice);
+					
+					if (good.getPrice() < sellPrice) {
+						int amount = factory.addCommodity(planet.getId(), good.getCommodityId(), good.getAmount(), sellPrice);
+						// Make a profit, so sell the goods.
+						ship.modifyCargo(good.getId(), -amount);
+						ship.setCash(ship.getCash() + amount * sellPrice);
+						factory.setShipCargo(ship.getId(), ship.getCargo());
+					}
+				}
+			}
+			
+			// Try and buy stuff which looks cheap.
+			if (ship.getCargoUsed() < ship.getCargoCapacity()) {
+				Hashtable<Integer,TradeGood>	forSale = factory.getCommoditiesByPlanet(planet.getId());
+				int			space = ship.getCargoCapacity() - ship.getCargoUsed();
+				
+				for (int i : forSale.keySet()) {
+					TradeGood		good = forSale.get(i);
+					Commodity		c = factory.getCommodity(good.getCommodityId());
+					
+					if (good.getPrice() < c.getCost()) {
+						// Cheap here, so buy.
+						int		buy = good.getAmount();
+						if (buy > space) buy = space;
+						
+						if (buy * good.getPrice() > ship.getCash()) {
+							buy = ship.getCash() / good.getPrice();
+						}
+						
+						if (buy > 0) {
+							ship.addCargo(new TradeGood(good.getCommodityId(), buy, good.getPrice(), planet.getId()));
+							ship.setCash(ship.getCash() - buy * good.getPrice());
+							
+							good.setAmount(good.getAmount()-buy);
+							factory.setCommodity(planet.getId(), good.getCommodityId(), good.getAmount(), good.getPrice());
+						}
+					}
+				}
+				factory.setShipCargo(ship.getId(), ship.getCargo());
+			}
+		}
+		
 		if (Die.d6() == 1) {
 			ship.setStatus(Ship.ShipStatus.FlightOut);
 			ship.setNextEvent(eventTime + (12 * 3600 * 10 / ship.getAcceleration()));

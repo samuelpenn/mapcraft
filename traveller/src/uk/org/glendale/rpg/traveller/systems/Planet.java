@@ -1696,12 +1696,12 @@ public class Planet {
 	 * checking is only done when the list is persisted.
 	 * 
 	 * @param resource		Name of resource.
-	 * @param value			Quantity of resource, from 1 to 10.
+	 * @param value			Quantity of resource, from 1 to 100.
 	 */
 	public void addResource(String resource, int value) {
 		if (resources == null) {
 			resources = new Hashtable<String,Integer>();
 		}
-		resources.put(resource, value);
+		if (value > 0) resources.put(resource, value);
 	}
 }

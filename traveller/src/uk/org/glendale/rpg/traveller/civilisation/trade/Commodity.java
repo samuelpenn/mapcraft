@@ -1,14 +1,28 @@
+/*
+ * Copyright (C) 2009 Samuel Penn, sam@glendale.org.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation version 2.
+ * See the file COPYING.
+ */
 package uk.org.glendale.rpg.traveller.civilisation.trade;
 
 import java.util.*;
 
 import java.sql.*;
 
+/**
+ * Defines a commodity within the trade system.
+ *
+ * @author Samuel Penn
+ */
 public class Commodity {
 	private int 	id;
 	private String	name;
 	private Source	source;
 	private int		cost;
+	private int		actualPrice;
 	private int		volume;
 	
 	private int		legality;
@@ -21,26 +35,51 @@ public class Commodity {
 	private long	desired;
 	private EnumSet<CommodityCode>	codes = EnumSet.noneOf(CommodityCode.class);
 	
+	/**
+	 * Unique id of this commodity.
+	 */
 	public int getId() {
 		return id;
 	}
-	
+
+	/**
+	 * Descriptive name of this commodity.
+	 */
 	public String getName() {
 		return name;
 	}
-	
+
+	/**
+	 * Standard base price per unit of this commodity.
+	 */
 	public int getUnitCost() {
 		return cost;
 	}
 	
+	/**
+	 * How many displacement tonnes a unit of this commodity fills in
+	 * the cargo hold. This is currently expected to be 1 for all items,
+	 * though other values are supported in case of future changes.
+	 */
 	public int getUnitVolume() {
 		return volume;
 	}
 	
+	/**
+	 * The law level at which this commodity can be bought/sold. Normally
+	 * this will be '6' for standard goods (completely unrestricted).
+	 * Lower legality codes will be restricted at worlds with a high
+	 * law level.
+	 */
 	public int getLegality() {
 		return legality;
 	}
 
+	/**
+	 * The type of good, in terms of where it is sourced from. May
+	 * be 'Ag' for agricultural goods, 'Mi' for mined resources,
+	 * 'In' for industrial goods etc.
+	 */
 	public Source getSource() {
 		return source;
 	}
@@ -52,11 +91,18 @@ public class Commodity {
 	
 	/**
 	 * Get the production rate for this good, in terms of number of people
-	 * required to produce it. High numbers means fewer items will be
-	 * produced for a given population size.
+	 * required to produce it. The higher the number, the bigger the
+	 * population is needed to support a given level of production.
+	 * A value of X equates to 1 unit of commodity being produced each
+	 * week per X population.
 	 * 
 	 * Internally, this is stored as a value from 0 upwards, normally in
-	 * the range 1-9, though values up to 15 are possible.
+	 * the range 1-9, though values up to 15 are possible. A low rating
+	 * means more workers required, so fewer goods produced.
+	 * 
+	 * A high production rate does not necessarily mean that making a
+	 * single unit requires lots of people to work on it, but just that
+	 * a large supporting infrastructure is required.
 	 */
 	public long getProductionRate() {
 		switch (productionRate) {
@@ -164,5 +210,23 @@ public class Commodity {
 	
 	public void setDesired(long desired) {
 		this.desired = desired;
+	}
+	
+	public int getCost() {
+		return cost;
+	}
+	
+	/**
+	 * The actual price is the price a particular planet is buying/selling
+	 * at. This is not stored in the database against the commodity, but
+	 * is used as a temporary store when working out trade results for a
+	 * planet.
+	 */
+	public int getActualPrice() {
+		return actualPrice;
+	}
+	
+	public void setActualPrice(int price) {
+		this.actualPrice = price;
 	}
 }

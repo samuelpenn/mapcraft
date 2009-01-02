@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2009 Samuel Penn, sam@glendale.org.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation version 2.
+ * See the file COPYING.
+ */
 package uk.org.glendale.rpg.traveller.civilisation.trade;
 
 /**
@@ -6,9 +14,33 @@ package uk.org.glendale.rpg.traveller.civilisation.trade;
  * level of demand for it, who wants it and how easy it is to transport.
  */
 public enum CommodityCode {
-	Il, Tl, TL,
-	Lo, Mi, Hi, Ul,
-	In, Ag, Sp,
-	Vi, Lu, 
-	Pe, Fr, Hz, HZ;	
+	Il("Illegal"),
+	Tl("TL dependant"),
+	TL("Very TL dependant"),
+	Lo("Lo-tech (1-5)"),
+	Mi("Mid-tech (6-8)"),
+	Hi("High-tech (8-10)"),
+	Ul("Ultra-tech (10+)"),
+	In("Industrial"),
+	Ag("Agricultural"),
+	Mn("Mining"),
+	Sp("Space"),
+	Vi("Vital"),
+	Lu("Luxury"),
+	Pe("Perisable"),
+	Fr("Fragile"),
+	Hz("Hazardous"),
+	HZ("Extremely Hazardous"),
+	Fo("Food"),
+	Or("Ore");
+	
+	private String name = null;
+	
+	CommodityCode(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
+	}
 }
