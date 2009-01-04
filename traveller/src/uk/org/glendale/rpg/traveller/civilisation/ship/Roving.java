@@ -106,7 +106,7 @@ public class Roving implements Role {
 		if (Die.d6() == 1) {
 			ship.setStatus(Ship.ShipStatus.FlightOut);
 			ship.setNextEvent(eventTime + (12 * 3600 * 10 / ship.getAcceleration()));
-			simulation.log(ship.getId(), ship.getSystemId(), ship.getPlanetId(), eventTime, Simulation.LogType.UnDock, "Undocks");
+			factory.log(ship.getId(), ship.getSystemId(), ship.getPlanetId(), eventTime, Simulation.LogType.UnDock, "Undocks");
 		} else {
 			ship.setNextEvent(eventTime + Die.d12(2)*3600);
 			System.out.println("Remains docked");
@@ -131,7 +131,7 @@ public class Roving implements Role {
 		// Jump time is 168 hours +- 10%
 		int		jumpTime = 168*3600 + Die.rollZero(168*360) - Die.rollZero(168*360);
 		ship.setNextEvent(eventTime + jumpTime);
-		simulation.log(ship.getId(), currentSystem.getId(), 0, eventTime, Simulation.LogType.JumpOut, "Jumps for "+destination.getName());
+		factory.log(ship.getId(), currentSystem.getId(), 0, eventTime, Simulation.LogType.JumpOut, "Jumps for "+destination.getName());
 	}
 
 	public void inJump() {
@@ -139,7 +139,7 @@ public class Roving implements Role {
 		ship.setPlanetId(currentSystem.getMainWorld().getId());
 		ship.setStatus(Ship.ShipStatus.FlightIn);
 		ship.setNextEvent(eventTime + (48 * 3600 * 10 / ship.getAcceleration()));
-		simulation.log(ship.getId(), ship.getSystemId(), ship.getPlanetId(), eventTime, Simulation.LogType.JumpIn, "Arrives at "+currentSystem.getName());
+		factory.log(ship.getId(), ship.getSystemId(), ship.getPlanetId(), eventTime, Simulation.LogType.JumpIn, "Arrives at "+currentSystem.getName());
 	}
 
 	/**

@@ -30,7 +30,7 @@ import uk.org.glendale.rpg.traveller.systems.Planet;
  * A RESTful implementation of a web service that enables access to planet
  * resources.
  * 
- * A request should always be of the format /planet/<planetId>. Individual
+ * A request should always be of the format /market/<planetId>. Individual
  * methods will define further requirements.
  * 
  * @author Samuel Penn

@@ -242,6 +242,68 @@ public class ObjectFactory {
 	}
 	
 	/**
+	 * Get a list of all planets that need to be updated. A simulation time
+	 * is given, and any planet with a nextevent stamp less than or equal to
+	 * this time is returned. Planets with a nextevent of 0 are always ignored.
+	 * 
+	 * @param untilSimTime		Latest event time to fetch.
+	 * 
+	 * @return	List of planets whose events occur before specified time.
+	 */
+	public ArrayList<Planet> getNextPlanets(long untilSimTime) {
+		ArrayList<Planet>		list = new ArrayList<Planet>();
+		ResultSet				rs = null;
+		
+		try {
+			rs = db.query("select * from planet where nextevent > 0 and nextevent <= "+untilSimTime);
+			while (rs.next()) {
+				list.add(new Planet(rs));
+			}
+		} catch (SQLException e) {
+			Log.error(e);
+		} finally {
+			rs = db.tidy(rs);
+		}
+		
+		return list;
+	}
+	
+	public ArrayList<Ship> getNextShips(long untilSimTime) {
+		ArrayList<Ship>		list = new ArrayList<Ship>();
+		
+		String		sql = "select id from ship where nextevent <= "+untilSimTime;
+		ResultSet	rs = null;
+		
+		try {
+			rs = db.query(sql);
+			while (rs.next()) {
+				int		id = rs.getInt("id");
+				
+				Ship		ship = getShip(id);
+				list.add(ship);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			rs = db.tidy(rs);
+		}
+		
+		return list;
+	}
+
+	public void setPlanetEventTime(int planetId, long nextEvent) {
+		Hashtable<String,Object>	data = new Hashtable<String,Object>();
+		
+		data.put("nextevent", nextEvent);
+		
+		try {
+			db.update("planet", data, "id="+planetId);
+		} catch (SQLException e) {
+			Log.error(e);
+		}
+	}
+	
+	/**
 	 * Get the star system as the designated location in the sector.
 	 * Sector coordinates are 1-32 for X, and 1-40 for Y. If the
 	 * coordinates are outside of this, then try and find the star
@@ -632,13 +694,14 @@ public class ObjectFactory {
 	 * @param id		Id of the system to clear.
 	 */
 	public void cleanStarSystem(int id) throws ObjectNotFoundException {
-		ResultSet		rs = null;
 		StarSystem		system = getStarSystem(id);
 		
 		for (Planet planet : system.getPlanets()) {
 			db.delete("note", "planet_id="+planet.getId());
 			db.delete("globe", "planet_id="+planet.getId());
 			db.delete("map", "planet_id="+planet.getId());
+			db.delete("resources", "planet_id="+planet.getId());
+			db.delete("trade", "planet_id="+planet.getId());
 		}
 			
 		db.delete("planet", "system_id="+id);
@@ -662,7 +725,7 @@ public class ObjectFactory {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			db.close(rs);
+			rs = db.tidy(rs);
 		}
 		
 		return count;
@@ -682,6 +745,8 @@ public class ObjectFactory {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			rs = db.tidy(rs);
 		}
 		
 		return list;
@@ -711,6 +776,8 @@ public class ObjectFactory {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			rs = db.tidy(rs);
 		}
 		
 		return list;
@@ -760,6 +827,8 @@ public class ObjectFactory {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			rs = db.tidy(rs);
 		}
 		
 		good.setAmount(good.getAmount()+amount);
@@ -797,6 +866,8 @@ public class ObjectFactory {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			rs = db.tidy(rs);
 		}
 		
 		return list;		
@@ -814,6 +885,8 @@ public class ObjectFactory {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			rs = db.tidy(rs);
 		}
 		
 		return c;
@@ -831,6 +904,8 @@ public class ObjectFactory {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			db.tidy(rs);
 		}
 		
 		return c;
@@ -871,6 +946,8 @@ public class ObjectFactory {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			rs = db.tidy(rs);
 		}
 		
 		if (ship != null) {
@@ -899,6 +976,8 @@ public class ObjectFactory {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			rs = db.tidy(rs);
 		}
 		
 		return list;		
@@ -928,35 +1007,79 @@ public class ObjectFactory {
 		}	
 	}
 
-	public static void main(String[] args) throws Exception {
+	/**
+	 * Get the value of the specified property.
+	 */
+	public long getNumberData(String property) {
+		String		sql = "select value from numbers where property='"+property+"'";
+		ResultSet	rs = null;
+		long		value = 0;
+		
+		try {
+			rs = db.query(sql);
+			if (rs.next()) {
+				value = rs.getLong(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			value = 0;
+		}
+		return value;
+	}
+
+	/**
+	 * Set the value of the specified property.
+	 */
+	public void setNumberData(String property, long value) {
+		String		sql = "update numbers set value=?";
+		
+		Hashtable<String,Object>		data = new Hashtable<String,Object>();		
+		data.put("value", value);
+		try {
+			db.replace("numbers", data, "property='"+property+"'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}	
+	public void log(int ship_id, int system_id, int planet_id, long simTime, LogType type, String text) {
+		Hashtable<String,Object>	data = new Hashtable<String,Object>();
+		
+		data.put("ship_id", ship_id);
+		data.put("system_id", system_id);
+		data.put("planet_id", planet_id);
+		data.put("stamp", simTime);
+		data.put("type", type.toString());
+		data.put("text", text);
+		
+		persist("log", data);
+	}
+
+	private static void regenSector(int sectorId) throws Exception {
 		ObjectFactory		factory = new ObjectFactory();
-		/*
-		ByteArrayOutputStream stream = factory.getPlanetMap(68637);
+		Vector<StarSystem> list = factory.getStarSystemsBySector(sectorId);
 		
-		FileOutputStream		writer = new FileOutputStream(new File("/home/sam/data.jpg"));
-		writer.write(stream.toByteArray());
-		writer.close();
-		*/
+		for (int s=0; s < list.size(); s++) {
+			StarSystem	system = list.get(s);
+			int			id = system.getId();
+			factory.cleanStarSystem(id);
+			system = factory.getStarSystem(id);
+			system.regenerate();
+		}
+		factory.close();		
+	}
+	
+	private static void regenSystem(int systemId) throws Exception {
+		ObjectFactory		factory = new ObjectFactory();
+		factory.cleanStarSystem(systemId);
 		
-		int		id = 14580;
-		factory.cleanStarSystem(id);
-		StarSystem		system = factory.getStarSystem(id);
+		StarSystem system = factory.getStarSystem(systemId);
 		system.regenerate();
-		factory.close();
-		
-		/*
-		factory.addNote(666, "Hello world");
-		for (String n : factory.getNotes(666)) {
-			System.out.println(n);
-		}
-		factory.addNote(666, "government", "Complete chaos");
-		for (String n : factory.getNotes(666, "government")) {
-			System.out.println(n);
-		}		
-		for (String n : factory.getNotes(666, "%")) {
-			System.out.println(n);
-		}
-		*/		
+
+		factory.close();				
+	}
+	
+	public static void main(String[] args) throws Exception {
+		//regenSystem(14167);
 	}
 
 }

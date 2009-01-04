@@ -1,15 +1,37 @@
+/*
+ * Copyright (C) 2009 Samuel Penn, sam@glendale.org.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation version 2.
+ * See the file COPYING.
+ */
 package uk.org.glendale.rpg.traveller.civilisation.trade;
 
 import java.text.NumberFormat;
 import java.util.*;
 
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
-import uk.org.glendale.rpg.traveller.sectors.Sector;
 import uk.org.glendale.rpg.traveller.systems.Planet;
+import uk.org.glendale.rpg.traveller.systems.StarSystem;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 
 /**
- * Calculates trade requirements for a world.
+ * Calculates trade requirements for a planet. Only applies to worlds with
+ * a population, since unpopulated worlds neither gather resources, or have
+ * a need to consume them.
+ * 
+ * There are two main factors in operation:
+ *   Production: How much of a commodity is produced each week.
+ *   Consumption: How much of a commodity is used each week.
+ * 
+ * Every planet has:
+ *   Resources: What can be naturally gathered. Normally this is minerals
+ *              and basic food.
+ *   Commodities: Everything, including resources. A commodity can be
+ *                traded, produced or consumed.
+ *   Demand: How much of a commodity is required for normal operation.
+ *   Production Capacity: How much effort can be put into production.
  * 
  * @author Samuel Penn
  */
@@ -17,6 +39,7 @@ public class Trade {
 	private ObjectFactory		factory = null;
 	private Planet				planet = null;
 	private Hashtable<Integer,Commodity>	commodities = null;
+	private Hashtable<Integer,Integer>		resources = null;
 	
 	private static NumberFormat		format = NumberFormat.getInstance();
 	
@@ -25,6 +48,7 @@ public class Trade {
 		this.planet = planet;
 		
 		commodities = factory.getAllCommodities();
+		resources = factory.getResources(planet.getId());
 		
 		Hashtable<Integer,TradeGood>	amounts = factory.getCommoditiesByPlanet(planet.getId());
 		
@@ -39,6 +63,90 @@ public class Trade {
 		
 	public Planet getPlanet() {
 		return planet;
+	}
+	
+	/**
+	 * The production capacity of a planet is roughly proportional to
+	 * the square root of its population. Bigger populations tend to
+	 * have more people invold in service industries. The TL and
+	 * Government Type also affect things.
+	 */
+	public long getProductionCapacity() {
+		long		effectivePopulation = planet.getPopulation();
+		long		production = 0;
+		
+		if (effectivePopulation == 0) {
+			return 0;
+		}
+		
+		// PC doubles every TL over 6, it is reduced for TLs below 6.
+		if (planet.getTechLevel() < 4) {
+			effectivePopulation /= 100;
+		} else if (planet.getTechLevel() == 4) {
+			effectivePopulation /= 10;
+		} else if (planet.getTechLevel() == 5) {
+			effectivePopulation /= 2;
+		} else if (planet.getTechLevel() > 6) {
+			effectivePopulation *= Math.pow(2, planet.getTechLevel()-6);
+		}
+		
+		// The government can effect production, normally badly.
+		switch (planet.getGovernment()) {
+		case Anarchy:
+			effectivePopulation /= 100;
+			break;
+		case Balkanization:
+		case Captive:
+		case FeudalTechnocracy:
+			effectivePopulation /= 10;
+			break;
+		case TheocraticDictatorship:
+		case TheocraticOligarchy:
+		case TotalitarianOligarchy:
+			effectivePopulation /= 5;
+			break;
+		case CivilService:
+		case ImpersonalBureaucracy:
+			effectivePopulation /= 3;
+			break;
+		case Corporation:
+		case NonCharismaticLeader:
+			effectivePopulation *= 2;
+			break;
+		}
+		
+		// Strict laws can reduce production.
+		if (planet.getLawLevel() > 1) {
+			effectivePopulation /= planet.getLawLevel();
+		}
+		
+		// Finally, poor planetary conditions make life hard.
+		switch (planet.getLifeLevel()) {
+		case None:
+			effectivePopulation /= 10;
+			break;
+		case Proteins:
+		case Protozoa:
+		case Metazoa:
+			effectivePopulation /= 5;
+			break;
+		case ComplexOcean:
+			effectivePopulation /= 4;
+			break;
+		case SimpleLand:
+			effectivePopulation /= 3;
+			break;
+		case ComplexLand:
+			effectivePopulation /= 2;
+			break;
+		}
+		
+		production = (int)Math.sqrt(effectivePopulation);
+		if (production < 1) {
+			production = 1;
+		}
+		
+		return production;
 	}
 	
 	private long getWorkersRequired(Commodity c) {
@@ -115,27 +223,27 @@ public class Trade {
 	 * 
 	 * @return		Demand, as number of units to consume per week.
 	 */
-	private long getLocalDemand(Commodity c) {
+	public long getLocalDemand(Commodity c) {
 		long		consumersAvailable = planet.getPopulation() / c.getConsumptionRate();
 
 		// If the commodity has tech level restrictions, then reduce demand
 		// based on how far out this planet is, if required. Note that a
 		// commodity can apply to one or more tech ranges, or all of them if
 		// none is specified.
-		if (c.hasCode(CommodityCode.Lo) || c.hasCode(CommodityCode.Mi) || c.hasCode(CommodityCode.Hi) || c.hasCode(CommodityCode.Ul)) {
+		if (c.hasCode(CommodityCode.Lt) || c.hasCode(CommodityCode.Mt) || c.hasCode(CommodityCode.Ht) || c.hasCode(CommodityCode.Ut)) {
 			int		min = 15, max = 0;
-			if (c.hasCode(CommodityCode.Lo)) {
+			if (c.hasCode(CommodityCode.Lt)) {
 				min = 1; max = 5;
 			}
-			if (c.hasCode(CommodityCode.Mi)) {
+			if (c.hasCode(CommodityCode.Mt)) {
 				min = Math.min(min, 6);
 				max = Math.max(max, 8);
 			}
-			if (c.hasCode(CommodityCode.Hi)) {
+			if (c.hasCode(CommodityCode.Ht)) {
 				min = Math.min(min, 8);
 				max = Math.max(max, 10);
 			}
-			if (c.hasCode(CommodityCode.Ul)) {
+			if (c.hasCode(CommodityCode.Ut)) {
 				min = Math.min(min, 10);
 				max = 15;
 			}
@@ -182,18 +290,16 @@ public class Trade {
 	 * stock of natural resources.
 	 */
 	public void gatherResources() {
-		Hashtable<Integer,Integer> list = factory.getResources(planet.getId());
-		
 		// For each commodity, work out how much is gathered.
 		System.out.println("Production rates");
-		for (int i : list.keySet()) {
+		for (int i : resources.keySet()) {
 			Commodity	c = commodities.get(i); 
 			
 			if (c == null) {
 				c = factory.getCommodity(i);
 			}
 			
-			int			density = list.get(i);
+			int			density = resources.get(i);
 			long		workersRequired = getWorkersRequired(c, density);
 			long		produced = planet.getPopulation() / workersRequired;
 			
@@ -207,6 +313,10 @@ public class Trade {
 			System.out.println("  "+c.getName() + "("+c.getAmount()+") - "+produced);
 			factory.setCommodity(planet.getId(), c.getId(), c.getAmount(), c.getActualPrice());
 		}
+	}
+	
+	public long getProductionRate(Commodity c) {
+		return planet.getPopulation() / getWorkersRequired(c, resources.get(c.getId()));
 	}
 	
 
@@ -333,12 +443,12 @@ public class Trade {
 			}
 			
 			// Tech level requirements
-			if (c.hasCode(CommodityCode.Lo)) {
+			if (c.hasCode(CommodityCode.Lt)) {
 				// Ultra-tech
 				if (planet.getTechLevel() > 6) {
 					demand *= Math.pow(10, (planet.getTechLevel()-6));
 				}
-			} else if (c.hasCode(CommodityCode.Mi)) {
+			} else if (c.hasCode(CommodityCode.Mt)) {
 				if (planet.getTechLevel() < 4) {
 					demand = 0;
 				} else if (planet.getTechLevel() < 6) {
@@ -350,7 +460,7 @@ public class Trade {
 				} else if (planet.getTechLevel() > 9) {
 					demand *= 10;
 				}
-			} else if (c.hasCode(CommodityCode.Hi)) {
+			} else if (c.hasCode(CommodityCode.Ht)) {
 				if (planet.getTechLevel() < 7) {
 					demand = 0;
 				} else if (planet.getTechLevel() == 7) {
@@ -362,7 +472,7 @@ public class Trade {
 				} else if (planet.getTechLevel() > 11) {
 					demand *= 10;
 				}
-			} else if (c.hasCode(CommodityCode.Ul)) {
+			} else if (c.hasCode(CommodityCode.Ut)) {
 				if (planet.getTechLevel() < 10) {
 					demand = 0;
 				} else if (planet.getTechLevel() == 10) {
@@ -471,10 +581,16 @@ public class Trade {
 	public static void main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
 		try {
-			Planet			planet = factory.getPlanet(174453);
-			Trade			trade = new Trade(factory, planet);
-			trade.gatherResources();
-			trade.consumeResources();
+			Vector<StarSystem> list = factory.getStarSystemsBySector(103);
+			
+			for (int s=0; s < list.size(); s++) {
+				StarSystem	system = list.get(s);
+				Planet		planet = system.getMainWorld();
+				
+				Trade		trade = new Trade(factory, planet);
+				trade.gatherResources();
+				trade.consumeResources();
+			}
 			/*
 			for (int id : new int[] { 212031, 212304} ) {
 				Planet			planet = factory.getPlanet(id);

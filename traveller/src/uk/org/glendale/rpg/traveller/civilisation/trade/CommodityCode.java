@@ -14,25 +14,49 @@ package uk.org.glendale.rpg.traveller.civilisation.trade;
  * level of demand for it, who wants it and how easy it is to transport.
  */
 public enum CommodityCode {
-	Il("Illegal"),
+	// Production
 	Tl("TL dependant"),
 	TL("Very TL dependant"),
-	Lo("Lo-tech (1-5)"),
-	Mi("Mid-tech (6-8)"),
-	Hi("High-tech (8-10)"),
-	Ul("Ultra-tech (10+)"),
+	// Legal
+	Il("Illegal"),
+	// Used by tech levels
+	Pt("Pre-tech (1-3)"),
+	Lt("Lo-tech (4-5)"),
+	Mt("Mid-tech (6-8)"),
+	Ht("High-tech (8-10)"),
+	Ut("Ultra-tech (10+)"),
+	// Used by world types
 	In("Industrial"),
 	Ag("Agricultural"),
 	Mn("Mining"),
-	Sp("Space"),
+	Sp("Space ports D+"),
+	SP("Space ports B+"),
+	Re("Research"),
+	Nv("Navy bases"),
+	Sc("Scout bases"),
+	Va("Vacuum environments"),
+	Ho("Hot environments"),
+	Co("Cold environments"),
+	Po("Polluted environments"),
+	Ex("Extreme environments"),
+	De("Dry environments"),
+	Wa("Water worlds"),
+	Ge("General product"),
+	// Type
 	Vi("Vital"),
 	Lu("Luxury"),
+	Fo("Food"),
+	Or("Ore"),
+	Fi("Personal firearms"),
+	En("Entertainment"),
+	Me("Medical"),
+	// Trade/storage codes
 	Pe("Perisable"),
 	Fr("Fragile"),
 	Hz("Hazardous"),
 	HZ("Extremely Hazardous"),
-	Fo("Food"),
-	Or("Ore");
+	// Other
+	Uq("Unique");
 	
 	private String name = null;
 	

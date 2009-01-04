@@ -1702,6 +1702,7 @@ public class Planet {
 		if (resources == null) {
 			resources = new Hashtable<String,Integer>();
 		}
+		if (value > 100) value = 100;
 		if (value > 0) resources.put(resource, value);
 	}
 }

@@ -16,6 +16,8 @@ import java.util.*;
 import java.util.Date;
 
 import uk.org.glendale.rpg.traveller.civilisation.Ship;
+import uk.org.glendale.rpg.traveller.civilisation.trade.Trade;
+import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
 import uk.org.glendale.rpg.utils.Die;
 
@@ -24,7 +26,7 @@ import uk.org.glendale.rpg.utils.Die;
  * 
  * @author Samuel Penn
  */
-public class Simulation extends ObjectFactory {
+public class Simulation { //extends ObjectFactory {
 	private static final String	CURRENT_TIME = "time";
 	private long				currentTimeSec = 0;
 	
@@ -51,27 +53,16 @@ public class Simulation extends ObjectFactory {
 		Dock,
 		UnDock
 	}
-
-	public void log(int ship_id, int system_id, int planet_id, long simTime, LogType type, String text) {
-		Hashtable<String,Object>	data = new Hashtable<String,Object>();
-		
-		data.put("ship_id", ship_id);
-		data.put("system_id", system_id);
-		data.put("planet_id", planet_id);
-		data.put("stamp", simTime);
-		data.put("type", type.toString());
-		data.put("text", text);
-		
-		persist("log", data);
-	}
+	
+	private ObjectFactory		factory = null;
 	
 	public Simulation() {
-		super();
+		factory = new ObjectFactory();
 
 		// Get constants
-		secondsInDay = getData(SECONDS_IN_DAY);
-		daysInYear = getData(DAYS_IN_YEAR);
-		timeScale = getData(TIME_SCALE);
+		secondsInDay = factory.getNumberData(SECONDS_IN_DAY);
+		daysInYear = factory.getNumberData(DAYS_IN_YEAR);
+		timeScale = factory.getNumberData(TIME_SCALE);
 		
 		// Get common stats.
 		startTime = getStartTime();
@@ -83,52 +74,19 @@ public class Simulation extends ObjectFactory {
 		}
 	}
 	
-	/**
-	 * Get the value of the specified property.
-	 */
-	private long getData(String property) {
-		String		sql = "select value from numbers where property='"+property+"'";
-		ResultSet	rs = null;
-		long		value = 0;
-		
-		try {
-			rs = db.query(sql);
-			if (rs.next()) {
-				value = rs.getLong(1);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			value = 0;
-		}
-		return value;
-	}
 
-	/**
-	 * Set the value of the specified property.
-	 */
-	private void setData(String property, long value) {
-		String		sql = "update numbers set value=?";
-		
-		Hashtable<String,Object>		data = new Hashtable<String,Object>();		
-		data.put("value", value);
-		try {
-			db.replace("numbers", data, "property='"+property+"'");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Get the realworld time that the campaign time was last updated.
 	 * Time is in milli seconds since start of the epoc.
 	 */
 	public long getPreviousTime() {
-		previousTimeMillis = getData(PREVIOUS_TIME);
+		previousTimeMillis = factory.getNumberData(PREVIOUS_TIME);
 		return previousTimeMillis;
 	}
 	
 	public void setPreviousTime(long realTimeMillis) {
-		setData(PREVIOUS_TIME, realTimeMillis);
+		factory.setNumberData(PREVIOUS_TIME, realTimeMillis);
 	}
 	
 	/**
@@ -137,12 +95,12 @@ public class Simulation extends ObjectFactory {
 	 * simulation. 
 	 */
 	public long getCurrentTime() {
-		currentTimeSec = getData(CURRENT_TIME);
+		currentTimeSec = factory.getNumberData(CURRENT_TIME);
 		return currentTimeSec;
 	}
 
 	public void setCurrentTime(long simTimeSeconds) {
-		setData(CURRENT_TIME, simTimeSeconds);
+		factory.setNumberData(CURRENT_TIME, simTimeSeconds);
 		currentTimeSec = simTimeSeconds;
 	}
 	
@@ -152,7 +110,7 @@ public class Simulation extends ObjectFactory {
 	 */
 	public long getStartTime() {
 		if (startTime == 0) {
-			int		year = (int)getData(START_YEAR);
+			int		year = (int)factory.getNumberData(START_YEAR);
 			Date	date = new Date(year-1900, 0, 1);
 			
 			startTime = date.getTime()/1000;
@@ -230,6 +188,7 @@ public class Simulation extends ObjectFactory {
 		currentTimeSec = getCurrentTime();
 		
 		simulateAllShips(currentTimeMillis);
+		simulateAllPlanets(currentTimeMillis);
 		
 		updateClock(currentTimeMillis);
 	}
@@ -237,24 +196,35 @@ public class Simulation extends ObjectFactory {
 	private int simulateAllShips(long realTimeMillis) {
 		int				count = 0;
 		long			actualTime = getActualCurrentTime(realTimeMillis);
+		ArrayList<Ship>	list = factory.getNextShips(actualTime);
+
+		for (int i=0; i < list.size(); i++) {
+			Ship		ship = list.get(i);
+			ship.simulate(this, factory, actualTime);
+			count++;
+		}
+		
+		return count;
+	}
+	
+	private int simulateAllPlanets(long realTimeMillis) {
+		int				count = 0;
+		long			actualTime = getActualCurrentTime(realTimeMillis);
 		ObjectFactory	factory = new ObjectFactory();
 		
-		String		sql = "select id from ship where nextevent <= "+actualTime;
-		ResultSet	rs = null;
+		ArrayList<Planet>	list = factory.getNextPlanets(actualTime);
+		long				nextWeek = actualTime + (86400 * 7) + Die.d100() - Die.d100();
 		
-		try {
-			rs = db.query(sql);
-			while (rs.next()) {
-				int		id = rs.getInt("id");
-				count++;
-				
-				Ship		ship = factory.getShip(id);
-				ship.simulate(this, factory, actualTime);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			db.close(rs);
+		for (int i=0; i < list.size(); i++) {
+			Planet		planet = list.get(i);
+			System.out.println(planet.getName()+" ("+planet.getId()+")");
+
+			Trade		trade = new Trade(factory, planet);
+			trade.gatherResources();
+			trade.consumeResources();
+			
+			factory.setPlanetEventTime(planet.getId(), nextWeek);
+			count++;
 		}
 		
 		return count;

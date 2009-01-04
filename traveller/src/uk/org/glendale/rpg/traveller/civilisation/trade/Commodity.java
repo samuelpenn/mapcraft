@@ -20,6 +20,7 @@ import java.sql.*;
 public class Commodity {
 	private int 	id;
 	private String	name;
+	private String	image;
 	private Source	source;
 	private int		cost;
 	private int		actualPrice;
@@ -175,6 +176,7 @@ public class Commodity {
 		techLevel = rs.getInt("tech");
 		legality = rs.getInt("law");
 		source = Source.valueOf(rs.getString("source"));
+		image = rs.getString("image");
 		
 		String	c = rs.getString("codes");
 		
@@ -228,5 +230,9 @@ public class Commodity {
 	
 	public void setActualPrice(int price) {
 		this.actualPrice = price;
+	}
+	
+	public String getImage() {
+		return image;
 	}
 }

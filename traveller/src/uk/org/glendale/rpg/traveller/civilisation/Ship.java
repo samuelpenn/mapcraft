@@ -228,11 +228,13 @@ public class Ship {
 	public void modifyCargo(int id, int amount) {
 		if (cargo != null) {
 			if (amount == 0) {
+				System.out.println("["+getName()+"] is removing all cargo ["+id+"]");
 				cargo.remove(id);
 			} else {
 				TradeGood good = cargo.get(id);
 				good.setAmount(good.getAmount() + amount);
-				if (good.getAmount() < 0) cargo.remove(id);
+				if (good.getAmount() <= 0) cargo.remove(id);
+				System.out.println("["+getName()+"] is modifying cargo ["+id+"] by ["+amount+"] to ["+good.getAmount()+"]");
 			}
 		}
 	}
@@ -264,26 +266,6 @@ public class Ship {
 		return list;
 	}
 	
-	/**
-	 * Model what a ship might do when docked at a space port. Space ports
-	 * may be in orbit, or on a planet's surface. Both states are considered
-	 * to be the same for simplicity.
-	 * 
-	 * CurrentState: Docked
-	 * SystemId:     Set
-	 * PlanetId:     Set
-	 */
-	private void simulateWhenDocked(Simulation simulation, ObjectFactory factory, long eventTime) {
-		if (Die.d6() == 1) {
-			setStatus(Ship.ShipStatus.Flight);
-			setNextEvent(eventTime + (12 * 3600 * 10 / getAcceleration()));
-			simulation.log(getId(), getSystemId(), getPlanetId(), eventTime, Simulation.LogType.UnDock, "Undocks");
-		} else {
-			setNextEvent(eventTime + Die.d12(2)*3600);
-			System.out.println("Remains docked");
-		}
-	}
-
 	public void simulate(Simulation simulation, ObjectFactory factory, long actualTime) {
 		System.out.println("simulate: ["+getName()+" / "+getType()+" / "+getStatus()+"]");
 		if (getInServiceDate() == 0) {
