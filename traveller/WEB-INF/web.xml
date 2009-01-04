@@ -61,6 +61,11 @@
    		<servlet-name>Names</servlet-name>
    		<servlet-class>uk.org.glendale.rpg.traveller.servlets.Names</servlet-class>
    	</servlet>
+
+   	<servlet>
+   		<servlet-name>Market</servlet-name>
+   		<servlet-class>uk.org.glendale.rpg.traveller.servlets.Market</servlet-class>
+   	</servlet>
     	
    	<servlet-mapping>
    		<servlet-name>Information Getter</servlet-name>
@@ -100,6 +105,11 @@
    	<servlet-mapping>
    		<servlet-name>Names</servlet-name>
    		<url-pattern>/names/*</url-pattern>
+   	</servlet-mapping>
+
+   	<servlet-mapping>
+   		<servlet-name>Market</servlet-name>
+   		<url-pattern>/market/*</url-pattern>
    	</servlet-mapping>
 <!--    	
    	<listener>
