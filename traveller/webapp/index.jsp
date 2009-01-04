@@ -36,26 +36,57 @@
 		</p>
 		
 		<p>
-			<b>http://dev.glendale.org.uk/traveller/system/5.html</b><br/>
-			This gets information on system number 5, returned in HTML format.
+			<a href="http://dev.glendale.org.uk/traveller/system/14053.html">
+				http://dev.glendale.org.uk/traveller/system/14053.html
+			</a><br/>
+			This gets information on system number 14053, returned in HTML format.
 			To get the data as XML, request a .xml or .txt file instead (both
 			return XML, the difference being the content type it defines).
 		</p>
 		
 		<p>
-			<b>http://dev.glendale.org.uk/traveller/sector/1.html</b><br/>
-			Get information on sector number 1.
+			<a href="http://dev.glendale.org.uk/traveller/sector/103.html">
+				http://dev.glendale.org.uk/traveller/sector/103.html
+			</a><br/>
+			Get information on sector number 103.
 		</p>
 		
 		<p>
-			<b>http://dev.glendale.org.uk/traveller/sector/The Reft.html</b><br/>
-			Get information on The Reft sector.
+			<a href="http://dev.glendale.org.uk/traveller/sector/Verge Sector.html">
+				http://dev.glendale.org.uk/traveller/sector/Verge Sector.html
+			</a><br/>
+			Get information on Verge Sector sector. This is the same as the
+			above example, but references the sector by name. Note that systems
+			and planets can also be referenced directly by name.
 		</p>
 		
 		<p>
 			Data returned as XML may be rendered by a stylesheet, depending
 			on your browser, so fetch the Text version instead if you really
 			want to see the raw XML.
+		</p>
+		
+		<h2>Planet maps</h2>
+		
+		<p>
+			Work is being done on generating a surface map for each individual
+			planet and moon. Lots of code has been written, but data hasn't
+			yet been generated on a large scale, so most worlds will be blank.
+		</p>
+
+		<p>
+			<a href="http://www.glendale.org.uk/traveller/data/system/10373.html">
+				http://www.glendale.org.uk/traveller/data/system/10373.html
+			</a><br/>
+			This system shows one set of planet maps. To reference individual
+			maps, request planet data in jpg format, as so:
+			<a href="http://dev.glendale.org.uk/traveller/planet/171977.jpg">
+				http://dev.glendale.org.uk/traveller/planet/171977.jpg
+			</a><br/>
+			Or with the <tt>globe</tt> parameter for the globe image:<br/>
+			<a href="http://dev.glendale.org.uk/traveller/planet/171977.jpg?globe">
+				http://dev.glendale.org.uk/traveller/planet/171977.jpg?globe
+			</a>
 		</p>
 	</body>
 </html>

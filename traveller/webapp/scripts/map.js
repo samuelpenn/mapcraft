@@ -418,9 +418,20 @@ function gotSystemInfo() {
         var		systemId = 0;
         var		systemAllegiance = "";
         var		systemNode = root.getElementsByTagName("system")[0];
+        var		shipCount = 0;
         systemName = systemNode.getAttribute("name");
         systemId = systemNode.getAttribute("id");
         systemAllegiance = root.getElementsByTagName("allegiance")[0].childNodes[0].nodeValue;
+        
+        var		shipData = root.getElementsByTagName("ships");
+        if (shipData != null && shipData.length > 0) {
+        	shipCount = root.getElementsByTagName("ships")[0].getAttribute("count");
+        	if (shipCount == null) {
+        		shipCount = 0;
+        	} else {
+        		shipCount = parseInt(""+shipCount);
+        	}
+        }
         
         for (var p=0; planetNodes != null && p < planetNodes.length; p++) {
         	if (planetNodes[p].getElementsByTagName("population") == null) continue;
@@ -473,6 +484,9 @@ function gotSystemInfo() {
         	sectorText += "; <b>Government:</b> "+planetGovernment;
         	sectorText += "; <b>Tech Level:</b> "+planetTech;
         	sectorText += "; <b>Law Level:</b> "+planetLaw;
+        	if (shipCount > 0) {
+        		sectorText += "; <b>Ships:</b> "+shipCount;
+        	}
         	sectorText += "</p>";
         }
         divNode.innerHTML = sectorText;
