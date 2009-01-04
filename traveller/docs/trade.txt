@@ -98,7 +98,7 @@ D0-D9: Measurement of demand per head of population.
 
 P0-P9: Measurement of rate of production per head of population. As per demand.
 
-T0-TB: Tech level required for production. TLs 10+ use hex.
+T0-TC: Tech level required for production. TLs 10+ use hex.
 
 L0-L6: Considered illegal at that law level or above.
 LI: Imperium considers good to be illegal.
@@ -130,6 +130,14 @@ Machinary		50,000		D3 P4 T6
 
 Industrial:   212031   Irlariir/2520
 Agricultural: 212304   Plateau/2620
+
+
+Basic Resource Categories
+=========================
+
+Water
+Algae
+
 
 
 
