@@ -611,6 +611,12 @@ public class Planet {
 			planetType = PlanetType.AsteroidBelt;
 			lifeType = LifeType.None;
 			return;
+		} else if (radius < 3500) {
+			planetType = PlanetType.EoArean;
+			lifeType = LifeType.ComplexLand;
+			if (hydrographics < 30) {
+				lifeType = LifeType.SimpleLand;
+			}
 		} else if (population > 0) {
 			planetType = PlanetType.Gaian;
 			lifeType = LifeType.Extensive;
@@ -704,8 +710,6 @@ public class Planet {
 			} else if (radius < 4000) {
 				if (temperature.isHotterThan(Temperature.Hot)) {
 					planetType = PlanetType.Hermian;
-				} else if (temperature.isHotterThan(Temperature.Cool)) {
-					planetType = PlanetType.EoArean;
 				} else if (temperature.isColderThan(Temperature.Cold)) {
 					planetType = PlanetType.AreanLacustric;
 				} else {
@@ -1413,12 +1417,18 @@ public class Planet {
 	 */
 	public String toHTML(boolean header) {
 		StringBuffer		buffer = new StringBuffer();
+		String				name = getName();
+		
+		if (population > 0) {
+			String		marketUrl = "../market/"+getId()+".html";
+			name = "<a href=\""+marketUrl+"\">"+getName()+"</a>";
+		}
 
 		// Heading
 		if (isMoon()) {
-			buffer.append("<h4>"+getName()+" ("+planetType+")"+((population>0)?" (Populated)":"")+"</h4>\n");			
+			buffer.append("<h4>"+name+" ("+planetType+")"+((population>0)?" (Populated)":"")+"</h4>\n");			
 		} else {
-			buffer.append("<h3>"+getName()+" ("+planetType+")"+((population>0)?" (Populated)":"")+"</h3>\n");
+			buffer.append("<h3>"+name+" ("+planetType+")"+((population>0)?" (Populated)":"")+"</h3>\n");
 		}
 
 		// Trade data

@@ -14,6 +14,7 @@ import java.util.*;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
+import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 
 /**
@@ -513,9 +514,9 @@ public class Trade {
 	}
 	
 	/**
-	 * Get the price at which the a commodity can be sold for.
+	 * Get the price a commodity is worth on this world.
 	 *  
-	 * @param commodityId		Commodity to try to sell.
+	 * @param commodityId		Commodity to calculate worth of.
 	 */
 	public int getStandardPrice(int commodityId) {
 		int								price = 0;
@@ -568,8 +569,6 @@ public class Trade {
 	public int sellToPlanet(int commodityId, int amount) {
 		int		price = 0;
 		
-		
-		
 		return price;
 	}
 
@@ -578,19 +577,74 @@ public class Trade {
 		return price;
 	}
 	
+	private void foodRequirements() {
+		// Basic amount of required food equal to population.
+		long		demand = planet.getPopulation();
+
+		// VeryCold climate requires more food.
+		if (planet.getTemperature().isColderThan(Temperature.Cold)) {
+			demand *= 1.1;
+		}
+		System.out.println("  foodRequirements: "+format.format(demand));
+		
+		// Work out what the different food types are.
+		Vector<Commodity>	vitalFoods = new Vector<Commodity>();
+		Vector<Commodity>	standardFoods = new Vector<Commodity>();
+		Vector<Commodity>	luxuryFoods = new Vector<Commodity>();
+		Vector<Commodity>	poorFoods = new Vector<Commodity>();
+		for (Commodity c : commodities.values()) {
+			if (c.hasCode(CommodityCode.Fo)) {
+				long		amount = c.getAmount();
+				long		resource = resources.contains(c.getId())?resources.get(c.getId()):0;
+				
+				System.out.println("    "+c.getName()+" ("+format.format(amount)+"/"+resource+") @ "+c.getCost()+"Cr");
+				if (c.hasCode(CommodityCode.Vi)) {
+					vitalFoods.add(c);
+				} else if (c.hasCode(CommodityCode.Lq)) {
+					poorFoods.add(c);
+				} else if (c.hasCode(CommodityCode.Lu)) {
+					luxuryFoods.add(c);
+				} else {
+					standardFoods.add(c);
+				}
+			}
+		}
+		// The split of demand is 70% vital foods, 21% standard and 9% luxury.
+		// Poor foods will only be eaten if nothing else is available.
+		boolean		noMoreFood = true;
+		while (demand > 0) {
+			long		vitalDemand = (demand > 10)?(long)(demand * 0.7):demand;
+			long		each = vitalDemand / vitalFoods.size();
+			
+			if (noMoreFood) {
+				break;
+			}
+		}
+		
+	}
+	
+	/**
+	 * Try and work out what a planet needs.
+	 */
+	private void calculatePlanetRequirements() {
+		System.out.println("calculatePlanetRequirements: ["+planet.getName()+"]");
+		foodRequirements();
+	}
+	
 	public static void main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
 		try {
-			Vector<StarSystem> list = factory.getStarSystemsBySector(103);
+			//Vector<StarSystem> list = factory.getStarSystemsBySector(103);
 			
-			for (int s=0; s < list.size(); s++) {
-				StarSystem	system = list.get(s);
+			//for (int s=0; s < list.size(); s++) {
+				StarSystem	system = factory.getStarSystem(14062);
 				Planet		planet = system.getMainWorld();
 				
 				Trade		trade = new Trade(factory, planet);
-				trade.gatherResources();
-				trade.consumeResources();
-			}
+				trade.calculatePlanetRequirements();
+				//trade.gatherResources();
+				//trade.consumeResources();
+			//}
 			/*
 			for (int id : new int[] { 212031, 212304} ) {
 				Planet			planet = factory.getPlanet(id);

@@ -152,6 +152,34 @@ public class Market extends HttpServlet {
 		buffer.append("</p>");
 		buffer.append("</div>");
 		
+		Hashtable<Integer,Commodity>		commodities = new Hashtable<Integer,Commodity>();
+
+		buffer.append("<div class=\"resources\">");
+		Hashtable<Integer,Integer>			resources = factory.getResources(planet.getId());
+		
+		buffer.append("<table width=\"100%\">");
+		int		column = 0;
+		for (int i : resources.keySet()) {
+			Commodity		c = commodities.get(i);
+			if (c == null) {
+				c = factory.getCommodity(i);
+				commodities.put(i, c);
+			}
+			if (column == 0) {
+				buffer.append("<tr>");
+			} else if (column %5 == 0) {
+				buffer.append("</tr><tr>");
+			}
+			column++;
+			buffer.append("<td style=\"text-align: center\">");
+			buffer.append("<img src=\""+imageBase+c.getImage()+".png\" alt=\""+c.getName()+"\"/><br/>");
+			buffer.append(c.getName()+" ("+resources.get(i)+")");
+			buffer.append("</td>");
+		}
+		
+		buffer.append("</tr></table></div>");
+		
+		
 		buffer.append("<div class=\"marketdata\">");
 		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
 		

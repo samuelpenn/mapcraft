@@ -50,6 +50,9 @@ public enum CommodityCode {
 	Fi("Personal firearms"),
 	En("Entertainment"),
 	Me("Medical"),
+	// Quality
+	Hq("High quality"),
+	Lq("Low quality"),
 	// Trade/storage codes
 	Pe("Perisable"),
 	Fr("Fragile"),

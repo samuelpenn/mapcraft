@@ -49,10 +49,28 @@ import uk.org.glendale.rpg.utils.Die;
  *
  */
 public class WorldBuilder {
-	protected		int			width = 256+1;
-	protected		int			height = 128+1;
+	protected		int			width = 256;
+	protected		int			height = 128;
 	
+	protected 		int			tileSize = 16;
+	
+	// Holds the terrain type/height map
 	protected		int[][]		map = null;
+	
+	// Holds a low resolution map of the world.
+	protected		TileType[][]	tileMap = null;
+	
+	
+	public enum TileType {
+		WATER("~"), DESERT("."), ARCTIC("-"), MOUNTAINS("M"), JUNGLE("j"), TEMPERATE("t"), SCRUB("s");
+		
+		public String code = null;
+		
+		TileType(String code) {
+			this.code = code;
+		}
+	}
+	
 	// Use the following to calculate how many squares there are of
 	// each height. Can be used to find distribution stats quite
 	// quickly.
@@ -65,6 +83,50 @@ public class WorldBuilder {
 	protected final	Terrain		land = Terrain.create("Land", 0, 0, 0, 1.5, 1.5, 1.5, false);
 	
 	protected		Properties	properties = new Properties();
+	
+	protected TileType getTile(int x, int y) {
+		if (tileMap == null) return null;
+		
+		if (y < 0) y = 0;
+		if (y >= height/tileSize) y = height/tileSize - 1; 
+
+		if (x < 0) x = 0;
+		if (x >= width/tileSize) x -= width/tileSize;
+		
+		return tileMap[x][y];
+	}
+	
+	protected void setTile(int x, int y, TileType type) {
+		if (tileMap == null) return;
+		
+		if (y < 0) y = 0;
+		if (y >= height/tileSize) y = height/tileSize - 1; 
+
+		if (x < 0) x = 0;
+		if (x >= width/tileSize) x -= width/tileSize;
+		
+		tileMap[x][y] = type;
+	}
+	
+	interface ITileSetter {
+		public void set(int averageHeight, int x, int y);
+	}
+	
+	protected void setTile(int tx, int ty, ITileSetter setter) {
+		int		averageHeight = 0;
+
+		for (int y=ty*tileSize; y < (ty+1)*tileSize; y++) {
+			for (int x=tx*tileSize; x < (tx+1)*tileSize; x++) {
+				averageHeight += getHeight(x, y);
+			}
+		}
+		averageHeight /= (tileSize * tileSize);
+		for (int y=ty*tileSize; y < (ty+1)*tileSize; y++) {
+			for (int x=tx*tileSize; x < (tx+1)*tileSize; x++) {
+				setter.set(averageHeight, x, y);
+			}
+		}
+	}
 	
 	/**
 	 * Properties define special geographical or ecological features about
@@ -192,7 +254,11 @@ public class WorldBuilder {
 		if (x >= width) x -= width;
 		
 		int		value = map[x][y];
-		map[x][y] = t.getIndex()*1000 + value%1000;
+		try {
+			map[x][y] = t.getIndex()*1000 + value%1000;
+		} catch (Throwable e) {
+			System.out.println("Unable to setTerrain("+x+","+y+")");
+		}
 	}
 	
 	protected int getHeight(int x, int y) {
@@ -230,8 +296,12 @@ public class WorldBuilder {
 
 	/**
 	 * Use a fractal algorithm to generate a random height map.
+	 * The height and width must be a power of 2 + 1.
 	 */
 	protected void generateFractalHeightMap() {
+		int			width = this.width+1;
+		int			height = this.height+1;
+		
 		int[][]		h = new int[width][height];
 		
 		// Initiate everything to be '-1', which is used as a null value.
@@ -330,8 +400,8 @@ public class WorldBuilder {
 		}
 		
 		// Now set the real map.
-		for (int x=0; x < width; x++) {
-			for (int y=0; y < height; y++) {
+		for (int x=0; x < this.width; x++) {
+			for (int y=0; y < this.height; y++) {
 				setHeight(x, y, h[x][y]);
 				setTerrain(x, y, land);
 				heightBuckets[h[x][y]]++;
@@ -360,62 +430,66 @@ public class WorldBuilder {
 			int		 y = (int)(Die.rollZero(height) * 0.9 + height * 0.05);
 			int		 radius = Die.die(size, 2) / 2;
 			
-			for (int xx = x - radius; xx <= x + radius; xx++) {
-				for (int yy = y - radius; yy <= y + radius; yy++) {
-					int 		px = xx;
-					int			py = yy;
-					boolean		ridge = false;	
-					
-					if (py < 0 || py >= height) {
-						continue;
-					}
+			addCrater(x, y, radius, force, terrain, ejecta);
+		}
+	}
+	
+	protected void addCrater(int x, int y, int radius, double force, Terrain terrain, Terrain ejecta) {
+		for (int xx = x - radius; xx <= x + radius; xx++) {
+			for (int yy = y - radius; yy <= y + radius; yy++) {
+				int 		px = xx;
+				int			py = yy;
+				boolean		ridge = false;	
+				
+				if (py < 0 || py >= height) {
+					continue;
+				}
 
-					int		d = (int)Math.sqrt( (x - px) * (x - px) + (y - py) * (y - py));
-					// Give a fuzzy edge to the craters.)
-					if (d == radius) {
-						ridge = true;
-					} else if (d > radius || Die.die(d,2) > radius) {
-						continue;
+				int		d = (int)Math.sqrt( (x - px) * (x - px) + (y - py) * (y - py));
+				// Give a fuzzy edge to the craters.)
+				if (d == radius) {
+					ridge = true;
+				} else if (d > radius || Die.die(d,2) > radius) {
+					continue;
+				}
+				
+				// Wrap around west and east.
+				if (px < 0) px += width;
+				if (px >= width) px -= width;
+				
+				if (terrain != null) {
+					setTerrain(px, py, terrain);
+				}
+				if (ridge && Die.d3()!=1) {
+					setHeight(px, py, (int)(getHeight(px, py) / force));
+					if (ejecta != null && Die.d3()!=1) {
+						setTerrain(px, py, ejecta);
 					}
-					
-					// Wrap around west and east.
-					if (px < 0) px += width;
-					if (px >= width) px -= width;
-					
-					if (terrain != null) {
-						setTerrain(px, py, terrain);
-					}
-					if (ridge && Die.d3()!=1) {
-						setHeight(px, py, (int)(getHeight(px, py) / force));
-						if (ejecta != null && Die.d3()!=1) {
-							setTerrain(px, py, ejecta);
-						}
-					} else {
-						setHeight(px, py, (int)(getHeight(px, py) * force));
-					}
+				} else {
+					setHeight(px, py, (int)(getHeight(px, py) * force));
 				}
 			}
-			
-			if (ejecta != null && Die.die(radius) > 5 && Die.d2() == 1) {
-				for (int e = 0; e < Math.pow(radius, 1.2); e++) {
-					int		xx = x + Die.die(radius*10) - Die.die(radius*10);
-					int		yy = y + Die.die(radius*10) - Die.die(radius*10);
-					int		d = (int)(Math.sqrt((xx - x) * (xx - x) + (yy - y) * (yy - y)));
+		}
+		
+		if (ejecta != null && Die.die(radius) > 5 && Die.d2() == 1) {
+			for (int e = 0; e < Math.pow(radius, 1.2); e++) {
+				int		xx = x + Die.die(radius*10) - Die.die(radius*10);
+				int		yy = y + Die.die(radius*10) - Die.die(radius*10);
+				int		d = (int)(Math.sqrt((xx - x) * (xx - x) + (yy - y) * (yy - y)));
+				
+				for (int l=radius; l < d; l++) {
+					int		px = x + ((xx - x) * l)/d;
+					int		py = y + ((yy - y) * l)/d;
 					
-					for (int l=radius; l < d; l++) {
-						int		px = x + ((xx - x) * l)/d;
-						int		py = y + ((yy - y) * l)/d;
-						
-						if (px < 0) px += width;
-						if (px >= width) px -= width;
-						if (py < 0) break;
-						if (py >= height) break;
-						
-						setHeight(px, py, (int)(getHeight(px, py) * force));
-						setTerrain(px, py, ejecta);
-						xx += Die.d2() - Die.d2();
-						yy += Die.d2() - Die.d2();
-					}
+					if (px < 0) px += width;
+					if (px >= width) px -= width;
+					if (py < 0) break;
+					if (py >= height) break;
+					
+					setHeight(px, py, (int)(getHeight(px, py) * force));
+					setTerrain(px, py, ejecta);
+					xx += Die.d2() - Die.d2();
+					yy += Die.d2() - Die.d2();
 				}
 			}
 		}
@@ -1030,6 +1104,7 @@ public class WorldBuilder {
 			break;
 		case Arean:
 		case EoArean:
+			wb = new Arean(width, height);
 			break;
 		default:
 			throw new IllegalArgumentException("Unrecognised "+type);
@@ -1141,7 +1216,7 @@ public class WorldBuilder {
 				//planet.setTilt(10);
 				for (SpectralType type : SpectralType.values()) {
 					if (type.toString().endsWith("0")) {
-						WorldBuilder wb = new Star(513, 257, type);
+						WorldBuilder wb = new Star(512, 256, type);
 						wb.generate();
 						wb.getWorldGlobe(2).save(new File("/home/sam/star_"+type.toString()+".jpg"));
 					}
@@ -1150,7 +1225,7 @@ public class WorldBuilder {
 				
 				//planet.addFeature(PlanetFeature.ManyIslands);
 				for (int i=0; i < 1; i++) {
-					WorldBuilder	wb = WorldBuilder.getBuilder(planet, 512+1, 256+1);
+					WorldBuilder	wb = WorldBuilder.getBuilder(planet, 512, 256);
 					System.out.println("Builder ["+wb.getClass().getName()+"]");
 					if (wb != null) {
 						wb.generate();

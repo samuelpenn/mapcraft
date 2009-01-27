@@ -15,6 +15,7 @@ package uk.org.glendale.rpg.traveller.database;
 import uk.org.glendale.rpg.traveller.Config;
 import uk.org.glendale.rpg.traveller.Log;
 
+import java.awt.GraphicsEnvironment;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.*;
@@ -28,6 +29,7 @@ import uk.org.glendale.rpg.traveller.civilisation.trade.TradeGood;
 import uk.org.glendale.rpg.traveller.database.Simulation.LogType;
 import uk.org.glendale.rpg.traveller.sectors.Sector;
 import uk.org.glendale.rpg.traveller.systems.*;
+import uk.org.glendale.rpg.traveller.worlds.WorldBuilder;
 
 /**
  * Factory class which generates Traveller objects - stars, systems and planets.
@@ -172,6 +174,38 @@ public class ObjectFactory {
 	
 		try {
 			rs = read("system", "sector_id="+sectorId);
+			while (rs.next()) {
+				StarSystem		ss = new StarSystem(rs);
+				if (populateSystems) {
+					ss.setStars(getStarsBySystem(ss.getId()));
+					ss.setPlanets(getPlanetsBySystem(ss.getId()));
+				}
+				list.add(ss);
+			}
+		} catch (SQLException e) {
+			Log.error(e);
+		} finally {
+			db.tidy(rs);
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * Get a list of star systems by a given selection code. Systems can be
+	 * grouped by a selection id, which is meant for development use. By
+	 * adding a non-zero selection id to systems, operations can be
+	 * performed on them as a group.
+	 * 
+	 * @param selection				Selection id, 1+
+	 * @param populateSystems		Get stars and planets as well.
+	 */
+	private Vector<StarSystem> getStarSystemsBySelection(int selection, boolean populateSystems) {
+		Vector<StarSystem>		list = new Vector<StarSystem>();
+		ResultSet				rs = null;
+	
+		try {
+			rs = read("system", "selection="+selection);
 			while (rs.next()) {
 				StarSystem		ss = new StarSystem(rs);
 				if (populateSystems) {
@@ -1078,8 +1112,35 @@ public class ObjectFactory {
 		factory.close();				
 	}
 	
+	private static void regenSelection(int selection) {
+		ObjectFactory		factory = new ObjectFactory();
+		Vector<StarSystem>	list = factory.getStarSystemsBySelection(selection, false);
+		
+		try {
+			System.out.println(GraphicsEnvironment.isHeadless());
+
+			for (StarSystem sys : list) {
+				int		id = sys.getId();
+				System.out.println("Regenerating "+id);
+				factory.cleanStarSystem(id);
+				
+				StarSystem system = factory.getStarSystem(id);
+				system.regenerate();
+				
+				system = factory.getStarSystem(id);
+				Planet		mainWorld = system.getMainWorld();
+				WorldBuilder.imagePlanet(factory, mainWorld);
+			}
+		} catch (Throwable e) {
+			e.printStackTrace();
+		} finally {
+			factory.close();
+		}
+	}
+	
 	public static void main(String[] args) throws Exception {
 		//regenSystem(14167);
+		regenSelection(1);
 	}
 
 }

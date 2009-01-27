@@ -184,6 +184,21 @@ class Gaian extends WorldBuilder {
 	int	averageSeaLevel = 0;
 	int	seaGrowthRate = 2;
 	private void createSea() {
+		
+		if (planet.getHydrographics() == 0) {
+			// Nothing to be done.
+			return;
+		} else if (planet.getHydrographics() == 100) {
+			// Trivial case.
+			for (int x=0; x < width; x++) {
+				for (int y=0; y < height; y++) {
+					setTerrain(x, y, water);
+					setHeight(x, y, 40 + getHeight(x, y)/4);
+				}
+			}
+			return;
+		}
+		
 		normaliseHeights();
 		basicFlood(30);
 		// Initialise the map to be empty.
@@ -206,8 +221,6 @@ class Gaian extends WorldBuilder {
 		draw();
 		while (!done) {
 			//draw();
-			
-			
 			int[]	xp = new int[] { -1, +1, 0, 0 };
 			int[]	yp = new int[] { 0, 0, -1, +1 };
 			
@@ -269,7 +282,7 @@ class Gaian extends WorldBuilder {
 			averageSeaLevel = total / count;
 			System.out.println("Hydro: "+h+" av "+averageSeaLevel+" delta "+numberChanged);
 			if (h > hydrographics && numberChanged < 50) {
-				draw();
+				//draw();
 				done = true;
 			}
 		}
@@ -349,23 +362,7 @@ class Gaian extends WorldBuilder {
 		createSea();
 		draw();
 
-		/*
-		int	waterCount = 0;
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				if (getTerrain(x, y) == water) {
-					waterCount++;
-					if (planet.hasFeature(PlanetFeature.Algae)) {
-						int		wetness = getWetness(x, y, true);
-						if (wetness < 85) {
-							setHeight(x, y, wetness);
-							setTerrain(x, y, Terrain);
-						}
-					}
-				}
-			}
-		}
-		*/
+
 		// We might as well set the planet's data to be correct.
 		planet.setHydrographics(getHydrographics());
 		System.out.println("Hydro: "+planet.getHydrographics()+"%");
