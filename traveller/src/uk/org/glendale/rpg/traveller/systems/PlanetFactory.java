@@ -896,10 +896,36 @@ public class PlanetFactory {
 		}
 		planet.setTemperature(star.getOrbitTemperature(planet.getEffectiveDistance()));
 
-		if (Die.d6() <= earthFudge + 1) {
-			planet.setHydrographics(Die.d4());
+		// All Arean worlds lack liquid water and almost certainly life.
+		planet.setHydrographics(0);
+		if (Die.d10() == 1) {
+			planet.setLifeLevel(LifeType.Protozoa);
+		} else {
+			planet.setLifeLevel(LifeType.None);
 		}
 		setDayLength(planet, 1.0);
+		
+		// Special features
+		switch (Die.d6(3)) {
+		case 3: 
+			planet.addFeature(PlanetFeature.GiantCrater);
+			break;
+		case 4: 
+			planet.addFeature(PlanetFeature.PolarRidge);
+			break;
+		case 5:
+			planet.addFeature(PlanetFeature.EquatorialRidge);
+			break;
+		case 6:
+			planet.addFeature(PlanetFeature.Smooth);
+			break;
+		case 7:
+			planet.addFeature(PlanetFeature.HeavilyCratered);
+			break;
+		case 18:
+			// Unique features.
+			break;
+		}
 
 		// Mineral resources.
 		planet.addResource(SILICATE, 6);
@@ -1884,10 +1910,10 @@ public class PlanetFactory {
 				planet = getBelt(name, distance);
 				break;
 			case 2:
-				planet = getWorld(name, distance, PlanetType.EoArean);
+				planet = getWorld(name, distance, PlanetType.Arean);
 				break;
 			case 3: case 4:
-				planet = getWorld(name, distance, PlanetType.AreanLacustric);
+				planet = getWorld(name, distance, PlanetType.EoArean);
 				break;
 			default:
 				planet = getWarmGaian(name, distance);

@@ -207,9 +207,6 @@ public class WorldBuilder {
 	 * @param h	Height to set the point to.
 	 */
 	protected void setHeight(int x, int y, int h) {
-		if (x < 0) x += width;
-		if (x >= width) x -= width;
-		
 		if (y < 0) {
 			y = 0;
 			x = width - x;
@@ -219,6 +216,9 @@ public class WorldBuilder {
 			x = width - x;
 		}
 
+		if (x < 0) x += width;
+		if (x >= width) x -= width;
+		
 		int		value = map[x][y];
 		
 		if (h > 99) h = 99;
@@ -1104,6 +1104,7 @@ public class WorldBuilder {
 			break;
 		case Arean:
 		case EoArean:
+		case AreanLacustric:
 			wb = new Arean(width, height);
 			break;
 		default:
@@ -1119,7 +1120,7 @@ public class WorldBuilder {
 			System.out.println(type);
 			try {
 				Planet			planet = new Planet("Example", type, type.getRadius());
-				WorldBuilder	wb = WorldBuilder.getBuilder(planet, 512+1, 256+1);
+				WorldBuilder	wb = WorldBuilder.getBuilder(planet, 512, 256);
 				if (wb != null) {
 					wb.generate();
 					wb.getWorldMap(2).save(new File("/home/sam/tmp/maps/types/"+type.toString()+".jpg"));
@@ -1133,7 +1134,7 @@ public class WorldBuilder {
 
 	public static void createPlanetType(PlanetType type) throws Exception {
 		Planet			planet = new Planet("Example", type, type.getRadius());
-		WorldBuilder	wb = WorldBuilder.getBuilder(planet, 513, 257);
+		WorldBuilder	wb = WorldBuilder.getBuilder(planet, 512, 256);
 		wb.generate();
 		SimpleImage		image = wb.getWorldMap(2);
 		image.save(new File("/home/sam/examplePlanet.jpg"));
@@ -1146,7 +1147,7 @@ public class WorldBuilder {
 		for (StarSystem system : systems) {
 			for (Planet planet : factory.getPlanetsBySystem(system.getId())) {
 				System.out.println(system.getName()+": "+planet.getName());
-				WorldBuilder		wb = WorldBuilder.getBuilder(planet, 513, 257);
+				WorldBuilder		wb = WorldBuilder.getBuilder(planet, 512, 256);
 				wb.generate();
 				SimpleImage		simple = wb.getWorldMap(2);
 				factory.storePlanetMap(planet.getId(), simple.save());
@@ -1159,7 +1160,7 @@ public class WorldBuilder {
 		ObjectFactory		factory = new ObjectFactory();
 		Planet				planet = new Planet(factory, planetId);
 		
-		WorldBuilder		wb = WorldBuilder.getBuilder(planet, 513, 257);
+		WorldBuilder		wb = WorldBuilder.getBuilder(planet, 512, 256);
 		wb.generate();
 		SimpleImage		simple = wb.getWorldMap(2);
 		factory.storePlanetMap(planet.getId(), simple.save());
@@ -1167,7 +1168,7 @@ public class WorldBuilder {
 	}
 	
 	public static void imagePlanet(ObjectFactory factory, Planet planet) throws Exception {
-		WorldBuilder		wb = WorldBuilder.getBuilder(planet, 513, 257);
+		WorldBuilder		wb = WorldBuilder.getBuilder(planet, 512, 256);
 		wb.generate();
 		SimpleImage		simple = wb.getWorldMap(2);
 		factory.storePlanetMap(planet.getId(), simple.save());
@@ -1179,7 +1180,7 @@ public class WorldBuilder {
 			Planet		planet = new Planet("Example", type, type.getRadius());
 			System.out.println(type);
 			try {
-				WorldBuilder	wb = WorldBuilder.getBuilder(planet, 512+1, 256+1);
+				WorldBuilder	wb = WorldBuilder.getBuilder(planet, 512, 256);
 				if (wb != null) {
 					wb.generate();
 					wb.getWorldGlobe(2).save(new File("/home/sam/tmp/maps/types/"+type.toString().toLowerCase()+".jpg"));
