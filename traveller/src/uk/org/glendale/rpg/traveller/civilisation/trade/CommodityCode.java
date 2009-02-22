@@ -46,10 +46,12 @@ public enum CommodityCode {
 	Vi("Vital"),
 	Lu("Luxury"),
 	Fo("Food"),
+	Cl("Clothing"),
 	Or("Ore"),
 	Fi("Personal firearms"),
 	En("Entertainment"),
 	Me("Medical"),
+	Ma("Machinary"),
 	// Quality
 	Hq("High quality"),
 	Lq("Low quality"),

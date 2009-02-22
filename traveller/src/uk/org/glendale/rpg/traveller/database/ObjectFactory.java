@@ -24,6 +24,7 @@ import java.util.*;
 import uk.org.glendale.database.Database;
 import uk.org.glendale.rpg.traveller.civilisation.Ship;
 import uk.org.glendale.rpg.traveller.civilisation.trade.Commodity;
+import uk.org.glendale.rpg.traveller.civilisation.trade.Facility;
 import uk.org.glendale.rpg.traveller.civilisation.trade.Trade;
 import uk.org.glendale.rpg.traveller.civilisation.trade.TradeGood;
 import uk.org.glendale.rpg.traveller.database.Simulation.LogType;
@@ -1059,6 +1060,28 @@ public class ObjectFactory {
 			value = 0;
 		}
 		return value;
+	}
+	
+	public Hashtable<Integer,Facility> getFacilities() {
+		Hashtable<Integer,Facility>		table = new Hashtable<Integer, Facility>();
+		
+		String		sql = "select * from facility";
+		ResultSet	rs = null;
+
+		try {
+			rs = db.query("select * from facility");
+			while (rs.next()) {
+				Facility facility = new Facility(rs);
+				
+				table.put(facility.getId(), facility);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			rs = db.tidy(rs);
+		}
+		
+		return table;
 	}
 
 	/**

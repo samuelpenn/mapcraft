@@ -12,31 +12,39 @@
 package uk.org.glendale.rpg.traveller.systems.codes;
 
 public enum AtmosphereType {
-	Vacuum(0.0, 1.0), 
+	Vacuum(0.0, 1.0, 4), 
 	Standard(1.0, 1.0), 
-	Chlorine(0.0, 1.0), 
-	Flourine(0.0, 1.0), 
+	Chlorine(0.0, 1.0, 5), 
+	Flourine(0.0, 1.0, 5), 
 	SulphurCompounds(0.0, 0.9), 
 	NitrogenCompounds(0.0, 0.8), 
-	OrganicToxins(0.5, 1.0),
-	LowOxygen(0.75, 1.0), 
-	Pollutants(0.5, 1.0), 
-	HighCarbonDioxide(0.25, 0.75), 
+	OrganicToxins(0.5, 1.0, 1),
+	LowOxygen(0.75, 1.0, 2), 
+	Pollutants(0.5, 1.0, 1), 
+	HighCarbonDioxide(0.25, 0.75, 1), 
 	HighOxygen(1.0, 1.0), 
-	InertGases(0.0, 1.0), 
-	Hydrogen(0.0, 1.0), 
-	Primordial(0.0, 0.9),
-	WaterVapour(0.0, 0.8), 
-	CarbonDioxide(0.0, 0.6), 
-	Tainted(0.75, 1.0),
-	Exotic(0.0, 1.0);
+	InertGases(0.0, 1.0, 2), 
+	Hydrogen(0.0, 1.0, 2), 
+	Primordial(0.0, 0.9, 2),
+	WaterVapour(0.0, 0.8, 2), 
+	CarbonDioxide(0.0, 0.6, 2), 
+	Tainted(0.75, 1.0, 1),
+	Exotic(0.0, 1.0, 4);
 	
 	double 	suitability = 0.0;
 	double  greenhouse = 1.0;
+	int		environmentalRating = 0;
 	
 	AtmosphereType(double suitability, double greenhouse) {
 		this.suitability = suitability;
 		this.greenhouse = greenhouse;
+		this.environmentalRating = 0;
+	}
+
+	AtmosphereType(double suitability, double greenhouse, int environmentalRating) {
+		this.suitability = suitability;
+		this.greenhouse = greenhouse;
+		this.environmentalRating = environmentalRating;
 	}
 	
 	/**
@@ -74,5 +82,14 @@ public enum AtmosphereType {
 	 */
 	public double getGreenhouse() {
 		return greenhouse;
+	}
+	
+	/**
+	 * Get the Environmental Protection Rating. This ranges from 0
+	 * (no protection required) to 6 (highest level of protection
+	 * required).
+	 */
+	public int getEPRating() {
+		return environmentalRating;
 	}
 }

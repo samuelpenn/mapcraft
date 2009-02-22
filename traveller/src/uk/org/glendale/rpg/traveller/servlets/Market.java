@@ -12,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.text.DecimalFormat;
 import java.util.Hashtable;
 
 import javax.servlet.ServletException;
@@ -19,6 +20,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.NumberFormatter;
 
 import uk.org.glendale.rpg.traveller.civilisation.trade.Commodity;
 import uk.org.glendale.rpg.traveller.civilisation.trade.Trade;
@@ -126,9 +128,10 @@ public class Market extends HttpServlet {
 	 */
 	private String outputHTML(ObjectFactory factory, Planet planet, String contextPath) {
 		StringBuffer		buffer = new StringBuffer();
-		String				stylesheet = contextPath+"/data/css/system.css";
-		String				imageBase = contextPath+"/data/images/trade/";
+		String				stylesheet = contextPath+"/css/system.css";
+		String				imageBase = contextPath+"/images/trade/";
 		Trade				trade = new Trade(factory, planet);
+		DecimalFormat		f = new DecimalFormat();
 		
 		buffer.append("<html>\n<head>\n<title>"+planet.getName()+"</title>\n");
 		buffer.append("<link rel=\"STYLESHEET\" type=\"text/css\" media=\"screen\" href=\""+stylesheet+"\" />\n");
@@ -141,14 +144,15 @@ public class Market extends HttpServlet {
 		buffer.append("<div class=\"planet\">");
 		buffer.append("<p>");
 		buffer.append("<b>Planet Type: </b>"+planet.getType()+"; ");
-		buffer.append("<b>Population: </b>"+planet.getPopulation()+"; ");
+		buffer.append("<b>Population: </b>"+f.format(planet.getPopulation())+"; ");
 		buffer.append("<b>Government: </b>"+planet.getGovernment()+"; ");
+		buffer.append("</p><p>");
 		buffer.append("<b>Tech Level: </b>"+planet.getTechLevel()+"; ");
 		buffer.append("<b>Star port: </b>"+planet.getStarport()+"; ");		
 		buffer.append("</p>");
 		
 		buffer.append("<p>");
-		buffer.append("<b>Production Capacity: </b>"+trade.getProductionCapacity()+"; ");
+		buffer.append("<b>Production Capacity: </b>"+f.format(trade.getProductionCapacity())+"; ");
 		buffer.append("</p>");
 		buffer.append("</div>");
 		
@@ -187,14 +191,20 @@ public class Market extends HttpServlet {
 			TradeGood		good = goods.get(i);
 			Commodity		c = factory.getCommodity(good.getCommodityId());
 			
-			buffer.append("<div class=\"good\">");
-			buffer.append("<img src=\""+imageBase+c.getImage()+".png\" align=\"left\"/>");
-			buffer.append("<h4>"+c.getName()+"</h4>");
-			buffer.append("<p><b>Amount:</b> "+good.getAmount()+" @ "+good.getPrice()+"Cr; ");
-			buffer.append("<b>Demand: </b>"+trade.getLocalDemand(c)+"/wk; ");
-			buffer.append("<b>Production: </b>"+trade.getProductionRate(c)+"/wk");
-			buffer.append("</p>");
-			buffer.append("</div>");
+			if (c != null) {
+				buffer.append("<div class=\"good\">");
+				try {
+					buffer.append("<img src=\""+imageBase+c.getImage()+".png\" align=\"left\"/>");
+					buffer.append("<h4>"+c.getName()+"</h4>");
+					buffer.append("<p><b>Amount:</b> "+f.format(good.getAmount())+" @ "+f.format(good.getPrice())+"Cr; ");
+					buffer.append("<b>Demand: </b>"+f.format(trade.getLocalDemand(c))+"/wk; ");
+					buffer.append("<b>Production: </b>"+f.format(trade.getProductionRate(c))+"/wk");
+					buffer.append("</p>");
+				} catch (Throwable e) {
+					buffer.append("Oops");
+				}
+				buffer.append("</div>");
+			}
 		}
 		buffer.append("</div>");
 		

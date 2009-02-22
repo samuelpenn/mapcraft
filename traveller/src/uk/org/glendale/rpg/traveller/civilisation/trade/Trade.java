@@ -10,12 +10,15 @@ package uk.org.glendale.rpg.traveller.civilisation.trade;
 
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.logging.Logger;
 
+import uk.org.glendale.rpg.traveller.Log;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
 import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
+import uk.org.glendale.rpg.utils.Die;
 
 /**
  * Calculates trade requirements for a planet. Only applies to worlds with
@@ -37,6 +40,8 @@ import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
  * @author Samuel Penn
  */
 public class Trade {
+	private Logger				logger = Logger.getLogger(Trade.class.toString());
+
 	private ObjectFactory		factory = null;
 	private Planet				planet = null;
 	private Hashtable<Integer,Commodity>	commodities = null;
@@ -57,8 +62,10 @@ public class Trade {
 			TradeGood	good = amounts.get(key);
 			
 			Commodity	c = commodities.get(key);
-			c.setAmount(good.amount);
-			c.setActualPrice(good.price);
+			if (c != null) {
+				c.setAmount(good.amount);
+				c.setActualPrice(good.price);
+			}
 		}
 	}
 		
@@ -317,7 +324,10 @@ public class Trade {
 	}
 	
 	public long getProductionRate(Commodity c) {
-		return planet.getPopulation() / getWorkersRequired(c, resources.get(c.getId()));
+		if (c != null && resources != null) {
+			return planet.getPopulation() / getWorkersRequired(c, resources.get(c.getId()));
+		}
+		return 0;
 	}
 	
 
@@ -613,35 +623,85 @@ public class Trade {
 		// Poor foods will only be eaten if nothing else is available.
 		boolean		noMoreFood = true;
 		while (demand > 0) {
-			long		vitalDemand = (demand > 10)?(long)(demand * 0.7):demand;
-			long		each = vitalDemand / vitalFoods.size();
+			if (vitalFoods.size() > 0) {
+				long		vitalDemand = (demand > 10)?(long)(demand * 0.70):demand;
+				long		each = vitalDemand / vitalFoods.size();
+			}
 			
 			if (noMoreFood) {
 				break;
 			}
 		}
 		
+		if (demand > 0) {
+			// Oops, planet is starving. Can we add agriculture?
+		}
+		
+	}
+	
+	private void livingRequirements() {
+		long		population = planet.getPopulation();
 	}
 	
 	/**
-	 * Try and work out what a planet needs.
+	 * Try and work out what a planet needs. If supply doesn't match demand,
+	 * then try to expand facilities to make up the short fall. Facilities
+	 * expansion is considered 'instantaneous'. In reality, it is assumed to
+	 * have happened a long time ago, so expansion should only happen when
+	 * the simulation is first run.
 	 */
 	private void calculatePlanetRequirements() {
 		System.out.println("calculatePlanetRequirements: ["+planet.getName()+"]");
+		livingRequirements();
 		foodRequirements();
 	}
 	
+	/**
+	 * Create all the required facilities on the planet, based on population,
+	 * tech level and resources.
+	 */
+	public void createFacilities() {
+		// Residential.
+		Hashtable<Integer,Facility>		facilities = factory.getFacilities();
+		Vector<Facility>				list = new Vector<Facility>();
+		
+		long		population = planet.getPopulation();
+		long		capacity = getProductionCapacity();
+		
+		logger.info("Create facilities for ["+planet.getName()+"]; population "+population+"; capacity "+getProductionCapacity());
+		
+		// Arcologies?
+		Facility		arcology = Facility.getByName(facilities, "Arcology");
+		while (Die.d10() < population/1000000000 && planet.getTechLevel() > 8) {
+			long		pop = population / (Die.d4() * 5);
+			int			size = (int) (pop / arcology.getCapacity());
+			population -= pop;
+			Facility	f = new Facility(arcology, size, 0);
+			list.add(f);
+			logger.info("Added Arcology pop ["+pop+"] size ["+size+"]");
+		}
+
+		// Agriculture
+		logger.info("AGRICULTURE");
+		Hashtable<Integer,Facility>		ag = Facility.getByType(facilities, FacilityType.Agriculture);
+		
+	}
+	
 	public static void main(String[] args) throws Exception {
+		
 		ObjectFactory	factory = new ObjectFactory();
 		try {
 			//Vector<StarSystem> list = factory.getStarSystemsBySector(103);
 			
 			//for (int s=0; s < list.size(); s++) {
-				StarSystem	system = factory.getStarSystem(14062);
-				Planet		planet = system.getMainWorld();
+				//StarSystem	system = factory.getStarSystem(14062);
+				//Planet		planet = system.getMainWorld();
+				
+				Planet		planet = factory.getPlanet(223065);
 				
 				Trade		trade = new Trade(factory, planet);
-				trade.calculatePlanetRequirements();
+				trade.createFacilities();
+				//trade.calculatePlanetRequirements();
 				//trade.gatherResources();
 				//trade.consumeResources();
 			//}
