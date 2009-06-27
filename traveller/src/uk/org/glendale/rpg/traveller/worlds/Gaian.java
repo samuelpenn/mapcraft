@@ -14,6 +14,7 @@ package uk.org.glendale.rpg.traveller.worlds;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 
 import javax.swing.*;
 
@@ -27,7 +28,7 @@ import uk.org.glendale.rpg.utils.Die;
  * 
  * @author Samuel Penn.
  */
-class Gaian extends WorldBuilder {
+class Gaian extends Tectonics {
 	
 	// Terrain types.
 	private Terrain		water = null;
@@ -92,28 +93,10 @@ class Gaian extends WorldBuilder {
 			}
 		}
 		
-		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-		public void mousePressed(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		
-	}
-	
-	public Gaian() {
-		super();
+		public void mouseEntered(MouseEvent e) { }
+		public void mouseExited(MouseEvent e) { }
+		public void mousePressed(MouseEvent e) { }
+		public void mouseReleased(MouseEvent e) { }
 	}
 	
 	public Gaian(int width, int height) {
@@ -356,7 +339,27 @@ class Gaian extends WorldBuilder {
 		ice = Terrain.create("Ice", 255, 255, 255, true);
 		snow = Terrain.create("Snow", 200, 200, 200, 0.5, 0.5, 0.5, false);
 		
+		rock = Terrain.create("Mountain", 50, 50, 50, 0.5, 0.5, 0.5, false);
+		desert = Terrain.create("Desert", 100, 100, 0, 0.5, 0.5, 0.1, false);
+		scrub = Terrain.create("Scrub", 100, 100, 0, 0.5, 1, 0.1, false);
+		grassland = Terrain.create("Grass", 50, 100, 0, 1, 1, 0.1, false);
+		woodland = Terrain.create("Woods", 50, 100, 0, 0.3, 1, 0.1, false);
+		jungle = Terrain.create("Jungle", 0, 25, 0, 0.1, 0.7, 0.1, false);
+
 		
+		// Work out large scale tiles.
+		generateContinents();
+		copyShelfToTiles();
+		setTiles();
+		//debugTiles();
+		addWater();
+		marineClimate();
+		makeItRain();
+		ecology();
+
+		generateLandscape();
+		
+		/*
 		// Create the oceans of this world, according to the hydrographics
 		// setting for the world.
 		createSea();
@@ -370,6 +373,109 @@ class Gaian extends WorldBuilder {
 		generateIceCap();
 		generateEcology();
 		draw();
+		*/
+	}
+	/**
+	 * Given the rough tile map, try and generate a higher resolution
+	 * landscape from this, using the tile guide plus the fractal
+	 * height map as a basis.
+	 */
+	protected void generateLandscape() {
+		int		tw = width/tileSize;
+		int		th = height/tileSize;
+		
+		for (int y=0; y < th; y++) {
+			for (int x=0; x < tw; x++) {
+				switch (getTile(x, y)) {
+				case DESERT:
+					setTile(x, y, new ITileSetter() { 
+							public void set(int averageHeight, int x, int y) {
+								setTerrain(x, y, desert);
+							} });
+					break;
+				case ARCTIC:
+					setTile(x, y, new ITileSetter() { 
+							public void set(int averageHeight, int x, int y) {
+								setTerrain(x, y, ice);
+							} });
+					break;
+				case MOUNTAINS:
+					setTile(x, y, new ITileSetter() { 
+						public void set(int averageHeight, int x, int y) {
+							if (getHeight(x, y) > averageHeight) {
+								setTerrain(x, y, rock);
+							} else {
+								//setHeight(x, y, 1.1);
+								setTerrain(x, y, desert);
+							}
+						} });
+					break;
+				case TEMPERATE:
+					setTile(x, y, new ITileSetter() {
+						public void set(int averageHeight, int x, int y) {
+							if (getHeight(x, y) > averageHeight) {
+								setTerrain(x, y, grassland);
+							} else {
+								setTerrain(x, y, woodland);
+							}
+						} });						
+					break;
+				case SCRUB:
+					setTile(x, y, new ITileSetter() {
+						public void set(int averageHeight, int x, int y) {
+							if (getHeight(x, y) > averageHeight) {
+								setTerrain(x, y, desert);
+							} else {
+								setTerrain(x, y, scrub);
+							}
+						} });						
+					break;
+				case JUNGLE:
+					setTile(x, y, new ITileSetter() {
+						public void set(int averageHeight, int x, int y) {
+							if (getHeight(x, y) > averageHeight) {
+								setTerrain(x, y, jungle);
+							} else {
+								setTerrain(x, y, woodland);
+							}
+						} });						
+					break;					
+				case WATER:
+					setTile(x, y, new ITileSetter() { 
+						public void set(int averageHeight, int x, int y) { 
+							if (getHeight(x, y) < planet.getHydrographics()) {
+								setTerrain(x, y, water);
+								setHeight(x, y, 0.5);
+							} else {
+								setTerrain(x, y, water);
+							}
+						} });
+					break;
+				}
+			}
+		}
+		
+		// Now try and fix mountains.
+		int		fixed = 1, thing = 3;
+		while (fixed > 0) {
+			fixed = 0;
+			for (int y=0; y < height; y++) {
+				for (int x=0; x < width; x++) {
+					if (getTerrain(x, y) == rock) continue;
+					int		h = getHeight(x, y)+thing;
+					if (getHeight(x-1, y) < h && getTerrain(x-1, y) == rock) {
+						setTerrain(x, y, rock); fixed++;
+					} else if (getHeight(x+1, y) < h && getTerrain(x+1, y) == rock) {
+						setTerrain(x, y, rock); fixed++;
+					} else if (getHeight(x, y-1) < h && getTerrain(x, y-1) == rock) {
+						setTerrain(x, y, rock); fixed++;
+					} else if (getHeight(x, y+1) < h && getTerrain(x, y+1) == rock) {						
+						setTerrain(x, y, rock); fixed++;
+					}
+				}
+			}
+			//if (Die.d6() == 1) thing ++;
+		}		
 	}
 	
 	protected void generateIceCap() {
@@ -667,7 +773,7 @@ class Gaian extends WorldBuilder {
 
 	
 	public static void main(String[] args) throws Exception {
-		Gaian g = new Gaian(513, 257);
+		Gaian g = new Gaian(512, 256);
 		g.setPlanet(new Planet("Bob",PlanetType.Gaian,6400));
 		g.planet.setHydrographics(70);
 		g.planet.setTilt(22);
@@ -677,6 +783,6 @@ class Gaian extends WorldBuilder {
 		g.planet.setAtmospherePressure(AtmospherePressure.Standard);
 		//g.draw();
 		g.generate();
-		//g.getWorldMap(2).save(new File("/home/sam/gaian.jpg"));
+		g.getWorldMap(2).save(new File("/home/sam/gaian.jpg"));
 	}
 }

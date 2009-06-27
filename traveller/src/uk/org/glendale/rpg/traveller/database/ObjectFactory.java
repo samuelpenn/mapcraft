@@ -1083,6 +1083,31 @@ public class ObjectFactory {
 		
 		return table;
 	}
+	
+	public Vector<Facility> getFacilitiesByPlanet(int planetId) {
+		Vector<Facility>	list = new Vector<Facility>();
+		
+		String		sql = "select facility_id, size, resource_id from facilities where planet_id = "+planetId;
+		ResultSet	rs = null;
+
+		try {
+			rs = db.query(sql);
+			while (rs.next()) {
+				int		facilityId = rs.getInt("facility_id");
+				int		size = rs.getInt("size");
+				int		resourceId = rs.getInt("resource_id");
+				Facility facility = new Facility(rs);
+				
+				list.add(facility);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			rs = db.tidy(rs);
+		}
+		
+		return list;
+	}
 
 	/**
 	 * Set the value of the specified property.

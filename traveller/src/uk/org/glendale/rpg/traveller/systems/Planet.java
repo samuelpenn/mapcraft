@@ -23,6 +23,7 @@ import java.util.Vector;
 
 import uk.org.glendale.rpg.traveller.Config;
 import uk.org.glendale.rpg.traveller.civilisation.trade.Commodity;
+import uk.org.glendale.rpg.traveller.civilisation.trade.Facility;
 import uk.org.glendale.rpg.traveller.database.*;
 import uk.org.glendale.rpg.traveller.glossary.GlossaryEntry;
 import uk.org.glendale.rpg.traveller.systems.codes.*;
@@ -62,6 +63,7 @@ public class Planet {
 	private String					tradeCodes = "";
 	private String					description = null;
 	private EnumSet<PlanetFeature>	features = null;
+	private Vector<Facility>		facilities = null;
 
 	public int getId() {
 		return id;
@@ -1714,5 +1716,17 @@ public class Planet {
 		}
 		if (value > 100) value = 100;
 		if (value > 0) resources.put(resource, value);
+	}
+	
+	public void setFacilities(Vector<Facility> facilities) {
+		this.facilities = facilities;
+	}
+	
+	public Vector<Facility> getFacilities() {
+		if (facilities == null) {
+			facilities = new Vector<Facility>();
+		}
+		
+		return facilities;
 	}
 }

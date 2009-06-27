@@ -45,6 +45,11 @@ import uk.org.glendale.rpg.utils.Die;
  * 
  * Heights should be limited between 0 and about 100.
  * 
+ * Also keeps a low resolution map (the 'tile map'), which is used to give
+ * a general overview. It is much easier to perform some operations at
+ * low resolution - e.g., tectonic activity, weather patterns and the
+ * like - and such operations are performed on these low resolution tiles.
+ * 
  * @author Samuel Penn
  *
  */
@@ -59,10 +64,12 @@ public class WorldBuilder {
 	
 	// Holds a low resolution map of the world.
 	protected		TileType[][]	tileMap = null;
+	protected		int[][]			temperatureMap = null;
+	protected		int[][]			rainMap = null;
 	
 	
 	public enum TileType {
-		WATER("~"), DESERT("."), ARCTIC("-"), MOUNTAINS("M"), JUNGLE("j"), TEMPERATE("t"), SCRUB("s");
+		WATER(" "), DESERT("."), ARCTIC("-"), MOUNTAINS("M"), JUNGLE("#"), TEMPERATE("~"), SCRUB(","), SEABED(" ");
 		
 		public String code = null;
 		
@@ -81,9 +88,41 @@ public class WorldBuilder {
 	
 	protected final	Terrain		sea = Terrain.create("Sea", 100, 100, 255, true);
 	protected final	Terrain		land = Terrain.create("Land", 0, 0, 0, 1.5, 1.5, 1.5, false);
+
 	
-	protected		Properties	properties = new Properties();
+	protected int getTileWidth() {
+		return width/tileSize;
+	}
 	
+	protected int getTileHeight() {
+		return height/tileSize;
+	}
+	
+	protected void createTileMap() {
+		int		tw = getTileWidth();
+		int		th = getTileHeight();
+		
+		tileMap = new TileType[tw][th];
+		
+		for (int y=0; y < th; y++) {
+			for (int x=0; x < tw; x++) {
+				tileMap[x][y] = TileType.DESERT;
+			}
+		}		
+	}
+	
+	protected void debugTiles() {
+		int		tw = width/tileSize;
+		int		th = height/tileSize;
+		for (int y=0; y < th; y++) {
+			for (int x=0; x < tw; x++) {
+				System.out.print(tileMap[x][y].code);
+				System.out.print(tileMap[x][y].code);
+			}
+			System.out.println("");
+		}
+	}
+
 	protected TileType getTile(int x, int y) {
 		if (tileMap == null) return null;
 		
@@ -100,14 +139,52 @@ public class WorldBuilder {
 		if (tileMap == null) return;
 		
 		if (y < 0) y = 0;
-		if (y >= height/tileSize) y = height/tileSize - 1; 
+		if (y >= getTileHeight()) y = getTileHeight() - 1; 
 
-		if (x < 0) x = 0;
-		if (x >= width/tileSize) x -= width/tileSize;
+		if (x < 0) x += getTileWidth();
+		if (x >= getTileWidth()) x -= getTileWidth();
 		
 		tileMap[x][y] = type;
 	}
 	
+	protected int getTemperature(int x, int y) {
+		if (temperatureMap == null) return getTemperature();
+		
+		if (y < 0) y = 0;
+		if (y >= getTileHeight()) y = getTileHeight() - 1; 
+
+		if (x < 0) x += getTileWidth();
+		if (x >= getTileWidth()) x -= getTileWidth();
+
+		return temperatureMap[x][y];
+	}
+
+	protected int getRainFall(int x, int y) {
+		if (rainMap == null) return 0;
+		
+		if (y < 0) y = 0;
+		if (y >= getTileHeight()) y = getTileHeight() - 1; 
+
+		if (x < 0) x += getTileWidth();
+		if (x >= getTileWidth()) x -= getTileWidth();
+
+		return rainMap[x][y];
+	}
+	
+	protected void setRainFall(int x, int y, int value) {
+		if (rainMap == null) return;
+		
+		if (y < 0) y = 0;
+		if (y >= getTileHeight()) y = getTileHeight() - 1; 
+
+		if (x < 0) x += getTileWidth();
+		if (x >= getTileWidth()) x -= getTileWidth();
+		
+		if (value < 0) value = 0;
+		if (value > 100) value = 100;
+		
+		rainMap[x][y] = value;
+	}	
 	interface ITileSetter {
 		public void set(int averageHeight, int x, int y);
 	}
@@ -128,33 +205,75 @@ public class WorldBuilder {
 		}
 	}
 	
-	/**
-	 * Properties define special geographical or ecological features about
-	 * the world. If set, then they control how the world map is generated,
-	 * and can be used when building a textual description of the world.
-	 * 
-	 * @param property		Property to check.
-	 * @return				True if world has this property, false otherwise.
-	 */
-	public boolean hasProperty(String property) {
-		if (properties.getProperty(property) != null) {
-			return true;
+	protected void setTiles() {
+		if (tileMap == null) {
+			throw new IllegalArgumentException("A tile map must be created before this method is called");
 		}
-		return false;
+		
+		int		tilt = planet.getTilt();
+		if (tilt > 90) tilt = 180 - tilt;
+		int		tw = getTileWidth();
+		int		th = getTileHeight();
+		
+		int		equatorRow = th/2;
+		int		tropics = 2;
+		int		averageTemperature = getTemperature();
+		int		temperatureVariance = 0;
+		
+		// The difference in temperature between extremes depends on
+		// how thick the atmosphere is. Thin atmosphere means equal
+		// heating across the surface.
+		switch (planet.getAtmospherePressure()) {
+		case None:
+		case Trace:
+			temperatureVariance = 0;
+			break;
+		case VeryThin:
+			temperatureVariance = 1;
+			break;
+		case Thin:
+			temperatureVariance = 3;
+			break;
+		case Standard:
+			temperatureVariance = 5;
+			break;
+		case Dense:
+			temperatureVariance = 7;
+			break;
+		case VeryDense:
+			temperatureVariance = 9;
+			break;
+		case SuperDense:
+			temperatureVariance = 12;
+			break;
+		}
+		
+		// Work out temperature map
+		temperatureMap = new int[getTileWidth()][getTileHeight()];
+		for (int y=0; y < getTileHeight(); y++) {
+			int		latitude = (int)Math.abs(y - getTileHeight()/2 + 0.5);
+			int		t = (averageTemperature+temperatureVariance) - (int)((temperatureVariance*2.0) * (latitude/7.0));  
+			
+			for (int x=0; x < getTileWidth(); x++) {
+				if (tileMap[x][y] == TileType.MOUNTAINS) {
+					temperatureMap[x][y] = t-2;
+				} else {
+					temperatureMap[x][y] = t;
+				}
+			}
+		}
+
+		// Basic rain map. No rain is the default.
+		rainMap = new int[getTileWidth()][getTileHeight()];
 	}
 	
-	/**
-	 * Set a property about this world.
-	 * 
-	 * @param property		Property to set.
-	 */
-	public void setProperty(String property) {
-		properties.setProperty(property, "yes");
-	}
+	
+	
 	
 	/**
 	 * Get the temperature of the world. Zero is considered to be standard
-	 * temperature, with -1 for cool, -2 cold, +1 warm, +2 hot etc.
+	 * temperature, with -1 for cool, -2 cold, +1 warm, +2 hot etc. Anything
+	 * outside the range -1/+1 is difficult for humans to live in.
 	 * 
 	 * @param temperature		Temperature to use.
 	 */
@@ -162,17 +281,17 @@ public class WorldBuilder {
 		if (planet == null) return 0;
 
 		switch (planet.getTemperature()) {
-		case UltraHot: return +8;
-		case ExtremelyHot:return +5;
-		case VeryHot: return +3;
-		case Hot: return +2;
+		case UltraHot: return +15;
+		case ExtremelyHot:return +10;
+		case VeryHot: return +6;
+		case Hot: return +3;
 		case Warm: return +1;
 		case Standard: return 0;
 		case Cool: return -1;
-		case Cold: return -2;
-		case VeryCold: return -3;
-		case ExtremelyCold: return -5;
-		case UltraCold: return -8;
+		case Cold: return -3;
+		case VeryCold: return -6;
+		case ExtremelyCold: return -10;
+		case UltraCold: return -15;
 		}
 		
 		return 0;
@@ -257,7 +376,7 @@ public class WorldBuilder {
 		try {
 			map[x][y] = t.getIndex()*1000 + value%1000;
 		} catch (Throwable e) {
-			System.out.println("Unable to setTerrain("+x+","+y+")");
+			System.out.println("Unable to setTerrain("+x+","+y+") ("+e.getMessage()+")");
 		}
 	}
 	
@@ -891,7 +1010,35 @@ public class WorldBuilder {
 			for (int y=0; y < height; y++) {
 				String		name = getTerrain(x, y).getImage(getHeight(x, y));
 				Image		i = getImage(name, scale);
-            	image.paint(i, x*scale, y*scale, scale, scale);
+            	image.paint(i, x*scale, y*scale, scale, scale);            	
+			}
+		}
+		if (rainMap != null) {
+			int		size = tileSize * scale;
+			for (int x=0; x < getTileWidth(); x++) {
+				for (int y=0; y < getTileHeight(); y++) {
+            		int		r = getRainFall(x, y);
+            		image.circle(x*size+size/2, y*size+size/2, r/3, "#0000FF");
+					
+				}
+			}
+		}
+		if (temperatureMap != null) {
+			int		size = tileSize * scale;
+			for (int x=0; x < getTileWidth(); x++) {
+				for (int y=0; y < getTileHeight(); y++) {
+            		int		t = getTemperature(x, y);
+            		int		xx = x*size+size/4;
+            		int		yy = y*size+size/2;
+            		String	colour = "#FFFF00";
+            		
+            		if (t < -3) colour = "#00FFFF";
+            		if (t > +3) colour = "#FF0000";
+            		for (int i=0; i<4; i++) {
+            			image.line(xx+i, yy, xx+i, yy-t*2,colour);
+            		}
+            		image.line(xx, yy, xx+4, yy, "#000000");
+				}
 			}
 		}
 

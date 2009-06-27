@@ -159,6 +159,7 @@ public class Market extends HttpServlet {
 		Hashtable<Integer,Commodity>		commodities = new Hashtable<Integer,Commodity>();
 
 		buffer.append("<div class=\"resources\">");
+		buffer.append("<h3>Planetary Resources</h3>");
 		Hashtable<Integer,Integer>			resources = factory.getResources(planet.getId());
 		
 		buffer.append("<table width=\"100%\">");
@@ -185,6 +186,7 @@ public class Market extends HttpServlet {
 		
 		
 		buffer.append("<div class=\"marketdata\">");
+		buffer.append("<h3>Market Information</h3>");
 		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
 		
 		for (int i : goods.keySet()) {

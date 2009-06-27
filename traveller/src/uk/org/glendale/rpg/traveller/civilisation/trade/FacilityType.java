@@ -8,6 +8,12 @@
  */
 package uk.org.glendale.rpg.traveller.civilisation.trade;
 
+/**
+ * The type of facility. This determines the inputs and outputs
+ * from the facility where applicable.
+ * 
+ * @author Samuel Penn
+ */
 public enum FacilityType {
 	Residential,
 	Mining,

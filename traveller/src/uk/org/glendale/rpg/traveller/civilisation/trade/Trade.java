@@ -49,6 +49,8 @@ public class Trade {
 	
 	private static NumberFormat		format = NumberFormat.getInstance();
 	
+	private long				productionCapacity = 0;
+	
 	public Trade(ObjectFactory factory, Planet planet) {
 		this.factory = factory;
 		this.planet = planet;
@@ -67,6 +69,8 @@ public class Trade {
 				c.setActualPrice(good.price);
 			}
 		}
+		
+		productionCapacity = getProductionCapacity();
 	}
 		
 	public Planet getPlanet() {
@@ -76,7 +80,7 @@ public class Trade {
 	/**
 	 * The production capacity of a planet is roughly proportional to
 	 * the square root of its population. Bigger populations tend to
-	 * have more people invold in service industries. The TL and
+	 * have more people involved in service industries. The TL and
 	 * Government Type also affect things.
 	 */
 	public long getProductionCapacity() {
@@ -124,8 +128,8 @@ public class Trade {
 		}
 		
 		// Strict laws can reduce production.
-		if (planet.getLawLevel() > 1) {
-			effectivePopulation /= planet.getLawLevel();
+		if (planet.getLawLevel() > 2) {
+			effectivePopulation /= (planet.getLawLevel()-2);
 		}
 		
 		// Finally, poor planetary conditions make life hard.
@@ -157,8 +161,13 @@ public class Trade {
 		return production;
 	}
 	
-	private long getWorkersRequired(Commodity c) {
-		return getWorkersRequired(c, 100);
+	public long getUsedProductionCapacity() {
+		long		used = 0;
+		
+		for (Facility f: planet.getFacilities()) {
+			used += f.getSize();
+		}
+		return used;
 	}
 	
 	private long getWorkersRequired(Commodity c, int density) {
@@ -587,15 +596,30 @@ public class Trade {
 		return price;
 	}
 	
+	private String n(long number) {
+		return format.format(number);
+	}
+	
+	/**
+	 * Work out how much food a planet needs. Final requirement is in dt,
+	 * and assume about 1dt = 200 people per week.
+	 */
 	private void foodRequirements() {
-		// Basic amount of required food equal to population.
-		long		demand = planet.getPopulation();
+		// Basic amount of required food based on population.
+		long		demand = Math.max(1, planet.getPopulation()/200);
+		
+		// Rich worlds eat more, poor worlds eat less.
+		if (planet.hasTradeCode(TradeCode.Ri)) {
+			demand *= 2;
+		} else if (planet.hasTradeCode(TradeCode.Po)) {
+			demand /=2;
+		}
 
 		// VeryCold climate requires more food.
 		if (planet.getTemperature().isColderThan(Temperature.Cold)) {
 			demand *= 1.1;
 		}
-		System.out.println("  foodRequirements: "+format.format(demand));
+		System.out.println("  foodRequirements: "+n(demand));
 		
 		// Work out what the different food types are.
 		Vector<Commodity>	vitalFoods = new Vector<Commodity>();
@@ -607,7 +631,7 @@ public class Trade {
 				long		amount = c.getAmount();
 				long		resource = resources.contains(c.getId())?resources.get(c.getId()):0;
 				
-				System.out.println("    "+c.getName()+" ("+format.format(amount)+"/"+resource+") @ "+c.getCost()+"Cr");
+				System.out.println("    "+c.getName()+" ("+n(amount)+"/"+resource+") @ "+c.getCost()+"Cr");
 				if (c.hasCode(CommodityCode.Vi)) {
 					vitalFoods.add(c);
 				} else if (c.hasCode(CommodityCode.Lq)) {
@@ -626,6 +650,22 @@ public class Trade {
 			if (vitalFoods.size() > 0) {
 				long		vitalDemand = (demand > 10)?(long)(demand * 0.70):demand;
 				long		each = vitalDemand / vitalFoods.size();
+				
+				for (Commodity c: vitalFoods) {
+					if (each <= c.getAmount()) {
+						demand -= each;
+						c.setAmount(c.getAmount() - each);
+					} else {
+						demand -= c.getAmount();
+						c.setAmount(0);
+					}
+				}
+				for (int i=0; i < vitalFoods.size(); i++) {
+					if (vitalFoods.elementAt(i).getAmount() == 0) {
+						vitalFoods.remove(i);
+						i=0;
+					}
+				}
 			}
 			
 			if (noMoreFood) {
@@ -634,13 +674,30 @@ public class Trade {
 		}
 		
 		if (demand > 0) {
+			System.out.println("  Hungry: "+n(demand));
 			// Oops, planet is starving. Can we add agriculture?
+			long		used = getUsedProductionCapacity();
+			if (used < productionCapacity) {
+				long		canUse = productionCapacity - used;
+				System.out.println("  Remaining capacity: "+n(canUse));
+				if (planet.hasTradeCode(TradeCode.Ag)) {
+					canUse *= 0.25;
+				} else if (planet.hasTradeCode(TradeCode.Na)) {
+					canUse *= 0.05;
+				} else {
+					canUse *= 0.1;
+				}
+			}
 		}
 		
 	}
 	
 	private void livingRequirements() {
 		long		population = planet.getPopulation();
+		
+		long		livingSpace = 0;
+		
+		Vector<Facility>		f = planet.getFacilities();
 	}
 	
 	/**
@@ -700,8 +757,8 @@ public class Trade {
 				Planet		planet = factory.getPlanet(223065);
 				
 				Trade		trade = new Trade(factory, planet);
-				trade.createFacilities();
-				//trade.calculatePlanetRequirements();
+				//trade.createFacilities();
+				trade.calculatePlanetRequirements();
 				//trade.gatherResources();
 				//trade.consumeResources();
 			//}
