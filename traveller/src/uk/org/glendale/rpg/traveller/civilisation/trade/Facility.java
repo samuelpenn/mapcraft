@@ -127,6 +127,10 @@ public class Facility {
 		return capacity;
 	}
 	
+	public int getResourceId() {
+		return resourceId;
+	}
+	
 	/**
 	 * The general type of this facility.
 	 */

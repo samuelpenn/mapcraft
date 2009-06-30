@@ -34,10 +34,11 @@ CREATE TABLE system (id int auto_increment not null, sector_id int not null,
 					 x int not null, y int not null, name varchar(250) not null, 
 					 allegiance varchar(4) default 'Un',
 					 zone varchar(16) default 'Green', base varchar(8), 
-					 uwp varchar(80),
+					 uwp varchar(80), selection int default 0,
 					 PRIMARY KEY(id), KEY (sector_id), KEY (sector_id, x, y),
 					 FOREIGN KEY (sector_id) REFERENCES sector(id))
 					 ENGINE=INNODB;
+
 					 
 #
 # STAR
@@ -122,7 +123,7 @@ CREATE TABLE log (ship_id INT NOT NULL, system_id INT NOT NULL, planet_id INT NO
 
 CREATE TABLE commodity (id int auto_increment not null,
                    name varchar(64) not null, image varchar(32) not null,
-                   source varchar(4) not null,
+                   source varchar(4) not null, parent_id int not null,
                    cost int not null, dt int default 0,
                    production int not null, consumption int not null,
                    law int default 6, tech int default 0,
@@ -130,48 +131,78 @@ CREATE TABLE commodity (id int auto_increment not null,
                    PRIMARY KEY(id), UNIQUE KEY(name))
                    ENGINE=INNODB;
 
+CREATE TABLE facility (id int auto_increment not null, name varchar(64), type varchar(16), image varchar(16),
+                       techLevel int default 0, capacity int default 0,
+                       resource_id int default 0, inputs varchar(32) default '', outputs varchar(32) default '',
+                       PRIMARY KEY(id), UNIQUE KEY(name)) ENGINE=INNODB;
+
+CREATE TABLE facilities (facility_id int not null, planet_id int not null, size int not null, resource_id int not null,
+                         UNIQUE KEY (facility_id, planet_id)) ENGINE=INNODB;
+                       
+INSERT INTO facility VALUES(0, "Camp",       "Residential", "residential",  0,   100, 0, '', '');
+INSERT INTO facility VALUES(0, "Town",       "Residential", "residential",  2,   500, 0, '', '');
+INSERT INTO facility VALUES(0, "City",       "Residential", "residential",  3,  2000, 0, '', '');
+INSERT INTO facility VALUES(0, "Metropolis", "Residential", "residential",  6,  5000, 0, '', '');
+INSERT INTO facility VALUES(0, "Arcology",   "Residential", "residential",  9, 20000, 0, '', '');
+
+INSERT INTO facility VALUES(0, "Farm",       "Agriculture", "agriculture",  2,     0, 0, 'X,1', 'X,1');
+INSERT INTO facility VALUES(0, "Mine",       "Mining", "mining",            3,     0, 0, 'X,1', 'X,1');
+INSERT INTO facility VALUES(0, "Refinery",   "Industry", "industry",        4,     0, 1, '1,5', '5,3');
+INSERT INTO facility VALUES(0, "Factory",    "Industry", "industry",        5,     0, 5, '5,5', '6,1');
+
+INSERT INTO facility VALUES(0, 'Gaian Farm', 'Agriculture', 'agriculture',  2,    20, 10, '10,20', '203,3;202,4;201,6;207,7');
+
+
+
 # Basic goods
-#INSERT INTO commodity VALUES(0, 'Food', 'Ag', 1000, 1, 8, 8, 6, 1, 'Vi Pe Tl');
-#INSERT INTO commodity VALUES(0, 'Textiles', 'Ag', 3000, 1, 7, 6, 6, 1, 'Vi');
-#INSERT INTO commodity VALUES(0, 'Minerals', 'Mi', 1000, 1, 6, 5, 6, 3, 'In');
-#INSERT INTO commodity VALUES(0, 'Alloys', 'In', 1000, 1, 5, 4, 6, 5, 'In Tl');
-#INSERT INTO commodity VALUES(0, 'Machinary', 'In', 1000, 1, 4, 3, 6, 6, 'Tl');
+INSERT INTO commodity VALUES(1, 'Minerals', 'mineral',    'Mi', 0,  500, 1,  5, 5,  6, 3, 'Or');
+INSERT INTO commodity VALUES(2, 'Food', 'agricultural',   'Ag', 0,  250, 1,  5, 5,  6, 1, 'Fo Vi Pe');
+INSERT INTO commodity VALUES(3, 'Textiles', 'textiles',   'Ag', 0,  700, 1,  5, 5,  6, 1, 'Cl');
+INSERT INTO commodity VALUES(4, 'Luxuries', 'luxuries',   'Ag', 0, 5000, 1,  5, 5,  6, 3, 'Lu');
+INSERT INTO commodity VALUES(5, 'Alloys', 'alloys',       'In', 0, 1500, 1,  5, 5,  6, 5, 'Ma Tl In');
+INSERT INTO commodity VALUES(6, 'Machinery', 'machinery', 'In', 0, 3000, 1,  5, 5,  6, 5, 'Ma Tl');
+
+INSERT INTO commodity VALUES(10, 'Gaian Ecology', 'agricultural',     'Ag', 0,  0, 1,  5, 5, 6, 1, 'Fo');
+INSERT INTO commodity VALUES(11, 'Jungle Ecology', 'agricultural',    'Ag', 0,  0, 1,  3, 5, 6, 1, 'Fo');
+INSERT INTO commodity VALUES(12, 'Coastal Ecology', 'agricultural',   'Ag', 0,  0, 1,  4, 5, 6, 2, 'Fo');
+INSERT INTO commodity VALUES(13, 'Oceanic Ecology', 'agricultural',   'Ag', 0,  0, 1,  3, 5, 6, 5, 'Fo');
 
 # Basic ores
-INSERT INTO commodity VALUES(0, 'Silicate ore', 'silicate', 'Mi', 50, 1, 7, 4, 6, 3, 'Or');
-INSERT INTO commodity VALUES(0, 'Carbonic ore', 'carbonic', 'Mi', 100, 1, 6, 4, 6, 3, 'Or Lt Mt Ht Ut');
-INSERT INTO commodity VALUES(0, 'Ferric ore', 'ferric', 'Mi', 150, 1, 5, 3, 6, 2, 'Or');
-INSERT INTO commodity VALUES(0, 'Aquam solution', 'aquam', 'Mi', 75, 1, 6, 3, 6, 6, 'Or In Mt Ht Ut');
-INSERT INTO commodity VALUES(0, 'Auram gas', 'auram', 'Mi', 120, 1, 5, 3, 6, 6, 'Or In Ht Ut');
+INSERT INTO commodity VALUES(20, 'Silicate ore', 'silicate', 'Mi', 1,  50, 1, 7, 4, 6, 3, 'Or');
+INSERT INTO commodity VALUES(21, 'Carbonic ore', 'carbonic', 'Mi', 1, 100, 1, 6, 4, 6, 3, 'Or Lt Mt Ht Ut');
+INSERT INTO commodity VALUES(22, 'Ferric ore', 'ferric',     'Mi', 1, 150, 1, 5, 3, 6, 2, 'Or');
+INSERT INTO commodity VALUES(23, 'Aquam', 'aquam',           'Mi', 1,  75, 1, 6, 3, 6, 6, 'Or In Mt Ht Ut');
+INSERT INTO commodity VALUES(24, 'Auram', 'auram',           'Mi', 1, 120, 1, 5, 3, 6, 6, 'Or In Ht Ut');
 
 # Uncommon ores
-INSERT INTO commodity VALUES(0, 'Krysite ore', 'silicate', 'Mi', 100, 1, 6, 2, 6, 8, 'Or In Mt Ht Ut');
-INSERT INTO commodity VALUES(0, 'Heliacate ore', 'carbonic', 'Mi', 200, 1, 5, 2, 6, 9, 'Or In Ht Ut');
-INSERT INTO commodity VALUES(0, 'Vardonnek ore', 'ferric', 'Mi', 300, 1, 4, 2, 6, 8, 'Or In Ht Ut');
-INSERT INTO commodity VALUES(0, 'Doric crystals', 'aquam', 'Mi', 250, 1, 5, 2, 6, 9, 'Or In Hz Ut');
-INSERT INTO commodity VALUES(0, 'Regiam gas', 'auram', 'Mi', 440, 1, 4, 2, 6, 7, 'Or In HZ Ht Ut');
+INSERT INTO commodity VALUES(101, 'Krysite ore', 'silicate',   'Mi', 20, 100, 1, 6, 2, 6, 8, 'Or In Mt Ht Ut');
+INSERT INTO commodity VALUES(102, 'Heliacate ore', 'carbonic', 'Mi', 21, 200, 1, 5, 2, 6, 9, 'Or In Ht Ut');
+INSERT INTO commodity VALUES(103, 'Vardonnek ore', 'ferric',   'Mi', 22, 300, 1, 4, 2, 6, 8, 'Or In Ht Ut');
+INSERT INTO commodity VALUES(104, 'Doric crystals', 'aquam',   'Mi', 23, 250, 1, 5, 2, 6, 9, 'Or In Hz Ut');
+INSERT INTO commodity VALUES(105, 'Regiam gas', 'auram',       'Mi', 24, 440, 1, 4, 2, 6, 7, 'Or In HZ Ht Ut');
 
 # Rare ores
-INSERT INTO commodity VALUES(0, 'Magnesite ore', 'silicate', 'Mi', 300,  1, 5, 2, 6, 8, 'Or In Hz Ht Ut');
-INSERT INTO commodity VALUES(0, 'Acenite ore', 'carbonic', 'Mi', 500, 1, 4, 1, 6, 9, 'Or In Hz Ht Ut Sp');
-INSERT INTO commodity VALUES(0, 'Larathic ore', 'ferric', 'Mi', 600, 1, 3, 1, 6, 9, 'Or In Ut');
-INSERT INTO commodity VALUES(0, 'Iskine crystals', 'aquam', 'Mi', 300, 1, 4, 1, 6, 8, 'Or In Ag Ht Ut');
-INSERT INTO commodity VALUES(0, 'Tritanium gas', 'auram', 'Mi', 480, 1, 3, 1, 6, 9, 'Or In Ht Ut');
+INSERT INTO commodity VALUES(106, 'Magnesite ore', 'silicate', 'Mi', 20, 300,  1, 5, 2, 6, 8, 'Or In Hz Ht Ut');
+INSERT INTO commodity VALUES(107, 'Acenite ore', 'carbonic', 'Mi', 21, 500, 1, 4, 1, 6, 9, 'Or In Hz Ht Ut Sp');
+INSERT INTO commodity VALUES(108, 'Larathic ore', 'ferric', 'Mi', 22, 600, 1, 3, 1, 6, 9, 'Or In Ut');
+INSERT INTO commodity VALUES(109, 'Iskine crystals', 'aquam', 'Mi', 23, 300, 1, 4, 1, 6, 8, 'Or In Ag Ht Ut');
+INSERT INTO commodity VALUES(110, 'Tritanium gas', 'auram', 'Mi', 24, 480, 1, 3, 1, 6, 9, 'Or In Ht Ut');
 
 # Very rare ores
-INSERT INTO commodity VALUES(0, 'Ericate ore', 'silicate', 'Mi', 500, 1, 4, 0, 6,9, 'Or In Hz');
-INSERT INTO commodity VALUES(0, 'Pardenic ore', 'carbonic', 'Mi', 800, 1, 3, 0, 6, 10, 'Or In');
-INSERT INTO commodity VALUES(0, 'Xithantite ore', 'ferric', 'Mi', 1200, 1, 2, 0, 6, 10, 'Or In');
-INSERT INTO commodity VALUES(0, 'Oorcine ices', 'aquam', 'Mi', 600, 1, 3, 0, 6, 9, 'Or In Fr');
-INSERT INTO commodity VALUES(0, 'Synthosium gas', 'auram', 'Mi', 1060, 1, 2, 0, 3, 10, 'Or Hz');
+INSERT INTO commodity VALUES(111, 'Ericate ore', 'silicate', 'Mi', 20, 500, 1, 4, 0, 6,9, 'Or In Hz');
+INSERT INTO commodity VALUES(112, 'Pardenic ore', 'carbonic', 'Mi', 21, 800, 1, 3, 0, 6, 10, 'Or In');
+INSERT INTO commodity VALUES(113, 'Xithantite ore', 'ferric', 'Mi', 22, 1200, 1, 2, 0, 6, 10, 'Or In');
+INSERT INTO commodity VALUES(114, 'Oorcine ices', 'aquam', 'Mi', 23, 600, 1, 3, 0, 6, 9, 'Or In Fr');
+INSERT INTO commodity VALUES(115, 'Synthosium gas', 'auram', 'Mi', 24, 1060, 1, 2, 0, 3, 10, 'Or Hz');
 
 # Basic agricultural resources
-INSERT INTO commodity VALUES(0, 'Vegetables', 'vegetables', 'Ag', 100, 1, 10, 8, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(0, 'Fruits', 'fruits', 'Ag', 150, 1, 9, 8, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(0, 'Meat', 'meat', 'Ag', 350, 1, 7, 8, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(0, 'Seafood', 'seafood', 'Ag', 250, 1, 7, 8, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(0, 'Algae', 'algae', 'Ag', 50, 1, 7, 8, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(0, 'Wood', 'wood', 'Ag', 100, 1, 6, 5, 6, 1, 'In Ag Pt Lt Mt Ht');
+INSERT INTO commodity VALUES(201, 'Vegetables', 'vegetables', 'Ag', 2, 100, 1, 10, 8, 6, 1, 'Fo Vi Pe Tl');
+INSERT INTO commodity VALUES(202, 'Fruits', 'fruits', 'Ag', 2, 150, 1, 9, 8, 6, 1, 'Fo Vi Pe Tl');
+INSERT INTO commodity VALUES(203, 'Meat', 'meat', 'Ag', 2, 350, 1, 7, 8, 6, 1, 'Fo Lu Pe Tl');
+INSERT INTO commodity VALUES(204, 'Seafood', 'seafood', 'Ag', 2, 250, 1, 7, 8, 6, 1, 'Fo Pe Tl');
+INSERT INTO commodity VALUES(205, 'Algae', 'algae', 'Ag', 2, 50, 1, 7, 8, 6, 1, 'Fo Lq Pe Tl');
+INSERT INTO commodity VALUES(206, 'Wood', 'wood', 'Ag', 0, 100, 1, 6, 5, 6, 1, 'In Ag Pt Lt Mt Ht');
+INSERT INTO commodity VALUES(207, 'Grain', 'grain', 'Ag', 2, 75, 1, 10, 8, 6, 2, 'Fo Vi Pe Tl');
 
 # Requirements
 CREATE TABLE requirements (commodity_id INT NOT NULL, requires_id INT NOT NULL, number INT DEFAULT 1);

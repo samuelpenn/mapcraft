@@ -543,6 +543,9 @@ public class Trade {
 		Commodity						c = factory.getCommodity(commodityId);
 		long							amount = 0;
 
+		if (c == null) {
+			return 0;
+		}
 		// If the planet has any already in stock, find the amount available.
 		for (int i : goods.keySet()) {
 			if (goods.get(i).getCommodityId() == commodityId) {
@@ -734,13 +737,52 @@ public class Trade {
 			int			size = (int) (pop / arcology.getCapacity());
 			population -= pop;
 			Facility	f = new Facility(arcology, size, 0);
-			list.add(f);
+			//list.add(f);
 			logger.info("Added Arcology pop ["+pop+"] size ["+size+"]");
 		}
 
 		// Agriculture
 		logger.info("AGRICULTURE");
 		Hashtable<Integer,Facility>		ag = Facility.getByType(facilities, FacilityType.Agriculture);
+		
+		// Go through each of the possible facilities, and look for one
+		// which matches the type of resources this planet has. When
+		// found, add the facility. These facilities will be farms.
+		for (Iterator<Facility> i = ag.values().iterator(); i.hasNext();) {
+			Facility f = i.next();
+			logger.info(f.getName()+" - "+f.getResourceId());
+			
+			if (resources.containsKey(f.getResourceId())) {
+				Commodity		resource = commodities.get(f.getResourceId());
+				int				density = resources.get(resource.getId());
+				if (resource == null) {
+					logger.warning("Cannot find resource in commodity list");
+					continue;
+				}
+				if (resource.getTechLevel() > planet.getTechLevel()) {
+					// Resource cannot be farmed/mined.
+					continue;
+				}
+				logger.info("Adding facility for resource ["+resource.getName()+"]/"+resource.getProductionRate());
+				
+				// Ideally, a farm produces food units each week equal to its
+				// capacity. This is modified by the density of the resource.
+				// A resource of 100 is ideal.
+				long		pr = (long)(resource.getProductionRate() * 10000.0 / density / density);
+				if (resource.hasCode(CommodityCode.TL)) {
+					pr /= 2 * (planet.getTechLevel() - resource.getTechLevel()) + 1;
+				} else if (resource.hasCode(CommodityCode.Tl)) {
+					pr /= (planet.getTechLevel() - resource.getTechLevel() + 1);					
+				} else {
+					pr /= Math.sqrt(planet.getTechLevel() - resource.getTechLevel() + 1);
+				}
+				long		maxFacilities = planet.getPopulation() / pr;
+				long		eachFacilityFeeds = f.getCapacity() * 200;
+				
+				logger.info("Maximum facilities: "+maxFacilities);
+				
+			}
+		}
 		
 	}
 	
@@ -757,8 +799,8 @@ public class Trade {
 				Planet		planet = factory.getPlanet(223065);
 				
 				Trade		trade = new Trade(factory, planet);
-				//trade.createFacilities();
-				trade.calculatePlanetRequirements();
+				trade.createFacilities();
+				//trade.calculatePlanetRequirements();
 				//trade.gatherResources();
 				//trade.consumeResources();
 			//}

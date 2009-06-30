@@ -49,6 +49,11 @@ public class Roving implements Role {
 	 */
 	public void docked() {
 		Planet		planet = currentSystem.getMainWorld();
+		
+		if (planet == null) {
+			System.out.println("Ship is docked, but no planet found");
+			return;
+		}
 
 		// Attempt some very basic trade.
 		if (ship.getCargoCapacity() > 0) {
@@ -61,6 +66,8 @@ public class Roving implements Role {
 					int				sellPrice = trade.getPricePlanetBuysAt(good.getCommodityId());
 					System.out.println("Ship has "+good.getAmount()+"dt of "+good.getId()+" at "+good.getPrice());
 					System.out.println("Can be sold at "+planet.getName()+" for "+sellPrice);
+					
+					if (sellPrice == 0) continue;
 					
 					if (good.getPrice() < sellPrice) {
 						int amount = factory.addCommodity(planet.getId(), good.getCommodityId(), good.getAmount(), sellPrice);
