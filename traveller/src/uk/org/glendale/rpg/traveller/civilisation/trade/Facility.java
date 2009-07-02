@@ -22,7 +22,6 @@ public class Facility {
 	private	int					id = 0;
 	private String				name = null;
 	private FacilityType		type = null;
-	private int					size = 0;
 	private String				image = null;
 	private String				codes = null;
 	private int					techLevel = 0;
@@ -31,12 +30,7 @@ public class Facility {
 	
 	Hashtable<Integer,Integer>	inputMap = null;
 	Hashtable<Integer,Integer>	outputMap = null;
-	
-	public Facility(Facility facility, int size, int resourceId) {
-		this.type = type;
-		this.size = size;
-	}
-	
+		
 	/**
 	 * Create a new facility, based on database result set.
 	 */
@@ -131,17 +125,14 @@ public class Facility {
 		return resourceId;
 	}
 	
+	public int getTechLevel() {
+		return techLevel;
+	}
+	
 	/**
 	 * The general type of this facility.
 	 */
 	public FacilityType getType() {
 		return type;
-	}
-	
-	/**
-	 * The size of the facility, in terms of production capacity.
-	 */
-	public int getSize() {
-		return size;
-	}
+	}		
 }

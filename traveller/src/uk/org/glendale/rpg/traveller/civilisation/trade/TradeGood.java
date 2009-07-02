@@ -11,18 +11,18 @@ package uk.org.glendale.rpg.traveller.civilisation.trade;
 public class TradeGood {
 	int		id = 0;
 	int		commodityId=0;
-	int		amount=0;
+	long	amount=0;
 	int		price=0;
 	int		planetId=0;
 	
-	public TradeGood(int commodityId, int amount, int price) {
+	public TradeGood(int commodityId, long amount, int price) {
 		this.commodityId = commodityId;
 		this.amount = amount;
 		this.price = price;
 		this.planetId = 0;
 	}
 
-	public TradeGood(int id, int commodityId, int amount, int price, int planetId) {
+	public TradeGood(int id, int commodityId, long amount, int price, int planetId) {
 		this.id = id;
 		this.commodityId = commodityId;
 		this.amount = amount;
@@ -30,7 +30,7 @@ public class TradeGood {
 		this.planetId = planetId;
 	}
 
-	public TradeGood(int commodityId, int amount, int price, int planetId) {
+	public TradeGood(int commodityId, long amount, int price, int planetId) {
 		this.id = 0;
 		this.commodityId = commodityId;
 		this.amount = amount;
@@ -46,11 +46,14 @@ public class TradeGood {
 		return commodityId;
 	}
 	
-	public int getAmount() {
+	public long getAmount() {
 		return amount;
 	}
 	
-	public void setAmount(int amount) {
+	public void setAmount(long amount) {
+		if (amount < 0) {
+			amount = 0;
+		}
 		this.amount = amount;
 	}
 	

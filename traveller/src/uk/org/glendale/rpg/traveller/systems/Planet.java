@@ -63,7 +63,7 @@ public class Planet {
 	private String					tradeCodes = "";
 	private String					description = null;
 	private EnumSet<PlanetFeature>	features = null;
-	private Vector<Facility>		facilities = null;
+	private Hashtable<Integer,Long>	facilities = null;
 
 	public int getId() {
 		return id;
@@ -1718,13 +1718,21 @@ public class Planet {
 		if (value > 0) resources.put(resource, value);
 	}
 	
-	public void setFacilities(Vector<Facility> facilities) {
+	public void setFacilities(Hashtable<Integer,Long> facilities) {
 		this.facilities = facilities;
 	}
 	
-	public Vector<Facility> getFacilities() {
+	/**
+	 * Get a list of facilities on this planet. Facilities are returned
+	 * as a hashtable with the facility id as a key, and the size of the
+	 * facility as the value.
+	 * 
+	 * @return		Hashtable of facility sizes.
+	 */
+	public Hashtable<Integer,Long> getFacilities() {
 		if (facilities == null) {
-			facilities = new Vector<Facility>();
+			if (factory == null) factory = new ObjectFactory();
+			facilities = factory.getFacilitiesByPlanet(id);
 		}
 		
 		return facilities;

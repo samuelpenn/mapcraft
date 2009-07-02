@@ -70,10 +70,10 @@ public class Roving implements Role {
 					if (sellPrice == 0) continue;
 					
 					if (good.getPrice() < sellPrice) {
-						int amount = factory.addCommodity(planet.getId(), good.getCommodityId(), good.getAmount(), sellPrice);
+						long amount = factory.addCommodity(planet.getId(), good.getCommodityId(), good.getAmount(), sellPrice);
 						// Make a profit, so sell the goods.
-						ship.modifyCargo(good.getId(), -amount);
-						ship.setCash(ship.getCash() + amount * sellPrice);
+						ship.modifyCargo(good.getId(), (int)-amount);
+						ship.setCash(ship.getCash() + (int)amount * sellPrice);
 						factory.setShipCargo(ship.getId(), ship.getCargo());
 					}
 				}
@@ -90,7 +90,7 @@ public class Roving implements Role {
 					
 					if (good.getPrice() < c.getCost()) {
 						// Cheap here, so buy.
-						int		buy = good.getAmount();
+						long		buy = good.getAmount();
 						if (buy > space) buy = space;
 						
 						if (buy * good.getPrice() > ship.getCash()) {
@@ -99,7 +99,7 @@ public class Roving implements Role {
 						
 						if (buy > 0) {
 							ship.addCargo(new TradeGood(good.getCommodityId(), buy, good.getPrice(), planet.getId()));
-							ship.setCash(ship.getCash() - buy * good.getPrice());
+							ship.setCash(ship.getCash() - (int)buy * good.getPrice());
 							
 							good.setAmount(good.getAmount()-buy);
 							factory.setCommodity(planet.getId(), good.getCommodityId(), good.getAmount(), good.getPrice());

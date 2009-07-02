@@ -235,4 +235,24 @@ public class Commodity {
 	public String getImage() {
 		return image;
 	}
+	
+	/**
+	 * Amount produced may be modified by the planet's tech level.
+	 * @param planetTechLevel
+	 * @param amount
+	 * @return
+	 */
+	public long getAmountModifiedByTech(int planetTechLevel, long amount) {
+		int tl = planetTechLevel - techLevel;
+		if (hasCode(CommodityCode.TL)) {
+			if (tl > 0) amount *= (tl + 1) * 2;
+			if (tl < 0) amount = 0;
+		} else if (hasCode(CommodityCode.Tl)) {
+			if (tl > 0) amount *= (tl + 1);
+			if (tl < 0) amount /= Math.abs(tl + 1);
+		} else {
+			if (tl > 0) amount *= Math.sqrt(tl + 1);
+		}
+		return amount;
+	}
 }

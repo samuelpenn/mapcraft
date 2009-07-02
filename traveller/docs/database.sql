@@ -134,10 +134,14 @@ CREATE TABLE commodity (id int auto_increment not null,
 CREATE TABLE facility (id int auto_increment not null, name varchar(64), type varchar(16), image varchar(16),
                        techLevel int default 0, capacity int default 0,
                        resource_id int default 0, inputs varchar(32) default '', outputs varchar(32) default '',
+                       codes varchar(64) not null,
                        PRIMARY KEY(id), UNIQUE KEY(name)) ENGINE=INNODB;
 
-CREATE TABLE facilities (facility_id int not null, planet_id int not null, size int not null, resource_id int not null,
+CREATE TABLE facilities (facility_id int not null, planet_id int not null, size int not null,
                          UNIQUE KEY (facility_id, planet_id)) ENGINE=INNODB;
+
+INSERT INTO facility VALUES(0, 'Colony',      'Residential', 'residential',  7,   100, 0, '', '', '');
+INSERT INTO facility VALUES(0, 'Light rural', 'Residential', 'residential',  0,  1000, 0, '', '', '');
                        
 INSERT INTO facility VALUES(0, "Camp",       "Residential", "residential",  0,   100, 0, '', '');
 INSERT INTO facility VALUES(0, "Town",       "Residential", "residential",  2,   500, 0, '', '');
@@ -150,7 +154,10 @@ INSERT INTO facility VALUES(0, "Mine",       "Mining", "mining",            3,  
 INSERT INTO facility VALUES(0, "Refinery",   "Industry", "industry",        4,     0, 1, '1,5', '5,3');
 INSERT INTO facility VALUES(0, "Factory",    "Industry", "industry",        5,     0, 5, '5,5', '6,1');
 
-INSERT INTO facility VALUES(0, 'Gaian Farm', 'Agriculture', 'agriculture',  2,    20, 10, '10,20', '203,3;202,4;201,6;207,7');
+INSERT INTO facility VALUES(0, 'Gaian Farm LT', 'Agriculture', 'agriculture',  1,    20, 10, '10,20', '203,3;202,4;201,6;207,7');
+INSERT INTO facility VALUES(0, 'Gaian Farm MT', 'Agriculture', 'agriculture',  5,    40, 10, '10,20', '203,6;202,8;201,12;207,14');
+INSERT INTO facility VALUES(0, 'Gaian Farm HT', 'Agriculture', 'agriculture',  7,    80, 10, '10,20', '203,10;202,15;201,20;207,35');
+INSERT INTO facility VALUES(0, 'Gaian Farm UT', 'Agriculture', 'agriculture',  9,   120, 10, '10,20', '203,10;202,20;201,30;207,60');
 
 
 
@@ -196,13 +203,17 @@ INSERT INTO commodity VALUES(114, 'Oorcine ices', 'aquam', 'Mi', 23, 600, 1, 3, 
 INSERT INTO commodity VALUES(115, 'Synthosium gas', 'auram', 'Mi', 24, 1060, 1, 2, 0, 3, 10, 'Or Hz');
 
 # Basic agricultural resources
-INSERT INTO commodity VALUES(201, 'Vegetables', 'vegetables', 'Ag', 2, 100, 1, 10, 8, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(202, 'Fruits', 'fruits', 'Ag', 2, 150, 1, 9, 8, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(203, 'Meat', 'meat', 'Ag', 2, 350, 1, 7, 8, 6, 1, 'Fo Lu Pe Tl');
-INSERT INTO commodity VALUES(204, 'Seafood', 'seafood', 'Ag', 2, 250, 1, 7, 8, 6, 1, 'Fo Pe Tl');
-INSERT INTO commodity VALUES(205, 'Algae', 'algae', 'Ag', 2, 50, 1, 7, 8, 6, 1, 'Fo Lq Pe Tl');
-INSERT INTO commodity VALUES(206, 'Wood', 'wood', 'Ag', 0, 100, 1, 6, 5, 6, 1, 'In Ag Pt Lt Mt Ht');
-INSERT INTO commodity VALUES(207, 'Grain', 'grain', 'Ag', 2, 75, 1, 10, 8, 6, 2, 'Fo Vi Pe Tl');
+INSERT INTO commodity VALUES(201, 'Vegetables', 'vegetables', 'Ag', 2, 100, 1, 10, 10, 6, 1, 'Fo Vi Pe Tl');
+INSERT INTO commodity VALUES(202, 'Fruits',     'fruits', 'Ag', 2,     150, 1, 9,  10, 6, 1, 'Fo Vi Pe Tl');
+INSERT INTO commodity VALUES(203, 'Meat',       'meat', 'Ag', 2,       350, 1, 7,   9, 6, 1, 'Fo Lu Pe Tl');
+INSERT INTO commodity VALUES(204, 'Seafood',    'seafood', 'Ag', 2,    150, 1, 7,  10, 6, 1, 'Fo Pe Tl');
+INSERT INTO commodity VALUES(205, 'Algae',      'algae', 'Ag', 2,       50, 1, 7,  11, 6, 1, 'Fo Lq Pe Tl');
+INSERT INTO commodity VALUES(206, 'Wood',       'wood', 'Ag', 0,       100, 1, 6,   7, 6, 1, 'In Ag Pt Lt Mt Ht');
+INSERT INTO commodity VALUES(207, 'Grain',      'grain', 'Ag', 2,       75, 1, 10, 11, 6, 2, 'Fo Vi Pe Tl');
+INSERT INTO commodity VALUES(208, 'Fish',       'seafood', 'Ag', 204,  150, 1, 7,  10, 6, 1, 'Fo Pe Vi Tl');
+INSERT INTO commodity VALUES(209, 'Shellfish',  'seafood', 'Ag', 204,  125, 1, 7,  10, 6, 1, 'Fo Pe Tl');
+INSERT INTO commodity VALUES(210, 'Seaweed',    'seafood', 'Ag', 204,   65, 1, 7,  12, 6, 1, 'Fo Pe Lq Tl');
+INSERT INTO commodity VALUES(211, 'Rice',       'rice', 'Ag', 2,        55, 1, 7,  12, 6, 1, 'Fo Pe Lq Tl');
 
 # Requirements
 CREATE TABLE requirements (commodity_id INT NOT NULL, requires_id INT NOT NULL, number INT DEFAULT 1);

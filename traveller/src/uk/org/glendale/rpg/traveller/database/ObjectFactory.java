@@ -263,7 +263,7 @@ public class ObjectFactory {
 		try {
 			rs = db.query("select * from planet where id=?", id);
 			if (rs.next()) {
-				planet = new Planet(rs);
+				planet = new Planet(this, rs);
 			} else {
 				throw new ObjectNotFoundException("Could not find a planet with id ["+id+"]");
 			}
@@ -844,7 +844,7 @@ public class ObjectFactory {
 	 * 
 	 * @return		Amount of goods actually sold.
 	 */
-	public int addCommodity(int planetId, int commodityId, int amount, int price) {
+	public long addCommodity(int planetId, int commodityId, long amount, int price) {
 		String					sql = "select amount,price from trade where planet_id="+planetId+" and commodity_id="+commodityId;
 		ResultSet				rs = null;
 		TradeGood				good = null;
@@ -1084,21 +1084,18 @@ public class ObjectFactory {
 		return table;
 	}
 	
-	public Vector<Facility> getFacilitiesByPlanet(int planetId) {
-		Vector<Facility>	list = new Vector<Facility>();
+	public Hashtable<Integer,Long> getFacilitiesByPlanet(int planetId) {
+		Hashtable<Integer,Long>		list = new Hashtable<Integer,Long>();
 		
-		String		sql = "select facility_id, size, resource_id from facilities where planet_id = "+planetId;
+		String		sql = "select facility_id, size from facilities where planet_id = "+planetId;
 		ResultSet	rs = null;
 
 		try {
 			rs = db.query(sql);
 			while (rs.next()) {
 				int		facilityId = rs.getInt("facility_id");
-				int		size = rs.getInt("size");
-				int		resourceId = rs.getInt("resource_id");
-				Facility facility = new Facility(rs);
-				
-				list.add(facility);
+				long	size = rs.getInt("size");
+				list.put(facilityId, size);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1107,6 +1104,30 @@ public class ObjectFactory {
 		}
 		
 		return list;
+	}
+	
+	public void setFacilitiesForPlanet(int planetId, Hashtable<Integer,Long> list) {
+		String		sql = "delete from facilities where planet_id="+planetId;
+		ResultSet	rs = null;
+
+		try {
+			db.delete("facilities", "planet_id="+planetId);
+			
+			for (Iterator<Integer> i = list.keySet().iterator(); i.hasNext();) {
+				int		id = i.next();
+				long	size = list.get(id);
+				
+				Hashtable<String,Object>	data = new Hashtable<String,Object>();
+				data.put("planet_id", planetId);
+				data.put("facility_id", id);
+				data.put("size", (int)size);
+				db.insert2("facilities", data);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			rs = db.tidy(rs);
+		}
 	}
 
 	/**
