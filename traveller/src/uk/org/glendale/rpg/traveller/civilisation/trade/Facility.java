@@ -68,6 +68,7 @@ public class Facility {
 				String		units = n[1];
 				
 				if (key.equalsIgnoreCase("X")) key = "0";
+				if (units.equalsIgnoreCase("X")) units = "0";
 				try {
 					map.put(Integer.parseInt(key), Integer.parseInt(units));
 				} catch (NumberFormatException e) {

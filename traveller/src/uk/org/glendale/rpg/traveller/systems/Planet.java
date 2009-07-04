@@ -1360,6 +1360,7 @@ public class Planet {
 		
 		// If the planet has resources set, then write them out.
 		if (resources != null) {
+			System.out.println("Has resources "+resources.size());
 			factory.storeResources(id, resources);
 		}
 	}

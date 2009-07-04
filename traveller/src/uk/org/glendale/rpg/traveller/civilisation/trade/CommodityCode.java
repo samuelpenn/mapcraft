@@ -52,6 +52,7 @@ public enum CommodityCode {
 	En("Entertainment"),
 	Me("Medical"),
 	Ma("Machinary"),
+	El("Electronics"),
 	// Quality
 	Hq("High quality"),
 	Lq("Low quality"),

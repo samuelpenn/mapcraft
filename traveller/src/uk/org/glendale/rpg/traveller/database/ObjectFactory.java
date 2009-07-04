@@ -795,7 +795,7 @@ public class ObjectFactory {
 	 * @param planet_id		Id of the planet to get commodities list for.
 	 */
 	public Hashtable<Integer,TradeGood> getCommoditiesByPlanet(int planet_id) {
-		String					sql = "select commodity_id, amount, price from trade where planet_id="+planet_id;
+		String					sql = "select commodity_id, amount, consumed, price from trade where planet_id="+planet_id+" order by id";
 		ResultSet				rs = null;
 		Hashtable<Integer,TradeGood>	list = new Hashtable<Integer,TradeGood>();
 		
@@ -803,10 +803,11 @@ public class ObjectFactory {
 			rs = db.query(sql);
 			while (rs.next()) {
 				int		id = rs.getInt("commodity_id");
-				int		amount = rs.getInt("amount");
+				long	amount = rs.getLong("amount");
+				long	consumed = rs.getLong("consumed");
 				int		price = rs.getInt("price");
 				
-				list.put(rs.getInt("commodity_id"), new TradeGood(id, amount, price));
+				list.put(rs.getInt("commodity_id"), new TradeGood(id, amount, consumed, price));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -818,18 +819,24 @@ public class ObjectFactory {
 		return list;
 	}
 	
-	public void setCommodity(int planet_id, int commodity_id, long amount, int price) {
+	public void setCommodity(int planet_id, int commodity_id, long amount, long consumed, int price) {
 		String			where = "planet_id="+planet_id+" and commodity_id="+commodity_id;
-		Hashtable<String,Object>		data = new Hashtable<String,Object>();
 		
-		data.put("planet_id", planet_id);
-		data.put("commodity_id", commodity_id);
-		data.put("amount", amount);
-		data.put("price", price);
-		try {
-			db.replace("trade", data, where);
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if (amount < 1 && consumed < 1) {
+			db.delete("trade", where);
+		} else {		
+			Hashtable<String,Object>		data = new Hashtable<String,Object>();
+			
+			data.put("planet_id", planet_id);
+			data.put("commodity_id", commodity_id);
+			data.put("amount", amount);
+			data.put("consumed", consumed);
+			data.put("price", price);
+			try {
+				db.replace("trade", data, where);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -844,20 +851,21 @@ public class ObjectFactory {
 	 * 
 	 * @return		Amount of goods actually sold.
 	 */
-	public long addCommodity(int planetId, int commodityId, long amount, int price) {
-		String					sql = "select amount,price from trade where planet_id="+planetId+" and commodity_id="+commodityId;
+	public long addCommodity(int planetId, int commodityId, long amount, long consumed, int price) {
+		String					sql = "select amount,consumed,price from trade where planet_id="+planetId+" and commodity_id="+commodityId;
 		ResultSet				rs = null;
 		TradeGood				good = null;
 		
 		try {
 			rs = db.query(sql);
 			if (rs.next()) {
-				int		a = rs.getInt("amount");
+				long	a = rs.getLong("amount");
+				long	c = rs.getLong("consumed");
 				int		p = rs.getInt("price");
 				
-				good = new TradeGood(commodityId, a, p);
+				good = new TradeGood(commodityId, a, c, p);
 			} else {
-				good = new TradeGood(commodityId, 0, price);
+				good = new TradeGood(commodityId, 0, 0, price);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -872,7 +880,7 @@ public class ObjectFactory {
 			good.setAmount(0);
 		}
 		
-		setCommodity(planetId, commodityId, good.getAmount(), good.getPrice());
+		setCommodity(planetId, commodityId, good.getAmount(), good.getConsumed(), good.getPrice());
 
 		return amount;
 	}
@@ -1197,8 +1205,8 @@ public class ObjectFactory {
 				system.regenerate();
 				
 				system = factory.getStarSystem(id);
-				Planet		mainWorld = system.getMainWorld();
-				WorldBuilder.imagePlanet(factory, mainWorld);
+				//Planet		mainWorld = system.getMainWorld();
+				//WorldBuilder.imagePlanet(factory, mainWorld);
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -1209,7 +1217,7 @@ public class ObjectFactory {
 	
 	public static void main(String[] args) throws Exception {
 		//regenSystem(14167);
-		regenSelection(1);
+		regenSelection(2);
 	}
 
 }

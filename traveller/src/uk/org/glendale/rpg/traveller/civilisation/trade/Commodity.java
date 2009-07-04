@@ -19,6 +19,7 @@ import java.sql.*;
  */
 public class Commodity {
 	private int 	id;
+	private int		parentId;
 	private String	name;
 	private String	image;
 	private Source	source;
@@ -177,6 +178,7 @@ public class Commodity {
 		legality = rs.getInt("law");
 		source = Source.valueOf(rs.getString("source"));
 		image = rs.getString("image");
+		parentId = rs.getInt("parent_id");
 		
 		String	c = rs.getString("codes");
 		
@@ -245,14 +247,16 @@ public class Commodity {
 	public long getAmountModifiedByTech(int planetTechLevel, long amount) {
 		int tl = planetTechLevel - techLevel;
 		if (hasCode(CommodityCode.TL)) {
-			if (tl > 0) amount *= (tl + 1) * 2;
+			if (tl > 0) amount *= (tl + 1);
 			if (tl < 0) amount = 0;
 		} else if (hasCode(CommodityCode.Tl)) {
-			if (tl > 0) amount *= (tl + 1);
-			if (tl < 0) amount /= Math.abs(tl + 1);
-		} else {
 			if (tl > 0) amount *= Math.sqrt(tl + 1);
+			if (tl < 0) amount /= Math.abs(tl + 1);
 		}
 		return amount;
+	}
+	
+	public int getParentId() {
+		return parentId;
 	}
 }

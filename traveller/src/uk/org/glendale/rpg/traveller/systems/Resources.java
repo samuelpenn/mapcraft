@@ -40,21 +40,30 @@ public class Resources {
 	/**
 	 * Resources for Gaian type worlds.
 	 */
-	private static void setGaian(Planet planet) {
+	private static void setGaian(ObjectFactory factory, StarSystem system, Planet planet) {
 		
 		System.out.println("Setting Gaian for ["+planet.getName()+"]");
 		
 		// Basic mineral resources
-		planet.addResource(SILICATE, 50+Die.d20(2));
-		planet.addResource(CARBONIC, 50+Die.d20(2));
+		planet.addResource(SILICATE, 35+Die.d20(2));
+		planet.addResource(CARBONIC, 35+Die.d20(2));
 		planet.addResource(FERRIC, planet.getRadius()/150 + Die.d20(2));
 		
-		planet.addResource(AQUAM, planet.getHydrographics());		
-		planet.addResource(AURAM, 20+Die.d12(2));
+		planet.addResource(AQUAM, (planet.getHydrographics()*planet.getHydrographics())/10000);
+		switch (planet.getAtmospherePressure()) {
+		case None: case Trace:
+			break;
+		case Thin: case VeryThin:
+			planet.addResource(AURAM, 5+Die.d6(1));
+			break;
+		default:
+			planet.addResource(AURAM, 20+Die.d12(2));
+			break;
+		}
 		
-		planet.addResource(KRYSITE, 30+Die.d12(2));
-		planet.addResource(MAGNESITE, 5+Die.d4());
-		planet.addResource(VARDONNEK, 10+Die.d8(2));
+		if (Die.d4() == 1) planet.addResource(KRYSITE, 30+Die.d12(2));
+		if (Die.d4() == 1) planet.addResource(MAGNESITE, 5+Die.d4());
+		if (Die.d6() == 1) planet.addResource(VARDONNEK, 10+Die.d8(2));
 		
 		// Basic organic resources.
 		switch (planet.getLifeLevel()) {
@@ -68,42 +77,68 @@ public class Resources {
 			planet.addResource(ALGAE, 15+Die.d12(2));
 			break;
 		case Metazoa:
-			planet.addResource(ALGAE, 35+Die.d20(2));
-			planet.addResource(SEAFOOD, Die.d20(1));
-			break;
-		case ComplexOcean:
-			planet.addResource(ALGAE, 40+Die.d12(2));
-			planet.addResource(SEAFOOD, 40+Die.d20(2));
-			break;
-		case SimpleLand:
-			planet.addResource(ALGAE, 30+Die.d12(2));
-			planet.addResource(SEAFOOD, 40+Die.d20(2));
-			planet.addResource(VEGETABLES, 20+Die.d12(2));
-			if (Die.d6() < 3) {
-				planet.addResource(WOOD, 5+Die.d6(2));
+			switch (Die.d6()) {
+			case 1: case 2: case 3:
+				planet.addResource("Algae", 35+Die.d20(2));
+				break;
+			case 4: case 5:
+				planet.addResource("Algae", 25+Die.d20(2));
+				planet.addResource("Jellyfish", Die.d20(1));
+				break;
+			case 6:
+				planet.addResource("Algae", 15+Die.d20(2));
+				planet.addResource("Jellyfish", 15+Die.d20(1));
+				planet.addResource("Seaweed", 10+Die.d20(1));
+				break;
 			}
 			break;
+		case ComplexOcean:
+			planet.addResource("Algae", 5+Die.d12(2));
+			planet.addResource("Jellyfish", 10+Die.d12(3));
+			planet.addResource("Seaweed", 10+Die.d12(2));
+			planet.addResource("Shellfish", 30+Die.d20(2));
+			planet.addResource("Fish", 40+Die.d20(2));
+			break;
+		case SimpleLand:
+			planet.addResource("Algae", Die.d6(2));
+			planet.addResource("Jellyfish", 5+Die.d6(2));
+			planet.addResource("Seaweed", 10+Die.d6(2));
+			planet.addResource("Shellfish", 20+Die.d20(2));
+			planet.addResource("Fish", 40+Die.d20(3));
+			
+			planet.addResource("Vegetables", 20+Die.d20(2));
+			if (Die.d6() < 5) planet.addResource("Fruits", 10+Die.d12(2));
+			if (Die.d6() < 3) planet.addResource("Wood", 5+Die.d6(2));
+			break;
 		case ComplexLand:
-			planet.setLifeLevel(LifeType.ComplexLand);
-			planet.addResource(ALGAE, 20+Die.d12(2));
-			planet.addResource(SEAFOOD, 50+Die.d20(2));
-			planet.addResource(VEGETABLES, 40+Die.d20(2));
-			planet.addResource(MEAT, 10+Die.d8(2));
-			planet.addResource(WOOD, 20+Die.d20(2));
+			if (Die.d6() < 4) planet.addResource("Jellyfish", 5+Die.d6(2));
+			if (Die.d6() < 4) planet.addResource("Seaweed", 10+Die.d6(2));
+			planet.addResource("Shellfish", 20+Die.d20(2));
+			planet.addResource("Fish", 40+Die.d20(3));
+			planet.addResource("Grain", 35+Die.d20(3));
+			planet.addResource("Vegetables", 35+Die.d20(3));
+			planet.addResource("Fruits", 20+Die.d20(2));
+			planet.addResource("Wood", 20+Die.d20(2));
+			planet.addResource("Meat", 10+Die.d12(2));
 			break;
 		case Extensive:
-			planet.addResource(ALGAE, 15+Die.d12(2));
-			planet.addResource(SEAFOOD, 50+Die.d20(2));
-			planet.addResource(VEGETABLES, 50+Die.d20(2));
-			planet.addResource(MEAT, 20+Die.d12(2));
-			planet.addResource(WOOD, 35+Die.d20(2));
+			if (Die.d6() < 3) planet.addResource("Jellyfish", 5+Die.d6(2));
+			if (Die.d6() < 3) planet.addResource("Seaweed", 10+Die.d6(2));
+			planet.addResource("Shellfish", 20+Die.d20(2));
+			planet.addResource("Fish", 40+Die.d20(3));
+			planet.addResource("Grain", 40+Die.d20(3));
+			planet.addResource("Vegetables", 40+Die.d20(3));
+			planet.addResource("Fruits", 30+Die.d20(2));
+			planet.addResource("Wood", 30+Die.d20(2));
+			planet.addResource("Meat", 30+Die.d20(2));
+			break;
 		}		
 	}
 	
 	/**
 	 * Set the resources on the given planet.
 	 */
-	public static void setResources(ObjectFactory factory, Planet planet) {
+	public static void setResources(ObjectFactory factory, StarSystem system, Planet planet) {
 		System.out.println(planet.getType());
 		switch (planet.getType()) {
 		case Gaian:
@@ -112,16 +147,17 @@ public class Resources {
 		case PostGaian:
 		case ArchaeoGaian:
 		case GaianTundral:
-			setGaian(planet);
+			setGaian(factory, system, planet);
 			break;
 		}
 	}
 	
 	public static void main(String[] args) throws Exception {
 		ObjectFactory		factory = new ObjectFactory();
-		Planet				planet = factory.getPlanet(223065);
+		Planet				planet = factory.getPlanet(224128);
+		StarSystem			system = null;
 		
-		setResources(factory, planet);
+		setResources(factory, system, planet);
 		planet.persist();
 	}
 

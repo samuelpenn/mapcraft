@@ -22,7 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.text.NumberFormatter;
 
+import uk.org.glendale.rpg.traveller.Config;
 import uk.org.glendale.rpg.traveller.civilisation.trade.Commodity;
+import uk.org.glendale.rpg.traveller.civilisation.trade.Facility;
 import uk.org.glendale.rpg.traveller.civilisation.trade.Trade;
 import uk.org.glendale.rpg.traveller.civilisation.trade.TradeGood;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
@@ -129,7 +131,7 @@ public class Market extends HttpServlet {
 	private String outputHTML(ObjectFactory factory, Planet planet, String contextPath) {
 		StringBuffer		buffer = new StringBuffer();
 		String				stylesheet = contextPath+"/css/system.css";
-		String				imageBase = contextPath+"/images/trade/";
+		String				imageBase = contextPath+"/images/";
 		Trade				trade = new Trade(factory, planet);
 		DecimalFormat		f = new DecimalFormat();
 		
@@ -150,9 +152,25 @@ public class Market extends HttpServlet {
 		buffer.append("<b>Tech Level: </b>"+planet.getTechLevel()+"; ");
 		buffer.append("<b>Star port: </b>"+planet.getStarport()+"; ");		
 		buffer.append("</p>");
+
+		String[]	tradeCodes = planet.getTradeCodes();
+		if (tradeCodes != null && tradeCodes.length > 0) {
+			buffer.append("<p>");
+			for (int c=0; c < tradeCodes.length; c++) {
+				buffer.append("<img width=\"16\" height=\"16\" src=\""+Config.getBaseUrl()+"images/symbols/trade_"+tradeCodes[c].toLowerCase()+".png\"/>");
+			}
+			buffer.append("</p>\n");
+		}
+		
+		Hashtable<Integer,Facility>		allFacilities = factory.getFacilities();
+		Hashtable<Integer,Long>			facilities = planet.getFacilities();
 		
 		buffer.append("<p>");
-		buffer.append("<b>Production Capacity: </b>"+f.format(trade.getProductionCapacity())+"; ");
+		for (int facilityId : facilities.keySet()) {
+			Facility	facility = allFacilities.get(facilityId);
+			String label = facility.getName()+" ("+facilities.get(facilityId)+"%)";
+			buffer.append("<img src='"+imageBase+"facilities/"+facility.getImage()+".png' title='"+label+"'/>");
+		}
 		buffer.append("</p>");
 		buffer.append("</div>");
 		
@@ -172,12 +190,12 @@ public class Market extends HttpServlet {
 			}
 			if (column == 0) {
 				buffer.append("<tr>");
-			} else if (column %5 == 0) {
+			} else if (column %6 == 0) {
 				buffer.append("</tr><tr>");
 			}
 			column++;
 			buffer.append("<td style=\"text-align: center\">");
-			buffer.append("<img src=\""+imageBase+c.getImage()+".png\" alt=\""+c.getName()+"\"/><br/>");
+			buffer.append("<img src=\""+imageBase+"trade/"+c.getImage()+".png\" title=\""+c.getName()+"\"/><br/>");
 			buffer.append(c.getName()+" ("+resources.get(i)+")");
 			buffer.append("</td>");
 		}
@@ -189,25 +207,28 @@ public class Market extends HttpServlet {
 		buffer.append("<h3>Market Information</h3>");
 		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
 		
+		buffer.append("<table class='good'>\n");
+		buffer.append("<tr><th colspan='2'>Trade Good</th><th>Amount</th><th>Price</th><th>Consumed</th></tr>\n");
 		for (int i : goods.keySet()) {
 			TradeGood		good = goods.get(i);
 			Commodity		c = factory.getCommodity(good.getCommodityId());
 			
 			if (c != null) {
-				buffer.append("<div class=\"good\">");
+				buffer.append("<tr>");
 				try {
-					buffer.append("<img src=\""+imageBase+c.getImage()+".png\" align=\"left\"/>");
-					buffer.append("<h4>"+c.getName()+"</h4>");
-					buffer.append("<p><b>Amount:</b> "+f.format(good.getAmount())+" @ "+f.format(good.getPrice())+"Cr; ");
-					buffer.append("<b>Demand: </b>"+f.format(trade.getLocalDemand(c))+"/wk; ");
-					buffer.append("<b>Production: </b>"+f.format(trade.getProductionRate(c))+"/wk");
+					buffer.append("<td><img src=\""+imageBase+"trade/"+c.getImage()+".png\" width='32' height='32' align=\"left\"/></td>");
+					buffer.append("<td><b>"+c.getName()+"</b></td>");
+					buffer.append("<td>"+f.format(good.getAmount())+"</td><td>"+f.format(good.getPrice())+"Cr</td>");
+					buffer.append("<td>"+f.format(good.getConsumed())+"/wk</td>");
+					//buffer.append("<b>Production: </b>"+f.format(trade.getProductionRate(c))+"/wk");
 					buffer.append("</p>");
 				} catch (Throwable e) {
 					buffer.append("Oops");
 				}
-				buffer.append("</div>");
+				buffer.append("</tr>\n");
 			}
 		}
+		buffer.append("</table>\n");
 		buffer.append("</div>");
 		
 		buffer.append("</body></html>\n");

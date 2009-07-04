@@ -47,6 +47,8 @@ public class Trade {
 	private Hashtable<Integer,Commodity>	commodities = null;
 	private Hashtable<Integer,Integer>		resources = null;
 	
+	private Vector<TradeGood>	consumedGoods = null;
+	
 	private static NumberFormat		format = NumberFormat.getInstance();
 	
 	private long				productionCapacity = 0;
@@ -325,52 +327,103 @@ public class Trade {
 	}
 	
 	/**
-	 * Manage the output of a generator facility such as agriculture
-	 * or mining.
-	 * 
-	 * @param facility	Facility to manage.
-	 * @param size		Size of this facility on this world.
+	 * Is the potential parent commodity actually the parent of
+	 * the second commodity?
+	 * @param parentId
+	 * @param commodityId
+	 * @return
 	 */
-	private void manageGenerator(Facility facility, long size) {
-		for (int r: facility.inputMap.keySet()) {
-			long		produce = facility.inputMap.get(r) * size;
-			System.out.println("Produce "+produce+" of resource "+commodities.get(r).getName());
-			
-			// For each commodity, work out how much is produced.
-			for (int cId : facility.outputMap.keySet()) {
-				long		amount = facility.outputMap.get(cId) * size;
-				Commodity	c = commodities.get(cId);
-				
-				amount = c.getAmountModifiedByTech(planet.getTechLevel(), amount);
-				
-				factory.addCommodity(planet.getId(), cId, (int)amount, c.getUnitCost());
-			}
-		}
+	private boolean isParentOf(int parentId, int commodityId) {
+		if (parentId == 0 || commodityId == 0) return false;
+		if (parentId == commodityId) return true;
+		
+		Commodity	c = commodities.get(commodityId);
+		if (c != null) return isParentOf(parentId, c.getParentId());
+		
+		return false;
 	}
 	
 	/**
-	 * Top level method for managing all forms of production and consumption.
-	 * Everything is performed in the following order:
-	 *   Agriculture and Mining
-	 *   Factories
-	 *   Residential
+	 * Generate trade goods from natural resources. For each resource,
+	 * find a facility (if any) which can manage it, and use that to
+	 * produce trade goods.
+	 * 
+	 * @version 0.3
 	 */
-	private void manageEconomy() {
+	private void manageResources() {
 		Hashtable<Integer,Facility>	facilities = factory.getFacilities();
 		Hashtable<Integer,Long>		planetFacilities = planet.getFacilities();
-		
-		// First, look for agricultural and mining facilities.
-		for (int facilityId : planetFacilities.keySet()) {
-			Facility	f = facilities.get(facilityId);
+
+		for (int rId : resources.keySet()) {
+			Commodity	c = commodities.get(rId);
+			int			density = resources.get(rId);
 			
-			if (f.getType() == FacilityType.Agriculture) {
-				manageGenerator(f, planetFacilities.get(facilityId));
-			} else if (f.getType() == FacilityType.Mining) {
-				manageGenerator(f, planetFacilities.get(facilityId));
+			System.out.println("Resource ["+c.getName()+"] density "+density+"%");
+			for (int fId : planetFacilities.keySet()) {
+				Facility	facility = facilities.get(fId);
+				long		facilitySize = planetFacilities.get(fId);
+				
+				// Does this facility manage this resource?
+				if (isParentOf(facility.getResourceId(), rId)) {
+					System.out.println("     --> ["+facility.getName()+"]/"+commodities.get(facility.getResourceId()).getName());
+					
+					long	productionRate = planet.getPopulation() / c.getProductionRate();
+					productionRate = (productionRate * density * density) / 10000;
+					productionRate = c.getAmountModifiedByTech(planet.getTechLevel(), productionRate);
+					productionRate = (productionRate * density) / 100;
+					
+					System.out.println("         Production rate "+n(productionRate)+" dt/wk");
+					factory.addCommodity(planet.getId(), c.getId(), productionRate, 0, c.getUnitCost());
+				}
 			}
 		}
 	}
 	
+	public void manageEconomy() {
+		// Reset all consumption values.
+		consumedGoods = new Vector<TradeGood>();
+		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());		
+		for (TradeGood g : goods.values()) {
+			factory.setCommodity(planet.getId(), g.getCommodityId(), g.getAmount(), 0, g.getPrice());
+		}
+
+		manageResources();
+		manageResidential();
+		setPrices();
+		decayGoods();
+	}
+
+	/**
+	 * For each residential facility, manage its resource demands based on
+	 * population.
+	 * 
+	 * @version 0.3
+	 */
+	private void manageResidential() {
+		Hashtable<Integer,Facility>	facilities = factory.getFacilities();
+		Hashtable<Integer,Long>		planetFacilities = planet.getFacilities();
+
+		for (int facilityId : planetFacilities.keySet()) {
+			Facility	f = facilities.get(facilityId);
+
+			if (f.getType() == FacilityType.Residential) {
+				// How many people do we need to feed?
+				long		size = planetFacilities.get(facilityId);
+				long		people = (planet.getPopulation() * size) / 100;
+
+				System.out.println("Residential ["+f.getName()+"] size "+size+"% ("+n(people)+")");
+				// Eat food.
+				consumeRequirements(f.getResourceId(), people);
+				// Consume any other requirements.
+				for (int r: f.inputMap.keySet()) {
+					long		demand = f.inputMap.get(r);
+					if (demand == 0) demand = people;
+					demand = consumeRequirements(r, demand);
+				}
+			}
+		}
+	}
+		
 	/**
 	 * Work out what resource gathering facilities produce this week.
 	 * We only calculate facilities gathering natural resources.
@@ -402,7 +455,7 @@ public class Trade {
 					
 					amount = c.getAmountModifiedByTech(planet.getTechLevel(), amount);
 					
-					factory.addCommodity(planet.getId(), cId, (int)amount, c.getUnitCost());
+					factory.addCommodity(planet.getId(), cId, amount, 0, c.getUnitCost());
 				}
 			}
 		}
@@ -416,33 +469,6 @@ public class Trade {
 	}
 	
 
-	
-	public void consumeResources() {
-		Hashtable<Integer,Integer> list = factory.getResources(planet.getId());
-
-		System.out.println("Consumption rates");
-		for (int i : list.keySet()) {
-			Commodity	c = commodities.get(i);
-			
-			System.out.println("  "+c.getName()+" ("+c.getAmount()+" @ "+c.getCost()+"Cr)");
-			
-			if (c == null) {
-				c = factory.getCommodity(i);
-			}
-			long		demand = getLocalDemand(c);			
-			long		amount = c.getAmount();
-			
-			int		basePrice = getStandardPrice(c.getId());
-			c.setActualPrice(basePrice);
-			if (demand > amount) {
-				c.setAmount(0);
-			} else {
-				c.setAmount(amount - demand);
-			}
-			//System.out.println("  "+c.getName() + "("+c.getAmount()+") - "+demand+" = "+basePrice+"Cr");
-			factory.setCommodity(planet.getId(), c.getId(), c.getAmount(), c.getActualPrice());
-		}
-	}
 
 	public void productionAbility() {
 		for (int id : commodities.keySet()) {
@@ -679,7 +705,18 @@ public class Trade {
 		return format.format(number);
 	}
 
-	private long eatFood(Hashtable<Integer,TradeGood> goods, Vector<Commodity> list, long demand, double usage) {
+	/**
+	 * Given a list of goods, try and consume them equally in turn.
+	 * 
+	 * @version 0.3
+	 * 
+	 * @param goods
+	 * @param list
+	 * @param demand
+	 * @param usage
+	 * @return
+	 */
+	private long consumeGoods(Hashtable<Integer,TradeGood> goods, Vector<Commodity> list, long demand, double usage) {
 		if (list.size() > 0) {
 			long		vitalDemand = (demand > 10)?(long)(demand * usage):demand;
 			long		each = vitalDemand / list.size();
@@ -692,15 +729,17 @@ public class Trade {
 				long	rate = c.getConsumptionRate();
 				long	consume = Math.max(1, each/rate);
 				if (consume <= good.getAmount()) {
-					System.out.println("Eaten "+n(consume)+"dt of "+c.getName());
+					System.out.println("Eaten "+n(consume)+"dt of "+c.getName()+" satisfies "+n(consume*rate));
 					demand -= consume * rate;
 					good.setAmount(good.getAmount() - consume);
+					good.addConsumed(consume);
 				} else {
-					System.out.println("Eaten "+n(good.getAmount())+"dt of "+c.getName());
+					System.out.println("Eaten "+n(good.getAmount())+"dt of "+c.getName()+" satisfies "+n(good.getAmount()*rate));
 					demand -= good.getAmount() * rate;
+					good.addConsumed(good.getAmount());
 					good.setAmount(0);
 				}
-				factory.setCommodity(planet.getId(), good.getCommodityId(), good.getAmount(), good.getPrice());
+				factory.setCommodity(planet.getId(), good.getCommodityId(), good.getAmount(), good.getConsumed(), good.getPrice());
 			}
 			for (int i=0; i < list.size(); i++) {
 				if (goods.get(list.elementAt(i).getId()).getAmount() == 0) {
@@ -714,102 +753,150 @@ public class Trade {
 	}
 	
 	/**
-	 * Work out how much food a planet needs. Final requirement is in dt,
-	 * and assume about 1dt = 200 people per week.
+	 * Generic consumption of trade goods. Given a base commodity id,
+	 * consume it and any child commodities that are available up to
+	 * the level of demand. Each dt of trade good satisfies a demand
+	 * based on its consumption rate.
+	 * 
+	 * @version 0.3
+	 * 
+	 * @param requiredId
+	 * @param demand
+	 * @return
 	 */
-	private void foodRequirements() {
-		// Basic amount of required food based on population.
-		long		demand = Math.max(1, planet.getPopulation());
+	private long consumeRequirements(int requiredId, long demand) {
+		// Trivial case.
+		if (demand < 1) return 0;
 		
-		// Rich worlds eat more, poor worlds eat less.
-		if (planet.hasTradeCode(TradeCode.Ri)) {
-			demand *= 1.5;
-		} else if (planet.hasTradeCode(TradeCode.Po)) {
-			demand *= 0.67;
-		}
+		Commodity		baseCommodity = commodities.get(requiredId);
+		
+		System.out.println("Consume ["+baseCommodity.getName()+"] for demand "+n(demand));
 
-		// VeryCold climate requires more food.
-		if (planet.getTemperature().isColderThan(Temperature.Cold)) {
-			demand *= 1.1;
-		}
-		System.out.println("  foodRequirements: "+n(demand));
-		
-		// Work out what the different food types are.
-		Vector<Commodity>	vitalFoods = new Vector<Commodity>();
-		Vector<Commodity>	standardFoods = new Vector<Commodity>();
-		Vector<Commodity>	luxuryFoods = new Vector<Commodity>();
-		Vector<Commodity>	poorFoods = new Vector<Commodity>();
+		// Work out what the different good types are. How quickly they
+		// are consumed depends on the type. Vital goods are consumed
+		// quicker than standard goods. Luxury and poor goods are consumed
+		// at the slowest rate.
+		Vector<Commodity>	vital = new Vector<Commodity>();
+		Vector<Commodity>	standard= new Vector<Commodity>();
+		Vector<Commodity>	luxury = new Vector<Commodity>();
+		Vector<Commodity>	poor = new Vector<Commodity>();
 		
 		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
+
 		for (TradeGood good : goods.values()) {
 			Commodity c = commodities.get(good.getCommodityId());
-			if (c.hasCode(CommodityCode.Fo)) {
+			if (isParentOf(requiredId, c.getId())) {
 				long		amount = good.getAmount();
 				
 				System.out.println("    "+c.getName()+" ("+n(amount)+") @ "+c.getCost()+"Cr");
 				if (c.hasCode(CommodityCode.Vi)) {
-					vitalFoods.add(c);
+					vital.add(c);
 				} else if (c.hasCode(CommodityCode.Lq)) {
-					poorFoods.add(c);
+					poor.add(c);
 				} else if (c.hasCode(CommodityCode.Lu)) {
-					luxuryFoods.add(c);
+					luxury.add(c);
 				} else {
-					standardFoods.add(c);
+					standard.add(c);
 				}
 			}
 		}
-		// The split of demand is 70% vital foods, 21% standard and 9% luxury.
-		// Poor foods will only be eaten if nothing else is available.
-		boolean		noMoreFood = true;
+
+		// The split of demand is 70% vital goods, 21% standard and 9% luxury and poor.
+		// Poor goods will only be consumed at the end when everything else has
+		// been consumed.
+		double		vitalDemand = 0.70;
+		double		standardDemand = 0.21;
+		double		luxuryDemand = 0.06;
+		double		poorDemand = 0.03;
 		while (demand > 0) {
 			System.out.println("Demand is "+n(demand)+"dt");
-			demand = eatFood(goods, vitalFoods, demand, 0.70);
-			demand = eatFood(goods, standardFoods, demand, 0.21);
-			demand = eatFood(goods, luxuryFoods, demand, 0.09);
+			demand = consumeGoods(goods, vital, demand, vitalDemand);
+			demand = consumeGoods(goods, standard, demand, standardDemand);
+			demand = consumeGoods(goods, luxury, demand, luxuryDemand);
+			demand = consumeGoods(goods, poor, demand, poorDemand);
 			
-			if (vitalFoods.size() + standardFoods.size() + luxuryFoods.size() == 0) {
+			if (vital.size() + standard.size() + luxury.size() + poor.size() == 0) {
+				// Completely out of goods.
 				break;
+			} else if (vital.size() + standard.size() + luxury.size() == 0) {
+				// Nothing to use but poor quality goods.
+				poorDemand = 1.00;
+			} else if (vital.size() + standard.size() == 0) {
+				// Just use up luxury and poor goods. Poor goods will go
+				// quicker at this point, since they're more affordable.
+				luxuryDemand = 0.40;
+				poorDemand = 0.60;
+			} else if (vital.size() == 0) {
+				standardDemand = 0.70;
+				luxuryDemand = 0.15;
+				poorDemand = 0.15;
 			}
 		}
+		System.out.println("  Hungry: "+n(demand));
 		
-		if (demand > 0) {
-			System.out.println("  Hungry: "+n(demand));
-			// Oops, planet is starving. Can we add agriculture?
-			long		used = getUsedProductionCapacity();
-			if (used < productionCapacity) {
-				long		canUse = productionCapacity - used;
-				System.out.println("  Remaining capacity: "+n(canUse));
-				if (planet.hasTradeCode(TradeCode.Ag)) {
-					canUse *= 0.25;
-				} else if (planet.hasTradeCode(TradeCode.Na)) {
-					canUse *= 0.05;
-				} else {
-					canUse *= 0.1;
-				}
-			}
-		}
-		
-	}
-	
-	private void livingRequirements() {
-		long		population = planet.getPopulation();
-		
-		long		livingSpace = 0;
-		
-		//Vector<Facility>		f = planet.getFacilities();
+		return demand;
 	}
 	
 	/**
-	 * Try and work out what a planet needs. If supply doesn't match demand,
-	 * then try to expand facilities to make up the short fall. Facilities
-	 * expansion is considered 'instantaneous'. In reality, it is assumed to
-	 * have happened a long time ago, so expansion should only happen when
-	 * the simulation is first run.
+	 * Stockpiles of goods will decay over time. Rate of decay can be
+	 * affected by trade codes on the goods (e.g. Perishable goods).
+	 * This check is run after all other production/consumption has
+	 * been calculated.
+	 * 
+	 * @version 0.3
 	 */
-	private void calculatePlanetRequirements() {
-		System.out.println("calculatePlanetRequirements: ["+planet.getName()+"]");
-		livingRequirements();
-		foodRequirements();
+	private void decayGoods() {
+		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
+		
+		for (int i : goods.keySet()) {
+			TradeGood		good = goods.get(i);
+			
+			if (good.getAmount() > 0) {
+				Commodity	c = commodities.get(i);
+				double		keep = 0.99; // Assume 1% decay rate per week.
+				
+				if (c.hasCode(CommodityCode.Pe)) {
+					keep = 0.95;
+				}
+				good.setAmount((long)(good.getAmount() * keep));
+				factory.setCommodity(planet.getId(), good.getCommodityId(), good.getAmount(), 
+						             good.getConsumed(), good.getPrice());
+			}
+		}
+	}
+	
+	/**
+	 * Set prices for all the goods this planet knows about. Price is based on
+	 * how much is currently available, versus how much was consumed in the
+	 * last week.
+	 * 
+	 * @version 0.3
+	 */
+	private void setPrices() {
+		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
+		
+		for (int i : goods.keySet()) {
+			TradeGood	good = goods.get(i);
+			Commodity	commodity = commodities.get(i);
+			
+			if (good.getConsumed() == 0 && good.getAmount() <= 10) {
+				// Not used, so no actual need for it.
+				good.setPrice(commodity.getCost() * 0.95);
+			} else if (good.getConsumed() == 0) {
+				// Don't use it, but some in stock, so price is even cheaper.
+				good.setPrice(1.0 * commodity.getCost() / Math.sqrt(Math.log10(good.getAmount())));
+			} else if (good.getAmount() <= 10) {
+				// We use it, but none in stock.
+				System.out.println(commodity.getName());
+				good.setPrice(1.0 * commodity.getCost() * Math.sqrt(Math.log10(good.getConsumed())));
+			} else {
+				good.setPrice(commodity.getCost());
+			}
+			System.out.println(commodity.getName()+" : "+good.getPrice()+"Cr");
+			
+			factory.setCommodity(planet.getId(), good.getCommodityId(), good.getAmount(), 
+					             good.getConsumed(), good.getPrice());
+		}		
 	}
 	
 	/**
@@ -854,77 +941,78 @@ public class Trade {
 		
 		logger.info("Create facilities for ["+planet.getName()+"]; population "+population+"; capacity "+getProductionCapacity());
 		
-		Facility		residential = null;
-		if (planet.getPopulation() > 4000000000L && planet.getTechLevel()>8) {
-			residential = Facility.getByName(facilities, "Arcology");
-		}
-		
-		// Arcologies?
-		Facility		arcology = Facility.getByName(facilities, "Arcology");
-		while (Die.d10() < population/1000000000 && planet.getTechLevel() > 8) {
-			long		pop = population / (Die.d4() * 5);
-			int			size = (int) (pop / arcology.getCapacity());
-			population -= pop;
-			//Facility	f = new Facility(arcology, size, 0);
-			//list.add(f);
-			//logger.info("Added Arcology pop ["+pop+"] size ["+size+"]");
-		}
-
-		// Agriculture
-		logger.info("AGRICULTURE");
-		Hashtable<Integer,Facility>		ag = Facility.getByType(facilities, FacilityType.Agriculture);
-		HashSet<Integer>				used = new HashSet<Integer>();
-		
-		// Go through each of the possible facilities, and look for one
-		// which matches the type of resources this planet has. When
-		// found, add the facility. These facilities will be farms.
-		for (Iterator<Facility> i = ag.values().iterator(); i.hasNext();) {
-			Facility f = i.next();
-			logger.info(f.getName()+" - "+f.getResourceId());
-			
-			if (resources.containsKey(f.getResourceId()) && !used.contains(f.getResourceId())) {
-				Commodity		resource = commodities.get(f.getResourceId());
-				int				density = resources.get(resource.getId());
-				if (resource == null) {
-					logger.warning("Cannot find resource in commodity list");
-					continue;
-				}
-				
-				// Look for the highest TL version of the facility for this resource.
-				Facility		facility = getBestFacilityForResource(ag, f.getResourceId());
-				if (facility == null) {
-					continue;
-				}
-				used.add(f.getResourceId());
-				logger.info("Adding facility for resource ["+resource.getName()+"]/"+resource.getProductionRate());
-				
-				// Ideally, a farm produces food units each week equal to its
-				// capacity. This is modified by the density of the resource.
-				// A resource of 100 is ideal.
-				long		pr = (long)(resource.getProductionRate() * 10000.0 / density / density);
-				if (resource.hasCode(CommodityCode.TL)) {
-					pr /= 2 * (planet.getTechLevel() - resource.getTechLevel()) + 1;
-				} else if (resource.hasCode(CommodityCode.Tl)) {
-					pr /= (planet.getTechLevel() - resource.getTechLevel() + 1);					
-				} else {
-					pr /= Math.sqrt(planet.getTechLevel() - resource.getTechLevel() + 1);
-				}
-				long		maxFacilities = planet.getPopulation() / pr;
-				long		eachFacilityFeeds = facility.getCapacity() * 300;
-				long		neededFacilities = planet.getPopulation() / eachFacilityFeeds;
-				
-				logger.info("Maximum facilities: "+maxFacilities+" Needs "+neededFacilities);
-				
-				if (planet.hasTradeCode(TradeCode.Ag)) {
-					neededFacilities = (long)Math.min(neededFacilities*1.25, productionCapacity*0.75);
-				} else if (planet.hasTradeCode(TradeCode.Na)) {
-					neededFacilities = (long)Math.min(neededFacilities*0.75, productionCapacity*0.3);
-				} else {
-					neededFacilities = (long)Math.min(neededFacilities, productionCapacity*0.5);
-				}
-				listOfFacilities.put(facility.getId(), neededFacilities);
+		// Residential
+		Facility	residential = null;
+		long		size = 100L;
+		// Choose the best residential facility. Currently, just choose the
+		// highest tech level one the planet can support. Later, we need to
+		// look at trade codes and population levels etc.
+		for (Facility f : Facility.getByType(facilities, FacilityType.Residential).values()) {
+			if (f.getTechLevel() > planet.getTechLevel()) continue;
+			if (residential == null) {
+				residential = f;
+			} else if (f.getTechLevel() > residential.getTechLevel() && f.getTechLevel() <= planet.getTechLevel()) {
+				residential = f;
 			}
 		}
+		listOfFacilities.put(residential.getId(), size);
+
+		// Mines
+		Facility	mine = null;
+		for (Facility f : Facility.getByType(facilities, FacilityType.Mining).values()) {
+			if (f.getTechLevel() > planet.getTechLevel()) continue;
+			if (mine == null) {
+				mine = f;
+			} else if (f.getTechLevel() > mine.getTechLevel() && f.getTechLevel() <= planet.getTechLevel()) {
+				mine = f;
+			}
+		}
+		if (planet.hasTradeCode(TradeCode.Mi)) {
+			size = 150;
+		} else if (planet.hasTradeCode(TradeCode.In)) {
+			size = 100;
+		} else if (planet.hasTradeCode(TradeCode.Ag) || planet.hasTradeCode(TradeCode.Ni)) {
+			size = 50;
+		} else {
+			size = 75;
+		}
+		listOfFacilities.put(mine.getId(), size);
+
+		// Agriculture
+		// This is a bit more complex, since there can be multiple agriculture types.
+		// For example, land based and sea based. Facilities which may conflict should
+		// (not enforced!) have a resource id at the same level, i.e. one facility won't
+		// manage a resource which is the child of a resource managed by another facility.
+		Hashtable<Integer,Facility>		agriculture = new Hashtable<Integer,Facility>();
+		for (Facility f : Facility.getByType(facilities, FacilityType.Agriculture).values()) {
+			if (f.getTechLevel() > planet.getTechLevel()) continue;
+			int		cId = f.getResourceId();
+			
+			for (int rId : resources.keySet()) {
+				// If this facility is useful to us (handles the given resource), then
+				// see if we want to add it to our list. List is keyed on the resource id.
+				if (isParentOf(cId, rId)) {
+					if (agriculture.get(cId) == null) {
+						agriculture.put(cId, f);
+					} else if (agriculture.get(cId).getTechLevel() < f.getTechLevel()) {
+						agriculture.put(cId, f);
+					}
+				}
+			}
+		}
+		if (planet.hasTradeCode(TradeCode.Ag)) {
+			size = 150;
+		} else if (planet.hasTradeCode(TradeCode.Na)) {
+			size = 50;
+		} else if (planet.hasTradeCode(TradeCode.In) || planet.hasTradeCode(TradeCode.Mi)) {
+			size = 75;
+		} else {
+			size = 100;
+		}
+		for (Facility f : agriculture.values()) {
+			listOfFacilities.put(f.getId(), size);
+		}
+		
 		factory.setFacilitiesForPlanet(planet.getId(), listOfFacilities);
 	}
 	
@@ -938,7 +1026,8 @@ public class Trade {
 				//StarSystem	system = factory.getStarSystem(14062);
 				//Planet		planet = system.getMainWorld();
 				
-				Planet		planet = factory.getPlanet(223065);
+				//Planet		planet = factory.getPlanet(223065);
+				Planet		planet = factory.getPlanet(224128);
 				
 				Trade		trade = new Trade(factory, planet);
 				//trade.createFacilities();

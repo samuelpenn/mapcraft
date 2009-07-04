@@ -140,14 +140,40 @@ CREATE TABLE facility (id int auto_increment not null, name varchar(64), type va
 CREATE TABLE facilities (facility_id int not null, planet_id int not null, size int not null,
                          UNIQUE KEY (facility_id, planet_id)) ENGINE=INNODB;
 
-INSERT INTO facility VALUES(0, 'Colony',      'Residential', 'residential',  7,   100, 0, '', '', '');
-INSERT INTO facility VALUES(0, 'Light rural', 'Residential', 'residential',  0,  1000, 0, '', '', '');
-                       
-INSERT INTO facility VALUES(0, "Camp",       "Residential", "residential",  0,   100, 0, '', '');
-INSERT INTO facility VALUES(0, "Town",       "Residential", "residential",  2,   500, 0, '', '');
-INSERT INTO facility VALUES(0, "City",       "Residential", "residential",  3,  2000, 0, '', '');
-INSERT INTO facility VALUES(0, "Metropolis", "Residential", "residential",  6,  5000, 0, '', '');
-INSERT INTO facility VALUES(0, "Arcology",   "Residential", "residential",  9, 20000, 0, '', '');
+# Standard residential facilities
+INSERT INTO facility VALUES(0, 'Primitive',        'Residential', 'res_primitive',  0,  1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'Iron Age',         'Residential', 'res_ironage',    2,  1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'Medieval',         'Residential', 'res_medieval',   3,  1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'High Medieval',    'Residential', 'res_medieval',   4,  1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'Early Industrial', 'Residential', 'res_industrial', 5,  1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'Late Industrial',  'Residential', 'res_industrial', 6,  1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'High Industrial',  'Residential', 'res_highind',    7,  1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'Early Space Age',  'Residential', 'res_space',      8,  1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'Early Imperium',   'Residential', 'res_early',      9,  1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'Imperium',         'Residential', 'res_imperium',  10,  1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'High Imperium',    'Residential', 'res_high',      11,  1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'Advanced Imperium','Residential', 'res_advanced',  12,  1, 2, '', '', '');
+
+# Mining
+INSERT INTO facility VALUES(0, 'Primitive mines',  'Mining', 'mining',  2,  1, 1, '', '', '');
+INSERT INTO facility VALUES(0, 'LoTech Mines',     'Mining', 'mining',  4,  2, 1, '206,X', '', '');
+INSERT INTO facility VALUES(0, 'Industrial Mines', 'Mining', 'mining',  6,  4, 1, '6,X', '', '');
+INSERT INTO facility VALUES(0, 'HiTech Mines',     'Mining', 'mining',  8,  8, 1, '6,X;7,X', '', '');
+INSERT INTO facility VALUES(0, 'UltraTech Mines',  'Mining', 'mining', 10, 16, 1, '6,X;7,X', '', '');
+
+# Agriculture
+INSERT INTO facility VALUES(0, 'Hunter gatherer',  'Agriculture', 'agriculture',  0,   1, 200, '', '', '');
+INSERT INTO facility VALUES(0, 'Simple farming',   'Agriculture', 'agriculture',  1,   2, 200, '', '', '');
+INSERT INTO facility VALUES(0, 'Agriculture',      'Agriculture', 'agriculture',  3,   3, 200, '', '', '');
+INSERT INTO facility VALUES(0, 'Agriculture 5',    'Agriculture', 'agriculture',  5,   5, 200, '', '', '');
+INSERT INTO facility VALUES(0, 'Agriculture 7',    'Agriculture', 'agriculture',  7,  10, 200, '', '', '');
+INSERT INTO facility VALUES(0, 'Agriculture 9',    'Agriculture', 'agriculture',  9,  25, 200, '', '', '');
+INSERT INTO facility VALUES(0, 'Agriculture 11',   'Agriculture', 'agriculture', 11, 100, 200, '', '', '');
+
+INSERT INTO facility VALUES(0, 'Fishing 4',        'Agriculture', 'agriculture',  4,   2, 204, '', '', '');
+INSERT INTO facility VALUES(0, 'Fishing 6',        'Agriculture', 'agriculture',  6,   4, 204, '', '', '');
+INSERT INTO facility VALUES(0, 'Fishing 8',        'Agriculture', 'agriculture',  8,  10, 204, '', '', '');
+INSERT INTO facility VALUES(0, 'Fishing 10',       'Agriculture', 'agriculture', 10,  25, 204, '', '', '');
 
 INSERT INTO facility VALUES(0, "Farm",       "Agriculture", "agriculture",  2,     0, 0, 'X,1', 'X,1');
 INSERT INTO facility VALUES(0, "Mine",       "Mining", "mining",            3,     0, 0, 'X,1', 'X,1');
@@ -168,11 +194,9 @@ INSERT INTO commodity VALUES(3, 'Textiles', 'textiles',   'Ag', 0,  700, 1,  5, 
 INSERT INTO commodity VALUES(4, 'Luxuries', 'luxuries',   'Ag', 0, 5000, 1,  5, 5,  6, 3, 'Lu');
 INSERT INTO commodity VALUES(5, 'Alloys', 'alloys',       'In', 0, 1500, 1,  5, 5,  6, 5, 'Ma Tl In');
 INSERT INTO commodity VALUES(6, 'Machinery', 'machinery', 'In', 0, 3000, 1,  5, 5,  6, 5, 'Ma Tl');
+INSERT INTO commodity VALUES(7, 'Computers', 'computers', 'In', 0, 5000, 1,  5, 5,  6, 7, 'El TL');
 
-INSERT INTO commodity VALUES(10, 'Gaian Ecology', 'agricultural',     'Ag', 0,  0, 1,  5, 5, 6, 1, 'Fo');
-INSERT INTO commodity VALUES(11, 'Jungle Ecology', 'agricultural',    'Ag', 0,  0, 1,  3, 5, 6, 1, 'Fo');
-INSERT INTO commodity VALUES(12, 'Coastal Ecology', 'agricultural',   'Ag', 0,  0, 1,  4, 5, 6, 2, 'Fo');
-INSERT INTO commodity VALUES(13, 'Oceanic Ecology', 'agricultural',   'Ag', 0,  0, 1,  3, 5, 6, 5, 'Fo');
+
 
 # Basic ores
 INSERT INTO commodity VALUES(20, 'Silicate ore', 'silicate', 'Mi', 1,  50, 1, 7, 4, 6, 3, 'Or');
@@ -203,17 +227,20 @@ INSERT INTO commodity VALUES(114, 'Oorcine ices', 'aquam', 'Mi', 23, 600, 1, 3, 
 INSERT INTO commodity VALUES(115, 'Synthosium gas', 'auram', 'Mi', 24, 1060, 1, 2, 0, 3, 10, 'Or Hz');
 
 # Basic agricultural resources
-INSERT INTO commodity VALUES(201, 'Vegetables', 'vegetables', 'Ag', 2, 100, 1, 10, 10, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(202, 'Fruits',     'fruits', 'Ag', 2,     150, 1, 9,  10, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(203, 'Meat',       'meat', 'Ag', 2,       350, 1, 7,   9, 6, 1, 'Fo Lu Pe Tl');
+INSERT INTO commodity VALUES(200, 'Crops',      'food', 'Ag', 2,       100, 1, 10, 10, 6, 1, 'Fo Vi Pe Tl');
+INSERT INTO commodity VALUES(201, 'Vegetables', 'vegetables', 'Ag', 200, 100, 1, 10, 10, 6, 1, 'Fo Vi Pe Tl');
+INSERT INTO commodity VALUES(202, 'Fruits',     'fruits', 'Ag', 200,     150, 1, 9,  10, 6, 1, 'Fo Vi Pe Tl');
+INSERT INTO commodity VALUES(203, 'Meat',       'meat', 'Ag', 200,       350, 1, 7,   9, 6, 1, 'Fo Lu Pe Tl');
 INSERT INTO commodity VALUES(204, 'Seafood',    'seafood', 'Ag', 2,    150, 1, 7,  10, 6, 1, 'Fo Pe Tl');
-INSERT INTO commodity VALUES(205, 'Algae',      'algae', 'Ag', 2,       50, 1, 7,  11, 6, 1, 'Fo Lq Pe Tl');
+INSERT INTO commodity VALUES(205, 'Algae',      'algae', 'Ag', 204,       50, 1, 7,  11, 6, 1, 'Fo Lq Pe Tl');
 INSERT INTO commodity VALUES(206, 'Wood',       'wood', 'Ag', 0,       100, 1, 6,   7, 6, 1, 'In Ag Pt Lt Mt Ht');
 INSERT INTO commodity VALUES(207, 'Grain',      'grain', 'Ag', 2,       75, 1, 10, 11, 6, 2, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(208, 'Fish',       'seafood', 'Ag', 204,  150, 1, 7,  10, 6, 1, 'Fo Pe Vi Tl');
-INSERT INTO commodity VALUES(209, 'Shellfish',  'seafood', 'Ag', 204,  125, 1, 7,  10, 6, 1, 'Fo Pe Tl');
-INSERT INTO commodity VALUES(210, 'Seaweed',    'seafood', 'Ag', 204,   65, 1, 7,  12, 6, 1, 'Fo Pe Lq Tl');
-INSERT INTO commodity VALUES(211, 'Rice',       'rice', 'Ag', 2,        55, 1, 7,  12, 6, 1, 'Fo Pe Lq Tl');
+INSERT INTO commodity VALUES(208, 'Fish',       'fish', 'Ag', 204,  150, 1, 7,  10, 6, 1, 'Fo Pe Vi Tl');
+INSERT INTO commodity VALUES(209, 'Shellfish',  'shellfish', 'Ag', 204,  125, 1, 7,  10, 6, 1, 'Fo Pe Tl');
+INSERT INTO commodity VALUES(210, 'Seaweed',    'seaweed', 'Ag', 204,   65, 1, 7,  12, 6, 1, 'Fo Pe Lq Tl');
+INSERT INTO commodity VALUES(211, 'Rice',       'rice', 'Ag', 200,        55, 1, 7,  12, 6, 1, 'Fo Pe Lq Tl');
+INSERT INTO commodity VALUES(212, 'Jellyfish',  'jellyfish', 'Ag', 204, 40, 1, 7,  11, 6, 1, 'Fo Pe Lq Tl');
+
 
 # Requirements
 CREATE TABLE requirements (commodity_id INT NOT NULL, requires_id INT NOT NULL, number INT DEFAULT 1);
@@ -224,7 +251,7 @@ CREATE TABLE resources (planet_id INT NOT NULL, commodity_id INT NOT NULL, densi
 
 
 CREATE TABLE trade (id INT AUTO_INCREMENT NOT NULL, planet_id INT NOT NULL,
-                    commodity_id int not null, amount int not null, price int not null,
+                    commodity_id int not null, amount bigint default 0, consumed bigint default 0, price int not null,
                     PRIMARY KEY(id),
                     FOREIGN KEY(planet_id) REFERENCES planet(id),
                     FOREIGN KEY(commodity_id) REFERENCES commodity(id))

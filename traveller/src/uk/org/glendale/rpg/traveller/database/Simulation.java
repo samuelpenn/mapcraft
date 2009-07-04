@@ -220,8 +220,9 @@ public class Simulation { //extends ObjectFactory {
 			System.out.println(planet.getName()+" ("+planet.getId()+")");
 
 			Trade		trade = new Trade(factory, planet);
-			trade.gatherResources();
-			trade.consumeResources();
+			trade.manageEconomy();
+			//trade.gatherResources();
+			//trade.consumeResources();
 			
 			factory.setPlanetEventTime(planet.getId(), nextWeek);
 			count++;
