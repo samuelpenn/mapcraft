@@ -308,7 +308,8 @@ public class Planet {
 		StringBuffer	buffer = new StringBuffer();
 		int				minutes = (seconds/60)%60;
 		int				hours = (seconds/3600)%24;
-		int				days = seconds/86400;
+		int				days = (seconds/86400)%365;
+		int				years = seconds/(86400*365);
 		seconds = seconds%60;
 		
 		if (days < 3) {
@@ -324,11 +325,13 @@ public class Planet {
 		}
 
 		if (verbose) {
+			appendUnitValue(buffer, years, "year");
 			appendUnitValue(buffer, days, "day");
 			appendUnitValue(buffer, hours, "hour");
 			appendUnitValue(buffer, minutes, "minute");
 			appendUnitValue(buffer, seconds, "second");
 		} else {
+			appendUnitValue(buffer, years, "y");
 			appendUnitValue(buffer, days, "d");
 			appendUnitValue(buffer, hours, "h");
 			appendUnitValue(buffer, minutes, "m");
@@ -1715,8 +1718,13 @@ public class Planet {
 		if (resources == null) {
 			resources = new Hashtable<String,Integer>();
 		}
+		System.out.println(resource+" "+value);
 		if (value > 100) value = 100;
 		if (value > 0) resources.put(resource, value);
+	}
+	
+	public void addResource(String resource, double value) {
+		addResource(resource, (int)value);
 	}
 	
 	public void setFacilities(Hashtable<Integer,Long> facilities) {

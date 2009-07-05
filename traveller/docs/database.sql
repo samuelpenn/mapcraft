@@ -154,6 +154,10 @@ INSERT INTO facility VALUES(0, 'Imperium',         'Residential', 'res_imperium'
 INSERT INTO facility VALUES(0, 'High Imperium',    'Residential', 'res_high',      11,  1, 2, '', '', '');
 INSERT INTO facility VALUES(0, 'Advanced Imperium','Residential', 'res_advanced',  12,  1, 2, '', '', '');
 
+INSERT INTO facility VALUES(0, 'Medieval colony',  'Residential', 'res_medieval',   3,         1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'Medieval rural',   'Residential', 'res_medieval',   3,         1, 2, '', '', 'Ag');
+INSERT INTO facility VALUES(0, 'Medieval cities',  'Residential', 'res_medieval',   3,  10000000, 2, '', '', '');
+
 # Mining
 INSERT INTO facility VALUES(0, 'Primitive mines',  'Mining', 'mining',  2,  1, 1, '', '', '');
 INSERT INTO facility VALUES(0, 'LoTech Mines',     'Mining', 'mining',  4,  2, 1, '206,X', '', '');
@@ -179,11 +183,6 @@ INSERT INTO facility VALUES(0, "Farm",       "Agriculture", "agriculture",  2,  
 INSERT INTO facility VALUES(0, "Mine",       "Mining", "mining",            3,     0, 0, 'X,1', 'X,1');
 INSERT INTO facility VALUES(0, "Refinery",   "Industry", "industry",        4,     0, 1, '1,5', '5,3');
 INSERT INTO facility VALUES(0, "Factory",    "Industry", "industry",        5,     0, 5, '5,5', '6,1');
-
-INSERT INTO facility VALUES(0, 'Gaian Farm LT', 'Agriculture', 'agriculture',  1,    20, 10, '10,20', '203,3;202,4;201,6;207,7');
-INSERT INTO facility VALUES(0, 'Gaian Farm MT', 'Agriculture', 'agriculture',  5,    40, 10, '10,20', '203,6;202,8;201,12;207,14');
-INSERT INTO facility VALUES(0, 'Gaian Farm HT', 'Agriculture', 'agriculture',  7,    80, 10, '10,20', '203,10;202,15;201,20;207,35');
-INSERT INTO facility VALUES(0, 'Gaian Farm UT', 'Agriculture', 'agriculture',  9,   120, 10, '10,20', '203,10;202,20;201,30;207,60');
 
 
 
@@ -241,6 +240,19 @@ INSERT INTO commodity VALUES(210, 'Seaweed',    'seaweed', 'Ag', 204,   65, 1, 7
 INSERT INTO commodity VALUES(211, 'Rice',       'rice', 'Ag', 200,        55, 1, 7,  12, 6, 1, 'Fo Pe Lq Tl');
 INSERT INTO commodity VALUES(212, 'Jellyfish',  'jellyfish', 'Ag', 204, 40, 1, 7,  11, 6, 1, 'Fo Pe Lq Tl');
 
+INSERT INTO commodity VALUES(400, 'Metals',        'alloys', 'In', 5,  900, 1, 5, 5, 6, 1, 'In');
+INSERT INTO commodity VALUES(401, 'Refined metals','alloys', 'In', 5  1600, 1, 5, 5, 6, 4, 'In');
+
+INSERT INTO commodity VALUES(500, 'Farm implements',        'machinery', 'In', 6, 1000, 1, 4, 7, 6,  3, 'Ag Ma Lo');
+INSERT INTO commodity VALUES(501, 'Farm machinery',         'machinery', 'In', 6, 1000, 1, 4, 7, 6,  5, 'Ag Ma Lo');
+INSERT INTO commodity VALUES(502, 'Agricultural machinery', 'machinery', 'In', 6, 1000, 1, 4, 7, 6,  7, 'Ag Ma Lo');
+INSERT INTO commodity VALUES(503, 'Agricultural robotics',  'machinery', 'In', 6, 1000, 1, 4, 7, 6,  9, 'Ag Ma Lo');
+INSERT INTO commodity VALUES(504, 'Advanced agribots',      'machinery', 'In', 6, 1000, 1, 4, 7, 6, 11, 'Ag Ma Lo');
+
+INSERT INTO commodity VALUES(600, 'Medieval goods',         'machinery', 'Ag',   6,  250, 1, 4, 7, 6, 3, '');
+INSERT INTO commodity VALUES(601, 'Medieval farm tools',    'machinery', 'Ag', 600,  400, 1, 4, 5, 6, 3, 'Ma Ag Lo');
+INSERT INTO commodity VALUES(602, 'Medieval hand tools',    'machinery', 'In', 600,  250, 1, 5, 6, 6, 3, 'Ma Lo');
+INSERT INTO commodity VALUES(602, 'Medieval textiles',      'textiles',  'In', 600,  250, 1, 5, 6, 6, 3, 'Ma Lo');
 
 # Requirements
 CREATE TABLE requirements (commodity_id INT NOT NULL, requires_id INT NOT NULL, number INT DEFAULT 1);

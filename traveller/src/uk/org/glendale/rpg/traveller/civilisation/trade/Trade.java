@@ -370,7 +370,7 @@ public class Trade {
 					long	productionRate = planet.getPopulation() / c.getProductionRate();
 					productionRate = (productionRate * density * density) / 10000;
 					productionRate = c.getAmountModifiedByTech(planet.getTechLevel(), productionRate);
-					productionRate = (productionRate * density) / 100;
+					productionRate = (productionRate * facilitySize) / 100;
 					
 					System.out.println("         Production rate "+n(productionRate)+" dt/wk");
 					factory.addCommodity(planet.getId(), c.getId(), productionRate, 0, c.getUnitCost());
@@ -428,7 +428,7 @@ public class Trade {
 	 * Work out what resource gathering facilities produce this week.
 	 * We only calculate facilities gathering natural resources.
 	 */
-	public void gatherResources() {
+	public void gatherResources2() {
 		Hashtable<Integer,Long>		planetFacilities = planet.getFacilities();
 		Hashtable<Integer,Facility>	facilities = factory.getFacilities();
 		
@@ -890,7 +890,8 @@ public class Trade {
 				System.out.println(commodity.getName());
 				good.setPrice(1.0 * commodity.getCost() * Math.sqrt(Math.log10(good.getConsumed())));
 			} else {
-				good.setPrice(commodity.getCost());
+				double	ratio = 1.0 * good.getConsumed() / good.getAmount();
+				good.setPrice(commodity.getCost() * Math.pow(ratio, 0.2));
 			}
 			System.out.println(commodity.getName()+" : "+good.getPrice()+"Cr");
 			

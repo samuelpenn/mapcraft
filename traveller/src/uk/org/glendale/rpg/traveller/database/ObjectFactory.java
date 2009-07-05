@@ -1216,8 +1216,8 @@ public class ObjectFactory {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		//regenSystem(14167);
-		regenSelection(2);
+		regenSystem(10311);
+		//regenSelection(2);
 	}
 
 }

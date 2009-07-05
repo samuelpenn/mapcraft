@@ -14,8 +14,8 @@ public class Resources {
 	private static final String FERRIC = "Ferric ore";
 	private static final String CARBONIC = "Carbonic ore";
 	private static final String SILICATE = "Silicate ore";
-	private static final String AQUAM = "Aquam solution";
-	private static final String AURAM = "Auram gas";
+	private static final String AQUAM = "Aquam";
+	private static final String AURAM = "Auram";
 	
 	private static final String KRYSITE = "Krysite ore";
 	private static final String MAGNESITE = "Magnesite ore";
@@ -65,6 +65,39 @@ public class Resources {
 		if (Die.d4() == 1) planet.addResource(MAGNESITE, 5+Die.d4());
 		if (Die.d6() == 1) planet.addResource(VARDONNEK, 10+Die.d8(2));
 		
+		double	seaModifier = 1.0;
+		double	landModifier = 1.0;
+		double	lifeModifier = 1.0;
+
+		if (planet.getHydrographics() < 10) {
+			seaModifier = 0.1;
+			landModifier = 0.4;
+		} else if (planet.getHydrographics() < 25) {
+			seaModifier = 0.3;
+			landModifier = 0.6;
+		} else if (planet.getHydrographics() < 40) {
+			seaModifier = 0.5;
+			landModifier = 0.8;
+		} else if (planet.getHydrographics() < 60) {
+			seaModifier = 0.8;
+			landModifier = 1.1;
+		} else if (planet.getHydrographics() < 80) {
+			// Normal.
+		} else if (planet.getHydrographics() < 90) {
+			seaModifier = 1.1;
+			landModifier = 0.8;
+		} else if (planet.getHydrographics() < 95) {
+			seaModifier = 1.2;
+			landModifier = 0.4;
+		} else if (planet.getHydrographics() < 100) {
+			seaModifier = 1.3;
+			landModifier = 0.1;
+		} else {
+			// Complete water world.
+			seaModifier = 1.4;
+			landModifier = 0.0;
+		}
+				
 		// Basic organic resources.
 		switch (planet.getLifeLevel()) {
 		case None:
@@ -122,15 +155,15 @@ public class Resources {
 			planet.addResource("Meat", 10+Die.d12(2));
 			break;
 		case Extensive:
-			if (Die.d6() < 3) planet.addResource("Jellyfish", 5+Die.d6(2));
-			if (Die.d6() < 3) planet.addResource("Seaweed", 10+Die.d6(2));
-			planet.addResource("Shellfish", 20+Die.d20(2));
-			planet.addResource("Fish", 40+Die.d20(3));
-			planet.addResource("Grain", 40+Die.d20(3));
-			planet.addResource("Vegetables", 40+Die.d20(3));
-			planet.addResource("Fruits", 30+Die.d20(2));
-			planet.addResource("Wood", 30+Die.d20(2));
-			planet.addResource("Meat", 30+Die.d20(2));
+			if (Die.d6() < 3) planet.addResource("Jellyfish", (5+Die.d6(2))*seaModifier);
+			if (Die.d6() < 3) planet.addResource("Seaweed", (10+Die.d6(2))*seaModifier);
+			planet.addResource("Shellfish", (20+Die.d20(2))*seaModifier);
+			planet.addResource("Fish", (40+Die.d20(3))*seaModifier);
+			planet.addResource("Grain", (40+Die.d20(3))*landModifier);
+			planet.addResource("Vegetables", (40+Die.d20(3))*landModifier);
+			planet.addResource("Fruits", (30+Die.d20(2))*landModifier);
+			planet.addResource("Wood", (30+Die.d20(2))*landModifier);
+			planet.addResource("Meat", (30+Die.d20(2))*landModifier);
 			break;
 		}		
 	}
@@ -154,7 +187,7 @@ public class Resources {
 	
 	public static void main(String[] args) throws Exception {
 		ObjectFactory		factory = new ObjectFactory();
-		Planet				planet = factory.getPlanet(224128);
+		Planet				planet = factory.getPlanet(224138);
 		StarSystem			system = null;
 		
 		setResources(factory, system, planet);
