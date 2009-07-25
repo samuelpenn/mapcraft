@@ -139,14 +139,14 @@ public class Commodity {
 	 */
 	public long getConsumptionRate() {
 		switch (consumptionRate) {
-		case 0:  return 1 * BILLION;
-		case 1:  return 100 * MILLION;
-		case 2:  return 10 * MILLION;
-		case 3:  return 1 * MILLION;
-		case 4:  return 200 * THOUSAND;
-		case 5:  return 40 * THOUSAND;
-		case 6:  return 10 * THOUSAND;
-		case 7:  return 3 * THOUSAND;
+		case 0:  return 100 * MILLION;
+		case 1:  return 10 * MILLION;
+		case 2:  return 1 * MILLION;
+		case 3:  return 200 * THOUSAND;
+		case 4:  return 50 * THOUSAND;
+		case 5:  return 15 * THOUSAND;
+		case 6:  return 5 * THOUSAND;
+		case 7:  return 2 * THOUSAND;
 		case 8:  return 1 * THOUSAND;
 		case 9:  return 500;
 		case 10: return 250;

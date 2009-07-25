@@ -757,7 +757,7 @@ public class Planet {
 					if (hydrographics > 10) {
 						hydrographics /= 5;
 					}
-					lifeType = LifeType.Metazoa;
+					lifeType = LifeType.Aerobic;
 				} else if (temperature.isColderThan(Temperature.Cold)) {
 					planetType = PlanetType.GaianTundral;
 					lifeType = LifeType.ComplexOcean;
@@ -792,12 +792,12 @@ public class Planet {
 						if (hydrographics > 0) {
 							lifeType = lifeType.ComplexOcean;
 						} else {
-							lifeType = lifeType.Protozoa;
+							lifeType = lifeType.Archaean;
 						}
 					} else {
 						planetType = PlanetType.PostGaian;
 						if (hydrographics < 10) {
-							lifeType = LifeType.Protozoa;
+							lifeType = LifeType.Archaean;
 						} else if (hydrographics < 40) {
 							lifeType = LifeType.ComplexOcean;
 						} else {
@@ -854,7 +854,7 @@ public class Planet {
 			addTradeCode(TradeCode.Fl);
 		} else if (atmosphereType == AtmosphereType.NitrogenCompounds) {
 			planetType = PlanetType.MesoGaian;
-			lifeType = LifeType.Metazoa;
+			lifeType = LifeType.Aerobic;
 		}
 		
 		/*

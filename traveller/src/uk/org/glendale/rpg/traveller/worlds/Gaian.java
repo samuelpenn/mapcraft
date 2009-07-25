@@ -587,7 +587,7 @@ class Gaian extends Tectonics {
 		System.out.println(planet.getLifeLevel()+"/"+planet.getTemperature()+"/"+planet.getAtmospherePressure());
 		
 		switch (planet.getLifeLevel()) {
-		case None: case Proteins: case Protozoa: case Metazoa:
+		case None: case Organic: case Archaean: case Aerobic:
 			fertility = 0;
 			break;
 		case ComplexOcean:

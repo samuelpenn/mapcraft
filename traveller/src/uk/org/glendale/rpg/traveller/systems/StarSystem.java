@@ -1251,7 +1251,7 @@ public class StarSystem implements Comparable {
 		
 		if (hasLife(LifeType.ComplexOcean)) {
 			buffer.append(plotText(xp+24, yp-40, "font-size: small; color: green; font-weight: bold", "L"));
-		} else if (hasLife(LifeType.Metazoa)) {
+		} else if (hasLife(LifeType.Aerobic)) {
 			buffer.append(plotText(xp+24, yp-40, "font-size: x-small; color: green;", "L"));
 		}
 		
@@ -1374,10 +1374,10 @@ public class StarSystem implements Comparable {
 				maxTech = planet.getTechLevel();
 			}
 			switch (planet.getLifeLevel()) {
-			case None: case Proteins:
+			case None: case Organic:
 				rgb = "0 0 0";
 				break;
-			case Protozoa: case Metazoa:
+			case Archaean: case Aerobic:
 				rgb = "0 0.2 0";
 				break;
 			case ComplexOcean:

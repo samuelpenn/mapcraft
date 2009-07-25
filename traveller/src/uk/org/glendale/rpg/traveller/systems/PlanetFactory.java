@@ -508,13 +508,13 @@ public class PlanetFactory {
 		planet.setHydrographics(Die.d20() * 2);
 		switch (Die.d8()) {
 		case 1: case 2: case 3: case 4:
-			planet.setLifeLevel(LifeType.Proteins);
+			planet.setLifeLevel(LifeType.Organic);
 			break;
 		case 5: case 6:
-			planet.setLifeLevel(LifeType.Protozoa);
+			planet.setLifeLevel(LifeType.Archaean);
 			break;
 		case 7: case 8:
-			planet.setLifeLevel(LifeType.Metazoa);
+			planet.setLifeLevel(LifeType.Aerobic);
 			planet.addResource(ALGAE, 10+Die.d8(2));
 			break;
 		}
@@ -570,16 +570,16 @@ public class PlanetFactory {
 		planet.setHydrographics(Die.d20() * 2);
 		switch (Die.d6()) {
 		case 1: case 2: case 3:
-			planet.setLifeLevel(LifeType.Proteins);
+			planet.setLifeLevel(LifeType.Organic);
 			break;
 		case 4: case 5:
-			planet.setLifeLevel(LifeType.Protozoa);
+			planet.setLifeLevel(LifeType.Archaean);
 			if (Die.d6() < 3) {
 				planet.addResource(ALGAE, 5+Die.d4(2));
 			}
 			break;
 		case 6:
-			planet.setLifeLevel(LifeType.Metazoa);
+			planet.setLifeLevel(LifeType.Aerobic);
 			if (Die.d6() < 4) {
 				planet.addResource(ALGAE, 10+Die.d6(2));
 			}
@@ -633,13 +633,13 @@ public class PlanetFactory {
 		planet.setHydrographics(Die.d20() * 3);
 		switch (Die.d6()) {
 		case 1:
-			planet.setLifeLevel(LifeType.Protozoa);
+			planet.setLifeLevel(LifeType.Archaean);
 			if (Die.d6() < 3) {
 				planet.addResource(ALGAE, 5+Die.d4(2));
 			}
 			break;
 		case 2: case 3: case 4: case 5:
-			planet.setLifeLevel(LifeType.Metazoa);
+			planet.setLifeLevel(LifeType.Aerobic);
 			if (Die.d6() < 4) {
 				planet.addResource(ALGAE, 10+Die.d6(2));
 			}
@@ -774,13 +774,13 @@ public class PlanetFactory {
 			planet.setLifeLevel(LifeType.None);
 			break;
 		case 5:
-			planet.setLifeLevel(LifeType.Proteins);
+			planet.setLifeLevel(LifeType.Organic);
 			break;
 		case 6:
-			planet.setLifeLevel(LifeType.Protozoa);
+			planet.setLifeLevel(LifeType.Archaean);
 			break;
 		case 7:
-			planet.setLifeLevel(LifeType.Metazoa);
+			planet.setLifeLevel(LifeType.Aerobic);
 			planet.addResource(SEAFOOD, 5+Die.d10());
 			break;
 		case 8: case 9: case 10:
@@ -838,10 +838,10 @@ public class PlanetFactory {
 		planet.setHydrographics(Die.d20() * 3);
 		switch (Die.d6()) {
 		case 1:
-			planet.setLifeLevel(LifeType.Protozoa);
+			planet.setLifeLevel(LifeType.Archaean);
 			break;
 		case 2: case 3:
-			planet.setLifeLevel(LifeType.Metazoa);
+			planet.setLifeLevel(LifeType.Aerobic);
 			break;
 		case 4: case 5:
 			planet.setLifeLevel(LifeType.ComplexOcean);
@@ -899,7 +899,7 @@ public class PlanetFactory {
 		// All Arean worlds lack liquid water and almost certainly life.
 		planet.setHydrographics(0);
 		if (Die.d10() == 1) {
-			planet.setLifeLevel(LifeType.Protozoa);
+			planet.setLifeLevel(LifeType.Archaean);
 		} else {
 			planet.setLifeLevel(LifeType.None);
 		}
@@ -1056,7 +1056,7 @@ public class PlanetFactory {
 		case 7:
 			planet.setAtmospherePressure(AtmospherePressure.Standard);
 			if (planet.getAtmosphereType() == AtmosphereType.NitrogenCompounds) {
-				planet.setLifeLevel(LifeType.Protozoa);				
+				planet.setLifeLevel(LifeType.Archaean);				
 			}
 			break;
 		case 8:
@@ -1120,13 +1120,13 @@ public class PlanetFactory {
 		
 		switch (Die.d6(3)) {
 		case 3:
-			planet.setLifeLevel(LifeType.Metazoa);
+			planet.setLifeLevel(LifeType.Aerobic);
 			break;
 		case 4:
-			planet.setLifeLevel(LifeType.Protozoa);
+			planet.setLifeLevel(LifeType.Archaean);
 			break;
 		case 5:
-			planet.setLifeLevel(LifeType.Proteins);
+			planet.setLifeLevel(LifeType.Organic);
 			break;
 		default:
 			planet.setLifeLevel(LifeType.None);
@@ -1323,13 +1323,13 @@ public class PlanetFactory {
 			planet.setLifeLevel(LifeType.None);
 			break;
 		case 3: case 4:
-			planet.setLifeLevel(LifeType.Proteins);
+			planet.setLifeLevel(LifeType.Organic);
 			break;
 		case 5:
-			planet.setLifeLevel(LifeType.Protozoa);
+			planet.setLifeLevel(LifeType.Archaean);
 			break;
 		case 6:
-			planet.setLifeLevel(LifeType.Metazoa);
+			planet.setLifeLevel(LifeType.Aerobic);
 			break;
 		default:
 			planet.setLifeLevel(LifeType.ComplexOcean);
@@ -1675,13 +1675,13 @@ public class PlanetFactory {
 			planet.addTradeCode(TradeCode.Fl); // Non-water oceans.
 			switch (Die.d10()) {
 			case 1:
-				planet.setLifeLevel(LifeType.Proteins);
+				planet.setLifeLevel(LifeType.Organic);
 				break;
 			case 2: case 3:
-				planet.setLifeLevel(LifeType.Protozoa);
+				planet.setLifeLevel(LifeType.Archaean);
 				break;
 			case 4: case 5: case 6: case 7:
-				planet.setLifeLevel(LifeType.Metazoa);
+				planet.setLifeLevel(LifeType.Aerobic);
 				break;
 			default:
 				planet.setLifeLevel(LifeType.SimpleLand);

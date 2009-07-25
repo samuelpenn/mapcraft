@@ -17,17 +17,18 @@ package uk.org.glendale.rpg.traveller.systems.codes;
  * Proteins: Simple replicators.
  * Protozoa: Single celled organisms
  * Metazoa: Multi-celled organisms.
+ * SimpleOcean: Animal and plant life
  * ComplexOcean: Fish
  * SimpleLand: Insects, moss, simple plants.
  * ComplexLand: Early tetrapods and forests.
  * Extensive: Earth-like.
  * 
- * @see http://mapcraft.glendale.org.uk/planets/lifelevel
+ * @see http://mapcraft.glendale.org.uk/worldgen/planets/lifelevel
  * 
  * @author Samuel Penn
  */
 public enum LifeType {
-	None, Proteins, Protozoa, Metazoa, ComplexOcean, SimpleLand, ComplexLand, Extensive;
+	None, Organic, Archaean, Aerobic, ComplexOcean, SimpleLand, ComplexLand, Extensive;
 	
 	/**
 	 * True iff this type of life is simpler than the one passed.

@@ -108,9 +108,9 @@ public class Colony {
 		// of a population.
 		switch (planet.getLifeLevel()) {
 		case None:         density *= 0.05;  break;
-		case Proteins:     density *= 0.10; break;
-		case Protozoa:     density *= 0.15; break;
-		case Metazoa:      density *= 0.20; break;
+		case Organic:     density *= 0.10; break;
+		case Archaean:     density *= 0.15; break;
+		case Aerobic:      density *= 0.20; break;
 		case ComplexOcean: density *= 0.30; break;
 		case SimpleLand:   density *= 0.50; break;
 		case ComplexLand:  density *= 0.75; break;
@@ -133,38 +133,38 @@ public class Colony {
 		switch (planet.getLifeLevel()) {
 		case None:
 			if (tl > 10 && Die.die(chance) < 50) {
-				planet.setLifeLevel(LifeType.Metazoa);
+				planet.setLifeLevel(LifeType.Aerobic);
 			} else if (tl > 9 && Die.die(chance) < 10) {
-				planet.setLifeLevel(LifeType.Metazoa);
+				planet.setLifeLevel(LifeType.Aerobic);
 			} else if (tl > 7 && Die.die(chance) < 5) {
-				planet.setLifeLevel(LifeType.Metazoa);
+				planet.setLifeLevel(LifeType.Aerobic);
 			} else if (Die.die(chance) < 2) {
-				planet.setLifeLevel(LifeType.Proteins);
+				planet.setLifeLevel(LifeType.Organic);
 			}
 			break;
-		case Proteins:
+		case Organic:
 			if (tl > 10 && Die.die(chance) < 50) {
-				planet.setLifeLevel(LifeType.Metazoa);
+				planet.setLifeLevel(LifeType.Aerobic);
 			} else if (tl > 9 && Die.die(chance) < 10) {
-				planet.setLifeLevel(LifeType.Metazoa);
+				planet.setLifeLevel(LifeType.Aerobic);
 			} else if (tl > 7 && Die.die(chance) < 5) {
-				planet.setLifeLevel(LifeType.Metazoa);
+				planet.setLifeLevel(LifeType.Aerobic);
 			} else if (Die.die(chance) < 3) {
-				planet.setLifeLevel(LifeType.Protozoa);
+				planet.setLifeLevel(LifeType.Archaean);
 			}
 			break;
-		case Protozoa:
+		case Archaean:
 			if (tl > 10 && Die.die(chance) < 50) {
-				planet.setLifeLevel(LifeType.Metazoa);
+				planet.setLifeLevel(LifeType.Aerobic);
 			} else if (tl > 9 && Die.die(chance) < 10) {
-				planet.setLifeLevel(LifeType.Metazoa);
+				planet.setLifeLevel(LifeType.Aerobic);
 			} else if (tl > 7 && Die.die(chance) < 5) {
-				planet.setLifeLevel(LifeType.Metazoa);
+				planet.setLifeLevel(LifeType.Aerobic);
 			} else if (Die.die(chance) < 3) {
-				planet.setLifeLevel(LifeType.Metazoa);
+				planet.setLifeLevel(LifeType.Aerobic);
 			}
 			break;
-		case Metazoa:
+		case Aerobic:
 			if (tl > 10 && Die.die(chance) < 50) {
 				planet.setLifeLevel(LifeType.SimpleLand);
 			} else if (tl > 9 && Die.die(chance) < 10) {

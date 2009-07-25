@@ -162,9 +162,9 @@ public class Trade {
 		case None:
 			production *= 0.1;
 			break;
-		case Proteins:
-		case Protozoa:
-		case Metazoa:
+		case Organic:
+		case Archaean:
+		case Aerobic:
 			production *= 0.25;
 			break;
 		case ComplexOcean:

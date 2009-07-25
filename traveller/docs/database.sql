@@ -158,6 +158,11 @@ INSERT INTO facility VALUES(0, 'Medieval colony',  'Residential', 'res_medieval'
 INSERT INTO facility VALUES(0, 'Medieval rural',   'Residential', 'res_medieval',   3,         1, 2, '', '', 'Ag');
 INSERT INTO facility VALUES(0, 'Medieval cities',  'Residential', 'res_medieval',   3,  10000000, 2, '', '', '');
 
+# TL0 Cultures (Neolithic)
+INSERT INTO facility VALUES(0, 'Neolithic culture','Residential', 'res_primitive',  0,  1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'Hunter gatherer',  'Agriculture', 'agriculture',    0,  1, 200, '', '', '');
+
+
 # Mining
 INSERT INTO facility VALUES(0, 'Primitive mines',  'Mining', 'mining',  2,  1, 1, '', '', '');
 INSERT INTO facility VALUES(0, 'LoTech Mines',     'Mining', 'mining',  4,  2, 1, '206,X', '', '');
@@ -166,7 +171,6 @@ INSERT INTO facility VALUES(0, 'HiTech Mines',     'Mining', 'mining',  8,  8, 1
 INSERT INTO facility VALUES(0, 'UltraTech Mines',  'Mining', 'mining', 10, 16, 1, '6,X;7,X', '', '');
 
 # Agriculture
-INSERT INTO facility VALUES(0, 'Hunter gatherer',  'Agriculture', 'agriculture',  0,   1, 200, '', '', '');
 INSERT INTO facility VALUES(0, 'Simple farming',   'Agriculture', 'agriculture',  1,   2, 200, '', '', '');
 INSERT INTO facility VALUES(0, 'Agriculture',      'Agriculture', 'agriculture',  3,   3, 200, '', '', '');
 INSERT INTO facility VALUES(0, 'Agriculture 5',    'Agriculture', 'agriculture',  5,   5, 200, '', '', '');
@@ -226,19 +230,25 @@ INSERT INTO commodity VALUES(114, 'Oorcine ices', 'aquam', 'Mi', 23, 600, 1, 3, 
 INSERT INTO commodity VALUES(115, 'Synthosium gas', 'auram', 'Mi', 24, 1060, 1, 2, 0, 3, 10, 'Or Hz');
 
 # Basic agricultural resources
-INSERT INTO commodity VALUES(200, 'Crops',      'food', 'Ag', 2,       100, 1, 10, 10, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(201, 'Vegetables', 'vegetables', 'Ag', 200, 100, 1, 10, 10, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(202, 'Fruits',     'fruits', 'Ag', 200,     150, 1, 9,  10, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(203, 'Meat',       'meat', 'Ag', 200,       350, 1, 7,   9, 6, 1, 'Fo Lu Pe Tl');
-INSERT INTO commodity VALUES(204, 'Seafood',    'seafood', 'Ag', 2,    150, 1, 7,  10, 6, 1, 'Fo Pe Tl');
-INSERT INTO commodity VALUES(205, 'Algae',      'algae', 'Ag', 204,       50, 1, 7,  11, 6, 1, 'Fo Lq Pe Tl');
-INSERT INTO commodity VALUES(206, 'Wood',       'wood', 'Ag', 0,       100, 1, 6,   7, 6, 1, 'In Ag Pt Lt Mt Ht');
-INSERT INTO commodity VALUES(207, 'Grain',      'grain', 'Ag', 2,       75, 1, 10, 11, 6, 2, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(208, 'Fish',       'fish', 'Ag', 204,  150, 1, 7,  10, 6, 1, 'Fo Pe Vi Tl');
-INSERT INTO commodity VALUES(209, 'Shellfish',  'shellfish', 'Ag', 204,  125, 1, 7,  10, 6, 1, 'Fo Pe Tl');
-INSERT INTO commodity VALUES(210, 'Seaweed',    'seaweed', 'Ag', 204,   65, 1, 7,  12, 6, 1, 'Fo Pe Lq Tl');
-INSERT INTO commodity VALUES(211, 'Rice',       'rice', 'Ag', 200,        55, 1, 7,  12, 6, 1, 'Fo Pe Lq Tl');
-INSERT INTO commodity VALUES(212, 'Jellyfish',  'jellyfish', 'Ag', 204, 40, 1, 7,  11, 6, 1, 'Fo Pe Lq Tl');
+INSERT INTO commodity VALUES(200, 'Crops',           'food',            'Ag', 2,    100, 1, 10,  7, 6, 1, 'Fo Vi Pe Tl');
+INSERT INTO commodity VALUES(201, 'Vegetables',      'vegetables',      'Ag', 200,  100, 1, 10,  7, 6, 1, 'Fo Vi Pe Tl');
+INSERT INTO commodity VALUES(202, 'Fruits',          'fruits',          'Ag', 200,  150, 1, 9,   7, 6, 1, 'Fo Vi Pe Tl');
+INSERT INTO commodity VALUES(203, 'Meat',            'meat',            'Ag', 200,  350, 1, 7,   5, 6, 1, 'Fo Lu Pe Tl');
+INSERT INTO commodity VALUES(204, 'Seafood',         'seafood',         'Ag', 2,    150, 1, 7,   6, 6, 1, 'Fo Pe Tl');
+INSERT INTO commodity VALUES(205, 'Algae',           'algae',           'Ag', 204,   50, 1, 7,  10, 6, 1, 'Fo Lq Pe Tl');
+INSERT INTO commodity VALUES(206, 'Wood',            'wood',            'Ag', 0,    100, 1, 6,   7, 6, 1, 'In Ag Pt Lt Mt Ht');
+INSERT INTO commodity VALUES(207, 'Grain',           'grain',           'Ag', 2,     75, 1, 10,  6, 6, 2, 'Fo Vi Pe Tl');
+INSERT INTO commodity VALUES(208, 'Fish',            'fish',            'Ag', 204,  150, 1, 7,   5, 6, 1, 'Fo Pe Vi Tl');
+INSERT INTO commodity VALUES(209, 'Shellfish',       'shellfish',       'Ag', 204,  125, 1, 7,   6, 6, 1, 'Fo Pe Tl');
+INSERT INTO commodity VALUES(210, 'Seaweed',         'seaweed',         'Ag', 204,   65, 1, 7,   8, 6, 1, 'Fo Pe Lq Tl');
+INSERT INTO commodity VALUES(211, 'Rice',            'rice',            'Ag', 200,   55, 1, 7,   8, 6, 1, 'Fo Pe Lq Tl');
+INSERT INTO commodity VALUES(212, 'Jellyfish',       'jellyfish',       'Ag', 204,   40, 1, 7,   7, 6, 1, 'Fo Pe Lq Tl');
+INSERT INTO commodity VALUES(213, 'Sponges',         'sponges',         'Ag', 204,   40, 1, 7,   9, 6, 1, 'Fo Pe Lq Tl');
+INSERT INTO commodity VALUES(214, 'Plankton',        'plankton',        'Ag', 204,   40, 1, 7,  10, 6, 1, 'Fo Pe Lq Tl');
+INSERT INTO commodity VALUES(215, 'Simple marine',   'simple_marine',   'Ag', 204,   40, 1, 7,   6, 6, 1, 'Fo Pe Lq Tl');
+INSERT INTO commodity VALUES(216, 'Base organics',   'base_organics',   'Ag', 204,   40, 1, 7,  12, 6, 1, 'Fo FO FM Lq');
+INSERT INTO commodity VALUES(217, 'Simple organics', 'simple_organics', 'Ag', 204,   40, 1, 7,  11, 6, 1, 'Fo FO FM Lq');
+INSERT INTO commodity VALUES(218, 'Metazoa',         'metazoa',         'Ag', 204,   40, 1, 7,  11, 6, 1, 'Fo FO FM Lq');
 
 INSERT INTO commodity VALUES(400, 'Metals',        'alloys', 'In', 5,  900, 1, 5, 5, 6, 1, 'In');
 INSERT INTO commodity VALUES(401, 'Refined metals','alloys', 'In', 5  1600, 1, 5, 5, 6, 4, 'In');

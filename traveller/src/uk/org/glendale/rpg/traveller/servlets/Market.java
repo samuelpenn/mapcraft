@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Hashtable;
 
 import javax.servlet.ServletException;
@@ -27,6 +28,7 @@ import uk.org.glendale.rpg.traveller.civilisation.trade.Commodity;
 import uk.org.glendale.rpg.traveller.civilisation.trade.Facility;
 import uk.org.glendale.rpg.traveller.civilisation.trade.Trade;
 import uk.org.glendale.rpg.traveller.civilisation.trade.TradeGood;
+import uk.org.glendale.rpg.traveller.database.GlossaryFactory;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.database.ObjectNotFoundException;
 import uk.org.glendale.rpg.traveller.systems.Planet;
@@ -144,14 +146,6 @@ public class Market extends HttpServlet {
 		buffer.append("</div>");
 		
 		buffer.append("<div class=\"planet\">");
-		buffer.append("<p>");
-		buffer.append("<b>Planet Type: </b>"+planet.getType()+"; ");
-		buffer.append("<b>Population: </b>"+f.format(planet.getPopulation())+"; ");
-		buffer.append("<b>Government: </b>"+planet.getGovernment()+"; ");
-		buffer.append("</p><p>");
-		buffer.append("<b>Tech Level: </b>"+planet.getTechLevel()+"; ");
-		buffer.append("<b>Star port: </b>"+planet.getStarport()+"; ");		
-		buffer.append("</p>");
 
 		String[]	tradeCodes = planet.getTradeCodes();
 		if (tradeCodes != null && tradeCodes.length > 0) {
@@ -161,7 +155,41 @@ public class Market extends HttpServlet {
 			}
 			buffer.append("</p>\n");
 		}
+
+		// Physical data
+		buffer.append("<p>\n");
+		buffer.append("<b>Distance:</b> "+planet.getDistance()+" "+(planet.isMoon()?"km":"MKm")+"; <b>Type:</b> "+planet.getType()+"; ");
+		NumberFormat format = NumberFormat.getInstance();
+		format.setMaximumFractionDigits(2);
+		if (!planet.getType().isBelt()) {
+			buffer.append("<b>Radius:</b> "+planet.getRadius()+"km; ");
+			buffer.append("<b>Gravity:</b> "+format.format(planet.getSurfaceGravity())+"ms<sup>-2</sup>; <b>Day:</b> "+planet.getDayAsString(false));
+		}
+		buffer.append(" <b>Year:</b> "+planet.getYearAsString(false));
+		buffer.append("</p>\n");
+
+		// Biosphere/Atmosphere
+		if (!planet.getType().isBelt()) {
+			buffer.append("<p>");
+			buffer.append("<b>Atmosphere:</b> "+planet.getAtmosphereType()+"; <b>Pressure:</b> "+planet.getAtmospherePressure()+"; <b>Hydrographics:</b> "+planet.getHydrographics()+"%; ");
+			buffer.append("<b>Temperature:</b> "+planet.getTemperature()+"; <b>Life:</b> "+planet.getLifeLevel());
+			buffer.append("</p>\n");
+		}
 		
+		if (planet.getPopulation() > 0) {
+			// Civilisation
+			format.setGroupingUsed(true);
+			buffer.append("<p><b>Population:</b> "+format.format(planet.getPopulation())+"</p>\n");
+			// Government
+			buffer.append("<p><b>Government:</b> "+planet.getGovernment()+"</p>\n");
+			// Law level
+			buffer.append("<p><b>Law level:</b> "+planet.getLawLevel()+"</p>\n");
+			// Tech level
+			buffer.append("<p><b>Tech level:</b> "+planet.getTechLevel()+"</p>\n");
+			// Starport
+			buffer.append("<p><b>Starport:</b> "+planet.getStarport()+"</p>\n");
+		}
+				
 		Hashtable<Integer,Facility>		allFacilities = factory.getFacilities();
 		Hashtable<Integer,Long>			facilities = planet.getFacilities();
 		

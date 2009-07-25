@@ -913,7 +913,7 @@ public class WorldBuilder {
 					}
 					
 					switch (getLife()) {
-					case None: case Metazoa: case Proteins: case Protozoa:
+					case None: case Aerobic: case Organic: case Archaean:
 						fertility = 0;
 						break;
 					case ComplexOcean:

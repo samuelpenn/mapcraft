@@ -465,7 +465,7 @@ class Arean extends WorldBuilder {
 		int		planetFertility = 0;
 		
 		switch (planet.getLifeLevel()) {
-		case None: case Proteins: case Protozoa: case Metazoa:
+		case None: case Organic: case Archaean: case Aerobic:
 			planetFertility = -10;
 			break;
 		case ComplexOcean:

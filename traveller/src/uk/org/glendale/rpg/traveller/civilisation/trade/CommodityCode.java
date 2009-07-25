@@ -61,6 +61,14 @@ public enum CommodityCode {
 	Fr("Fragile"),
 	Hz("Hazardous"),
 	HZ("Extremely Hazardous"),
+	// Food codes
+	FV("Vegetable"),
+	FA("Animal"),
+	FC("Crop"),
+	FM("Marine"),
+	FS("Swarming"),
+	FO("Simple organic"),
+	FQ("Squick"),
 	// Other
 	Uq("Unique");
 	
