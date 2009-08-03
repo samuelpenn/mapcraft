@@ -97,7 +97,7 @@ public class Systems extends HttpServlet {
 		
 		try {
 			name = uri.replaceAll("/([^/]+)([/.].*)?", "$1");
-			if (name.endsWith(".html") || name.endsWith(".xml") || name.endsWith(".txt")) {
+			if (name.endsWith(".html") || name.endsWith(".xml") || name.endsWith(".txt") || name.endsWith(".rss")) {
 				name = name.substring(0, name.lastIndexOf("."));
 			}
 			System.out.println(name);
@@ -110,9 +110,9 @@ public class Systems extends HttpServlet {
 		}
 
 		format = uri.replaceAll("/([^/]+)([/.].*)?", "$1");
-		if (format.endsWith(".html") || format.endsWith(".xml") || format.endsWith(".txt")) {
+		if (format.endsWith(".html") || format.endsWith(".xml") || format.endsWith(".txt") || format.endsWith(".rss")) {
 			format = format.replaceAll(".*\\.", "");
-			if (format.equals("txt") || format.equals("xml") || format.equals("html") || format.equals("jpg")) {
+			if (format.equals("txt") || format.equals("xml") || format.equals("html") || format.equals("jpg") || format.equals("rss")) {
 				// Okay.
 			} else {
 				response.sendError(415, "Unrecognised format type ["+format+"]");
@@ -127,20 +127,25 @@ public class Systems extends HttpServlet {
 		ObjectFactory	factory = null;
 		try {
 			factory = new ObjectFactory();
-			StarSystem	system = null;
+			StarSystem			system = null;
+			Vector<StarSystem>	list = null;
 			if (id > 0) {
 				system = new StarSystem(factory, id);
+			} else if (name.equals("search") && format.equals("rss") && request.getParameter("n")!=null) {
+				list = factory.findStarSystems(request.getParameter("n")); 
 			} else {
 				system = new StarSystem(factory, name);
 			}
 
-			if (property == null) {
+			if (list != null) {
+				getListPage(factory, list, format, request, response);
+			} else if (property == null) {
 				getFullPage(factory, system, format, request, response);
 			} else {
 				//getProperty(factory, system, format, property, request, response);
 			}
 		} catch (ObjectNotFoundException e) {
-			response.sendError(404, "Cannot find planet with id ["+id+"]");
+			response.sendError(404, "Cannot find planet with id ["+id+"] ["+name+"] ["+format+"] ["+request.getParameter("n")+"]");
 		} catch (Throwable t) {
 			t.printStackTrace();
 			response.sendError(500, "Exception ("+t.getMessage()+")");
@@ -174,6 +179,11 @@ public class Systems extends HttpServlet {
 			response.setContentType("text/xml");
 			response.getOutputStream().print(outputXML(system));
 		}
+	}
+	
+	private void getListPage(ObjectFactory factory, Vector<StarSystem> list, String format, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setContentType("application/rss+xml");
+		response.getOutputStream().print(outputRSS(factory, list));
 	}
 
 	/**
@@ -236,6 +246,37 @@ public class Systems extends HttpServlet {
 		}
 		buffer.append(system.toXML());
 		
+		return buffer.toString();
+	}
+	
+	private String outputRSS(ObjectFactory factory, Vector<StarSystem> list) {
+		StringBuffer		buffer = new StringBuffer();
+		buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		buffer.append("<rss version='2.0'>\n");
+		buffer.append("<channel><title>Star Systems</title>\n");
+		buffer.append("<link>http://dev.glendale.org.uk/traveller/</link>");
+		buffer.append("<description>List of star systems</description>");
+		
+		for (StarSystem s : list) {
+			String	sectorName = "";
+			try {
+				Sector		sector = new Sector(factory, s.getSectorId());
+				sectorName = " / "+sector.getName();
+			} catch (ObjectNotFoundException e) {
+			}
+			buffer.append("<item><title>"+s.getName()+sectorName+" ("+s.getXAsString()+s.getYAsString()+")</title>");
+			buffer.append("<link>http://dev.glendale.org.uk/traveller/system/"+s.getId()+".html</link>");
+			buffer.append("<description>");
+			Planet		mainWorld = s.getMainWorld();
+			if (s != null) {
+				buffer.append(mainWorld.getName()+" ("+mainWorld.getType()+") "+mainWorld.getStarport()+"/"+mainWorld.getTechLevel());
+				buffer.append("; ");
+				buffer.append(mainWorld.getGovernment()+"; Population "+mainWorld.getShortPopulation());
+			}
+			buffer.append("</description>");
+			buffer.append("</item>");
+		}
+		buffer.append("</channel></rss>\n");
 		return buffer.toString();
 	}
 	

@@ -77,7 +77,7 @@ public class Market extends HttpServlet {
 
 		if (uri.matches(".*\\.[a-z]+")) {
 			format = uri.replaceAll(".*\\.([a-z]+)", "$1");
-			if (format.equals("txt") || format.equals("xml") || format.equals("html") || format.equals("jpg")) {
+			if (format.equals("txt") || format.equals("xml") || format.equals("html") || format.equals("jpg") || format.equals("rss")) {
 				// Okay.
 			} else {
 				response.sendError(415, "Unrecognised format type ["+format+"]");
@@ -87,9 +87,13 @@ public class Market extends HttpServlet {
 
 		try {
 			ObjectFactory		factory = new ObjectFactory();
-			Planet				planet = factory.getPlanet(id);
-
-			getFullPage(factory, planet, format, request, response);
+			if (id == 0) {
+				outputCommodities(factory, request, response);
+			} else {
+				Planet				planet = factory.getPlanet(id);
+	
+				getFullPage(factory, planet, format, request, response);
+			}
 		} catch (ObjectNotFoundException e) {
 			response.sendError(404, "Cannot find planet with id ["+id+"]");
 			return;
@@ -116,6 +120,9 @@ public class Market extends HttpServlet {
 			// Output information as HTML.
 			response.setContentType("text/html");
 			response.getOutputStream().print(outputHTML(factory, planet, request.getContextPath()));
+		} else if (format.equals("rss")) {
+			response.setContentType("application/rss+xml");
+			response.getOutputStream().print(outputRSS(factory, planet, request.getContextPath()));
 		} else if (format.equals("txt")) {
 			// Not currently supported.
 		} else {
@@ -262,5 +269,90 @@ public class Market extends HttpServlet {
 		buffer.append("</body></html>\n");
 		
 		return buffer.toString();
+	}
+	
+	private String outputRSS(ObjectFactory factory, Planet planet, String contextPath) {
+		StringBuffer		buffer = new StringBuffer();
+		String				imageBase = contextPath+"/images/";
+		DecimalFormat		f = new DecimalFormat();
+
+		buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		buffer.append("<rss version='2.0'>\n");
+		buffer.append("<channel><title>"+planet.getName()+"</title>\n");
+		buffer.append("<link>http://dev.glendale.org.uk/traveller/market/"+planet.getId()+".jsp</link>");
+		buffer.append("<description>Current market data for "+planet.getName()+"</description>");
+
+		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
+		
+		for (int i : goods.keySet()) {
+			TradeGood		good = goods.get(i);
+			Commodity		c = factory.getCommodity(good.getCommodityId());
+			
+			if (c != null) {
+				buffer.append("<item>");
+				try {
+					buffer.append("<title>"+c.getName()+"</title>");
+					buffer.append("<link>"+imageBase+"trade/"+c.getImage()+".png</link>");
+					buffer.append("<description>");
+					buffer.append("&lt;img src='http://dev.glendale.org.uk/traveller/images/trade/"+c.getImage()+".png' align='left' width='32' height='32'/&gt;");
+					buffer.append(f.format(good.getAmount())+"dt @ "+f.format(good.getPrice())+"Cr");
+					buffer.append("&lt;br/&gt;");
+					if (good.getConsumed() > 0) {
+						buffer.append(f.format(good.getConsumed())+"dt consumed last week");
+					}
+					buffer.append("</description>");
+				} catch (Throwable e) {
+				}
+				buffer.append("</item>\n");
+			}
+		}
+
+		buffer.append("</channel></rss>\n");
+		return buffer.toString();
+	}
+
+	private void outputCommodities(ObjectFactory factory, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setContentType("text/html");
+		StringBuffer		buffer = new StringBuffer();
+		String				stylesheet = request.getContextPath()+"/css/system.css";
+		String				imageBase = request.getContextPath()+"/images/";
+		DecimalFormat		f = new DecimalFormat();
+		
+		buffer.append("<html>\n<head>\n<title>Commodities</title>\n");
+		buffer.append("<link rel=\"STYLESHEET\" type=\"text/css\" media=\"screen\" href=\""+stylesheet+"\" />\n");
+		buffer.append("</head><body>\n");
+		
+		buffer.append("<div class=\"header\">");
+		buffer.append("<h1>Commodities</h1>");
+		buffer.append("</div>");
+		
+		buffer.append("<div class=\"commodities\"><ul>");
+		Hashtable<Integer,Commodity>		list = factory.getAllCommodities();
+		for (Commodity c : list.values()) {
+			// Output top level commodities.
+			if (c.getParentId() == 0) {
+				outputCommodity(buffer, list, c, imageBase);
+			}
+		}
+		buffer.append("</ul></div>");
+		
+		buffer.append("</body></html>\n");
+
+		response.getOutputStream().print(buffer.toString());
+	}
+	
+	private void outputCommodity(StringBuffer buffer, Hashtable<Integer,Commodity> list, Commodity parent, String imageBase) {
+		buffer.append("<li>");
+		buffer.append("<img src='"+imageBase+"trade/"+parent.getImage()+".png' title='"+parent.getName()+"'/>");
+		buffer.append(parent.getName()+" ("+parent.getSource()+")");
+		buffer.append("</li>");
+		buffer.append("<ul>");
+		for (Commodity c : list.values()) {
+			// Output top level commodities.
+			if (c.getParentId() == parent.getId()) {
+				outputCommodity(buffer, list, c, imageBase);
+			}
+		}
+		buffer.append("</ul>");		
 	}	
 }

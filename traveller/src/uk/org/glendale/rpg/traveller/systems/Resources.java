@@ -23,8 +23,8 @@ public class Resources {
 	private static final String FERRIC = "Ferric ore";
 	private static final String CARBONIC = "Carbonic ore";
 	private static final String SILICATE = "Silicate ore";
-	private static final String AQUAM = "Aquam";
-	private static final String AURAM = "Auram";
+	private static final String AQUAM = "Water";
+	private static final String AURAM = "Air";
 	
 	private static final String KRYSITE = "Krysite ore";
 	private static final String MAGNESITE = "Magnesite ore";
@@ -50,7 +50,7 @@ public class Resources {
 	 * Add resources to the planet based on the atmosphere composition
 	 * and density. Special atmospheric resources aren't included here.
 	 */
-	private static void basicAtmosphere(ObjectFactory factory, StarSystem system, Planet planet) {
+	private static void basicAtmosphere(ObjectFactory factory, Star star, Planet planet) {
 		String	airResource = null;
 		int		air = 0;
 
@@ -105,7 +105,7 @@ public class Resources {
 		}
 	}
 	
-	private static void basicHydrographics(ObjectFactory factory, StarSystem system, Planet planet) {
+	private static void basicHydrographics(ObjectFactory factory, Star star, Planet planet) {
 		String	waterResource = null;
 		int		water = planet.getHydrographics()*2;
 
@@ -141,8 +141,22 @@ public class Resources {
 	private static final String		SIMPLE_MARINE = "Simple marine";
 	private static final String		FISH = "Fish";
 	private static final String		CRUSTACEAN = "Shellfish";
+	
+	// Simple Land
+	private static final String		MOSS = "Moss";
+	private static final String		FERNS = "Ferns";
+	private static final String		FUNGI = "Fungi";
+	private static final String		INSECTS = "Insects";
+	private static final String		AMPHIBIANS = "Amphibians";
+	private static final String		TINY_ANIMALS = "Tiny animals";
+	private static final String		SMALL_ANIMALS = "Small animals";
+	private static final String		MEDIUM_ANIMALS = "Medium animals";
+	private static final String		LARGE_ANIMALS = "Large animals";
+	private static final String		HUGE_ANIMALS = "Huge animals";
+	private static final String		FRUITS = "Fruits";
+	private static final String		GRAIN = "Grain";
 
-	private static void basicLife(ObjectFactory factory, StarSystem system, Planet planet) {
+	private static void basicLife(ObjectFactory factory, Star star, Planet planet) {
 		// Basic organic resources.
 		int		life = 0;
 
@@ -335,29 +349,71 @@ public class Resources {
 			planet.addResource(FISH, Die.d12(5)+life*5);
 			switch (Die.d6()) {
 			case 1: case 2: case 3:
+				planet.addResource(MOSS, Die.d6(2) + life*5);
 				break;
 			case 4: case 5:
+				planet.addResource(MOSS, Die.d12(3) + life*5);
+				planet.addResource(FERNS, Die.d12(2) + life*3);
+				planet.addResource(FUNGI, Die.d12(2) + life*3);
+				planet.addResource(INSECTS, Die.d12(2) + life);
 				break;
 			case 6:
+				planet.addResource(FERNS, Die.d12(3) + life*5);
+				planet.addResource(FUNGI, Die.d12(2) + life*3);
+				planet.addResource(WOOD, Die.d6(2) + life);
+				planet.addResource(INSECTS, Die.d12(2) + life);
+				planet.addResource(SMALL_ANIMALS, Die.d6(2) + life);
 				break;
 			}
-			
-			planet.addResource("Vegetables", 20+Die.d20(2));
-			if (Die.d6() < 5) planet.addResource("Fruits", 10+Die.d12(2));
-			if (Die.d6() < 3) planet.addResource("Wood", 5+Die.d6(2));
 			break;
 		case ComplexLand:
-			if (Die.d6() < 4) planet.addResource("Jellyfish", 5+Die.d6(2));
-			if (Die.d6() < 4) planet.addResource("Seaweed", 10+Die.d6(2));
-			planet.addResource("Shellfish", 20+Die.d20(2));
-			planet.addResource("Fish", 40+Die.d20(3));
-			planet.addResource("Grain", 35+Die.d20(3));
-			planet.addResource("Vegetables", 35+Die.d20(3));
-			planet.addResource("Fruits", 20+Die.d20(2));
-			planet.addResource("Wood", 20+Die.d20(2));
-			planet.addResource("Meat", 10+Die.d12(2));
+			life = Die.d4() + planet.getHydrographics()/10;
+			planet.addResource(SEAWEED, Die.d6(2)+life);
+			planet.addResource(JELLYFISH, Die.d6(2)+life);
+			planet.addResource(SIMPLE_MARINE, Die.d6(2)+life*3);
+			planet.addResource(CRUSTACEAN, Die.d6(3)+life*4);
+			planet.addResource(FISH, Die.d12(5)+life*5);
+			switch (Die.d6()) {
+			case 1: case 2: case 3:
+				planet.addResource(FERNS, Die.d6(2) + life*3);
+				planet.addResource(FUNGI, Die.d6(2) + life*3);
+				planet.addResource(WOOD, Die.d12(2) + life*4);
+				planet.addResource(INSECTS, Die.d6(2) + life);
+				planet.addResource(TINY_ANIMALS, Die.d12(2) + life*2);
+				planet.addResource(SMALL_ANIMALS, Die.d6() + life);
+				break;
+			case 4: case 5:
+				planet.addResource(FERNS, Die.d6(2) + life*3);
+				planet.addResource(FUNGI, Die.d6(2) + life*3);
+				planet.addResource(WOOD, Die.d12(2) + life*5);
+				planet.addResource(VEGETABLES, Die.d6(2) + life);
+				planet.addResource(INSECTS, Die.d6(2) + life);
+				planet.addResource(TINY_ANIMALS, Die.d12(3) + life*3);
+				planet.addResource(SMALL_ANIMALS, Die.d6(2) + life);
+				break;
+			case 6:
+				planet.addResource(WOOD, Die.d12(3) + life*5);
+				planet.addResource(VEGETABLES, Die.d12(3) + life*5);
+				planet.addResource(FRUITS, Die.d12(2) + life*3);
+				planet.addResource(SMALL_ANIMALS, Die.d12(3) + life*5);
+				planet.addResource(MEDIUM_ANIMALS, Die.d6(2) + life*2);
+				break;
+			}
 			break;
 		case Extensive:
+			life = Die.d4() + planet.getHydrographics()/10;
+			planet.addResource(SEAWEED, Die.d6(2)+life);
+			planet.addResource(JELLYFISH, Die.d6(2)+life);
+			planet.addResource(SIMPLE_MARINE, Die.d6(2)+life*3);
+			planet.addResource(CRUSTACEAN, Die.d6(3)+life*4);
+			planet.addResource(FISH, Die.d12(5)+life*5);
+			planet.addResource(WOOD, Die.d12(3) + life*5);
+			planet.addResource(VEGETABLES, Die.d12(3) + life*5);
+			planet.addResource(FRUITS, Die.d12(2) + life*3);
+			planet.addResource(GRAIN, Die.d12(3) + life*3);
+			planet.addResource(SMALL_ANIMALS, Die.d12(3) + life*5);
+			planet.addResource(MEDIUM_ANIMALS, Die.d6(3) + life*3);
+			planet.addResource(LARGE_ANIMALS, Die.d6() + life*2);
 			break;
 		}		
 		
@@ -370,7 +426,7 @@ public class Resources {
 	 * Gaian, GaianTundral, ArchaeoGaian, PostGaian
 	 * 
 	 */
-	private static void setGaian(ObjectFactory factory, StarSystem system, Planet planet) {		
+	private static void setGaian(ObjectFactory factory, Star star, Planet planet) {		
 		System.out.println("Setting Gaian for ["+planet.getName()+"/"+planet.getType()+"]");
 		
 		// Basic mineral resources
@@ -382,15 +438,15 @@ public class Resources {
 		if (Die.d4() == 1) planet.addResource(MAGNESITE, 5+Die.d4());
 		if (Die.d6() == 1) planet.addResource(VARDONNEK, 10+Die.d8(2));
 		
-		basicAtmosphere(factory, system, planet);
-		basicHydrographics(factory, system, planet);
-		basicLife(factory, system, planet);
+		basicAtmosphere(factory, star, planet);
+		basicHydrographics(factory, star, planet);
+		basicLife(factory, star, planet);
 	}
 	
 	/**
 	 * Set the resources on the given planet.
 	 */
-	public static void setResources(ObjectFactory factory, StarSystem system, Planet planet) {
+	public static void setResources(ObjectFactory factory, Star star, Planet planet) {
 		System.out.println(planet.getType());
 		switch (planet.getType()) {
 		case Gaian:
@@ -399,7 +455,7 @@ public class Resources {
 		case PostGaian:
 		case ArchaeoGaian:
 		case GaianTundral:
-			setGaian(factory, system, planet);
+			setGaian(factory, star, planet);
 			break;
 		}
 	}
@@ -407,9 +463,9 @@ public class Resources {
 	public static void main(String[] args) throws Exception {
 		ObjectFactory		factory = new ObjectFactory();
 		Planet				planet = factory.getPlanet(224138);
-		StarSystem			system = null;
+		Star				star = null;
 		
-		setResources(factory, system, planet);
+		setResources(factory, star, planet);
 		planet.persist();
 	}
 

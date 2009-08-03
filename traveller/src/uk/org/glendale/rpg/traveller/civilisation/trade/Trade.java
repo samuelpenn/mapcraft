@@ -351,17 +351,33 @@ public class Trade {
 	 * @version 0.3
 	 */
 	private void manageResources() {
-		Hashtable<Integer,Facility>	facilities = factory.getFacilities();
-		Hashtable<Integer,Long>		planetFacilities = planet.getFacilities();
+		Hashtable<Integer,Facility>		facilities = factory.getFacilities();
+		Hashtable<Integer,Long>			planetFacilities = planet.getFacilities();
+		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());		
 
 		for (int rId : resources.keySet()) {
 			Commodity	c = commodities.get(rId);
 			int			density = resources.get(rId);
 			
+			if (c == null) {
+				factory.setCommodity(planet.getId(), rId, 0, 0, 0);
+				continue;
+			}
+			
 			System.out.println("Resource ["+c.getName()+"] density "+density+"%");
 			for (int fId : planetFacilities.keySet()) {
 				Facility	facility = facilities.get(fId);
 				long		facilitySize = planetFacilities.get(fId);
+				
+				switch (facility.getType()) {
+				case Agriculture:
+				case Mining:
+					break;
+				case Residential:
+				case StarPort:
+				case Industry:
+					continue;
+				}
 				
 				// Does this facility manage this resource?
 				if (isParentOf(facility.getResourceId(), rId)) {
@@ -371,6 +387,45 @@ public class Trade {
 					productionRate = (productionRate * density * density) / 10000;
 					productionRate = c.getAmountModifiedByTech(planet.getTechLevel(), productionRate);
 					productionRate = (productionRate * facilitySize) / 100;
+					
+					if (goods.containsKey(c.getId())) {
+						long	amount = goods.get(c.getId()).getAmount();
+						System.out.println("         Already have "+goods.get(c.getId()).getAmount());
+						
+						if (amount > productionRate * 5) {
+							productionRate = 0;
+						} else if (amount > productionRate *2) {
+							productionRate *= 0.1;
+						} else if (amount > productionRate) {
+							productionRate *= 0.5;
+						} else if (amount*2 > productionRate) {
+							productionRate *= 0.75;
+						}
+						
+						// We have zero of the good, which means it's sold out.
+						// Try and make more of it than normal.
+						if (amount == 0) {
+							if (c.getSource() == Source.Ag) {
+								if (planet.hasTradeCode(TradeCode.Ag)) {
+									productionRate *= 1.25;
+								} else if (planet.hasTradeCode(TradeCode.Na)) {
+									// Can't do anything.
+								} else {
+									productionRate *= 1.1;
+								}
+							} else if (c.getSource() == Source.Mi) {
+								if (planet.hasTradeCode(TradeCode.Mi)) {
+									productionRate *= 1.25;
+								} else if (planet.hasTradeCode(TradeCode.In)) {
+									productionRate *= 1.15;
+								} else if (planet.hasTradeCode(TradeCode.Ni)) {
+									// Can't do anything.
+								} else {
+									productionRate *= 1.1;
+								}
+							}
+						}
+					}
 					
 					System.out.println("         Production rate "+n(productionRate)+" dt/wk");
 					factory.addCommodity(planet.getId(), c.getId(), productionRate, 0, c.getUnitCost());
@@ -384,7 +439,7 @@ public class Trade {
 		consumedGoods = new Vector<TradeGood>();
 		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());		
 		for (TradeGood g : goods.values()) {
-			factory.setCommodity(planet.getId(), g.getCommodityId(), g.getAmount(), 0, g.getPrice());
+			factory.setCommodity(planet.getId(), g.getCommodityId(), g.getAmount(), -1, g.getPrice());
 		}
 
 		manageResources();
@@ -424,42 +479,6 @@ public class Trade {
 		}
 	}
 		
-	/**
-	 * Work out what resource gathering facilities produce this week.
-	 * We only calculate facilities gathering natural resources.
-	 */
-	public void gatherResources2() {
-		Hashtable<Integer,Long>		planetFacilities = planet.getFacilities();
-		Hashtable<Integer,Facility>	facilities = factory.getFacilities();
-		
-		System.out.println("Production rates");
-		for (int i : planetFacilities.keySet()) {
-			Facility	facility = facilities.get(i);
-			long		size = planetFacilities.get(facility.getId());
-			int			resourceId = facility.getResourceId();
-			
-			if (resourceId == 0) {
-				// Only handle those facilities which consume natural resources.
-				continue;
-			}
-			
-			for (int r: facility.inputMap.keySet()) {
-				long		produce = facility.inputMap.get(r) * size;
-				System.out.println("Produce "+produce+" of resource "+commodities.get(r).getName());
-				
-				// For each commodity, work out how much is produced.
-				for (int cId : facility.outputMap.keySet()) {
-					long		amount = facility.outputMap.get(cId) * size;
-					Commodity	c = commodities.get(cId);
-					int			tl = planet.getTechLevel() - c.getTechLevel();
-					
-					amount = c.getAmountModifiedByTech(planet.getTechLevel(), amount);
-					
-					factory.addCommodity(planet.getId(), cId, amount, 0, c.getUnitCost());
-				}
-			}
-		}
-	}
 	
 	public long getProductionRate(Commodity c) {
 		if (c != null && resources != null) {
@@ -785,6 +804,12 @@ public class Trade {
 
 		for (TradeGood good : goods.values()) {
 			Commodity c = commodities.get(good.getCommodityId());
+			if (c == null) {
+				System.out.println("Good ["+good.getCommodityId()+"] doesn't exist");
+				good.setAmount(0);
+				factory.setCommodity(planet.getId(), good.getCommodityId(), 0, 0, 0);
+				continue;
+			}
 			if (isParentOf(requiredId, c.getId())) {
 				long		amount = good.getAmount();
 				
@@ -897,7 +922,41 @@ public class Trade {
 			
 			factory.setCommodity(planet.getId(), good.getCommodityId(), good.getAmount(), 
 					             good.getConsumed(), good.getPrice());
-		}		
+		}
+
+		// Do we need to modify production based on these prices?
+		Hashtable<Integer,Facility>	facilities = factory.getFacilities();
+		Hashtable<Integer,Long>		planetFacilities = planet.getFacilities();
+		
+		for (int f : planetFacilities.keySet()) {
+			Facility	facility = facilities.get(f);
+			long		capacity = planetFacilities.get(f);
+			
+			switch (facility.getType()) {
+			case Agriculture:
+				break;
+			default:
+				continue;
+			}
+			
+			int		parentResourceId = facility.getResourceId();
+			for (int i : goods.keySet()) {
+				TradeGood	good = goods.get(i);
+				Commodity	commodity = commodities.get(i);
+				
+				if (isParentOf(parentResourceId, i)) {
+					if (good.getPrice() < (commodity.getCost()*0.8)) {
+						capacity--;
+					} else if (good.getPrice() > (commodity.getCost()*1.2)) {
+						capacity++;
+					}
+				}
+			}
+			if (capacity < 1) capacity = 1;
+			if (capacity > 100) capacity = 100;
+			planetFacilities.put(f, capacity);
+		}
+		factory.setFacilitiesForPlanet(planet.getId(), planetFacilities);
 	}
 	
 	/**
@@ -946,13 +1005,15 @@ public class Trade {
 		Facility	residential = null;
 		long		size = 100L;
 		// Choose the best residential facility. Currently, just choose the
-		// highest tech level one the planet can support. Later, we need to
-		// look at trade codes and population levels etc.
+		// highest tech level one the planet can support. The facility capacity
+		// is used to filter on the population.
 		for (Facility f : Facility.getByType(facilities, FacilityType.Residential).values()) {
 			if (f.getTechLevel() > planet.getTechLevel()) continue;
+			if (f.getCapacity() > planet.getPopulationLog()) continue;
 			if (residential == null) {
 				residential = f;
-			} else if (f.getTechLevel() > residential.getTechLevel() && f.getTechLevel() <= planet.getTechLevel()) {
+			} else if (f.getTechLevel() > residential.getTechLevel() && f.getTechLevel() <= planet.getTechLevel()
+					&& f.getCapacity() > residential.getCapacity()) {
 				residential = f;
 			}
 		}
@@ -1028,7 +1089,7 @@ public class Trade {
 				//Planet		planet = system.getMainWorld();
 				
 				//Planet		planet = factory.getPlanet(223065);
-				Planet		planet = factory.getPlanet(224128);
+				Planet		planet = factory.getPlanet(224138);
 				
 				Trade		trade = new Trade(factory, planet);
 				//trade.createFacilities();

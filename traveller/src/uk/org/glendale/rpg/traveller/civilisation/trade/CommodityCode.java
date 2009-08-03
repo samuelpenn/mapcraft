@@ -66,8 +66,9 @@ public enum CommodityCode {
 	FA("Animal"),
 	FC("Crop"),
 	FM("Marine"),
-	FS("Swarming"),
-	FO("Simple organic"),
+	FT("Tiny"),
+	FS("Small"),
+	FB("Basic"),
 	FQ("Squick"),
 	// Other
 	Uq("Unique");

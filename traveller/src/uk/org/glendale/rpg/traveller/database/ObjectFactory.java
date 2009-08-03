@@ -409,6 +409,28 @@ public class ObjectFactory {
 		return ss;		
 	}
 	
+	public Vector<StarSystem> findStarSystems(String name) {
+		Vector<StarSystem>	list = new Vector<StarSystem>();
+		ResultSet			rs = null;
+		
+		if (name == null || name.length() == 0) {
+			return list;
+		}
+		name = name.replaceAll("[^a-zA-Z0-9 ]", "");
+		try {
+			rs = db.query("select * from system where name like '%"+name+"%' order by name");
+			while (rs.next()) {
+				list.add(new StarSystem(this, rs));
+			}
+		} catch (SQLException e) {
+			
+		} finally {
+			db.tidy(rs);
+		}
+		
+		return list;
+	}
+	
 	public Vector<Star> getStarsBySystem(int systemId) {
 		Vector<Star>		list = new Vector<Star>();
 		ResultSet			rs = null;
@@ -822,7 +844,7 @@ public class ObjectFactory {
 	public void setCommodity(int planet_id, int commodity_id, long amount, long consumed, int price) {
 		String			where = "planet_id="+planet_id+" and commodity_id="+commodity_id;
 		
-		if (amount < 1 && consumed < 1) {
+		if (amount < 1 && consumed == 0) {
 			db.delete("trade", where);
 		} else {		
 			Hashtable<String,Object>		data = new Hashtable<String,Object>();
@@ -830,7 +852,7 @@ public class ObjectFactory {
 			data.put("planet_id", planet_id);
 			data.put("commodity_id", commodity_id);
 			data.put("amount", amount);
-			data.put("consumed", consumed);
+			data.put("consumed", (consumed>=0)?consumed:0);
 			data.put("price", price);
 			try {
 				db.replace("trade", data, where);
@@ -1216,8 +1238,17 @@ public class ObjectFactory {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		regenSystem(10311);
+		//regenSystem(10311);
 		//regenSelection(2);
+		
+		ObjectFactory	f = new ObjectFactory();
+		//StarSystem s = f.getStarSystem(10309);
+		//System.out.println(s.getMainWorld().getName());
+		
+		Vector<StarSystem> list = f.findStarSystems("new");
+		for (StarSystem s : list) {
+			System.out.println(s.getName());
+		}
 	}
 
 }
