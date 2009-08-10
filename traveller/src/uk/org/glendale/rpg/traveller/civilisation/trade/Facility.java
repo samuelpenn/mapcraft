@@ -10,6 +10,7 @@ package uk.org.glendale.rpg.traveller.civilisation.trade;
 
 import java.sql.*;
 import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Each civilised planet will have one or more facilities. These produce
@@ -28,8 +29,29 @@ public class Facility {
 	private int					capacity = 0;
 	private int					resourceId = 0;
 	
-	Hashtable<Integer,Integer>	inputMap = null;
-	Hashtable<Integer,Integer>	outputMap = null;
+	class Mapping {
+		private int		sourceId = 0;
+		private int		secondaryId = 0;
+		
+		Mapping(int sourceId) {
+			this.sourceId = sourceId;
+		}
+		Mapping(int sourceId, int secondaryId) {
+			this.sourceId = sourceId;
+			this.secondaryId = secondaryId;
+		}
+		
+		int getSourceId() {
+			return sourceId;
+		}
+		
+		int getSecondaryId() {
+			return secondaryId;
+		}
+	}
+	
+	Vector<Mapping>	inputMap = null;
+	Vector<Mapping>	outputMap = null;
 		
 	/**
 	 * Create a new facility, based on database result set.
@@ -53,8 +75,8 @@ public class Facility {
 		
 	}
 	
-	private Hashtable<Integer,Integer> getIOMapFromString(String string) {
-		Hashtable<Integer,Integer>	map = new Hashtable<Integer,Integer>();
+	private Vector<Mapping> getIOMapFromString(String string) {
+		Vector<Mapping>	map = new Vector<Mapping>();
 		
 		if (string == null || string.length() == 0) {
 			return map;
@@ -63,20 +85,30 @@ public class Facility {
 		String[]		maps = string.split(";");
 		for (int m=0; m < maps.length; m++) {
 			String[]	n = maps[m].split(",");
-			if (n.length == 2) {
-				String		key = n[0];
-				String		units = n[1];
-				
-				if (key.equalsIgnoreCase("X")) key = "0";
-				if (units.equalsIgnoreCase("X")) units = "0";
-				try {
-					map.put(Integer.parseInt(key), Integer.parseInt(units));
-				} catch (NumberFormatException e) {
-					System.out.println("Unable to recognise ["+maps[m]+"] for facility ["+name+"]");
+			try {
+				if (n.length == 1) {
+					map.add(new Mapping(Integer.parseInt(n[0])));
+				} else if (n.length == 2) {
+					String		key = n[0];
+					String		units = n[1];
+					
+					if (key.equalsIgnoreCase("X")) key = "0";
+					if (units.equalsIgnoreCase("X")) units = "0";
+					map.add(new Mapping(Integer.parseInt(key), Integer.parseInt(units)));
 				}
+			} catch (NumberFormatException e) {
+				System.out.println("Unable to recognise ["+maps[m]+"] for facility ["+name+"]");
 			}
 		}
 		return map;
+	}
+	
+	public Vector<Mapping> getInputs() {
+		return inputMap;
+	}
+
+	public Vector<Mapping> getOutputs() {
+		return outputMap;
 	}
 	
 	/**
@@ -121,7 +153,12 @@ public class Facility {
 	public int getCapacity() {
 		return capacity;
 	}
-	
+
+	/**
+	 * The primary resource type that this facility relies on.
+	 * Mines and Agriculture turn it into commodities, Residential
+	 * consumes it.
+	 */
 	public int getResourceId() {
 		return resourceId;
 	}
@@ -135,5 +172,5 @@ public class Facility {
 	 */
 	public FacilityType getType() {
 		return type;
-	}		
+	}	
 }

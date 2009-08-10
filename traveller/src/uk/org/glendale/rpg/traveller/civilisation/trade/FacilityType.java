@@ -9,15 +9,34 @@
 package uk.org.glendale.rpg.traveller.civilisation.trade;
 
 /**
- * The type of facility. This determines the inputs and outputs
- * from the facility where applicable.
+ * The type of facility. This determines the behaviour of the
+ * facility in terms of its primary resource, and how it should
+ * be selected for and categorised.
  * 
  * @author Samuel Penn
  */
 public enum FacilityType {
+	/**
+	 * Consume the primary resource. May produce and consume
+	 * other resources as well.
+	 */
 	Residential,
+	/**
+	 * Turns the primary resource into a commodity.
+	 */
 	Mining,
+	/**
+	 * Turns the primary resource into a commodity.
+	 */
 	Agriculture,
+	/**
+	 * Converts one type of commodity into another type of
+	 * commodity. Generally have no primary resources.
+	 */
 	Industry,
+	/**
+	 * Consumes many types of resources, generally has no
+	 * primary resource. May create resources.
+	 */
 	StarPort;
 }

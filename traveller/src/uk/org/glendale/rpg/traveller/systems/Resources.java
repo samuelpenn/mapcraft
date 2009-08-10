@@ -46,6 +46,8 @@ public class Resources {
 	private static final String TRITANIUM = "Tritanium gas";
 	private static final String SYNTHOSIUM = "Synthosium gas";
 	
+	private static final String PETROLEUM = "Petroleum";
+	
 	/**
 	 * Add resources to the planet based on the atmosphere composition
 	 * and density. Special atmospheric resources aren't included here.
@@ -290,6 +292,7 @@ public class Resources {
 				planet.addResource(PLANKTON, Die.d6(3)+life*3);
 				planet.addResource(JELLYFISH, Die.d12(2)+life*3);
 				planet.addResource(SIMPLE_MARINE, Die.d12(3)+life*4);
+				planet.addResource(PETROLEUM, Die.d4()+life);
 				break;
 			}
 			break;
@@ -321,6 +324,7 @@ public class Resources {
 				planet.addResource(SIMPLE_MARINE, Die.d12(3)+life*5);
 				planet.addResource(CRUSTACEAN, Die.d6(3)+life*3);
 				planet.addResource(FISH, Die.d6(2)+life*3);
+				planet.addResource(PETROLEUM, Die.d4()+life);
 				break;
 			case 4: case 5:
 				planet.addResource(SEAWEED, Die.d6()+life);
@@ -329,6 +333,7 @@ public class Resources {
 				planet.addResource(SIMPLE_MARINE, Die.d6(3)+life*3);
 				planet.addResource(CRUSTACEAN, Die.d6(3)+life*4);
 				planet.addResource(FISH, Die.d12(3)+life*5);
+				planet.addResource(PETROLEUM, Die.d6()+life);
 				break;
 			case 6:
 				planet.addResource(SEAWEED, Die.d6()+life);
@@ -337,6 +342,7 @@ public class Resources {
 				planet.addResource(SIMPLE_MARINE, Die.d6(3)+life*3);
 				planet.addResource(CRUSTACEAN, Die.d6(3)+life*4);
 				planet.addResource(FISH, Die.d12(4)+life*5);
+				planet.addResource(PETROLEUM, Die.d8()+life);
 				break;
 			}
 			break;
@@ -350,12 +356,14 @@ public class Resources {
 			switch (Die.d6()) {
 			case 1: case 2: case 3:
 				planet.addResource(MOSS, Die.d6(2) + life*5);
+				planet.addResource(PETROLEUM, Die.d6(2)+life);
 				break;
 			case 4: case 5:
 				planet.addResource(MOSS, Die.d12(3) + life*5);
 				planet.addResource(FERNS, Die.d12(2) + life*3);
 				planet.addResource(FUNGI, Die.d12(2) + life*3);
 				planet.addResource(INSECTS, Die.d12(2) + life);
+				planet.addResource(PETROLEUM, Die.d6(2)+life*2);
 				break;
 			case 6:
 				planet.addResource(FERNS, Die.d12(3) + life*5);
@@ -363,6 +371,7 @@ public class Resources {
 				planet.addResource(WOOD, Die.d6(2) + life);
 				planet.addResource(INSECTS, Die.d12(2) + life);
 				planet.addResource(SMALL_ANIMALS, Die.d6(2) + life);
+				planet.addResource(PETROLEUM, Die.d6(2)+life*3);
 				break;
 			}
 			break;
@@ -373,6 +382,7 @@ public class Resources {
 			planet.addResource(SIMPLE_MARINE, Die.d6(2)+life*3);
 			planet.addResource(CRUSTACEAN, Die.d6(3)+life*4);
 			planet.addResource(FISH, Die.d12(5)+life*5);
+			planet.addResource(PETROLEUM, Die.d12(2)+life*3);
 			switch (Die.d6()) {
 			case 1: case 2: case 3:
 				planet.addResource(FERNS, Die.d6(2) + life*3);
@@ -414,6 +424,7 @@ public class Resources {
 			planet.addResource(SMALL_ANIMALS, Die.d12(3) + life*5);
 			planet.addResource(MEDIUM_ANIMALS, Die.d6(3) + life*3);
 			planet.addResource(LARGE_ANIMALS, Die.d6() + life*2);
+			planet.addResource(PETROLEUM, Die.d12(3)+life*4);
 			break;
 		}		
 		

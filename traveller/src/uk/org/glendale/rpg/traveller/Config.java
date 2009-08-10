@@ -116,4 +116,8 @@ public class Config {
     public static String getName() {
     	return props.getProperty(universe+".server.name");
     }
+    
+    public static String getDescription() {
+    	return props.getProperty(universe+".description");
+    }
 }

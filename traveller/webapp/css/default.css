@@ -6,11 +6,11 @@ body {
 }
 
 div.header {
+	background-color: #000044;
 	margin: 0px;
 }
 
 div.header h1 {
-	background-color: #000044;
 	color: #FFFF88;
 	margin: 0px;
 }
@@ -18,4 +18,29 @@ div.header h1 {
 div.header p {
 	margin: 0px;
 	margin-left: 1em;
+	color: white;
+}
+
+div.links {
+	padding-top: 1em;
+	float: left;
+	width: 96px;
+}
+
+div.links a {
+	border: none;
+	margin: 0.5em;
+}
+
+div.body {
+	margin-left: 108px;
+}
+
+h2 {
+	clear: both;
+	border-bottom: 2px solid #000044;
+}
+
+p {
+	margin-left: 2em;
 }

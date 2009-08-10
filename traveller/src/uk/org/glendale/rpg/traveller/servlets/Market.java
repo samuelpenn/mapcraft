@@ -221,6 +221,7 @@ public class Market extends HttpServlet {
 			Commodity		c = commodities.get(i);
 			if (c == null) {
 				c = factory.getCommodity(i);
+				if (c == null) continue;
 				commodities.put(i, c);
 			}
 			if (column == 0) {

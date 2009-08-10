@@ -20,11 +20,14 @@ public enum CommodityCode {
 	// Legal
 	Il("Illegal"),
 	// Used by tech levels
-	Pt("Pre-tech (1-3)"),
-	Lt("Lo-tech (4-5)"),
-	Mt("Mid-tech (6-8)"),
-	Ht("High-tech (8-10)"),
-	Ut("Ultra-tech (10+)"),
+	Nt("Neolithic tech (0-1)"),
+	Pt("Primitive (1-3)"),
+	Lt("Low tech (3-5)"),
+	Mt("Mid tech (5-6)"),
+	Ht("High tech (7-8)"),
+	At("Advanced tech (9-10)"),
+	Ut("Ultra tech (11+)"),
+	Tt("Any tech level"),
 	// Used by world types
 	In("Industrial"),
 	Ag("Agricultural"),
