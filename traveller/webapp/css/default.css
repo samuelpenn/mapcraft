@@ -1,0 +1,21 @@
+body {
+	background-color: white;
+	color: black;
+	margin: 0px;
+	padding: 0px;
+}
+
+div.header {
+	margin: 0px;
+}
+
+div.header h1 {
+	background-color: #000044;
+	color: #FFFF88;
+	margin: 0px;
+}
+
+div.header p {
+	margin: 0px;
+	margin-left: 1em;
+}
