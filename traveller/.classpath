@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/RPG Utils"/>
+	<classpathentry kind="lib" path="/usr/share/jdbc-mysql/lib/jdbc-mysql.jar"/>
+	<classpathentry kind="lib" path="/usr/share/ant-core/lib/ant.jar"/>
+	<classpathentry kind="lib" path="/usr/share/tomcat-servlet-api-2.5/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="/usr/share/sun-java3d-bin/lib/j3dcore.jar">
+		<attributes>
+			<attribute value="/opt/sun-java3d-bin/lib64" name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/usr/share/sun-java3d-bin/lib/j3dutils.jar">
+		<attributes>
+			<attribute value="/opt/sun-java3d-bin/lib64" name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/usr/share/sun-java3d-bin/lib/vecmath.jar"/>
+	<classpathentry kind="lib" path="support/catalina-ant.jar"/>
+	<classpathentry kind="lib" path="support/catalina.jar"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>

@@ -383,6 +383,7 @@ public class StarSystem implements Comparable {
 		this.factory = factory;
 		this.sectorId = sectorId;
 		this.name = uwp.getName();
+		this.uwpLine = uwp.toString();
 		
 		if (name == null || name.trim().length() == 0) {
 			int				ssx = (uwp.getX()%8 == 0)?8:uwp.getX()%8;

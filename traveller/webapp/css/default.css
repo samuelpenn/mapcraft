@@ -36,11 +36,36 @@ div.body {
 	margin-left: 108px;
 }
 
+div.body ul {
+	list-style-type: none;
+}
+
+div.body ul img {
+	padding-right: 1em;
+}
+
+div.body ul p {
+	margin-left: 0px;
+}
+
 h2 {
-	clear: both;
 	border-bottom: 2px solid #000044;
 }
 
 p {
-	margin-left: 2em;
+}
+
+table.statistics {
+	margin-left: 1em;
+}
+
+table.statistics th {
+	background-color: #000044;
+	color: white;
+	text-align: left;
+}
+
+table.statistics td {
+	text-align: left;
+	border: 1px solid #000044;
 }

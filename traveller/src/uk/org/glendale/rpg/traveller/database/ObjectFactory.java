@@ -564,13 +564,13 @@ public class ObjectFactory {
 		return list;		
 	}
 	
-	private int getStatistic(String sql) {
+	private long getStatistic(String sql) {
 		ResultSet	rs = null;
-		int			value = 0;
+		long			value = 0;
 		try {
 			rs = db.query(sql);
 			if (rs.next()) {
-				value = rs.getInt(1);
+				value = rs.getLong(1);
 			}
 		} catch (SQLException e) {
 			Log.error(e);
@@ -581,25 +581,30 @@ public class ObjectFactory {
 		return value;
 	}
 	
+	private static Hashtable<String,Long> 	statisticsTable = null;
+	
 	/**
 	 * Returns statistics on the universe as it is currently known.
 	 * 
 	 * @return		Collection of interesting facts.
 	 */
-	public Hashtable<String,Integer> getStatistics() {
-		Hashtable<String,Integer>		table = new Hashtable<String,Integer>();
+	public Hashtable<String,Long> getStatistics() {
+		if (statisticsTable != null) return statisticsTable;
 		
-		table.put("sectors", getStatistic("select count(*) from sector"));
-		table.put("systems", getStatistic("select count(*) from system"));
-		table.put("planets", getStatistic("select count(*) from planet"));
-		table.put("moons", getStatistic("select count(*) from planet where moon=1"));
-		table.put("life", getStatistic("select count(*) from planet where life='Extensive'"));
-		table.put("minx", getStatistic("select min(x) from sector"));
-		table.put("maxx", getStatistic("select max(x) from sector"));
-		table.put("miny", getStatistic("select min(y) from sector"));
-		table.put("maxy", getStatistic("select max(y) from sector"));
+		statisticsTable = new Hashtable<String,Long>();
+		statisticsTable.put("sectors", getStatistic("select count(*) from sector"));
+		statisticsTable.put("systems", getStatistic("select count(*) from system"));
+		statisticsTable.put("planets", getStatistic("select count(*) from planet"));
+		statisticsTable.put("moons", getStatistic("select count(*) from planet where moon=1"));
+		statisticsTable.put("life", getStatistic("select count(*) from planet where life='Extensive'"));
+		statisticsTable.put("minx", getStatistic("select min(x) from sector"));
+		statisticsTable.put("maxx", getStatistic("select max(x) from sector"));
+		statisticsTable.put("miny", getStatistic("select min(y) from sector"));
+		statisticsTable.put("maxy", getStatistic("select max(y) from sector"));
+		statisticsTable.put("population", getStatistic("select sum(population) from planet"));
+		statisticsTable.put("ships", getStatistic("select count(*) from ship"));
 		
-		return table;
+		return statisticsTable;
 	}
 	
 	public void storePlanetMap(int id, ByteArrayOutputStream stream) {
@@ -763,6 +768,11 @@ public class ObjectFactory {
 			
 		db.delete("planet", "system_id="+id);
 		db.delete("star", "system_id="+id);
+	}
+	
+	public void deleteStarSystem(int id) throws ObjectNotFoundException {
+		cleanStarSystem(id);
+		db.delete("system", "id="+id);
 	}
 	
 	/**

@@ -164,25 +164,6 @@ public class Sectors extends HttpServlet {
 			response.setContentType("text/xml");
 			response.getOutputStream().print(sector.toXML());
 		}
-		
-		
-		/*
-		{
-			try {
-				factory = new ObjectFactory();
-				sector = new Sector(factory, id);
-				
-				
-			} catch (Throwable t) {
-				t.printStackTrace();
-				response.sendError(500, "Exception ("+t.getMessage()+")");
-				return;
-			} finally {
-				factory.close();
-				factory = null;
-			}
-		}
-		*/
 	}
 
 	/**
@@ -229,7 +210,15 @@ public class Sectors extends HttpServlet {
 	}
 	
 	private String universeAsXML(Vector<Sector> sectors) {
-		return "";
+		StringBuffer		buffer = new StringBuffer();
+
+		buffer.append("<universe>\n");
+		for (Sector sector : sectors) {
+			buffer.append("<sector id=\""+sector.getId()+"\" name=\""+sector.getName()+"\" x=\""+sector.getX()+"\" y=\""+sector.getY()+"\"/>\n");
+		}
+		buffer.append("</universe>\n");
+		
+		return buffer.toString();
 	}
 	
 	private String universeAsHTML(Vector<Sector> sectors) {

@@ -621,6 +621,17 @@ public class Sector {
 	public void create(File file) {
 		FileReader          reader = null;
         LineNumberReader    input = null;
+
+		for (StarSystem sys: getSystems()) {
+			int		sysId = sys.getId();
+			try {
+				factory.deleteStarSystem(sysId);
+			} catch (Throwable e) {
+				
+			}
+		}
+        
+        
         try {
             String    line = null;
             
@@ -647,6 +658,7 @@ public class Sector {
 	            	System.out.print(".");
 	            	if ((++count)%100 == 0) {
 	            		System.out.println("");
+		            	System.gc();
 	            	}
 					//int				ssx = (uwp.getX()%8 == 0)?8:uwp.getX()%8;
 					//int				ssy = (uwp.getY()%10 == 0)?10:uwp.getY()%10;
@@ -656,6 +668,7 @@ public class Sector {
 	            	
 					// Seed the random number generator.
 					new Random(getX()*100000+getY()*1000 + uwp.getX()*40 +  uwp.getY());
+					if (factory.getStarSystem(id, uwp.getX(), uwp.getY()) != null) continue;
 	            	new StarSystem(factory, id, uwp);
             	} catch (Throwable e) {
             		System.out.println("\nERROR: "+line);
@@ -900,8 +913,9 @@ public class Sector {
 			String		filename = position.substring(y+11, y+12).toLowerCase()+position.substring(x+12, x+13).toUpperCase();
 			//String		filename = Integer.toString(y+15, 36).toLowerCase()+Integer.toString(x+16, 36).toUpperCase();
 			
-			System.out.println("Creating "+sector.getId()+": "+sector.getName());
+			if (!sector.getName().equals("Karleaya")) continue;
 			
+			System.out.println("Creating "+sector.getId()+": "+sector.getName());
 			
 			try {
 				File		file = new File("data/core/gni/"+filename+".GNI");
@@ -988,8 +1002,9 @@ public class Sector {
 		//createTravellerSub();
 		//createMortals();
 		//createSol();
-		regenerate(1);
+		//regenerate(1);
 		//populateUWPs();
+		createTraveller();
 		
 		System.exit(0);
 		

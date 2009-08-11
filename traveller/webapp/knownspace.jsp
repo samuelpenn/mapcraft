@@ -47,37 +47,18 @@
 		
 		<%
 			ObjectFactory				fac = new ObjectFactory();
-			Hashtable<String,Integer>	table = fac.getStatistics();
+			Hashtable<String,Long>		table = fac.getStatistics();
 		%>
-		
-		<table>
-			<tr>
-				<th>Number of sectors</th>
-				<td><%= table.get("sectors") %></td>
-			</tr>
-			<tr>
-				<th>Number of systems</th>
-				<td><%= table.get("systems") %></td>
-			</tr>
-			<tr>
-				<th>Number of planets</th>
-				<td><%= table.get("planets") %> (incl. <%= table.get("moons") %> moons)</td>
-			</tr>
-			<tr>
-				<th>Life bearing worlds</th>
-				<td><%= table.get("life") %></td>
-			</tr>
-		</table>
-		
+				
 		<h2>Sectors of Known Space</h2>
 		
 		<table>
 			<%
 				String		root = request.getSession().getServletContext().getRealPath("/");
-				int			minX = table.get("minx");
-				int			minY = table.get("miny");
-				int			maxX = table.get("maxx");
-				int			maxY = table.get("maxy");
+				int			minX = table.get("minx").intValue();
+				int			minY = table.get("miny").intValue();
+				int			maxX = table.get("maxx").intValue();
+				int			maxY = table.get("maxy").intValue();
 				
 				int			width = (maxX - minX) + 3;
 				int			height = (maxY - minY) + 5;

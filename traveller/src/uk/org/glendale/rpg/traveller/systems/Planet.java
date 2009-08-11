@@ -22,8 +22,6 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import uk.org.glendale.rpg.traveller.Config;
-import uk.org.glendale.rpg.traveller.civilisation.trade.Commodity;
-import uk.org.glendale.rpg.traveller.civilisation.trade.Facility;
 import uk.org.glendale.rpg.traveller.database.*;
 import uk.org.glendale.rpg.traveller.glossary.GlossaryEntry;
 import uk.org.glendale.rpg.traveller.systems.codes.*;
@@ -407,20 +405,7 @@ public class Planet {
 	public Temperature getTemperature() {
 		return temperature;
 	}
-	
-	private int getDigit(String sec, int index) {
-		int			digit = 0;
-		String		value = sec.substring(index, index+1);
 		
-		try {
-			digit = Integer.parseInt(value);
-		} catch (NumberFormatException e) {
-			digit = 0;
-		}
-		
-		return digit;
-	}
-	
 	public Planet(String name, PlanetType type, int radius) {
 		this.name = name;
 		this.planetType = type;
@@ -790,9 +775,9 @@ public class Planet {
 					} else if (temperature.isColderThan(Temperature.Cold)) {
 						planetType = PlanetType.GaianTundral;
 						if (hydrographics > 0) {
-							lifeType = lifeType.ComplexOcean;
+							lifeType = LifeType.ComplexOcean;
 						} else {
-							lifeType = lifeType.Archaean;
+							lifeType = LifeType.Archaean;
 						}
 					} else {
 						planetType = PlanetType.PostGaian;
@@ -943,21 +928,7 @@ public class Planet {
 			}
 		}
 	}
-	
-	/**
-	 * Get the real value of the given UWP code digit. A UWP code ranges from
-	 * 0 to 9, and A to Z, missing out I and O. A is 10, B 11 etc.
-	 * 
-	 * @param code		One character code to be checked.
-	 * 
-	 * @return			Numeric value of code, or -1 if invalid.
-	 */
-	private int getValue(String code) {
-		String		codes = "0123456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 		
-		return codes.indexOf(code);
-	}
-	
 	/**
 	 * Find the radius of the planet from the UWP code. The UWP gives
 	 * the diameter in thousands of miles. Covert this to km radius.
@@ -1198,7 +1169,7 @@ public class Planet {
 		if (tradeCodes == null || tradeCodes.length() == 0) {
 			return new String[0];
 		}
-		ArrayList			list = new ArrayList();
+		ArrayList<String>	list = new ArrayList<String>();
 		StringTokenizer		tokens = new StringTokenizer(tradeCodes, " ");
 		
 		while (tokens.hasMoreTokens()) {
@@ -1208,7 +1179,7 @@ public class Planet {
 		
 		return (String[])list.toArray(new String[0]);
 	}
-	
+
 	/**
 	 * Does this planet have the requested trade code?
 	 * 
@@ -1364,7 +1335,8 @@ public class Planet {
 		// If the planet has resources set, then write them out.
 		if (resources != null) {
 			System.out.println("Has resources "+resources.size());
-			factory.storeResources(id, resources);
+			// HACK: Not saving planetary resources!!
+			//factory.storeResources(id, resources);
 		}
 	}
 

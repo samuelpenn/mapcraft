@@ -118,6 +118,11 @@ public class UWP {
     	
     	parseUWP();
     	
+    	// What if we don't have a name? Make one up.
+    	if (name == null || name.length() == 0) {
+    		name = sectorName+" "+((getX()<10)?"0":"")+getX()+((getY()<10)?"0":"")+getY();
+    	}
+    	
     }
     private void parseUWP() {
         String    string = null;
@@ -361,6 +366,10 @@ public class UWP {
     
     private void debug(String name, String value) {
     	System.out.println(name+": ["+value+"]");
+    }
+    
+    public String toString() {
+    	return uwp;
     }
     
     public void dump() {
