@@ -86,7 +86,7 @@
 						File		file = new File(root+"/images/sectors/"+sector.getId()+".jpg");
 						
 						if (!file.exists()) {
-							ImageMap		map = new ImageMap(sector.getName(), root+"/images");
+							ImageMap		map = new ImageMap(sector, root+"/images");
 							map.drawMap(2).save(file);
 						}
 						out.print("<td style=\"margin: 0pt; padding: 0pt; border: none;\">");
