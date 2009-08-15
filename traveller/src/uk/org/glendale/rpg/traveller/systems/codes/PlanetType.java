@@ -74,7 +74,7 @@ public enum PlanetType {
 	PostThio(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
 
 	Hermian(Category.Terrestrial, 5.0, 2500), 		// Mercury
-	EoArean(Category.Terrestrial, 5.0, 5500, Habitability.Difficult), 
+	EoArean(Category.Terrestrial, 5.0, 4000, Habitability.Difficult), 
 	AreanLacustric(Category.Terrestrial, 4.5, 3500), 
 	Arean(Category.Terrestrial, 4.5, 3500),
 	Cytherean(Category.Terrestrial, 5.5, 6200, Habitability.Hostile),    // Venus

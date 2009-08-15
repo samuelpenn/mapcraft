@@ -141,11 +141,17 @@ public class Allegiance {
 	public int getId() {
 		return id;
 	}
-		
+	
+	/**
+	 * Full name of this nation/group.
+	 */
 	public String getName() {
 		return name;
 	}
-	
+
+	/**
+	 * Two character code that represents this allegiance.
+	 */
 	public String getCode() {
 		return code;
 	}

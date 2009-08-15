@@ -30,9 +30,11 @@ import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.GovernmentType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
+import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.StarClass;
 import uk.org.glendale.rpg.traveller.systems.codes.StarForm;
 import uk.org.glendale.rpg.traveller.systems.codes.StarportType;
+import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 
 /**
@@ -134,8 +136,38 @@ public class StarSystem implements Comparable {
 		this.allegiance = allegiance;
 	}
 	
+	/**
+	 * Get the UWP for this system. This may be from original data files,
+	 * otherwise one is generated based on existing data.
+	 * 
+	 * @return		Traveller style UWP.
+	 */
 	public String getUWP() {
-		return uwpLine;
+		if (uwpLine != null && uwpLine.length() > 0) {
+			return uwpLine;
+		} else {
+			return null;
+		}
+		/*
+		Planet		mainWorld = getMainWorld();
+		String		uwp = "";
+		
+		uwp += mainWorld.getStarport().toString();
+		uwp += (int)(mainWorld.getRadius() / 1.25 / 1000);
+		uwp += mainWorld.getAtmos
+		
+		
+		uwpLine = String.format("XX %20s%4s ", name, Sector.getCoordinate(x, y));
+
+		starport = getAlpha(string, 0);
+        diameter = getDigit(string, 1);
+        atmosphere = getDigit(string, 2);
+        hydrographic = getDigit(string, 3);
+        population = getDigit(string, 4);
+        government = getDigit(string, 5);
+        lawLevel = getDigit(string, 6);
+        techLevel = getDigit(string, 8);
+	*/	
 	}
 	
 	/**
@@ -327,6 +359,68 @@ public class StarSystem implements Comparable {
 					mainWorld = planet;
 				}
 			}
+		}
+		int		nicest = 0;
+		if (mainWorld == null) {
+			// Possible that there are no inhabited planets in this system,
+			// in which case we need to choose a main world based on other
+			// criteria.
+			for (Planet planet : planets) {
+				int		niceness = 0;
+				if (planet.getType().isTerrestrial()) niceness += 1;
+				if (planet.getType().isJovian()) niceness -= 10;
+				if (planet.getRadius() > 3000) niceness+=1;
+				if (planet.getRadius() > 5000 && planet.getRadius() < 7500) niceness+=1;
+				if (planet.getLifeLevel() == LifeType.Extensive) niceness += 25;
+				if (planet.getLifeLevel() == LifeType.ComplexLand) niceness += 15;
+				if (planet.getLifeLevel() == LifeType.SimpleLand) niceness += 10;
+				if (planet.getLifeLevel() == LifeType.ComplexOcean) niceness += 5;
+				if (planet.getLifeLevel() == LifeType.Archaean) niceness += 3;
+				if (planet.getLifeLevel() == LifeType.Aerobic) niceness += 2;
+				if (planet.getLifeLevel() == LifeType.Organic) niceness += 1;
+				switch (planet.getTemperature()) {
+				case Standard: case Warm: case Cool:
+					niceness += 2;
+					break;
+				case Cold: case Hot:
+					niceness += 1;
+					break;
+				case ExtremelyHot: case UltraHot:
+				case ExtremelyCold: case UltraCold:
+					niceness -= 3;
+					break;
+				}
+				switch (planet.getAtmospherePressure()) {
+				case None: case Trace:
+					niceness -=1;
+					break;
+				case Thin: case Dense:
+					niceness += 1;
+					break;
+				case Standard:
+					niceness += 2;
+					break;
+				}
+				switch (planet.getAtmosphereType()) {
+				case Standard: case HighOxygen:
+					niceness += 2;
+					break;
+				case Tainted: case Pollutants: case LowOxygen: case HighCarbonDioxide:
+					niceness += 1;
+					break;
+				case Chlorine: case Vacuum: case Flourine: case Exotic:
+					niceness -= 2;
+					break;
+				}
+				
+				if (mainWorld == null) {
+					mainWorld = planet;
+					nicest = niceness;
+				} else if (niceness > nicest) {
+					mainWorld = planet;
+					nicest = niceness;
+				}
+			} 
 		}
 
 		return mainWorld;
@@ -607,6 +701,139 @@ public class StarSystem implements Comparable {
 		
 		for (int i=0; i < stars.size(); i++) {
 			generatePlanets(i);
+			for (Planet p : getPlanets()) {
+				if (p.getParentId() == stars.elementAt(i).getId()) {
+					//p.sanityCheck(stars.elementAt(i));
+				}
+			}
+		}
+		colonise(1);
+		
+		this.uwpLine = new UWP(factory, this).toString();
+		persist();
+	}
+	
+	/**
+	 * Try and colonise the main world of this system. The tenacity determines
+	 * how hard the colonists try, and affects the population size.
+	 * tenacity = 0, only the best worlds are colonised.
+	 * tenacity = 1, hostile worlds are rejected.
+	 * tenacity = 2+, most worlds are colonised.
+	 * 
+	 * @param tenacity
+	 */
+	private void colonise(int tenacity) {
+		Planet		mainWorld = getMainWorld();
+		
+		if (mainWorld == null) return;
+		
+		if (tenacity < 1 && mainWorld.getType() != PlanetType.Gaian) {
+			return;
+		} else if (tenacity > 4) {
+			tenacity = 4;
+		}
+		long		population = Die.d6(3+tenacity) * 100000;
+		while (Die.d10() <= tenacity) population *= 10;
+		if (tenacity == 0) population /= Die.d10(2);
+
+		int			techLevel = Die.d4() + 6;
+		switch (mainWorld.getTemperature()) {
+		case UltraCold: case ExtremelyCold:
+		case UltraHot: case ExtremelyHot:
+			if (tenacity < 2) return;
+			population /= 100;
+			break;
+		case VeryCold: case VeryHot:
+			if (tenacity < 1) return;
+			population /= 10;
+			break;
+		case Cold: case Hot:
+			population /= Die.d4();
+			break;
+		}
+		switch (mainWorld.getAtmospherePressure()) {
+		case None: case Trace:
+			if (tenacity < 2) return;
+			population /= 100;
+			break;
+		case VeryThin: case VeryDense: case SuperDense:
+			if (tenacity < 1) return;
+			population /= 10;
+			break;
+		case Thin:
+			population /= Die.d4();
+			break;
+		}
+		if (mainWorld.getAtmosphereType().getSuitability() < 0.5) {
+			if (tenacity < 2) return;
+			population /= 100;
+		} else if (mainWorld.getAtmosphereType().getSuitability() < 0.8) {
+			if (tenacity < 1) return;
+			population /= Die.d8(2);
+		}
+		if (mainWorld.getHydrographics() < 10) {
+			if (tenacity < 2) return;
+			population /= 100;
+		} else if (mainWorld.getHydrographics() < 25) {
+			if (tenacity < 1) return;
+			population /= 10;
+		} else if (mainWorld.getHydrographics() < 50) {
+			population /= Die.d4();
+		} else if (mainWorld.getHydrographics() > 90) {
+			if (tenacity < 1) return;
+			population /= 100;
+		}
+		
+		if (population > 1000) {
+			mainWorld.setPopulation(100*((population+50)/100));
+			if (population < 10000) techLevel = Math.min(7, techLevel);
+			if (population < 250000) techLevel = Math.min(8, techLevel);
+			if (population < 10000000) techLevel = Math.min(9, techLevel);
+			mainWorld.setTechLevel(techLevel);
+			
+			GovernmentType government = null;
+			switch (Die.d6(3)) {
+			case 3: case 4: case 5:
+				government = GovernmentType.Balkanization;
+				mainWorld.setLawLevel(Die.d3());
+				break;
+			case 6: case 7:
+				government = GovernmentType.ParticipatingDemocracy;
+				mainWorld.setLawLevel(Die.d3()+1);
+				break;
+			case 8: case 9: case 10: 
+				government = GovernmentType.RepresentativeDemocracy;
+				mainWorld.setLawLevel(Die.d3()+1);
+				break;
+			case 11: case 12:
+				government = GovernmentType.Corporation;
+				mainWorld.setLawLevel(Die.d6());
+				break;
+			case 13: case 14:
+				government = GovernmentType.CivilService;
+				mainWorld.setLawLevel(Die.d3()+3);
+				break;
+			case 15: case 16:
+				government = GovernmentType.NonCharismaticLeader;
+				mainWorld.setLawLevel(Die.d3()+2);
+				break;
+			case 17:
+				government = GovernmentType.SelfPerpetuatingOligarchy;
+				mainWorld.setLawLevel(Die.d3()+1);
+				break;
+			case 18:
+				government = GovernmentType.Anarchy;
+				mainWorld.setLawLevel(0);
+				break;
+			}
+			mainWorld.setGovernment(government);
+			mainWorld.setStarport(StarportType.C);
+			if (population < 10000) {
+				mainWorld.setStarport(StarportType.D);
+			} else if (population > 10000 && techLevel > 9) {
+				mainWorld.setStarport(StarportType.B);
+			}
+			mainWorld.persist();
 		}
 	}
 	
@@ -1541,6 +1768,9 @@ public class StarSystem implements Comparable {
 		buffer.append("id=\"").append(id).append("\" name=\"").append(name).append("\" ");
 		buffer.append("x=\"").append(x).append("\" y=\"").append(y).append("\" ");
 		buffer.append("sector=\"").append(sectorId).append("\">\n");
+		if (getMainWorld() != null) {
+			buffer.append("  <mainWorld>"+getMainWorld().getId()+"</mainWorld>\n");
+		}
 
 		buffer.append("  <allegiance>");
 		Allegiance		a = getAllegianceData();
@@ -1947,50 +2177,13 @@ public class StarSystem implements Comparable {
 	main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
 		
-		StarSystem		sys = new StarSystem(factory, 10310);
-		long			start = System.currentTimeMillis();
-		sys.toHTML(true);
-		long			end = System.currentTimeMillis();
-		
-		System.out.println("Took: "+(end-start)+"ms");
+		StarSystem		sys = new StarSystem(factory, 60181);
+		System.out.println("eC Mirriam            0303 B9998A6-A B                 A 534 Im G2 V");
+		System.out.println(sys.getUWP());
+
 		factory.close();
 		
 		//UWP		uwp = new UWP("eC Mirriam            0303 B9998A6-A B                 A 534 Im G2 V");
-		
-		/*
-		 *  ! This bit is broken, see ObjectFactory.main() instead
-		 *
-		ObjectFactory	factory = new ObjectFactory();
-		try {
-			StarSystem		ss = new StarSystem(factory, 14580);
-			ss.clean();
-			ss.regenerate();
-		} finally {
-			factory.close();
-		}
-		*/
-		
-		//ss.toHTML();
-		/*
-		for (Planet planet : ss.getPlanets()) {
-			System.out.println(planet.getName());
-		}
-		*/
-		
-		//uwp.dump();
-		//System.exit(0);
-		
-		//StarSystem		ss = new StarSystem(0, new UWP("eC Saregon            0506 A584976-E    Hi               134 Im M3 V M6 D"));
-		//StarSystem      ss = new StarSystem(0, uwp);
-		//ss.dump();
-		//System.out.println(ss);
-		
-		/*
-		for (int i=1; i < 647; i++) {
-			StarSystem		ss = new StarSystem(i);
-			ss.terraform();
-		}
-		*/
 		
 		/*
 		PostScript		map = new PostScript(new File("map.ps"));

@@ -13,6 +13,8 @@
 package uk.org.glendale.rpg.traveller.sectors;
 
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.sql.*;
@@ -111,20 +113,17 @@ public class Sector {
 		}
 	}
 	
+	/**
+	 * Return the coordinate within the sector as a single formatted
+	 * string. The format is XXYY, e.g. 0523. This is a coordinate
+	 * within the sector for a given X/Y position.
+	 * 
+	 * @param x		X coordinate within the sector.
+	 * @param y		Y coordinate within the sector.
+	 * @return		Coordinate in the format XXYY.
+	 */
 	public static String getCoordinate(int x, int y) {
-		String		value = "";
-		
-		if (x < 10) {
-			value += "0";
-		}
-		value += x;
-		
-		if (y < 10) {
-			value += "0";
-		}
-		value += y;
-		
-		return value;
+		return String.format("%02d%02d", x, y);
 	}
 
 	/**
@@ -877,6 +876,52 @@ public class Sector {
 		sector.create(30);
 	}
 	
+	/**
+	 * Given a density map of Known Space, create a new sector from it.
+	 * The density map is a greyscale map giving an indication of the density
+	 * of star systems at each location. If the sector already has star systems,
+	 * these are deleted first.
+	 * 
+	 * @param sx		X coordinate of the sector.
+	 * @param sy		Y coordinate of the sector.
+	 * @param file		File containing the image.
+	 * @param basex		Top left X sector coordinate of the map.
+	 * @param basey		Top left Y sector coordinate of the map.
+	 * 
+	 * @throws ObjectNotFoundException
+	 */
+	private static void createFromImageMap(ObjectFactory factory, int sx, int sy, File file, int basex, int basey) throws ObjectNotFoundException {
+		BufferedImage	image = new SimpleImage(file).getBufferedImage();
+		Sector			sector = new Sector(factory, sx, sy);
+		System.out.println("Cleaning sector ["+sector.getName()+"]");
+		for (StarSystem sys: sector.getSystems()) {
+			int		sysId = sys.getId();
+			try {
+				factory.deleteStarSystem(sysId);
+			} catch (Throwable e) {
+				
+			}
+		}
+		
+		basex = (sx - basex) * 32;
+		basey = (int)((sy - basey) * 40.5);
+		
+		for (int y=1; y <= 40; y++) {
+			for (int x=1; x <= 32; x++) {
+				int		px = basex + x;
+				int		py = basey + y;
+				String	hex = Integer.toHexString(image.getRGB(px, py)).substring(6);
+				int		colour = Integer.parseInt(hex, 16);
+        		if (Die.rollZero(400) < colour) {
+        			int		number = (((x-1)%8)+1)*100 + ((y-1)%10)+1;
+        			String	name = Sector.getSubSector(x, y).toString()+number;
+        			StarSystem	sys = new StarSystem(factory, name, sector.getId(), x, y);
+        			sys.persist();
+        		}
+			}
+		}
+	}
+	
 	public static void createSol() {
 		create("Sol", 0, 0, "iG");		
 	}
@@ -989,12 +1034,49 @@ public class Sector {
 		for (StarSystem sys: sector.getSystems()) {
 			System.out.println(" > "+sys.getName());
 			int		sysId = sys.getId();
-			factory.cleanStarSystem(sysId);
-			StarSystem		system = factory.getStarSystem(sysId);
-			system.regenerate();
-			//regenerateSystem(factory, sys.getId());
+			if (sys.getUWP() == null) {
+				String	name = sys.getName();
+				int		x = sys.getX();
+				int		y = sys.getY();
+				factory.deleteStarSystem(sysId);
+    			new StarSystem(factory, name, sector.getId(), x, y).persist();
+			} else {
+				factory.cleanStarSystem(sysId);
+				StarSystem		system = factory.getStarSystem(sysId);
+				system.regenerate();
+				//regenerateSystem(factory, sys.getId());
+			}
 		}
 
+	}
+	
+	private static void createMissingSectors() throws Exception {
+		ObjectFactory	factory = new ObjectFactory();
+		File			map = new File("/home/sam/density2.jpg");
+		final int		baseX = -9;
+		final int		baseY = -5;
+		
+		for (int x=-9; x <= 6; x++) {
+			//createFromImageMap(factory, x, -5, map, baseX, baseY);
+			//createFromImageMap(factory, x, -4, map, baseX, baseY);
+			createFromImageMap(factory, x, -3, map, baseX, baseY);
+			factory.close(); factory=null;
+			Thread.sleep(2000);	System.gc(); Thread.sleep(3000);
+			factory = new ObjectFactory();
+		}
+		/*
+		for (int y=-2; y <= 0; y++) {
+			//createFromImageMap(factory, -9, y, map, baseX, baseY);
+			//createFromImageMap(factory, -8, y, map, baseX, baseY);
+			//createFromImageMap(factory, +4, y, map, baseX, baseY);
+			//createFromImageMap(factory, +5, y, map, baseX, baseY);
+			//createFromImageMap(factory, +6, y, map, baseX, baseY);
+			factory.close(); factory=null;
+			Thread.sleep(2000);	System.gc(); Thread.sleep(3000);
+			factory = new ObjectFactory();
+		}
+		*/
+		factory.close();
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -1004,7 +1086,10 @@ public class Sector {
 		//createSol();
 		//regenerate(1);
 		//populateUWPs();
-		createTraveller();
+		//createTraveller();
+		//createMissingSectors();
+		
+		regenerate(1);
 		
 		System.exit(0);
 		

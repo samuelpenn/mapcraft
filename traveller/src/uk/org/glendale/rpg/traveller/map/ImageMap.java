@@ -45,6 +45,95 @@ public class ImageMap {
 		sector = new Sector(sectorName);
     }
 
+	public ImageMap(Sector sector, String root) {
+		this.sectorName = sector.getName();
+		this.root = root;
+		this.sector = sector;
+	}
+	
+	public static SimpleImage drawDensityMap(int size) {
+		ObjectFactory 				factory = new ObjectFactory();
+		Hashtable<String,Long>		statistics = factory.getStatistics();
+		
+		// Work out the size of the universe.
+		long	minX = statistics.get("minx");
+		long	maxX = statistics.get("maxx");
+		long	minY = statistics.get("miny");
+		long	maxY = statistics.get("maxy");
+		
+		//minX = minY = -1;
+		//maxX = maxY = +1;
+		
+		// Size of the image we need to create.
+		int				width = (int)(32 * size * (1 + maxX - minX));
+		int				height = (int)((40 * size + size/2) * (1 + maxY - minY));
+		SimpleImage		map = new SimpleImage(width, height, "#000000");
+		
+		try {
+			for (int x = (int)minX; x <= maxX; x++) {
+				for (int y = (int)minY; y <= maxY; y++) {
+					// For each sector in the universe...
+					try {
+						Sector		sector = new Sector(x, y);
+						System.out.println(sector.getName()+" ("+sector.getX()+","+sector.getY()+")");
+						
+						int[][]		bitmap = new int[64][64];
+						
+						for (int mx=-3; mx < 35; mx++) {
+							for (int my=-3; my < 43; my++) {
+								bitmap[mx+5][my+5] =  (factory.getStarSystem(sector.getId(), mx+1, my+1)==null)?0:1;
+							}
+						}
+						for (int my=0; my < 40; my++) {
+							for (int mx=0; mx < 32; mx++) {
+								// For each pixel in this sector...
+								int		number = 0;
+								for (int sx=-2; sx < 3; sx++) {
+									for (int sy=-2; sy < 3; sy++) {
+										// Count number of nearby systems.
+										if (bitmap[mx+sx+6][my+sy+6] == 1) number++;
+									}
+								}
+								String 	colour = Integer.toHexString(number*10).toUpperCase();
+								if (colour.length() < 2) colour = "0"+colour;
+								colour = "#" + colour + colour + colour;
+								int		px = (int)(x-minX)*32*size + mx*size;
+								int		py = (int)(y-minY)*40*size + my*size + ((mx%2)*size/2);
+				        		map.circle(px, py, 1, colour);
+				        		if (number < 2) {
+				        			System.out.print(" ");
+				        		} else if (number < 5) {
+				        			System.out.print(".");
+				        		} else if (number < 15) {
+				        			System.out.print("0");
+				        		} else {
+				        			System.out.print("#");
+				        		}
+							}
+							System.out.println("");
+						}
+						sector = null;
+					} catch (ObjectNotFoundException e) {
+						// Not sector at this location, so do nothing.
+					}
+					factory.close();
+					factory = null;
+					System.gc();
+					Thread.sleep(5000);
+					System.gc();
+					Thread.sleep(1000);
+					factory = new ObjectFactory();
+				}
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			factory.close();
+		}
+        
+        return map;		
+	}
     
     /**
      * Draw the map.
@@ -93,10 +182,10 @@ public class ImageMap {
         
         return map;
     }
-
-    public static void main(String[] args) throws Exception {
+    
+    public static void drawAllSectors() throws Exception {
     	ObjectFactory		factory = new ObjectFactory();
-        String root = "/home/sam/src/traveller/webapp/images";
+        String root = "/home/sam/src/mapcraft/traveller/webapp/images";
 
 		for (int y=6; y >= -7; y--) {
 			for (int x=-13; x <= 8; x++) {
@@ -113,6 +202,11 @@ public class ImageMap {
 				map.drawMap(2).save(file);				
 			}
 		}
-		factory.close();
+		factory.close();    	
+    }
+
+    public static void main(String[] args) throws Exception {
+    	//drawAllSectors();
+    	drawDensityMap(1).save(new File("/home/sam/density.jpg"));
     }
 }

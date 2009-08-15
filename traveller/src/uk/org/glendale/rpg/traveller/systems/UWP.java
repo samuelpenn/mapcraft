@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2004 Samuel Penn, sam@glendale.org.uk
+/**
+ * Copyright (C) 2009 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -14,6 +14,10 @@ package uk.org.glendale.rpg.traveller.systems;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
+import uk.org.glendale.rpg.traveller.database.ObjectFactory;
+import uk.org.glendale.rpg.traveller.database.ObjectNotFoundException;
+import uk.org.glendale.rpg.traveller.sectors.Sector;
+import uk.org.glendale.rpg.traveller.systems.codes.*;
 import uk.org.glendale.rpg.utils.Die;
 
 /**
@@ -67,6 +71,18 @@ public class UWP {
 		return codes.indexOf(code);
 	}
 	
+	private String hex(int value) {
+		String		codes = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		
+		if (value < 0) {
+			System.out.println(">>>> Hex ["+value+"]");
+		} else if (value > codes.length()) {
+			System.out.println(">>>> Hex ["+value+"]");
+		}
+		
+		return codes.substring(value, value+1);
+	}
+	
 	private String getAlpha(String line, int index) {
 		return line.substring(index, index+1);		
 	}
@@ -86,7 +102,7 @@ public class UWP {
      */
     public UWP(String uwp) {
     	
-    	if (!uwp.matches("[a-z][A-Z] .*")) {
+    	if (!uwp.matches("[0-9a-z][0-9A-Z] .*")) {
     		uwp = "aA "+uwp;
     	}
     	
@@ -121,13 +137,207 @@ public class UWP {
     	// What if we don't have a name? Make one up.
     	if (name == null || name.length() == 0) {
     		name = sectorName+" "+((getX()<10)?"0":"")+getX()+((getY()<10)?"0":"")+getY();
+    	}	
+    }
+    
+    public UWP(ObjectFactory factory, StarSystem system) {
+    	try {
+    		Sector		sector = new Sector(factory, system.getSectorId());
+    		this.sectorName = sector.getName();
+    		this.sectorX = sector.getX();
+    		this.sectorY = sector.getY();
+    	} catch (ObjectNotFoundException e) {
+    		// Just skip sector information.
+    		this.sectorX = this.sectorY = -1;
     	}
     	
+    	this.name = system.getName();
+    	this.x = system.getX();
+    	this.y = system.getY();
+    	if (system.getAllegianceData() != null) {
+    		this.allegiance = system.getAllegianceData().getCode();
+    	} else {
+    		this.allegiance = "Na";
+    	}
+    	this.base = " ";
+    	if (system.hasNavalBase()) this.base = "N";
+    	if (system.hasScoutBase()) this.base = "S";
+    	switch (system.getZone()) {
+    	case Green:
+    		this.zone = "G";
+    		break;
+    	case Amber:
+    		this.zone = "A";
+    		break;
+    	case Red:
+    		this.zone = "R";
+    		break;
+    	}
+    	this.starData = "";
+    	for (Star star : system.getStars()) {
+    		if (starData.length() > 0) starData += " ";
+    		starData += star.getSpectralType() + " "+ star.getStarClass();
+    	}
+    	
+    	Planet		mainWorld = system.getMainWorld();
+    	if (mainWorld != null) {
+    		this.starport = mainWorld.getStarport().toString();
+    		this.diameter = (int)(mainWorld.getRadius() / 1250);
+    		this.atmosphere = atmosphereCode(mainWorld.getAtmosphereType(), mainWorld.getAtmospherePressure());
+    		this.government = governmentCode(mainWorld.getGovernment());
+    		this.lawLevel = lawCode(mainWorld.getLawLevel());
+    		this.techLevel = techCode(mainWorld.getTechLevel());
+    		this.population = mainWorld.getPopulationLog();
+    		this.hydrographic = mainWorld.getHydrographics()/10;
+    		this.populationDigit = Integer.parseInt((""+mainWorld.getPopulation()).substring(0, 1));
+    		this.belts = this.giants = 0;
+    		for (Planet p : system.getPlanets()) {
+    			if (p.getType().isTerrestrial()) this.belts ++;
+    			if (p.getType().isJovian()) this.giants ++;
+    		}
+    		if (!mainWorld.isMoon()) this.belts--;
+    		this.tradeCodes = "";
+    		for (String t : mainWorld.getTradeCodes()) {
+    			this.tradeCodes += t+" ";
+    		}
+    		System.out.println("RADIUS: ["+mainWorld.getType()+"/"+mainWorld.getRadius()+"]");
+    	} else {
+    		this.starport = "X";
+    		this.diameter = 0;
+    		this.atmosphere = 0;
+    		this.government = 0;
+    		this.lawLevel = 0;
+    		this.techLevel = 0;
+    		this.population = 0;
+    		this.hydrographic = 0;
+    		this.populationDigit = 0;
+    		this.belts = this.giants = 0;
+    		for (Planet p : system.getPlanets()) {
+    			if (p.getType().isTerrestrial()) this.belts ++;
+    			if (p.getType().isJovian()) this.giants ++;
+    		}
+    		this.tradeCodes = "";
+    	}
+    	if (this.population == 0) this.allegiance = "Un";
+
+    	uwp = String.format("%s%s %-18s %4s %s%s%s%s%s%s%s-%s %1s %-15s %s %d%d%d %s %s", 
+    			hex(sectorX+11).toLowerCase(),
+    			hex(sectorY+5).toUpperCase(),
+    			name,
+    			Sector.getCoordinate(x, y),
+    			starport,
+    			hex(diameter),
+    			hex(atmosphere),
+    			hex(hydrographic),
+    			hex(population),
+    			hex(government),
+    			hex(lawLevel),
+    			hex(techLevel),
+    			base,
+    			tradeCodes,
+    			zone,
+    			populationDigit,
+    			belts,
+    			giants,
+    			allegiance,
+    			starData);
     }
+    
+    /**
+     * Convert an atmosphere type and pressure into a UWP code.
+     */
+    private int atmosphereCode(AtmosphereType atmosphere, AtmospherePressure pressure) {
+    	int		code = 0;
+    	switch (atmosphere) {
+    	case Vacuum:
+    		break;
+    	case Standard: case HighOxygen: case LowOxygen: case HighCarbonDioxide:
+    		switch (pressure) {
+    		case Trace:
+    			code = 1;
+    			break;
+    		case VeryThin:
+    			code = 3;
+    			break;
+    		case Thin:
+    			code = 5;
+    			break;
+    		case Dense: case SuperDense:
+    			code = 8;
+    			break;
+    		default:
+    			code = 6;
+    		}
+    		break;
+    	case Pollutants:
+    	case Tainted:
+    	case OrganicToxins:
+    		switch (pressure) {
+    		case Trace:	case VeryThin:
+    			code = 2;
+    			break;
+    		case Thin:
+    			code = 4;
+    			break;
+    		case Dense: case SuperDense:
+    			code = 9;
+    			break;
+    		default:
+    			code = 7;
+    		}
+    		break;
+    	case NitrogenCompounds: case CarbonDioxide:
+    		code = 10;
+    		break;
+    	case Chlorine: case Flourine:
+    		code = 11;
+    		break;
+    	case Hydrogen: case SulphurCompounds:
+    		code = 12;
+    		break;
+    	default:
+    		code = 13;
+    		break;
+    	}
+    	
+    	return code;
+    }
+    
+    private int governmentCode(GovernmentType government) {
+    	return government.ordinal();
+    }
+    
+    /**
+     * Get the UWP version of the law level. Internally we use
+     * a smaller scale, so the values need to be mapped.
+     */
+    private int lawCode(int lawLevel) {
+    	switch (lawLevel) {
+    	case 0: return 0;
+    	case 1: return 1;
+    	case 2: return 3;
+    	case 3: return 5;
+    	case 4: return 6;
+    	case 5: return 8;
+    	case 6: return 9;
+    	}
+    	return 0;
+    }
+    
+    private int techCode(int techLevel) {
+    	if (techLevel < 9) return techLevel;
+    	switch (techLevel) {
+    	case  9: return 10;
+    	case 10: return 12;
+    	case 11: return 14;
+    	case 12: return 15;
+    	}
+    	return techLevel+3;
+    }
+    
+    
     private void parseUWP() {
         String    string = null;
-        char      c = '\0';
-        
         // World name.
         name = uwp.substring(3, 22).trim();
         
@@ -363,6 +573,8 @@ public class UWP {
     	lawLevel = 0;
     	government = 0;
     }
+    
+    
     
     private void debug(String name, String value) {
     	System.out.println(name+": ["+value+"]");
