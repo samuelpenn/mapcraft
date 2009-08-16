@@ -437,9 +437,7 @@ public class Resources {
 	 * Gaian, GaianTundral, ArchaeoGaian, PostGaian
 	 * 
 	 */
-	private static void setGaian(ObjectFactory factory, Star star, Planet planet) {		
-		System.out.println("Setting Gaian for ["+planet.getName()+"/"+planet.getType()+"]");
-		
+	private static void setGaian(ObjectFactory factory, Star star, Planet planet) {
 		// Basic mineral resources
 		planet.addResource(SILICATE, 35+Die.d20(2));
 		planet.addResource(CARBONIC, 35+Die.d20(2));
@@ -458,7 +456,6 @@ public class Resources {
 	 * Set the resources on the given planet.
 	 */
 	public static void setResources(ObjectFactory factory, Star star, Planet planet) {
-		System.out.println(planet.getType());
 		switch (planet.getType()) {
 		case Gaian:
 		case EoGaian:

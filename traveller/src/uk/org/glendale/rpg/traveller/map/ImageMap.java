@@ -149,17 +149,17 @@ public class ImageMap {
 		factory = new ObjectFactory();
 
 		try {
-	        map = new SimpleImage(width, height, "#FFFFFF");
+	        map = new SimpleImage(width, height, "#000000");
 
 	        Allegiance		a = null;
-	    	String			colour = "#000000";
+	    	String			colour = "#777777";
 	        String			lastAl = "XXX";
 	        for (StarSystem ss: sector.getSystems()) {
 	        	int			x = ss.getX() - 1;
 	        	int			y = ss.getY() - 1;
 	        	String		code = ss.getAllegiance();
 	        	if (code == null) {
-	        		colour = "#000000";
+	        		colour = "#777777";
 	        	} else if (code.equals(lastAl)) {
 	        		// Just use last colour.
 	        	} else {
@@ -168,7 +168,7 @@ public class ImageMap {
 	        		if (a != null) {
 	        			colour = a.getColour();
 	        		} else {
-	        			colour = "#000000";
+	        			colour = "#777777";
 	        		}
 	        	}
 	        	if (a != null) {
@@ -206,7 +206,7 @@ public class ImageMap {
     }
 
     public static void main(String[] args) throws Exception {
-    	//drawAllSectors();
-    	drawDensityMap(1).save(new File("/home/sam/density.jpg"));
+    	drawAllSectors();
+    	//drawDensityMap(1).save(new File("/home/sam/density.jpg"));
     }
 }

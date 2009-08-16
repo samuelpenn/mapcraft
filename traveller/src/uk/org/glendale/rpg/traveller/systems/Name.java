@@ -116,7 +116,7 @@ public class Name {
     }
     
     public static void main(String[] args) throws Exception {
-    	Name	name = new Name("planet");
+    	Name	name = new Name("zhodani_planet");
     	
     	for (int i=0; i < 10; i++) {
     		System.out.println(name.getName(null));

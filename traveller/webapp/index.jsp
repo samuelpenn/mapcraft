@@ -41,6 +41,8 @@
 				so may change or break without warning.
 			</p>
 			
+			<img src="images/knownspace_map.jpg" width="288" height="240" alt="Map of Known Space"/>
+			
 			<p>
 				See the <a href="knownspace.jsp">map of known space</a> for a graphical
 				view of the worlds that can be explored here. <e>Known Space</e> is

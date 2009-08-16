@@ -232,10 +232,9 @@ public class StarSystem implements Comparable {
 		// Now see if any of the other stars in this system have planets.
 		for (int i=1; i < stars.size(); i++) {
 			if (Die.d6() > i*2) {
-				generatePlanets(i);
+				generatePlanets(i, 1);
 			}
 		}
-		System.out.println("\nBEGIN COLONISATION\n");
 		populateSystem();
 		persist();		
 	}
@@ -500,7 +499,7 @@ public class StarSystem implements Comparable {
 		// Now see if any of the other stars in this system have planets.
 		for (int i=1; i < stars.size(); i++) {
 			if (Die.d6() > i*2) {
-				generatePlanets(i);
+				generatePlanets(i, 1);
 			}
 		}
 		populateSystem();
@@ -640,6 +639,17 @@ public class StarSystem implements Comparable {
 		return true;
 	}
 	
+	public StarSystem(ObjectFactory factory, String name, int sectorId, int x, int y) {
+		this.factory = factory;
+		this.name = name;
+		this.sectorId = sectorId;
+		this.x = x;
+		this.y = y;
+		persist();
+
+		createFromScratch(null, 1, 1);
+	}
+	
 	/**
 	 * Create a new star system, with random stars and stuff.
 	 * 
@@ -647,15 +657,19 @@ public class StarSystem implements Comparable {
 	 * @param x			X position of star system (1..32)
 	 * @param y			Y position of star system (1..40)
 	 */
-	public StarSystem(ObjectFactory factory, String name, int sectorId, int x, int y) {
+	public StarSystem(ObjectFactory factory, String name, int sectorId, int x, int y, Allegiance allegiance, int fudgeFactor, int tenacity) {
 		this.factory = factory;
 		this.name = name;
 		this.sectorId = sectorId;
 		this.x = x;
 		this.y = y;
-		
+		this.allegiance = allegiance.getCode();
 		persist();
 		
+		createFromScratch(allegiance, fudgeFactor, tenacity);
+	}
+	
+	private void createFromScratch(Allegiance allegiance, int fudgeFactor, int tenacity) {
 		int		numberOfStars = 0;
 		
 		// Generate the number of stars. Biased to single star systems, even
@@ -690,24 +704,21 @@ public class StarSystem implements Comparable {
 				star.setParentId(lastStar.getId());
 				star.setDistance((1000 * Die.d10(5))/(s*s*s*s));
 			}
-			//System.out.println(name);
 			stars.add(star);
 			star.persist();
-			
-			System.out.println(id+": "+star.getStarClass()+" "+star.getSpectralType());
 			
 			lastStar = star;
 		}
 		
 		for (int i=0; i < stars.size(); i++) {
-			generatePlanets(i);
+			generatePlanets(i, fudgeFactor);
 			for (Planet p : getPlanets()) {
 				if (p.getParentId() == stars.elementAt(i).getId()) {
-					//p.sanityCheck(stars.elementAt(i));
+					p.sanityCheck(stars.elementAt(i));
 				}
 			}
 		}
-		colonise(1);
+		colonise(tenacity, allegiance);
 		
 		this.uwpLine = new UWP(factory, this).toString();
 		persist();
@@ -722,7 +733,7 @@ public class StarSystem implements Comparable {
 	 * 
 	 * @param tenacity
 	 */
-	private void colonise(int tenacity) {
+	private void colonise(int tenacity, Allegiance allegiance) {
 		Planet		mainWorld = getMainWorld();
 		
 		if (mainWorld == null) return;
@@ -735,6 +746,14 @@ public class StarSystem implements Comparable {
 		long		population = Die.d6(3+tenacity) * 100000;
 		while (Die.d10() <= tenacity) population *= 10;
 		if (tenacity == 0) population /= Die.d10(2);
+		
+		if (allegiance != null) {
+			if (allegiance.getPopulationModifier() < 0) {
+				population /= Die.d10(Math.abs(allegiance.getPopulationModifier()));
+			} else if (allegiance.getPopulationModifier() > 0) {
+				population *= Die.d10(allegiance.getPopulationModifier());
+			}
+		}
 
 		int			techLevel = Die.d4() + 6;
 		switch (mainWorld.getTemperature()) {
@@ -826,6 +845,16 @@ public class StarSystem implements Comparable {
 				mainWorld.setLawLevel(0);
 				break;
 			}
+			if (allegiance != null && allegiance.getLawModifier() != 0) {
+				mainWorld.setLawLevel(mainWorld.getLawLevel()+allegiance.getLawModifier());
+				if (government != GovernmentType.Anarchy && mainWorld.getLawLevel() == 0) {
+					// Only Anarchies have a law level of 1.
+					mainWorld.setLawLevel(1);
+				}
+			}
+			if (allegiance != null && allegiance.getTechModifier() != 0) {
+				mainWorld.setTechLevel(mainWorld.getTechLevel()+allegiance.getTechModifier());
+			}
 			mainWorld.setGovernment(government);
 			mainWorld.setStarport(StarportType.C);
 			if (population < 10000) {
@@ -878,7 +907,6 @@ public class StarSystem implements Comparable {
 		boolean			mainWorldIsMoon = false;
 		
 		if (terrestrial <= 0) {
-			System.out.println("generatePlanets: Only "+terrestrial+" planets defined");
 			terrestrial = 1;
 		}
 		
@@ -924,7 +952,6 @@ public class StarSystem implements Comparable {
 			} else {
 				planet = planetFactory.getCoolWorld(planetName, distance);
 			}
-			System.out.println("Adding planet "+planet.getName()+"/"+planet.getType()+" at "+planet.getDistance());
 			Description.setDescription(planet);
 			planet.persist();
 			planets.add(planet);
@@ -936,9 +963,6 @@ public class StarSystem implements Comparable {
 			
 			distance += Die.die(increase, 2);
 			increase *= 1.5;
-		}
-		if (closest < 0 || closest >= planets.size()) {
-			System.out.println("Closest="+closest+", size="+planets.size()+", maxDistance="+maxDistance+", distance="+distance);
 		}
 		
 		if (!mainWorldIsMoon) {
@@ -981,7 +1005,6 @@ public class StarSystem implements Comparable {
 			jovian--;
 
 			mainJovian = planet.getId();
-			System.out.println("Main world ["+planet.getId()+"] is a ["+planet.getType()+"]");
 		}
 		
 		for (int i=0; i < jovian; i++) {
@@ -1034,7 +1057,6 @@ public class StarSystem implements Comparable {
 		// Having finished all the major worlds, now create any required moons.
 		for (Planet planet : planets) {
 			if (planet.getMoonCount() > 0) {
-				System.out.println("Creating moons for ["+planet.getName()+"]");
 				Planet[]	moons = planetFactory.getMoons(planet, planet.getMoonCount());
 				
 				if (planet.getId() == mainJovian && moons.length > 0) {
@@ -1058,8 +1080,6 @@ public class StarSystem implements Comparable {
 				for (Planet moon : moons) {					
 					Description.setDescription(moon);
 					moon.persist();
-					// Do we need to add it to the list of planets?
-					// planets.add(moon);
 				}
 				// The Moon count is simply a marker to tell us to create moons for this
 				// world. Since this code is called once for each star, we can end up
@@ -1075,7 +1095,7 @@ public class StarSystem implements Comparable {
 	 * Generate completely random planets for this star system. Does not use an
 	 * existing UWP, so not guaranteed to have habitable planets.
 	 */
-	private void generatePlanets(int starIndex) {
+	private void generatePlanets(int starIndex, int fudgeFactor) {
 		Star			star = stars.elementAt(starIndex);
 		int				terrestrial = Die.d6()/stars.size() - starIndex;
 		int				jovian = Die.d4()/stars.size() - starIndex;
@@ -1085,7 +1105,6 @@ public class StarSystem implements Comparable {
 		int				distance = star.getInnerLimit()+Die.die(increase, 2);
 		PlanetFactory	planetFactory = new PlanetFactory(factory, star);
 		
-		int 			fudgeFactor = 1;
 		planetFactory.setFudgeFactor(fudgeFactor);
 		
 		if (distance < 10) {
@@ -1204,7 +1223,6 @@ public class StarSystem implements Comparable {
 		
 		// Having finished all the major worlds, now create any required moons.
 		for (Planet planet : planets) {
-			System.out.println("Creating moons for ["+planet.getName()+"]");
 			if (planet.getMoonCount() > 0) {
 				Planet[]	moons = planetFactory.getMoons(planet, planet.getMoonCount());
 				for (Planet moon : moons) {
@@ -1278,7 +1296,6 @@ public class StarSystem implements Comparable {
 				// This is an asteroid belt. There will probably be mining.
 				p.addTradeCode(TradeCode.Mi);
 				if (localColonies) {
-					System.out.println("Populating colony "+p.getName());
 					p.setPopulation(population / Die.d6(2));
 					p.setGovernment(mainWorld.getGovernment());
 					p.setStarport(port.getWorse());
@@ -1294,7 +1311,6 @@ public class StarSystem implements Comparable {
 			if (p.getLifeLevel().isMoreComplexThan(LifeType.ComplexOcean)) {
 				if (!p.hasTradeCode(TradeCode.Fl)) {
 					if (localColonies) {
-						System.out.println("Populating colony "+p.getName());
 						p.setPopulation(population / Die.d6(4));
 						p.setGovernment(mainWorld.getGovernment());
 						p.setStarport(port.getWorse());
@@ -2143,11 +2159,9 @@ public class StarSystem implements Comparable {
 		}
 		
 		if (planet == null || planet.getDistance() < 25) {
-			System.out.println("No suitable planet found");
 			// Probably no suitable planets.
 			return;
 		}
-		System.out.println("Terraforming planet "+planet.getName());
 		
 		// Move the planet closer to the optimal distance.
 		planet.setDistance((bestDistance + planet.getDistance())/2);

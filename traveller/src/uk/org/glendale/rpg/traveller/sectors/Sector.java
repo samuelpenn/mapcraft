@@ -44,11 +44,13 @@ import uk.org.glendale.rpg.utils.Die;
  * @author Samuel Penn
  */
 public class Sector {
-	ObjectFactory		factory = null;
-	private String		name = null;
-	private int			x = 0;
-	private int			y = 0;
-	private int			id = 0;
+	ObjectFactory					factory = null;
+	private String					name = null;
+	private int						x = 0;
+	private int						y = 0;
+	private int						id = 0;
+	private HashSet<SectorCode>		codes = null;
+	private String					allegiance = "Na";
 	
 	public static final int HEIGHT = 40;
 	public static final int WIDTH = 32;
@@ -252,6 +254,17 @@ public class Sector {
 				name = rs.getString("name");
 				x = rs.getInt("x");
 				y = rs.getInt("y");
+				allegiance = rs.getString("allegiance");
+				
+				String	codeList = rs.getString("codes");
+				codes = new HashSet<SectorCode>();
+				for (String c : codeList.split(" ")) {
+					try {
+						codes.add(SectorCode.valueOf(c));
+					} catch (Throwable t) {
+						// Unrecognised sector code.
+					}
+				}
 			} else {
 				return false;
 			}
@@ -279,6 +292,12 @@ public class Sector {
 		data.put("x", x);
 		data.put("y", y);
 		
+		String		c = "";
+		for (SectorCode code : codes.toArray(new SectorCode[0])) {
+			c += code.name()+" ";
+		}
+		data.put("codes", c.trim());
+		
 		int auto = factory.persist("sector", data);
 		if (id == 0) id = auto;
 	}
@@ -297,6 +316,21 @@ public class Sector {
 	
 	public String getName() {
 		return name;
+	}
+	
+	/**
+	 * Does this sector have the specified sector code?
+	 */
+	public boolean hasCode(SectorCode code) {
+		return codes.contains(code);
+	}
+	
+	public void addCode(SectorCode code) {
+		codes.add(code);
+	}
+	
+	public String getAllegiance() {
+		return allegiance;
 	}
 	
 	/**
@@ -537,6 +571,19 @@ public class Sector {
 	
 	public String toXML() {
 		return toXML(true);
+	}
+	
+	public String toSEC() {
+		StringBuffer		buffer = new StringBuffer();
+
+		Iterator<StarSystem>	i = listSystems().iterator();
+		while (i.hasNext()) {
+			StarSystem		ss = i.next();
+			
+			buffer.append(ss.getUWP().toString()+"\n");
+		}
+
+		return buffer.toString();
 	}
 	
 	public String toXML(boolean header) {
@@ -902,6 +949,34 @@ public class Sector {
 				
 			}
 		}
+		// Whether to fudge the chance of Earth-like worlds.
+		// 0 = No fudging (if Sector is Barren),
+		// 1 = A little fudging (default)
+		// 2 = A lot of fudging (if Sector is Fertile).
+		int		fudgeFactor = 1;
+		if (sector.hasCode(SectorCode.Ba)) {
+			fudgeFactor = 0;
+		} else if (sector.hasCode(SectorCode.Fe)) {
+			fudgeFactor = 2;
+		}
+		
+		// How well this sector has been colonised.
+		// 0  = Very light colonisation of most fertile worlds
+		// 1  = Moderate colonisation of hospitable worlds
+		// 2+ = Aggressive colonisation of all but the most hostile worlds
+		int		colonisationTenacity = 1;
+		if (sector.hasCode(SectorCode.Lo)) {
+			colonisationTenacity = 0;
+		} else if (sector.hasCode(SectorCode.Hi)) {
+			colonisationTenacity = 2;
+		}
+		
+		Allegiance		allegiance = new Allegiance(sector.getAllegiance());
+		Name			names = null;
+		
+		if (allegiance.getLanguage() != null) {
+			names = new Name(allegiance.getLanguage()+"_planet");
+		}
 		
 		basex = (sx - basex) * 32;
 		basey = (int)((sy - basey) * 40.5);
@@ -913,9 +988,14 @@ public class Sector {
 				String	hex = Integer.toHexString(image.getRGB(px, py)).substring(6);
 				int		colour = Integer.parseInt(hex, 16);
         		if (Die.rollZero(400) < colour) {
-        			int		number = (((x-1)%8)+1)*100 + ((y-1)%10)+1;
-        			String	name = Sector.getSubSector(x, y).toString()+number;
-        			StarSystem	sys = new StarSystem(factory, name, sector.getId(), x, y);
+        			String	name = null;
+        			if (names != null) {
+        				name = names.getName();
+        			} else {
+        				int		number = (((x-1)%8)+1)*100 + ((y-1)%10)+1;
+        				name = Sector.getSubSector(x, y).toString()+number;
+        			}
+        			StarSystem	sys = new StarSystem(factory, name, sector.getId(), x, y, allegiance, fudgeFactor, colonisationTenacity);
         			sys.persist();
         		}
 			}
@@ -1050,6 +1130,19 @@ public class Sector {
 
 	}
 	
+	private static void createSector(int sectorId) throws Exception {
+		ObjectFactory	factory = new ObjectFactory();
+		File			map = new File("/home/sam/density2.jpg");
+		final int		baseX = -9;
+		final int		baseY = -5;
+
+		Sector			sector = new Sector(factory, sectorId);
+		
+		createFromImageMap(factory, sector.getX(), sector.getY(), map, baseX, baseY);
+		
+		factory.close();
+	}
+	
 	private static void createMissingSectors() throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
 		File			map = new File("/home/sam/density2.jpg");
@@ -1089,7 +1182,8 @@ public class Sector {
 		//createTraveller();
 		//createMissingSectors();
 		
-		regenerate(1);
+		createSector(45);
+		//regenerate(28);
 		
 		System.exit(0);
 		

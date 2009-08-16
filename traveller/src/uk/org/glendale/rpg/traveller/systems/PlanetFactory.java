@@ -2088,7 +2088,6 @@ public class PlanetFactory {
 		for (int i = 0; i < number; i++) {
 			Planet		moon = null;
 			String		name = getMoonName(planet, i+1);
-			System.out.println("Creating moon ["+name+"] for ["+planet.getType()+"]");
 
 			switch (planet.getType()) {
 			case EpiStellarJovian:

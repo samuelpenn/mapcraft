@@ -177,6 +177,7 @@ public class UWP {
     	for (Star star : system.getStars()) {
     		if (starData.length() > 0) starData += " ";
     		starData += star.getSpectralType() + " "+ star.getStarClass();
+    		if (starData.length() > 10) break;
     	}
     	
     	Planet		mainWorld = system.getMainWorld();
@@ -200,7 +201,6 @@ public class UWP {
     		for (String t : mainWorld.getTradeCodes()) {
     			this.tradeCodes += t+" ";
     		}
-    		System.out.println("RADIUS: ["+mainWorld.getType()+"/"+mainWorld.getRadius()+"]");
     	} else {
     		this.starport = "X";
     		this.diameter = 0;
@@ -219,6 +219,13 @@ public class UWP {
     		this.tradeCodes = "";
     	}
     	if (this.population == 0) this.allegiance = "Un";
+    	
+    	if (diameter > 15) {
+    		System.out.println("Strange diameter ["+diameter+"] ["+mainWorld.getName()+"] ["+mainWorld.getRadius()+"km] ["+mainWorld.getType()+"]");
+    	}
+    	
+    	if (belts < 0) belts = 0;
+    	if (giants < 0) giants = 0;
 
     	uwp = String.format("%s%s %-18s %4s %s%s%s%s%s%s%s-%s %1s %-15s %s %d%d%d %s %s", 
     			hex(sectorX+11).toLowerCase(),

@@ -548,8 +548,6 @@ public class Planet {
 		parseBase(uwp);
 		parseTradeCodes(uwp);
 		
-		System.out.println("Creating main world with population "+population);
-
 		if (population > 0) {
 			lifeType = LifeType.Extensive;
 		}
@@ -570,6 +568,11 @@ public class Planet {
 		
 		if (population < starport.getMinimumPopulation()) {
 			population = starport.getMinimumPopulation() * Die.d6();
+		}
+		
+		if (planetType.isJovian()) {
+			// Don't bother to check gas giants.
+			return;
 		}
 		
 		switch (techLevel) {
@@ -793,26 +796,30 @@ public class Planet {
 			}
 		} else if (atmospherePressure.isDenserThan(AtmospherePressure.Dense)) {
 			if (radius < 3000) {
-				
+				atmospherePressure = AtmospherePressure.Thin;
+				planetType = PlanetType.EoArean;
 			} else if (radius < 5000) {
-				
-			} else if (radius < 8000) {
-				
-			}
-			planetType = PlanetType.EoArean;
-			lifeType = LifeType.SimpleLand;
-			if (temperature.isColderThan(Temperature.Cold)) {
-				planetType = PlanetType.EuTitanian;
-				if (Die.d6() < 3) {
-					lifeType = LifeType.SimpleLand;
-				} else {
-					lifeType = LifeType.ComplexOcean;
-				}
-				atmosphereType = AtmosphereType.NitrogenCompounds;
-				addTradeCode(TradeCode.Fl);
-			} else if (temperature.isColderThan(Temperature.Cool)) {
-				planetType = PlanetType.AreanLacustric;
+				planetType = PlanetType.EoArean;
+				atmospherePressure = AtmospherePressure.Standard;
 				lifeType = LifeType.SimpleLand;
+				if (temperature.isColderThan(Temperature.Cold)) {
+					planetType = PlanetType.EuTitanian;
+					if (Die.d6() < 3) {
+						lifeType = LifeType.SimpleLand;
+					} else {
+						lifeType = LifeType.ComplexOcean;
+					}
+					atmosphereType = AtmosphereType.NitrogenCompounds;
+					addTradeCode(TradeCode.Fl);
+				} else if (temperature.isColderThan(Temperature.Cool)) {
+					planetType = PlanetType.AreanLacustric;
+					lifeType = LifeType.SimpleLand;
+				}
+			} else if (radius < 8000) {
+				atmospherePressure = AtmospherePressure.Dense;
+				//planetType = PlanetType.EoArean;
+			} else {
+				// Leave as is.
 			}
 		} else {
 			// Normal(ish) atmosphere pressure.
@@ -1334,7 +1341,6 @@ public class Planet {
 		
 		// If the planet has resources set, then write them out.
 		if (resources != null) {
-			System.out.println("Has resources "+resources.size());
 			// HACK: Not saving planetary resources!!
 			//factory.storeResources(id, resources);
 		}

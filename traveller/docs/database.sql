@@ -16,16 +16,18 @@ DROP TABLE IF EXISTS note;
 CREATE TABLE allegiance(id int not null auto_increment, code varchar(4) not null,
 						name varchar(240) not null,
                         colour varchar(12) default '#000000',
+                        language varchar(16),
+                        tech int default 0, law int default 0, population int default 0,
                         PRIMARY KEY (id), KEY(code), KEY(name));
 
-INSERT INTO allegiance values(0, 'Un', 'Unaligned', '#000000');
+INSERT INTO allegiance values(0, 'Un', 'Unaligned', '#000000', NULL, 0, 0);
 
 #
 # SECTOR
 #
 CREATE TABLE sector (id int auto_increment not null, name varchar(250) not null, 
-					 x int not null, y int not null, PRIMARY KEY(id))
-					 ENGINE=INNODB;
+					 x int not null, y int not null, codes varchar(32) default '', 
+					 PRIMARY KEY(id)) ENGINE=INNODB;
 
 #
 # SYSTEM

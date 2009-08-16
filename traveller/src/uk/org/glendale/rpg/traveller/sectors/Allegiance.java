@@ -35,6 +35,10 @@ public class Allegiance {
 	private String		code = null;
 	private String		name = null;
 	private String		colour = null;
+	private String		language = null;
+	private int			techModifier = 0;
+	private int			lawModifier = 0;
+	private int			populationModifier = 0;
 
 	public Allegiance(String code, String name, String colour) {
 		this.code = code;
@@ -101,6 +105,10 @@ public class Allegiance {
 				name = rs.getString("name");
 				code = rs.getString("code");
 				colour = rs.getString("colour");
+				language = rs.getString("language");
+				techModifier = rs.getInt("tech");
+				lawModifier = rs.getInt("law");
+				populationModifier = rs.getInt("population");
 			} else {
 				return false;
 			}
@@ -130,6 +138,10 @@ public class Allegiance {
 			data.put("code", code);
 			data.put("name", name);
 			data.put("colour", colour);
+			data.put("language", language);
+			data.put("tech", techModifier);
+			data.put("law", lawModifier);
+			data.put("population", populationModifier);
 			
 			int auto = fac.persist("allegiance", data);
 			if (id == 0) id = auto;
@@ -158,6 +170,22 @@ public class Allegiance {
 	
 	public String getColour() {
 		return colour;
+	}
+	
+	public String getLanguage() {
+		return language;
+	}
+	
+	public int getTechModifier() {
+		return techModifier;
+	}
+	
+	public int getLawModifier() {
+		return lawModifier;
+	}
+	
+	public int getPopulationModifier() {
+		return populationModifier;
 	}
 	
 	

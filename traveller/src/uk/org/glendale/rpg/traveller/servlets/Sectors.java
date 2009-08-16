@@ -90,7 +90,7 @@ public class Sectors extends HttpServlet {
 
 		if (uri.matches(".*\\.[a-z]+")) {
 			format = uri.replaceAll(".*\\.([a-z]+)", "$1");
-			if (format.equals("txt") || format.equals("xml") || format.equals("html") || format.equals("jpg")) {
+			if (format.equals("txt") || format.equals("xml") || format.equals("html") || format.equals("jpg") || format.equals("sec")) {
 				// Okay.
 			} else {
 				response.sendError(415, "Unrecognised format type ["+format+"]");
@@ -160,6 +160,9 @@ public class Sectors extends HttpServlet {
 		} else if (format.equals("txt")) {
 			response.setContentType("text/plain");
 			response.getOutputStream().print(sector.toXML());
+		} else if (format.equals("sec")) {
+			response.setContentType("text/plain");
+			response.getOutputStream().print(sector.toSEC());			
 		} else {
 			response.setContentType("text/xml");
 			response.getOutputStream().print(sector.toXML());
