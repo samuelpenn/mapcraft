@@ -38,7 +38,7 @@ public enum GovernmentType {
 	SplitControl("Az", 0, 0, 0), SingleClan("Az", 0, 0, 0), SingleMultiWorldClan("Az", 0, 0, 0),
 	MajorClan("Az", 0, 0, 0), VassalClan("Az", 0, 0, 0), MajorVassalClan("Az", 0, 0, 0), 
 	Family("Kk", 0, 0, 0), Krurruna("Kk", 0, 0, 0), Steppelord("Kk", 0, 0, 0), 
-	SeptGoverning("Kk", 0, 0, 0), UnsupervisedAnarchy("An", -2, -2, -1), SupervisedAnarchy("An", -2, -1, -1), Committee("Ol", 0, 0, 0),
+	SeptGoverning("Hv", 0, 0, 0), UnsupervisedAnarchy("Hv", -2, -2, -1), SupervisedAnarchy("Hv", -2, -1, -1), Committee("Hv", 0, 0, 0),
 	DroyneHierarchy("Dr", +2, -1, +1);
 	
 	private String abbreviation = null;

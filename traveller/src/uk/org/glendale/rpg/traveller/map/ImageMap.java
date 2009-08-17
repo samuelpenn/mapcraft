@@ -51,6 +51,69 @@ public class ImageMap {
 		this.sector = sector;
 	}
 	
+	public static SimpleImage drawAllegianceMap(int size) {
+		ObjectFactory 				factory = new ObjectFactory();
+		Hashtable<String,Long>		statistics = factory.getStatistics();
+		
+		// Work out the size of the universe.
+		long	minX = statistics.get("minx");
+		long	maxX = statistics.get("maxx");
+		long	minY = statistics.get("miny");
+		long	maxY = statistics.get("maxy");
+		
+		//minX = minY = -1;
+		//maxX = maxY = +1;
+		
+		// Size of the image we need to create.
+		int				width = (int)(32 * size * (1 + maxX - minX));
+		int				height = (int)((40 * size + size/2) * (1 + maxY - minY));
+		SimpleImage		map = new SimpleImage(width, height, "#000000");
+		
+		try {
+			for (int x = (int)minX; x <= maxX; x++) {
+				for (int y = (int)minY; y <= maxY; y++) {
+					// For each sector in the universe...
+					try {
+						Sector		sector = new Sector(x, y);
+						System.out.println(sector.getName()+" ("+sector.getX()+","+sector.getY()+")");
+						
+						for (int my=1; my <= 40; my++) {
+							for (int mx=1; mx <= 32; mx++) {
+								// For each pixel in this sector...
+								StarSystem		sys = sector.getSystem(mx, my);
+								if (sys != null) {
+									Allegiance		allegiance = sys.getAllegianceData();
+									String			colour = "#777777";
+									if (allegiance != null) colour = allegiance.getColour();
+									int		px = (int)(x-minX)*32*size + mx*size;
+									int		py = (int)(y-minY)*40*size + my*size + ((mx%2)*size/2);
+					        		map.circle(px, py, 1, colour);
+								}
+							}
+						}
+						sector = null;
+					} catch (ObjectNotFoundException e) {
+						// Not sector at this location, so do nothing.
+					}
+					factory.close();
+					factory = null;
+					System.gc();
+					Thread.sleep(2000);
+					System.gc();
+					Thread.sleep(1000);
+					factory = new ObjectFactory();
+				}
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			factory.close();
+		}
+        
+        return map;		
+	}
+	
 	public static SimpleImage drawDensityMap(int size) {
 		ObjectFactory 				factory = new ObjectFactory();
 		Hashtable<String,Long>		statistics = factory.getStatistics();
@@ -206,7 +269,8 @@ public class ImageMap {
     }
 
     public static void main(String[] args) throws Exception {
-    	drawAllSectors();
+    	//drawAllSectors();
     	//drawDensityMap(1).save(new File("/home/sam/density.jpg"));
+    	drawAllegianceMap(1).save(new File("/home/sam/allegiance.jpg"));
     }
 }

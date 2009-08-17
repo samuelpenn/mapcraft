@@ -810,6 +810,10 @@ public class StarSystem implements Comparable {
 			if (population < 10000000) techLevel = Math.min(9, techLevel);
 			mainWorld.setTechLevel(techLevel);
 			
+			if (allegiance != null) {
+				
+			}
+			
 			GovernmentType government = null;
 			switch (Die.d6(3)) {
 			case 3: case 4: case 5:
