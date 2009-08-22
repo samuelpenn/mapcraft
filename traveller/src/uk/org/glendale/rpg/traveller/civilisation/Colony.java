@@ -362,15 +362,28 @@ public class Colony {
 		return suitable;
 	}
 	
+	public static void exploreSystem(StarSystem system) {
+		for (Planet planet : system.getPlanets()) {
+			if (planet.isMoon()) continue;
+			System.out.println("["+planet.getName()+"] / "+planet.getType()+" : "+planet.getHabitability());
+		}
+	}
+	
 	public static void main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
+		
+		StarSystem		system = factory.getStarSystem(58619);
+		Colony.exploreSystem(system);
+		
+		System.exit(0);
+		/*
 		Colony		c = new Colony(new Planet(factory, 16091));
 		//c.colonise();
 		for (int i=0; i<100; i++) {
 			c.grow();
 		}
 		
-		/*
+		
 		for (int i=1; i < 100; i++) {
 			Colony		c = new Colony(new Planet(i));
 			c.colonise();

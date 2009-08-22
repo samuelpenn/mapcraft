@@ -1574,9 +1574,13 @@ public class Planet {
 		}
 	}
 	
+	public Habitability getHabitability() {
+		return Habitability.getHabitability(this);
+	}
+	
 	public long getIdealPopulation() {
 		long			ideal = getRadius() * getRadius();
-		Habitability	habitable = planetType.getHabitability();
+		Habitability	habitable = Habitability.getHabitability(this);
 		
 		if (planetType.isJovian()) {
 			ideal = 0;

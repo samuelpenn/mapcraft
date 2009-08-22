@@ -12,21 +12,23 @@
 package uk.org.glendale.rpg.traveller.systems.codes;
 
 public enum AtmospherePressure {
-	None(1.0, 0.0), 
-	Trace(1.0, 0.0), 
-	VeryThin(0.9, 0.01), 
-	Thin(0.8, 0.5), 
-	Standard(0.7, 1.0), 
-	Dense(0.6, 0.9), 
-	VeryDense(0.5, 0.75), 
-	SuperDense(0.4, 0.5);
+	None(1.0, 0.0, 10), 
+	Trace(1.0, 0.0, 10), 
+	VeryThin(0.9, 0.01, 6), 
+	Thin(0.8, 0.5, 2), 
+	Standard(0.7, 1.0, 0), 
+	Dense(0.6, 0.9, 1), 
+	VeryDense(0.5, 0.75, 5), 
+	SuperDense(0.4, 0.5, 50);
 	
 	private double	distance = 1.0;
 	private double  suitability = 1.0;
+	private int		badness = 0;
 	
-	AtmospherePressure(double distance, double suitability) {
+	AtmospherePressure(double distance, double suitability, int badness) {
 		this.distance = distance;
 		this.suitability = suitability;
+		this.badness = badness;
 	}
 	
 	/**
@@ -40,6 +42,10 @@ public enum AtmospherePressure {
 	
 	public double getSuitability() {
 		return suitability;
+	}
+	
+	public int getBadness() {
+		return badness;
 	}
 	
 	/**

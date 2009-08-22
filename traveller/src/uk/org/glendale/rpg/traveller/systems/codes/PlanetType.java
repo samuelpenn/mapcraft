@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007 Samuel Penn, sam@glendale.org.uk
+ * Copyright (C) 2009 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -39,9 +39,9 @@ public enum PlanetType {
 	EuTitanian(Category.Dwarf, 3.0, 2500),		// Titan (methane, with solid water ice)
 	TitaniLacustric(Category.Dwarf, 3.0, 2700),	// Warm Titan, seas.
 	
-	MesoUtgardian(Category.Dwarf, 2.0, 1200, Habitability.Hostile),	// Ammonia
-	EuUtgardian(Category.Dwarf, 2.0, 1500, Habitability.Hostile),		// Ammonia
-	UtgardiLacustric(Category.Dwarf, 2.0, 1800, Habitability.Hostile),// Ammonia
+	MesoUtgardian(Category.Dwarf, 2.0, 1200),	// Ammonia
+	EuUtgardian(Category.Dwarf, 2.0, 1500),		// Ammonia
+	UtgardiLacustric(Category.Dwarf, 2.0, 1800),// Ammonia
 	
 	Ferrinian(Category.Dwarf, 6.0, 1800), 		// Iron rich
 	Selenian(Category.Dwarf, 3.3, 1700), 		// Moon
@@ -50,45 +50,45 @@ public enum PlanetType {
 	LithicGelidian(Category.Dwarf, 2.0, 2000),  // Rock/ice worlds, often moons. Ganymede/Callisto
 
 	// Gaian type worlds
-	EoGaian(Category.Terrestrial, 5.5, 6500, Habitability.Difficult),
-	MesoGaian(Category.Terrestrial, 5.5, 6500, Habitability.Difficult), 
-	ArchaeoGaian(Category.Terrestrial, 5.5, 6500, Habitability.Difficult), 
-	Gaian(Category.Terrestrial, 5.5, 6500, Habitability.Hospitable), 
-	GaianTundral(Category.Terrestrial, 5.5, 6200, Habitability.Unpleasant), 
-	PostGaian(Category.Terrestrial, 5.5, 6500, Habitability.Unpleasant),
+	EoGaian(Category.Terrestrial, 5.5, 6500),
+	MesoGaian(Category.Terrestrial, 5.5, 6500), 
+	ArchaeoGaian(Category.Terrestrial, 5.5, 6500),
+	Gaian(Category.Terrestrial, 5.5, 6500),
+	GaianTundral(Category.Terrestrial, 5.5, 6200), 
+	PostGaian(Category.Terrestrial, 5.5, 6500),
 	
 	// Chlorine worlds
-	EoChloritic(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
-	MesoChloritic(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
-	ArchaeoChloritic(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
-	Chloritic(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
-	ChloriticTundral(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
-	PostChloritic(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+	EoChloritic(Category.Terrestrial, 5.5, 6500),
+	MesoChloritic(Category.Terrestrial, 5.5, 6500),
+	ArchaeoChloritic(Category.Terrestrial, 5.5, 6500),
+	Chloritic(Category.Terrestrial, 5.5, 6500),
+	ChloriticTundral(Category.Terrestrial, 5.5, 6500),
+	PostChloritic(Category.Terrestrial, 5.5, 6500),
 	
 	// Sulphur worlds
-	EoThio(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
-	MesoThio(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
-	ArchaeoThio(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
-	Thio(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
-	ThioTundral(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
-	PostThio(Category.Terrestrial, 5.5, 6500, Habitability.Hostile),
+	EoThio(Category.Terrestrial, 5.5, 6500),
+	MesoThio(Category.Terrestrial, 5.5, 6500),
+	ArchaeoThio(Category.Terrestrial, 5.5, 6500),
+	Thio(Category.Terrestrial, 5.5, 6500),
+	ThioTundral(Category.Terrestrial, 5.5, 6500),
+	PostThio(Category.Terrestrial, 5.5, 6500),
 
 	Hermian(Category.Terrestrial, 5.0, 2500), 		// Mercury
-	EoArean(Category.Terrestrial, 5.0, 4000, Habitability.Difficult), 
+	EoArean(Category.Terrestrial, 5.0, 4000), 
 	AreanLacustric(Category.Terrestrial, 4.5, 3500), 
 	Arean(Category.Terrestrial, 4.5, 3500),
-	Cytherean(Category.Terrestrial, 5.5, 6200, Habitability.Hostile),    // Venus
-	Phosphorian(Category.Terrestrial, 5.5, 6200, Habitability.Hostile),  // Cloudless Venus
-	JaniLithic(Category.Terrestrial, 5.5, 5500, Habitability.Hostile),   // Dry, hot, atmosphere.
-	Pelagic(Category.Terrestrial, 6.0, 7500, Habitability.Hostile),
+	Cytherean(Category.Terrestrial, 5.5, 6200),    // Venus
+	Phosphorian(Category.Terrestrial, 5.5, 6200),  // Cloudless Venus
+	JaniLithic(Category.Terrestrial, 5.5, 5500),   // Dry, hot, atmosphere.
+	Pelagic(Category.Terrestrial, 6.0, 7500),
 	Panthalassic(Category.Terrestrial, 5.5, 6000), 
 	
-	CryoJovian(Category.Jovian, 1.1, 50000, Habitability.VeryHostile),
-	SubJovian(Category.Jovian, 0.8, 70000, Habitability.VeryHostile), 
-	EuJovian(Category.Jovian, 1.0, 90000, Habitability.VeryHostile), 
-	SuperJovian(Category.Jovian, 1.5, 120000, Habitability.VeryHostile),
-	MacroJovian(Category.Jovian, 2.0, 160000, Habitability.VeryHostile), 
-	EpiStellarJovian(Category.Jovian, 1.2, 100000, Habitability.VeryHostile);
+	CryoJovian(Category.Jovian, 1.1, 50000),
+	SubJovian(Category.Jovian, 0.8, 70000), 
+	EuJovian(Category.Jovian, 1.0, 90000), 
+	SuperJovian(Category.Jovian, 1.5, 120000),
+	MacroJovian(Category.Jovian, 2.0, 160000), 
+	EpiStellarJovian(Category.Jovian, 1.2, 100000);
 	
 	private enum Category {
 		Belt, Asteroid, Terrestrial, Dwarf, Jovian;
@@ -97,7 +97,6 @@ public enum PlanetType {
 	private Category		category = Category.Terrestrial;
 	private double			density = 5.5;
 	private int				radius = 6400;
-	private Habitability	habitable = null;
 
 	PlanetType() {
 	}
@@ -106,14 +105,6 @@ public enum PlanetType {
 		this.category = category;
 		this.density = density;
 		this.radius = radius;
-		this.habitable = Habitability.Inhospitable;
-	}
-
-	PlanetType(Category category, double density, int radius, Habitability habitable) {
-		this.category = category;
-		this.density = density;
-		this.radius = radius;
-		this.habitable = habitable;
 	}
 	
 	public String getPlanetClass() {
@@ -139,10 +130,6 @@ public enum PlanetType {
 	
 	public double getDensity() {
 		return density;
-	}
-	
-	public Habitability getHabitability() {
-		return habitable;
 	}
 	
 	public boolean isBelt() {

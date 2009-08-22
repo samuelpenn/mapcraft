@@ -29,24 +29,30 @@ package uk.org.glendale.rpg.traveller.systems.codes;
  *
  */
 public enum Temperature {
-	UltraCold(0.0, 50),
-	ExtremelyCold(0.0, 100), 
-	VeryCold(0.0, 200), 
-	Cold(0.1, 250), 
-	Cool(0.5, 273), 
-	Standard(1.0, 293), 
-	Warm(0.75, 310), 
-	Hot(0.1, 330), 
-	VeryHot(0.0, 360), 
-	ExtremelyHot(0.0, 400),
-	UltraHot(0.0, 600);
+	UltraCold(0.0, 50, 20),
+	ExtremelyCold(0.0, 100, 15), 
+	VeryCold(0.0, 200, 12), 
+	Cold(0.1, 250, 5), 
+	Cool(0.5, 273, 2), 
+	Standard(1.0, 293, 0), 
+	Warm(0.75, 310, 2), 
+	Hot(0.1, 330, 10), 
+	VeryHot(0.0, 360, 50), 
+	ExtremelyHot(0.0, 400, 100),
+	UltraHot(0.0, 600, 150);
 	
 	double	suitability = 1.0;
 	int		kelvin = 300;
+	int		badness = 0;
 	
-	Temperature(double suitability, int kelvin) {
+	Temperature(double suitability, int kelvin, int badness) {
 		this.suitability = suitability;
 		this.kelvin = kelvin;
+		this.badness = badness;
+	}
+	
+	public int getBadness() {
+		return badness;
 	}
 	
 	public double getSuitability() {

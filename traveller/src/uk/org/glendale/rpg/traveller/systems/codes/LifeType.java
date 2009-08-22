@@ -28,7 +28,23 @@ package uk.org.glendale.rpg.traveller.systems.codes;
  * @author Samuel Penn
  */
 public enum LifeType {
-	None, Organic, Archaean, Aerobic, ComplexOcean, SimpleLand, ComplexLand, Extensive;
+	None(5), 
+	Organic(5), 
+	Archaean(5), 
+	Aerobic(5), 
+	ComplexOcean(3), 
+	SimpleLand(2), 
+	ComplexLand(1), 
+	Extensive(0);
+	
+	private int badness = 0;
+	LifeType(int badness) {
+		this.badness = badness;
+	}
+	
+	public int getBadness() {
+		return badness;
+	}
 	
 	/**
 	 * True iff this type of life is simpler than the one passed.
