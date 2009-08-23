@@ -271,22 +271,30 @@ public class Trade {
 		// based on how far out this planet is, if required. Note that a
 		// commodity can apply to one or more tech ranges, or all of them if
 		// none is specified.
-		if (c.hasCode(CommodityCode.Lt) || c.hasCode(CommodityCode.Mt) || c.hasCode(CommodityCode.Ht) || c.hasCode(CommodityCode.Ut)) {
+		if (c.hasCode(CommodityCode.Tp) || c.hasCode(CommodityCode.Tm) || c.hasCode(CommodityCode.Ti) || c.hasCode(CommodityCode.Tt) || c.hasCode(CommodityCode.Ta) || c.hasCode(CommodityCode.Tu)) {
 			int		min = 15, max = 0;
-			if (c.hasCode(CommodityCode.Lt)) {
-				min = 1; max = 5;
+			if (c.hasCode(CommodityCode.Tp)) {
+				min = 0; max = 1;
 			}
-			if (c.hasCode(CommodityCode.Mt)) {
-				min = Math.min(min, 6);
+			if (c.hasCode(CommodityCode.Tm)) {
+				min = Math.min(min, 2);
+				max = Math.max(max, 4);
+			}
+			if (c.hasCode(CommodityCode.Ti)) {
+				min = Math.min(min, 5);
+				max = Math.max(max, 6);
+			}
+			if (c.hasCode(CommodityCode.Tt)) {
+				min = Math.min(min, 7);
 				max = Math.max(max, 8);
 			}
-			if (c.hasCode(CommodityCode.Ht)) {
-				min = Math.min(min, 8);
+			if (c.hasCode(CommodityCode.Ta)) {
+				min = Math.min(min, 9);
 				max = Math.max(max, 10);
 			}
-			if (c.hasCode(CommodityCode.Ut)) {
-				min = Math.min(min, 10);
-				max = 15;
+			if (c.hasCode(CommodityCode.Tu)) {
+				min = Math.min(min, 11);
+				max = Math.max(max, 15);
 			}
 			if (c.getTechLevel() < min) {
 				consumersAvailable /= 10^(min-c.getTechLevel());
@@ -638,12 +646,13 @@ public class Trade {
 			}
 			
 			// Tech level requirements
-			if (c.hasCode(CommodityCode.Lt)) {
+			// TODO: These codes and associated levels are WRONG!
+			if (c.hasCode(CommodityCode.Tp)) {
 				// Ultra-tech
 				if (planet.getTechLevel() > 6) {
 					demand *= Math.pow(10, (planet.getTechLevel()-6));
 				}
-			} else if (c.hasCode(CommodityCode.Mt)) {
+			} else if (c.hasCode(CommodityCode.Tm)) {
 				if (planet.getTechLevel() < 4) {
 					demand = 0;
 				} else if (planet.getTechLevel() < 6) {
@@ -655,7 +664,7 @@ public class Trade {
 				} else if (planet.getTechLevel() > 9) {
 					demand *= 10;
 				}
-			} else if (c.hasCode(CommodityCode.Ht)) {
+			} else if (c.hasCode(CommodityCode.Ti)) {
 				if (planet.getTechLevel() < 7) {
 					demand = 0;
 				} else if (planet.getTechLevel() == 7) {
@@ -667,7 +676,7 @@ public class Trade {
 				} else if (planet.getTechLevel() > 11) {
 					demand *= 10;
 				}
-			} else if (c.hasCode(CommodityCode.Ut)) {
+			} else if (c.hasCode(CommodityCode.Tt)) {
 				if (planet.getTechLevel() < 10) {
 					demand = 0;
 				} else if (planet.getTechLevel() == 10) {

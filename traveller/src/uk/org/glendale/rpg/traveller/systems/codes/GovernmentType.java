@@ -18,7 +18,7 @@ package uk.org.glendale.rpg.traveller.systems.codes;
  *
  */
 public enum GovernmentType {
-	Anarchy("An", -2, -2, -1), 
+	Anarchy("An", -6, -2, -1), 
 	Corporation("Co", 0, +2, +1),
 	ParticipatingDemocracy("De", 0, 0, 0), 
 	SelfPerpetuatingOligarchy("Ol", 0, 0, 0),

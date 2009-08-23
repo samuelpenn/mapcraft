@@ -80,6 +80,10 @@ public class GetPlanet extends HttpServlet {
         } else {
         	stream = factory.getPlanetMap(id);
         }
+        if (stream == null) {
+        	response.sendRedirect("/traveller/images/planets/planet_gaian.jpg");
+        	return;
+        }
 
         ServletOutputStream	out = response.getOutputStream();
         out.write(stream.toByteArray());

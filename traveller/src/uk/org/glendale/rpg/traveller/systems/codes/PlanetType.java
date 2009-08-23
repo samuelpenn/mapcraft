@@ -17,23 +17,23 @@ public enum PlanetType {
 	IceBelt(Category.Belt, 0.0, 0),
 	OortCloud(Category.Belt, 0.0, 0),
 	
-	Vulcanian(Category.Asteroid, 7.5, 80),		// Asteroid close to parent sun, heavy metals.
+	Vulcanian(Category.Asteroid, 7.5, 80, "hotrock"),		// Asteroid close to parent sun, heavy metals.
 	Silicaceous(Category.Asteroid, 4.0, 120),	// Asteroid with nickle-iron core.
 	Sideritic(Category.Asteroid, 6.0, 100),		// Pure nickel-iron, very dense.
 	Basaltic(Category.Asteroid, 4.0, 50),		// Cooled larva on surface, smooth. Rare.
 	Carbonaceous(Category.Asteroid, 3.0, 150),  // Very dark, rich in carbon. Outer middle solar systems. (C-type)
-	Enceladean(Category.Asteroid, 1.6, 250),    // Enceladus (ice, active)
-	Mimean(Category.Asteroid, 1.1, 200),        // Mimas (ice, inactive)
-	Oortean(Category.Asteroid, 1.5, 100),		// World out in the Oort cloud.
+	Enceladean(Category.Asteroid, 1.6, 250, "ice"),    // Enceladus (ice, active)
+	Mimean(Category.Asteroid, 1.1, 200, "ice"),        // Mimas (ice, inactive)
+	Oortean(Category.Asteroid, 1.5, 100, "ice"),		// World out in the Oort cloud.
 	
-	Hadean(Category.Dwarf, 7.0, 500),           // Planetoid very iron rich, just a core.
-	Cerean(Category.Dwarf, 2.0, 500), 			// Ceres (rocky core, ice layer, dusty crust)
+	Hadean(Category.Dwarf, 7.0, 500, "hotrock"),           // Planetoid very iron rich, just a core.
+	Cerean(Category.Dwarf, 2.0, 500, "ice"), 			// Ceres (rocky core, ice layer, dusty crust)
 	Vesperian(Category.Dwarf, 3.4, 300),		// Vespa (iron-nickel core, rocky mantle and crust)
 	Vestian(Category.Dwarf, 2.0, 2500),         // Silicate rich moons.
-	Kuiperian(Category.Dwarf, 2.0, 1100),       // Pluto
+	Kuiperian(Category.Dwarf, 2.0, 1100, "ice"),       // Pluto
 	Hephaestian(Category.Dwarf, 3.0, 1800), 	// Io
-	Iapetean(Category.Dwarf, 1.5, 1500),		// Iapetus, stretched and cracked ice world.
-	Tritonic(Category.Dwarf, 2.0, 1000),		// Triton, icy volcanism.
+	Iapetean(Category.Dwarf, 1.5, 1500, "ice"),		// Iapetus, stretched and cracked ice world.
+	Tritonic(Category.Dwarf, 2.0, 1000, "ice"),		// Triton, icy volcanism.
 	
 	MesoTitanian(Category.Dwarf, 3.0, 2300),	// Dead Titan
 	EuTitanian(Category.Dwarf, 3.0, 2500),		// Titan (methane, with solid water ice)
@@ -50,12 +50,12 @@ public enum PlanetType {
 	LithicGelidian(Category.Dwarf, 2.0, 2000),  // Rock/ice worlds, often moons. Ganymede/Callisto
 
 	// Gaian type worlds
-	EoGaian(Category.Terrestrial, 5.5, 6500),
-	MesoGaian(Category.Terrestrial, 5.5, 6500), 
-	ArchaeoGaian(Category.Terrestrial, 5.5, 6500),
-	Gaian(Category.Terrestrial, 5.5, 6500),
-	GaianTundral(Category.Terrestrial, 5.5, 6200), 
-	PostGaian(Category.Terrestrial, 5.5, 6500),
+	EoGaian(Category.Terrestrial, 5.5, 6500, "gaian"),
+	MesoGaian(Category.Terrestrial, 5.5, 6500, "gaian"), 
+	ArchaeoGaian(Category.Terrestrial, 5.5, 6500, "gaian"),
+	Gaian(Category.Terrestrial, 5.5, 6500, "gaian"),
+	GaianTundral(Category.Terrestrial, 5.5, 6200, "gaian"), 
+	PostGaian(Category.Terrestrial, 5.5, 6500, "gaian"),
 	
 	// Chlorine worlds
 	EoChloritic(Category.Terrestrial, 5.5, 6500),
@@ -73,7 +73,7 @@ public enum PlanetType {
 	ThioTundral(Category.Terrestrial, 5.5, 6500),
 	PostThio(Category.Terrestrial, 5.5, 6500),
 
-	Hermian(Category.Terrestrial, 5.0, 2500), 		// Mercury
+	Hermian(Category.Terrestrial, 5.0, 2500, "hotrock"), 		// Mercury
 	EoArean(Category.Terrestrial, 5.0, 4000), 
 	AreanLacustric(Category.Terrestrial, 4.5, 3500), 
 	Arean(Category.Terrestrial, 4.5, 3500),
@@ -83,12 +83,12 @@ public enum PlanetType {
 	Pelagic(Category.Terrestrial, 6.0, 7500),
 	Panthalassic(Category.Terrestrial, 5.5, 6000), 
 	
-	CryoJovian(Category.Jovian, 1.1, 50000),
-	SubJovian(Category.Jovian, 0.8, 70000), 
-	EuJovian(Category.Jovian, 1.0, 90000), 
-	SuperJovian(Category.Jovian, 1.5, 120000),
-	MacroJovian(Category.Jovian, 2.0, 160000), 
-	EpiStellarJovian(Category.Jovian, 1.2, 100000);
+	CryoJovian(Category.Jovian, 1.1, 50000, "cryojovian"),
+	SubJovian(Category.Jovian, 0.8, 70000, "jovian"), 
+	EuJovian(Category.Jovian, 1.0, 90000, "jovian"), 
+	SuperJovian(Category.Jovian, 1.5, 120000, "jovian"),
+	MacroJovian(Category.Jovian, 2.0, 160000, "jovian"), 
+	EpiStellarJovian(Category.Jovian, 1.2, 100000, "jovian");
 	
 	private enum Category {
 		Belt, Asteroid, Terrestrial, Dwarf, Jovian;
@@ -97,6 +97,7 @@ public enum PlanetType {
 	private Category		category = Category.Terrestrial;
 	private double			density = 5.5;
 	private int				radius = 6400;
+	private	String			image = "planet";
 
 	PlanetType() {
 	}
@@ -105,6 +106,13 @@ public enum PlanetType {
 		this.category = category;
 		this.density = density;
 		this.radius = radius;
+	}
+
+	PlanetType(Category category, double density, int radius, String image) {
+		this.category = category;
+		this.density = density;
+		this.radius = radius;
+		this.image = image;
 	}
 	
 	public String getPlanetClass() {
@@ -152,5 +160,7 @@ public enum PlanetType {
 		return category == Category.Jovian;
 	}
 	
-
+	public String getImage() {
+		return image;
+	}
 }

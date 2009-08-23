@@ -470,11 +470,13 @@ public class Resources {
 	
 	public static void main(String[] args) throws Exception {
 		ObjectFactory		factory = new ObjectFactory();
-		Planet				planet = factory.getPlanet(224138);
+		StarSystem			system = factory.getStarSystem(58619);
 		Star				star = null;
 		
-		setResources(factory, star, planet);
-		planet.persist();
+		for (Planet planet : system.getPlanets()) {
+			setResources(factory, star, planet);
+			planet.persist();
+		}
 	}
 
 }

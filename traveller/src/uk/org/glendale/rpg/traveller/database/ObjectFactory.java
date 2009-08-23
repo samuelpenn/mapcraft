@@ -991,9 +991,9 @@ public class ObjectFactory {
 		db.delete("resources", "planet_id="+planet_id);
 		
 		for (String s : resources.keySet()) {
-			Commodity	c = getCommodity(s);
-			
-			if (c != null) {
+			try {
+				Commodity	c = Constants.getCommodity(s);
+				
 				Hashtable<String,Object> data = new Hashtable<String,Object>();
 				data.put("planet_id", planet_id);
 				data.put("commodity_id", c.getId());
@@ -1004,6 +1004,8 @@ public class ObjectFactory {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+			} catch (ObjectNotFoundException e) {
+				System.out.println("Error persisting planet ["+planet_id+"]: "+e.getMessage());
 			}
 		}
 

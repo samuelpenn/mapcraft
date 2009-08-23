@@ -12,6 +12,7 @@
 package uk.org.glendale.rpg.traveller.civilisation;
 
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
+import uk.org.glendale.rpg.traveller.sectors.Allegiance;
 import uk.org.glendale.rpg.traveller.systems.*;
 import uk.org.glendale.rpg.traveller.systems.codes.*;
 import uk.org.glendale.rpg.utils.Die;
@@ -20,9 +21,11 @@ import uk.org.glendale.rpg.utils.Die;
  * Class which simulates colonisation of a world.
  */
 public class Colony {
-	private Planet		planet = null;
+	private ObjectFactory	factory = null;
+	private Planet			planet = null;
 	
-	public Colony(Planet planet) {
+	public Colony(ObjectFactory factory, Planet planet) {
+		this.factory = factory;
 		this.planet = planet;
 	}
 	
@@ -37,6 +40,52 @@ public class Colony {
 			// Can only terraform terrestrial worlds.
 			return;
 		}
+	}
+	
+	/**
+	 * Colonise the planet. The modifier is a +ve integer which modifies the
+	 * size of the colony and determines whether it will be colonised at all.
+	 * 0 is pretty standard, +1 determined, +2 aggressive, +3 fanatical
+	 * 
+	 * @param allegiance
+	 * @param modifier
+	 * @param techLevel
+	 */
+	public void colonise(Allegiance allegiance, int modifier, int techLevel) {
+		Habitability	habitability = planet.getHabitability();
+		long			population = (long)(Die.d10(10)*100*Math.pow(100, modifier));
+		
+		switch (habitability) {
+		case Garden:
+			population *= Math.pow(10, modifier);
+			break;
+		case Habitable:
+			population *= Math.pow(5, modifier);
+			break;
+		case Unpleasant:
+			population /= 1;
+			break;
+		case Difficult:
+			population /= 10;
+			break;
+		case Inhospitable:
+			population /= 1000;
+			if (modifier < 3) return;
+		case Hostile:
+			population /= 100000;
+			break;
+		case VeryHostile:
+			population /= 10000000;
+			break;
+		}
+		// Don't bother populating if the population will be too small.
+		if (population < 100) {
+			System.out.println(habitability+" ("+population+")");
+			return;
+		}
+		
+		Civilisation	civ = new Civilisation(factory, planet, "civilisation");
+		civ.generate(population, techLevel);
 	}
 	
 	/**
@@ -363,17 +412,20 @@ public class Colony {
 	}
 	
 	public static void exploreSystem(StarSystem system) {
-		for (Planet planet : system.getPlanets()) {
-			if (planet.isMoon()) continue;
-			System.out.println("["+planet.getName()+"] / "+planet.getType()+" : "+planet.getHabitability());
-		}
+		Planet		planet = system.getMainWorld();
+		System.out.println("["+planet.getName()+"] / "+planet.getType()+" : "+planet.getHabitability());
 	}
 	
 	public static void main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
 		
 		StarSystem		system = factory.getStarSystem(58619);
-		Colony.exploreSystem(system);
+		Colony			colony = new Colony(factory, system.getMainWorld());
+		System.out.println(system.getMainWorld().getId());
+		colony.colonise(null, 1, 1);
+		
+		
+		//Colony.exploreSystem(system);
 		
 		System.exit(0);
 		/*

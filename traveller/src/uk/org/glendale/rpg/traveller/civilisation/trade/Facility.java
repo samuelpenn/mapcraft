@@ -28,6 +28,9 @@ public class Facility {
 	private int					techLevel = 0;
 	private int					capacity = 0;
 	private int					resourceId = 0;
+
+	private Hashtable<String,Double>	requirementCodes = null;
+	private Hashtable<String,Double>	productionCodes = null;
 	
 	class Mapping {
 		private int		sourceId = 0;
@@ -73,6 +76,35 @@ public class Facility {
 		inputMap = getIOMapFromString(inputs);
 		outputMap = getIOMapFromString(outputs);
 		
+		requirementCodes = getCodeList(inputs);
+		productionCodes = getCodeList(outputs);
+		
+	}
+	
+	private Hashtable<String,Double> getCodeList(String string) {
+		Hashtable<String,Double>  list = new Hashtable<String,Double>();
+
+		if (string == null || string.length() == 0) {
+			return list;
+		}
+		// A code may be of the format <code> or <code>,<percentage>
+		for (String code : string.split(";")) {
+			if (code.matches("[0-9]+.*")) continue;
+			double		modifier = 1.00;
+			if (code.indexOf(",") != -1) {
+				try {
+					int		mod = Integer.parseInt(code.split(",")[1]);
+					if (mod > 0 && mod < 1000) {
+						modifier = mod/100.0;
+					}
+				} catch (NumberFormatException e) {
+					// Just ignore any invalid data for now.
+				}
+				code = code.split(",")[0];
+			}
+			list.put(code, modifier);
+		}
+		return list;
 	}
 	
 	private Vector<Mapping> getIOMapFromString(String string) {
@@ -97,7 +129,8 @@ public class Facility {
 					map.add(new Mapping(Integer.parseInt(key), Integer.parseInt(units)));
 				}
 			} catch (NumberFormatException e) {
-				System.out.println("Unable to recognise ["+maps[m]+"] for facility ["+name+"]");
+				// Assume that this is a new format requirement.
+				//System.out.println("Unable to recognise ["+maps[m]+"] for facility ["+name+"]");
 			}
 		}
 		return map;

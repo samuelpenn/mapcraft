@@ -106,4 +106,14 @@ public enum Habitability {
 		
 		return habitability;
 	}
+	
+	public boolean isWorseThan(Habitability o) {
+		if (o == null) return false;
+		return o.badnessLimit < badnessLimit;
+	}
+
+	public boolean isBetterThan(Habitability o) {
+		if (o == null) return false;
+		return o.badnessLimit > badnessLimit;
+	}
 }

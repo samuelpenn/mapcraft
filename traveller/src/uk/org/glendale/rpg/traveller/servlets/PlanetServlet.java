@@ -153,7 +153,7 @@ public class PlanetServlet extends HttpServlet {
 	        	stream = factory.getPlanetMap(planet.getId());
 	        }
 	        if (stream == null) {
-	        	response.sendError(404, "Planet ["+planet.getId()+"] does not have the requested image available");
+	        	response.sendRedirect(request.getContextPath()+"/images/planets/"+planet.getType().getImage()+".jpg");
 	        	return;
 	        }
 	        response.setContentType("image/jpeg");

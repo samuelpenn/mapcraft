@@ -20,21 +20,20 @@ public enum CommodityCode {
 	// Legal
 	Il("Illegal"),
 	// Used by tech levels
-	Nt("Neolithic tech (0-1)"),
-	Pt("Primitive (1-3)"),
-	Lt("Low tech (3-5)"),
-	Mt("Mid tech (5-6)"),
-	Ht("High tech (7-8)"),
-	At("Advanced tech (9-10)"),
-	Ut("Ultra tech (11+)"),
-	Tt("Any tech level"),
+	Tp("Primitive (TL0-1)"),
+	Tm("Medieval (TL2-4)"),
+	Ti("Industrial (TL5-6)"),
+	Tt("Technological (TL7-8)"),
+	Ta("Advanced (TL9-10)"),
+	Tu("Ultratech (TL11+)"),
 	// Used by world types
 	In("Industrial"),
 	Ag("Agricultural"),
+	Re("Residential"),
 	Mn("Mining"),
-	Sp("Space ports D+"),
-	SP("Space ports B+"),
-	Re("Research"),
+	Sp("Space ports"),
+	Mi("Military"),
+	Ac("Academic"),
 	Nv("Navy bases"),
 	Sc("Scout bases"),
 	Va("Vacuum environments"),
@@ -56,6 +55,7 @@ public enum CommodityCode {
 	Me("Medical"),
 	Ma("Machinary"),
 	El("Electronics"),
+	To("Tool"),
 	// Quality
 	Hq("High quality"),
 	Lq("Low quality"),
@@ -64,15 +64,40 @@ public enum CommodityCode {
 	Fr("Fragile"),
 	Hz("Hazardous"),
 	HZ("Extremely Hazardous"),
-	// Food codes
-	FV("Vegetable"),
-	FA("Animal"),
-	FC("Crop"),
-	FM("Marine"),
-	FT("Tiny"),
-	FS("Small"),
-	FB("Basic"),
-	FQ("Squick"),
+	/* Four character codes */
+	// Building materials
+	BldL("Light building materials"),
+	BldH("Heavy building materials"),
+	BldS("Strong building materials"),
+	BldA("Advanced building materials"),
+	BldU("Ultratech building materials"),
+	// Household goods (needed/produced by residential)
+	HoTl("Household tools"),
+	HoCk("Cooking utensils"),
+	HoLu("Artistic items"),
+	HoCl("Household cloths, blankets etc"),
+	// Military
+	WpnH("Hand weapons"),
+	ArmL("Light armour"),
+	ArmH("Heavy armour"),
+	// Clothing
+	ClCv("Civilian clothing"),
+	ClLb("Labourer's clothing"),
+	ClLu("Luxury clothing"),
+	// Food
+	FoMe("Meat"),
+	FoFi("Fish"),
+	FoGa("Gatherable"),
+	FoAg("Farmable"),
+	FoHd("Herd animal"),
+	FoHu("Huntable"),
+	FoOr("Processed organic"),
+	// Ores
+	OrSi("Silicates"),
+	OrFe("Ferrics"),
+	OrCa("Carbonics"),
+	OrAq("Aquam"),
+	OrAu("Auram"),
 	// Other
 	Uq("Unique");
 	

@@ -203,8 +203,10 @@ public class Market extends HttpServlet {
 		buffer.append("<p>");
 		for (int facilityId : facilities.keySet()) {
 			Facility	facility = allFacilities.get(facilityId);
-			String label = facility.getName()+" ("+facilities.get(facilityId)+"%)";
-			buffer.append("<img src='"+imageBase+"facilities/"+facility.getImage()+".png' title='"+label+"'/>");
+			if (facility != null) {
+				String label = facility.getName()+" ("+facilities.get(facilityId)+"%)";
+				buffer.append("<img src='"+imageBase+"facilities/"+facility.getImage()+".png' title='"+label+"'/> ");
+			}
 		}
 		buffer.append("</p>");
 		buffer.append("</div>");

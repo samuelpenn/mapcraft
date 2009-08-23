@@ -22,6 +22,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import uk.org.glendale.rpg.traveller.Config;
+import uk.org.glendale.rpg.traveller.civilisation.trade.Commodity;
 import uk.org.glendale.rpg.traveller.database.*;
 import uk.org.glendale.rpg.traveller.glossary.GlossaryEntry;
 import uk.org.glendale.rpg.traveller.systems.codes.*;
@@ -1342,7 +1343,7 @@ public class Planet {
 		// If the planet has resources set, then write them out.
 		if (resources != null) {
 			// HACK: Not saving planetary resources!!
-			//factory.storeResources(id, resources);
+			factory.storeResources(id, resources);
 		}
 	}
 
@@ -1425,6 +1426,17 @@ public class Planet {
 			}
 			buffer.append(" ("+id+")\n");
 			buffer.append("</p>\n");
+		}
+		Hashtable<Integer,Integer> resources = factory.getResources(getId());
+		if (resources != null && resources.size() > 0) {
+			buffer.append("<p>");
+			for (int r : resources.keySet()) {
+				Commodity	c = Constants.getCommodity(r);
+				if (c != null) {
+					buffer.append("<img src=\""+Config.getBaseUrl()+"images/trade/"+c.getImage()+".png\" width=\"32\" height=\"32\" title=\""+c.getName()+" ("+resources.get(r)+"%)\"/> ");
+				}
+			}
+			buffer.append("</p>");
 		}
 
 		// Physical data

@@ -327,10 +327,10 @@ public class StarSystem implements Comparable {
 	/**
 	 * Get the main world of this star system. The main world is the
 	 * one with the largest star port. Failing that, it is the world
-	 * with the greatest GWP.
+	 * with the greatest GWP. If no worlds are populated, then it is
+	 * the 'nicest' world.
 	 * 
-	 * @return		Main world of this star system, or null if none
-	 *              are populated.
+	 * @return		Main world of this star system.
 	 */
 	public Planet getMainWorld() {
 		StarportType		starport = StarportType.X;
@@ -359,65 +359,15 @@ public class StarSystem implements Comparable {
 				}
 			}
 		}
-		int		nicest = 0;
 		if (mainWorld == null) {
 			// Possible that there are no inhabited planets in this system,
 			// in which case we need to choose a main world based on other
 			// criteria.
 			for (Planet planet : planets) {
-				int		niceness = 0;
-				if (planet.getType().isTerrestrial()) niceness += 1;
-				if (planet.getType().isJovian()) niceness -= 10;
-				if (planet.getRadius() > 3000) niceness+=1;
-				if (planet.getRadius() > 5000 && planet.getRadius() < 7500) niceness+=1;
-				if (planet.getLifeLevel() == LifeType.Extensive) niceness += 25;
-				if (planet.getLifeLevel() == LifeType.ComplexLand) niceness += 15;
-				if (planet.getLifeLevel() == LifeType.SimpleLand) niceness += 10;
-				if (planet.getLifeLevel() == LifeType.ComplexOcean) niceness += 5;
-				if (planet.getLifeLevel() == LifeType.Archaean) niceness += 3;
-				if (planet.getLifeLevel() == LifeType.Aerobic) niceness += 2;
-				if (planet.getLifeLevel() == LifeType.Organic) niceness += 1;
-				switch (planet.getTemperature()) {
-				case Standard: case Warm: case Cool:
-					niceness += 2;
-					break;
-				case Cold: case Hot:
-					niceness += 1;
-					break;
-				case ExtremelyHot: case UltraHot:
-				case ExtremelyCold: case UltraCold:
-					niceness -= 3;
-					break;
-				}
-				switch (planet.getAtmospherePressure()) {
-				case None: case Trace:
-					niceness -=1;
-					break;
-				case Thin: case Dense:
-					niceness += 1;
-					break;
-				case Standard:
-					niceness += 2;
-					break;
-				}
-				switch (planet.getAtmosphereType()) {
-				case Standard: case HighOxygen:
-					niceness += 2;
-					break;
-				case Tainted: case Pollutants: case LowOxygen: case HighCarbonDioxide:
-					niceness += 1;
-					break;
-				case Chlorine: case Vacuum: case Flourine: case Exotic:
-					niceness -= 2;
-					break;
-				}
-				
 				if (mainWorld == null) {
 					mainWorld = planet;
-					nicest = niceness;
-				} else if (niceness > nicest) {
+				} else if (planet.getHabitability().isBetterThan(mainWorld.getHabitability())) {
 					mainWorld = planet;
-					nicest = niceness;
 				}
 			} 
 		}
@@ -1968,6 +1918,12 @@ public class StarSystem implements Comparable {
 		String				stylesheet = Config.getBaseUrl()+"css/systems.css";
 		Sector  			sector = null;
 		
+		try {
+			sector = new Sector(factory, getSectorId());
+		} catch (ObjectNotFoundException e) {
+			// No sector defined.
+		}
+		
 		if (header) {
 			buffer.append("<html>\n<head>\n<title>"+getName()+" System</title>\n");
 			buffer.append("<link rel=\"STYLESHEET\" type=\"text/css\" media=\"screen\" href=\""+stylesheet+"\" />\n");
@@ -1980,7 +1936,8 @@ public class StarSystem implements Comparable {
 		
 		buffer.append("<p>\n");
 		if (sector != null) {
-			buffer.append(sector.getName()+" / "+sector.getSubSectorName(getX(), getY())+" - "+getXAsString()+getYAsString());
+			String		url = Config.getBaseUrl()+"map.jsp?id="+sector.getId();
+			buffer.append("<a href=\""+url+"\">"+sector.getName()+"</a> / "+sector.getSubSectorName(getX(), getY())+" - "+getXAsString()+getYAsString());
 		}
 		if (getAllegianceData() != null) {
 			buffer.append(" ("+getAllegianceData().getName()+")");
@@ -2009,7 +1966,7 @@ public class StarSystem implements Comparable {
 					String		pimg = Config.getBaseUrl()+"planet/"+planet.getId()+".jpg?globe";
 					int			size = (int)Math.pow(planet.getRadius(), 0.3);
 					buffer.append("<td width=\""+x+"px\">");
-					buffer.append("<img src=\""+pimg+"\" width=\""+size+"\" height=\""+size+"\" title=\""+planet.getName()+"\" align=\"left\" valign=\"center\"/>");
+					buffer.append("<img src=\""+pimg+"\" width=\""+size+"\" height=\""+size+"\" title=\""+planet.getName()+" ("+planet.getType()+")\" align=\"left\" valign=\"center\"/>");
 					buffer.append("</td>");
 				}
 			}

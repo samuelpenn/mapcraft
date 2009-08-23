@@ -72,7 +72,7 @@ public class Empire {
 				Planet 		planet = new Planet(rs);
 				System.out.println("Growing planet "+planet.getName()+": "+planet.getTechLevel()+"/"+planet.getStarport()+", "+(int)(Math.log10(planet.getPopulation())));
 				
-				Colony	colony = new Colony(planet);
+				Colony	colony = new Colony(factory, planet);
 				colony.grow();
 			}
 			
