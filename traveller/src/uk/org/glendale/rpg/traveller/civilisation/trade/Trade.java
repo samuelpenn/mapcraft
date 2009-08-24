@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import uk.org.glendale.rpg.traveller.Log;
+import uk.org.glendale.rpg.traveller.database.Constants;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
@@ -408,14 +409,81 @@ public class Trade {
 	 * @version 0.3
 	 */
 	private void manageResources() {
+		Hashtable<Integer,Facility>		facilities = Constants.getFacilities();
+		Hashtable<Integer,Commodity>	commodities = Constants.getCommodities();
+		
+		Hashtable<Integer,Long>			planetFacilities = planet.getFacilities();
+		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
+		
+		for (int rId : resources.keySet()) {
+			Commodity	c = commodities.get(rId);
+			int			density = resources.get(rId);
+
+			if (c == null) {
+				factory.setCommodity(planet.getId(), rId, 0, 0, 0);
+				continue;
+			}
+			
+			System.out.println("Resource ["+c.getName()+"] density "+density+"%");
+			for (int fId : planetFacilities.keySet()) {
+				Facility	facility = facilities.get(fId);
+				long		facilitySize = planetFacilities.get(fId);
+
+				// We only deal with Agriculture and Mining.
+				switch (facility.getType()) {
+				case Agriculture:
+				case Mining:
+					break;
+				default:
+					continue;
+				}
+
+				// Does this facility manage this resource?
+				Hashtable<CommodityCode,Double>	productionCodes = facility.getProductionCodes();
+				for (CommodityCode code : productionCodes.keySet()) {
+					if (c.hasCode(code)) {
+						System.out.println("     --> ["+facility.getName()+"]/"+code);
+						int		modifiedSize = (int)(facilitySize * productionCodes.get(code));
+
+						long	productionRate = getProduction(facility, modifiedSize, c, density, goods);
+						System.out.println("         Production rate "+n(productionRate)+" dt/wk");
+						factory.addCommodity(planet.getId(), c.getId(), productionRate, 0, c.getUnitCost());
+					}
+				}
+/*
+				// Any other outputs?
+				for (Facility.Mapping map : facility.getOutputs()) {
+					if (isParentOf(map.getSourceId(), rId)) {
+						if (map.getSecondaryId() == 0) {
+							// We just output this resource as per the primary one.
+							System.out.println("         Required input ["+map.getSourceId()+"]");
+							long	productionRate = getProduction(facility, (int)facilitySize, c, density, goods);
+							factory.addCommodity(planet.getId(), c.getId(), productionRate, 0, c.getUnitCost());
+						} else if (map.getSecondaryId() > 0) {
+							// In this case, we turn the resource into a different type of commodity.
+							System.out.println("         Required input ["+map.getSourceId()+"] to ["+map.getSecondaryId()+"]");
+							Commodity	sec = commodities.get(map.getSecondaryId());
+							if (sec != null) {
+								long	productionRate = getProduction(facility, (int)facilitySize, sec, density, goods);
+								factory.addCommodity(planet.getId(), sec.getId(), productionRate, 0, sec.getUnitCost());
+							}
+						}
+					}
+				}
+*/
+			}
+		}
+	}
+
+	private void manageResources3() {
 		Hashtable<Integer,Facility>		facilities = factory.getFacilities();
 		Hashtable<Integer,Long>			planetFacilities = planet.getFacilities();
-		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());		
+		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
 
 		for (int rId : resources.keySet()) {
 			Commodity	c = commodities.get(rId);
 			int			density = resources.get(rId);
-			
+
 			if (c == null) {
 				factory.setCommodity(planet.getId(), rId, 0, 0, 0);
 				continue;
@@ -1208,7 +1276,7 @@ public class Trade {
 				//Planet		planet = system.getMainWorld();
 				
 				//Planet		planet = factory.getPlanet(223065);
-				Planet		planet = factory.getPlanet(224138);
+				Planet		planet = factory.getPlanet(778093);
 				
 				Trade		trade = new Trade(factory, planet);
 				//trade.createFacilities();

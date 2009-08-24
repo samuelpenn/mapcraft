@@ -29,8 +29,8 @@ public class Facility {
 	private int					capacity = 0;
 	private int					resourceId = 0;
 
-	private Hashtable<String,Double>	requirementCodes = null;
-	private Hashtable<String,Double>	productionCodes = null;
+	private Hashtable<CommodityCode,Double>	requirementCodes = null;
+	private Hashtable<CommodityCode,Double>	productionCodes = null;
 	
 	class Mapping {
 		private int		sourceId = 0;
@@ -52,7 +52,7 @@ public class Facility {
 			return secondaryId;
 		}
 	}
-	
+
 	Vector<Mapping>	inputMap = null;
 	Vector<Mapping>	outputMap = null;
 		
@@ -81,8 +81,8 @@ public class Facility {
 		
 	}
 	
-	private Hashtable<String,Double> getCodeList(String string) {
-		Hashtable<String,Double>  list = new Hashtable<String,Double>();
+	private Hashtable<CommodityCode,Double> getCodeList(String string) {
+		Hashtable<CommodityCode,Double>  list = new Hashtable<CommodityCode,Double>();
 
 		if (string == null || string.length() == 0) {
 			return list;
@@ -102,7 +102,11 @@ public class Facility {
 				}
 				code = code.split(",")[0];
 			}
-			list.put(code, modifier);
+			try {
+				list.put(CommodityCode.valueOf(code), modifier);
+			} catch (IllegalArgumentException e) {
+				// Invalid code type.
+			}
 		}
 		return list;
 	}
@@ -205,5 +209,63 @@ public class Facility {
 	 */
 	public FacilityType getType() {
 		return type;
-	}	
+	}
+	
+	public Hashtable<CommodityCode,Double> getRequirementCodes() {
+		return requirementCodes;
+	}
+	
+	public Hashtable<CommodityCode,Double> getProductionCodes() {
+		return productionCodes;
+	}
+	
+	/**
+	 * Does this facilty manage the given resource? Returns true
+	 * if this facility will mine/farm the resource into trade
+	 * goods. Only Agriculture and Mining facilities ever manage
+	 * resources of any type.
+	 * 
+	 * @param commodity		Commodity to be checked.
+	 * @return				True if so, false otherwise.
+	 */
+	public boolean managesResource(Commodity commodity) {
+		for (CommodityCode code : productionCodes.keySet()) {
+			if (commodity.hasCode(code)) return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param resource		Resource to be managed.
+	 * @param workers		Population modified by resource density.
+	 * @param goods			List of goods currently available on this world.
+	 */
+	public void manageResource(Commodity resource, long workers, Hashtable<Integer,TradeGood> goods) {
+		CommodityCode		manageCode = null;
+		for (CommodityCode code : productionCodes.keySet()) {
+			if (resource.hasCode(code)) {
+				if (manageCode == null) {
+					manageCode = code;
+				} else if (productionCodes.get(code) > productionCodes.get(manageCode)) {
+					// If this resource matches multiple codes, use the one
+					// which is the best.
+					manageCode = code;
+				}
+			}
+		}
+		
+		if (manageCode != null) {
+			workers *=  getCapacity() * productionCodes.get(manageCode) / 100.0;
+			
+			long		productionRate = workers / resource.getProductionRate();
+
+			TradeGood	good = goods.get(resource.getId());
+			if (good == null) {
+				goods.put(resource.getId(), new TradeGood(resource.getId(), productionRate, 0, resource.getUnitCost()));
+			} else {
+				good.amount += productionRate;
+			}
+		}
+	}
 }
