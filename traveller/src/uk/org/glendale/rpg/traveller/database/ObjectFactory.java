@@ -823,23 +823,37 @@ public class ObjectFactory {
 	 * Get all the commodities available for a given planet, including
 	 * the amount available and the base price. This is what the planet
 	 * currently has in stock, available ready to be sold.
+	 * The hashtable key is the commodity id, not the unique id of the
+	 * tradegood instance.
 	 * 
 	 * @param planet_id		Id of the planet to get commodities list for.
 	 */
 	public Hashtable<Integer,TradeGood> getCommoditiesByPlanet(int planet_id) {
-		String					sql = "select commodity_id, amount, consumed, price from trade where planet_id="+planet_id+" order by id";
+		String					sql = "select id, commodity_id, amount, consumed, produced, bought, sold, weeklyin, weeklyout, price from trade where planet_id="+planet_id+" order by id";
 		ResultSet				rs = null;
 		Hashtable<Integer,TradeGood>	list = new Hashtable<Integer,TradeGood>();
 		
 		try {
 			rs = db.query(sql);
 			while (rs.next()) {
-				int		id = rs.getInt("commodity_id");
+				int		id = rs.getInt("id");
+				int		commodityId = rs.getInt("commodity_id");
 				long	amount = rs.getLong("amount");
 				long	consumed = rs.getLong("consumed");
+				long	produced = rs.getLong("produced");
+				long	sold = rs.getLong("sold");
+				long	bought = rs.getLong("bought");
+				long	in = rs.getLong("weeklyin");
+				long	out = rs.getLong("weeklyout");
 				int		price = rs.getInt("price");
 				
-				list.put(rs.getInt("commodity_id"), new TradeGood(id, amount, consumed, price));
+				TradeGood good = new TradeGood(id, commodityId, amount, consumed, price, planet_id);
+				good.setProduced(produced);
+				good.setSold(sold);
+				good.setBought(bought);
+				good.setWeeklyIn(in);
+				good.setWeeklyOut(out);
+				list.put(rs.getInt("commodity_id"), good);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -856,7 +870,7 @@ public class ObjectFactory {
 		
 		if (amount < 1 && consumed == 0) {
 			db.delete("trade", where);
-		} else {		
+		} else {
 			Hashtable<String,Object>		data = new Hashtable<String,Object>();
 			
 			data.put("planet_id", planet_id);
@@ -870,6 +884,34 @@ public class ObjectFactory {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void setCommodity(int planetId, TradeGood good) {
+		String			where = "planet_id="+planetId+" and commodity_id="+good.getCommodityId();
+		
+		if (good.isUnused()) {
+			// Unused and can be deleted.
+			if (good.getId() > 0) db.delete("trade", "id="+good.getId());
+		} else {
+			Hashtable<String,Object>		data = new Hashtable<String,Object>();
+			
+			data.put("planet_id", planetId);
+			data.put("commodity_id", good.getCommodityId());
+			data.put("amount", good.getAmount());
+			data.put("consumed", good.getConsumed());
+			data.put("produced", good.getProduced());
+			data.put("bought", good.getBought());
+			data.put("sold", good.getSold());
+			data.put("weeklyin", good.getWeeklyIn());
+			data.put("weeklyout", good.getWeeklyOut());
+			data.put("price", good.getPrice());
+			try {
+				db.replace("trade", data, where);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+		}
+		
 	}
 
 	/**

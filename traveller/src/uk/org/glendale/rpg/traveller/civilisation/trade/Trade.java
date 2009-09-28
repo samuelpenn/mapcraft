@@ -37,6 +37,17 @@ import uk.org.glendale.rpg.utils.Die;
  *                traded, produced or consumed.
  *   Demand: How much of a commodity is required for normal operation.
  *   Production Capacity: How much effort can be put into production.
+ *   
+ * The method version tags are quite important, since the trade system
+ * has got rather confusing and has been rewritten completely several times.
+ * Anything prior to version 0.3 (i.e., unversioned) is obselete, though
+ * may still be being used by something.
+ * 
+ * Version 0.3 added in facilities and worked a lot better.
+ * 
+ * Version 0.4 is a refactoring of the 0.3 code after figuring out how
+ * facilities should really work. Also adds better stat tracking for
+ * trade figures.
  * 
  * @author Samuel Penn
  */
@@ -45,14 +56,15 @@ public class Trade {
 
 	private ObjectFactory		factory = null;
 	private Planet				planet = null;
+	
+	// This is the complete list of all commodities.
 	private Hashtable<Integer,Commodity>	commodities = null;
+	// These are all the resources on the planet.
 	private Hashtable<Integer,Integer>		resources = null;
-	
-	private Vector<TradeGood>	consumedGoods = null;
-	
+	// These are all the trade goods on the planet.
+	private Hashtable<Integer,TradeGood>	goods = null;
+		
 	private static NumberFormat		format = NumberFormat.getInstance();
-	
-	private long				productionCapacity = 0;
 	
 	public Trade(ObjectFactory factory, Planet planet) {
 		this.factory = factory;
@@ -60,11 +72,10 @@ public class Trade {
 		
 		commodities = factory.getAllCommodities();
 		resources = factory.getResources(planet.getId());
+		goods = factory.getCommoditiesByPlanet(planet.getId());
 		
-		Hashtable<Integer,TradeGood>	amounts = factory.getCommoditiesByPlanet(planet.getId());
-		
-		for (int key : amounts.keySet()) {
-			TradeGood	good = amounts.get(key);
+		for (int key : goods.keySet()) {
+			TradeGood	good = goods.get(key);
 			
 			Commodity	c = commodities.get(key);
 			if (c != null) {
@@ -73,7 +84,6 @@ public class Trade {
 			}
 		}
 		
-		productionCapacity = getProductionCapacity();
 	}
 		
 	public Planet getPlanet() {
@@ -400,6 +410,30 @@ public class Trade {
 		return productionRate;
 	}
 	
+	private void produce(Commodity commodity, long amount) {
+		TradeGood	good = goods.get(commodity.getId());
+		
+		if (good != null) {
+			good.addProduced(amount);
+		} else {
+			good = new TradeGood(commodity);
+			good.setProduced(amount);
+			goods.put(commodity.getId(), good);
+		}
+	}
+	
+	private void consume(Commodity commodity, long amount) {
+		TradeGood	good = goods.get(commodity.getId());
+		
+		if (good != null) {
+			good.addConsumed(amount);
+		} else {
+			good = new TradeGood(commodity);
+			good.setConsumed(amount);
+			goods.put(commodity.getId(), good);
+		}		
+	}
+	
 	/**
 	 * Generate trade goods from natural resources. For each resource,
 	 * find a facility (if any) which can manage it, and use that to
@@ -413,13 +447,15 @@ public class Trade {
 		Hashtable<Integer,Commodity>	commodities = Constants.getCommodities();
 		
 		Hashtable<Integer,Long>			planetFacilities = planet.getFacilities();
-		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
+		//Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
 		
 		for (int rId : resources.keySet()) {
 			Commodity	c = commodities.get(rId);
 			int			density = resources.get(rId);
 
 			if (c == null) {
+				// Until foreign keys are properly being used, it is possible to have
+				// illegal goods left over from previous data sets. Just quietly remove.
 				factory.setCommodity(planet.getId(), rId, 0, 0, 0);
 				continue;
 			}
@@ -447,7 +483,7 @@ public class Trade {
 
 						long	productionRate = getProduction(facility, modifiedSize, c, density, goods);
 						System.out.println("         Production rate "+n(productionRate)+" dt/wk");
-						factory.addCommodity(planet.getId(), c.getId(), productionRate, 0, c.getUnitCost());
+						produce(c, productionRate);
 					}
 				}
 /*
@@ -535,18 +571,36 @@ public class Trade {
 		}
 	}
 	
+	/**
+	 * Simulate the economy for the planet for one week. Manages
+	 * mining/farming of resources, consumption and production of
+	 * goods and sets the prices. At the end, any left over stocks
+	 * decay depending on their type.
+	 * 
+	 * @version 0.4
+	 */
 	public void manageEconomy() {
 		// Reset all consumption values.
-		consumedGoods = new Vector<TradeGood>();
-		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());		
 		for (TradeGood g : goods.values()) {
-			factory.setCommodity(planet.getId(), g.getCommodityId(), g.getAmount(), -1, g.getPrice());
+			long	in = g.getWeeklyIn()/2 + g.getProduced() + g.getBought();
+			long	out = g.getWeeklyOut()/2 + g.getConsumed() + g.getSold();
+			g.setWeeklyIn(in);
+			g.setWeeklyOut(out);
+			g.setConsumed(0);
+			g.setProduced(0);
+			g.setBought(0);
+			g.setSold(0);
+			factory.setCommodity(planet.getId(), g);
 		}
 
 		manageResources();
 		manageResidential();
 		setPrices();
 		decayGoods();
+		
+		for (TradeGood g : goods.values()) {
+			factory.setCommodity(planet.getId(), g);
+		}
 	}
 
 	/**
@@ -558,7 +612,6 @@ public class Trade {
 	private void manageResidential() {
 		Hashtable<Integer,Facility>		facilities = factory.getFacilities();
 		Hashtable<Integer,Long>			planetFacilities = planet.getFacilities();
-		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());		
 
 		for (int facilityId : planetFacilities.keySet()) {
 			Facility	f = facilities.get(facilityId);
@@ -866,7 +919,7 @@ public class Trade {
 	 * @param usage
 	 * @return  The unsatisfied level of demand.
 	 */
-	private long consumeGoods(Hashtable<Integer,TradeGood> goods, Vector<Commodity> list, long demand, double usage) {
+	private long consumeGoods(Vector<Commodity> list, long demand, double usage) {
 		if (list.size() > 0) {
 			long		vitalDemand = (demand > 10)?(long)(demand * usage):demand;
 			long		each = vitalDemand / list.size();
@@ -881,15 +934,12 @@ public class Trade {
 				if (consume <= good.getAmount()) {
 					//System.out.println("Eaten "+n(consume)+"dt of "+c.getName()+" satisfies "+n(consume*rate));
 					demand -= consume * rate;
-					good.setAmount(good.getAmount() - consume);
-					good.addConsumed(consume);
+					consume(c, consume);
 				} else {
 					//System.out.println("Eaten "+n(good.getAmount())+"dt of "+c.getName()+" satisfies "+n(good.getAmount()*rate));
 					demand -= good.getAmount() * rate;
-					good.addConsumed(good.getAmount());
-					good.setAmount(0);
+					consume(c, good.getAmount());
 				}
-				factory.setCommodity(planet.getId(), good.getCommodityId(), good.getAmount(), good.getConsumed(), good.getPrice());
 			}
 			for (int i=0; i < list.size(); i++) {
 				if (goods.get(list.elementAt(i).getId()).getAmount() == 0) {
@@ -932,14 +982,11 @@ public class Trade {
 		Vector<Commodity>	luxury = new Vector<Commodity>();
 		Vector<Commodity>	poor = new Vector<Commodity>();
 		
-		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
-
 		for (TradeGood good : goods.values()) {
 			Commodity c = commodities.get(good.getCommodityId());
 			if (c == null) {
 				System.out.println("Good ["+good.getCommodityId()+"] doesn't exist");
-				good.setAmount(0);
-				factory.setCommodity(planet.getId(), good.getCommodityId(), 0, 0, 0);
+				good.clear();
 				continue;
 			}
 			if (isParentOf(requiredId, c.getId())) {
@@ -967,10 +1014,10 @@ public class Trade {
 		double		poorDemand = 0.03;
 		while (demand > 0) {
 			//System.out.println("Demand is "+n(demand)+"dt");
-			demand = consumeGoods(goods, vital, demand, vitalDemand);
-			demand = consumeGoods(goods, standard, demand, standardDemand);
-			demand = consumeGoods(goods, luxury, demand, luxuryDemand);
-			demand = consumeGoods(goods, poor, demand, poorDemand);
+			demand = consumeGoods(vital, demand, vitalDemand);
+			demand = consumeGoods(standard, demand, standardDemand);
+			demand = consumeGoods(luxury, demand, luxuryDemand);
+			demand = consumeGoods(poor, demand, poorDemand);
 			
 			if (vital.size() + standard.size() + luxury.size() + poor.size() == 0) {
 				// Completely out of goods.
@@ -1003,8 +1050,6 @@ public class Trade {
 	 * @version 0.3
 	 */
 	private void decayGoods() {
-		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
-		
 		for (int i : goods.keySet()) {
 			TradeGood		good = goods.get(i);
 			
@@ -1016,8 +1061,6 @@ public class Trade {
 					keep = 0.95;
 				}
 				good.setAmount((long)(good.getAmount() * keep));
-				factory.setCommodity(planet.getId(), good.getCommodityId(), good.getAmount(), 
-						             good.getConsumed(), good.getPrice());
 			}
 		}
 	}
@@ -1030,8 +1073,6 @@ public class Trade {
 	 * @version 0.3
 	 */
 	private void setPrices() {
-		Hashtable<Integer,TradeGood>	goods = factory.getCommoditiesByPlanet(planet.getId());
-		
 		for (int i : goods.keySet()) {
 			TradeGood	good = goods.get(i);
 			Commodity	commodity = commodities.get(i);

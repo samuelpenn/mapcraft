@@ -10,11 +10,10 @@ package uk.org.glendale.rpg.traveller.civilisation.trade;
 
 /**
  * Keeps track of the amount of a particular commodity. Includes the
- * actual price, the planet it is at and the amount consumed in the
- * previous week (for calculating demands). 
+ * actual price, the planet it is at and statistics concerning how
+ * much of it has been produced/consumed.
  * 
  * @author Samuel Penn
- *
  */
 public class TradeGood {
 	int		id = 0;
@@ -23,6 +22,17 @@ public class TradeGood {
 	int		price=0;
 	int		planetId=0;
 	long	consumed = 0;
+	long	produced = 0;
+	long	bought = 0;
+	long	sold = 0;
+	
+	long	weeklyIn = 0;
+	long	weeklyOut = 0;
+	
+	public TradeGood(Commodity commodity) {
+		this.commodityId = commodity.getId();
+		this.price = commodity.getUnitCost();
+	}
 	
 	public TradeGood(int commodityId, long amount, long consumed, int price) {
 		this.commodityId = commodityId;
@@ -107,7 +117,86 @@ public class TradeGood {
 	 */
 	public long addConsumed(long consumed) {
 		this.consumed += consumed;
+		this.amount -= consumed;
+		if (this.amount < 0) this.amount = 0;
 		
 		return this.consumed;
-	}	
+	}
+	
+	public long getProduced() {
+		return produced;
+	}
+	
+	public void setProduced(long produced) {
+		this.produced = produced;
+	}
+	
+	public long addProduced(long produced) {
+		this.produced += produced;
+		this.amount += produced;
+		return this.produced;
+	}
+	
+	public long getBought() {
+		return bought;
+	}
+	
+	public void setBought(long bought) {
+		this.bought = bought;
+	}
+	
+	public long addBought(long bought) {
+		this.bought += bought;
+		this.amount -= bought;
+		if (this.bought < 0) this.bought =  0;
+		if (amount < 0) amount = 0;
+		return this.bought;
+	}
+	
+	public long getSold() {
+		return sold;
+	}
+	
+	public void setSold(long sold) {
+		this.sold = sold;
+	}
+	
+	public long addSold(long sold) {
+		this.sold += sold;
+		this.amount -= sold;
+		if (this.sold < 0) this.sold = 0;
+		if (this.amount < 0) this.amount = 0;
+		return this.sold;
+	}
+	
+	public long getWeeklyIn() {
+		return weeklyIn;
+	}
+	
+	public void setWeeklyIn(long in) {
+		this.weeklyIn = in;
+	}
+	
+	public long getWeeklyOut() {
+		return weeklyOut;
+	}
+	
+	public void setWeeklyOut(long out) {
+		this.weeklyOut = out;
+	}
+	
+	/**
+	 * True if there is none of this good left and there has been no
+	 * recorded activity on it. Otherwise false.
+	 */
+	public boolean isUnused() {
+		if (weeklyIn == 0 && weeklyOut == 0 && bought == 0 && sold == 0 && consumed == 0 && produced == 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public void clear() {
+		weeklyIn = weeklyOut = consumed = produced = bought = sold = 0;
+	}
 }
