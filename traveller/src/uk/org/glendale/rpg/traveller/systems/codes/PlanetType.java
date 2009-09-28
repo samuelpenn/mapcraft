@@ -18,22 +18,22 @@ public enum PlanetType {
 	OortCloud(Category.Belt, 0.0, 0),
 	
 	Vulcanian(Category.Asteroid, 7.5, 80, "hotrock"),		// Asteroid close to parent sun, heavy metals.
-	Silicaceous(Category.Asteroid, 4.0, 120),	// Asteroid with nickle-iron core.
-	Sideritic(Category.Asteroid, 6.0, 100),		// Pure nickel-iron, very dense.
-	Basaltic(Category.Asteroid, 4.0, 50),		// Cooled larva on surface, smooth. Rare.
-	Carbonaceous(Category.Asteroid, 3.0, 150),  // Very dark, rich in carbon. Outer middle solar systems. (C-type)
-	Enceladean(Category.Asteroid, 1.6, 250, "ice"),    // Enceladus (ice, active)
-	Mimean(Category.Asteroid, 1.1, 200, "ice"),        // Mimas (ice, inactive)
-	Oortean(Category.Asteroid, 1.5, 100, "ice"),		// World out in the Oort cloud.
+	Silicaceous(Category.Asteroid, 4.0, 120),				// Asteroid with nickle-iron core.
+	Sideritic(Category.Asteroid, 6.0, 100),					// Pure nickel-iron, very dense.
+	Basaltic(Category.Asteroid, 4.0, 50),					// Cooled larva on surface, smooth. Rare.
+	Carbonaceous(Category.Asteroid, 3.0, 150),  			// Very dark, rich in carbon. Outer middle solar systems. (C-type)
+	Enceladean(Category.Asteroid, 1.6, 250, "ice"),    		// Enceladus (ice, active)
+	Mimean(Category.Asteroid, 1.1, 200, "ice"),        		// Mimas (ice, inactive)
+	Oortean(Category.Asteroid, 1.5, 100, "ice"),			// World out in the Oort cloud.
 	
-	Hadean(Category.Dwarf, 7.0, 500, "hotrock"),           // Planetoid very iron rich, just a core.
-	Cerean(Category.Dwarf, 2.0, 500, "ice"), 			// Ceres (rocky core, ice layer, dusty crust)
-	Vesperian(Category.Dwarf, 3.4, 300),		// Vespa (iron-nickel core, rocky mantle and crust)
-	Vestian(Category.Dwarf, 2.0, 2500),         // Silicate rich moons.
-	Kuiperian(Category.Dwarf, 2.0, 1100, "ice"),       // Pluto
-	Hephaestian(Category.Dwarf, 3.0, 1800), 	// Io
-	Iapetean(Category.Dwarf, 1.5, 1500, "ice"),		// Iapetus, stretched and cracked ice world.
-	Tritonic(Category.Dwarf, 2.0, 1000, "ice"),		// Triton, icy volcanism.
+	Hadean(Category.Dwarf, 7.0, 500, "hotrock"),           	// Planetoid very iron rich, just a core.
+	Cerean(Category.Dwarf, 2.0, 500, "ice"), 				// Ceres (rocky core, ice layer, dusty crust)
+	Vesperian(Category.Dwarf, 3.4, 300),					// Vespa (iron-nickel core, rocky mantle and crust)
+	Vestian(Category.Dwarf, 2.0, 2500),         			// Silicate rich moons.
+	Kuiperian(Category.Dwarf, 2.0, 1100, "ice"),       		// Pluto
+	Hephaestian(Category.Dwarf, 3.0, 1800), 				// Io
+	Iapetean(Category.Dwarf, 1.5, 1500, "ice"),				// Iapetus, stretched and cracked ice world.
+	Tritonic(Category.Dwarf, 2.0, 1000, "ice"),				// Triton, icy volcanism.
 	
 	MesoTitanian(Category.Dwarf, 3.0, 2300),	// Dead Titan
 	EuTitanian(Category.Dwarf, 3.0, 2500),		// Titan (methane, with solid water ice)
@@ -80,8 +80,8 @@ public enum PlanetType {
 	Cytherean(Category.Terrestrial, 5.5, 6200),    // Venus
 	Phosphorian(Category.Terrestrial, 5.5, 6200),  // Cloudless Venus
 	JaniLithic(Category.Terrestrial, 5.5, 5500),   // Dry, hot, atmosphere.
-	Pelagic(Category.Terrestrial, 6.0, 7500),
-	Panthalassic(Category.Terrestrial, 5.5, 6000), 
+	Pelagic(Category.Terrestrial, 6.0, 7000),
+	Panthalassic(Category.Terrestrial, 5.5, 10000), // Huge world ocean
 	
 	CryoJovian(Category.Jovian, 1.1, 50000, "cryojovian"),
 	SubJovian(Category.Jovian, 0.8, 70000, "jovian"), 

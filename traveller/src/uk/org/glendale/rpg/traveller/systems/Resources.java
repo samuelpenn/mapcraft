@@ -3,6 +3,8 @@ package uk.org.glendale.rpg.traveller.systems;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
+import uk.org.glendale.rpg.traveller.systems.codes.StarClass;
+import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 
@@ -452,19 +454,373 @@ public class Resources {
 		basicLife(factory, star, planet);
 	}
 	
+	private static void setBelt(ObjectFactory factory, Star star, Planet planet) {
+		switch (planet.getType()) {
+		case AsteroidBelt:
+			planet.addResource(SILICATE, 20+Die.d20(4));
+			if (Die.d4()==1) planet.addResource(KRYSITE, 10+Die.d12(2));
+			planet.addResource(CARBONIC, 20+Die.d20(3));
+			planet.addResource(FERRIC, 10+Die.d20(2));
+			if (Die.d4()==1) planet.addResource(VARDONNEK, 10+Die.d12(2));
+			break;
+		case IceBelt:
+			if (Die.d3() == 1) planet.addResource(SILICATE, Die.d6(3));
+			planet.addResource(CARBONIC, 10+Die.d12(2));
+			planet.addResource(AQUAM, 40+Die.d20(4));
+			if (Die.d2() == 1) planet.addResource(AURAM, Die.d12(3));
+			if (Die.d3() == 1) {
+				planet.addResource(DORIC, 10+Die.d20(2)); 
+			} else {
+				planet.addResource(DORIC, Die.d6(2));
+			}
+			break;
+		case OortCloud:
+			planet.addResource(CARBONIC, 5+Die.d6(2));
+			planet.addResource(AQUAM, 20+Die.d20(4));
+			if (Die.d3() == 1) planet.addResource(AURAM, Die.d6(2));
+			planet.addResource(DORIC, 10+Die.d20(2));
+			planet.addResource(OORCINE, 10+Die.d12(3));
+			break;
+		}
+	}
+	
+	private static void setAsteroid(ObjectFactory factory, Star star, Planet planet) {
+		int		silicate = 0, krysite = 0, magnesite = 0, ericate =  0;
+		int		carbonic = 0, heliacate = 0, acenite = 0, pardenic = 0;
+		int		ferric = 0, vardonnek = 0, larathic = 0, xithantite = 0;
+		int		water = 0, doric = 0, iskine = 0, oorcine = 0;
+		int		air = 0, regiam = 0, tritanium = 0, synthosium = 0;
+		int		petroleum = 0;
+
+		switch (planet.getType()) {
+		case Vulcanian:
+			silicate = Die.d20(5);
+			ferric = Die.d20(6);
+			vardonnek = ferric/2;
+			larathic = ferric/Die.d6(2);
+			if (star != null && star.getStarClass() == StarClass.D) {
+				xithantite = Die.d12(3);
+			}
+			break;
+		case Silicaceous:
+			silicate = 20 + Die.d20(5);
+			krysite = Die.d20(4);
+			if (Die.d4() == 1) carbonic = Die.d12(3);
+			break;
+		case Sideritic:
+			ferric = 40 + Die.d20(5);
+			vardonnek = 20 + Die.d20(4);
+			larathic = vardonnek / Die.d4(2);
+			if (star != null && star.getStarClass() == StarClass.D) {
+				xithantite = Die.d12(4);
+			}
+			break;
+		case Basaltic:
+			silicate = 20 + Die.d20(4);
+			krysite = Die.d12(4);
+			magnesite = 20 + Die.d12(4);
+			ferric = Die.d20(2);
+			carbonic = Die.d20(2);
+			break;
+		case Carbonaceous:
+			silicate = Die.d20(3);
+			ferric = Die.d10(3);
+			carbonic = 40 + Die.d20(4);
+			if (planet.getTemperature().isHotterThan(Temperature.Hot)) {
+				heliacate = Die.d20(3);
+			}
+			break;
+		case Enceladean:
+			water = 40 + Die.d20(4);
+			if (Die.d3() == 1) doric = Die.d12(3);
+			if (Die.d4() == 1) iskine = Die.d12(3);
+			air = Die.d12(3);
+			break;
+		case Mimean:
+			water = 40 + Die.d20(4);
+			if (Die.d3() == 1) doric = Die.d12(2);
+			if (Die.d3() == 1) iskine = Die.d12(3);
+			air = Die.d12(2);
+			break;
+		case Oortean:
+			water = Die.d20(5);
+			if (Die.d2() == 1) carbonic = Die.d4(2);
+			oorcine = Die.d20(2);
+			if (Die.d4() == 1) synthosium = Die.d6(2);
+			break;
+		default:
+			silicate = Die.d20();
+		}
+
+		if (silicate > 0) planet.addResource(SILICATE, silicate);
+		if (krysite > 0) planet.addResource(KRYSITE, krysite);
+		if (magnesite > 0) planet.addResource(MAGNESITE, magnesite);
+		if (ericate > 0) planet.addResource(ERICATE, ericate);
+		if (carbonic > 0) planet.addResource(CARBONIC, carbonic);
+		if (heliacate > 0) planet.addResource(HELIACATE, heliacate);
+		if (acenite > 0) planet.addResource(ACENITE, acenite);
+		if (pardenic > 0) planet.addResource(PARDENIC, pardenic);
+		if (ferric > 0) planet.addResource(FERRIC, ferric);
+		if (vardonnek > 0) planet.addResource(VARDONNEK, vardonnek);
+		if (larathic > 0) planet.addResource(LARATHIC, larathic);
+		if (xithantite > 0) planet.addResource(XITHANTITE, xithantite);
+		if (water > 0) planet.addResource(AQUAM, water);
+		if (doric > 0) planet.addResource(DORIC, doric);
+		if (iskine > 0) planet.addResource(ISKINE, iskine);
+		if (oorcine > 0) planet.addResource(OORCINE, oorcine);
+		if (air > 0) planet.addResource(AURAM, air);
+		if (regiam > 0) planet.addResource(REGIAM, regiam);
+		if (tritanium > 0) planet.addResource(TRITANIUM, tritanium);
+		if (synthosium > 0) planet.addResource(SYNTHOSIUM, synthosium);
+		if (petroleum > 0) planet.addResource(PETROLEUM, petroleum);
+	}
+	
+	private static void setIcyDwarf(ObjectFactory factory, Star star, Planet planet) {
+		switch (planet.getType()) {
+		case Kuiperian:
+			planet.addResource(AQUAM, Die.d12(3));
+			planet.addResource(DORIC, Die.d6(2));
+			planet.addResource(ISKINE, 20+Die.d20(3));
+			planet.addResource(OORCINE, 10+Die.d12(3));
+			if (Die.d3()==1) planet.addResource(TRITANIUM, Die.d6(3));
+			if (Die.d4()==1) planet.addResource(SYNTHOSIUM, Die.d6(2));
+			break;
+		case Iapetean:
+			planet.addResource(AQUAM, 10 + Die.d20(3));
+			planet.addResource(DORIC, Die.d12(3));
+			break;
+		case Tritonic:
+			planet.addResource(AQUAM, Die.d20(3));
+			planet.addResource(DORIC, 10+Die.d6(2));
+			planet.addResource(ISKINE, 15+Die.d20(3));
+			if (Die.d6()==1) planet.addResource(TRITANIUM, Die.d6(2));
+			break;
+		case Europan:
+			planet.addResource(AQUAM, 20+Die.d20(5));
+			break;
+		case Stygian:
+			planet.addResource(AQUAM, Die.d12(3));
+			planet.addResource(DORIC, Die.d20(4));
+			planet.addResource(ISKINE, Die.d12(3));
+			if (Die.d3()==1) planet.addResource(OORCINE, Die.d8(2));
+			if (Die.d6()==1) planet.addResource(TRITANIUM, Die.d6(2));
+			if (Die.d10()==1) planet.addResource(SYNTHOSIUM, Die.d4());
+			break;
+		case LithicGelidian:
+			planet.addResource(AQUAM, 10 + Die.d20(3));
+			planet.addResource(SILICATE, 10 + Die.d20(3));
+			if (Die.d4()==1) planet.addResource(DORIC, Die.d8(2)-1);
+			break;
+		}
+	}
+
+	private static void setRockyDwarf(ObjectFactory factory, Star star, Planet planet) {
+		switch (planet.getType()) {
+		case Cerean:
+			planet.addResource(SILICATE, 10+Die.d20(2));
+			planet.addResource(CARBONIC, 15+Die.d20(3));
+			planet.addResource(AQUAM, 10+Die.d12(4));
+			break;
+		case Hadean:
+			planet.addResource(SILICATE, 20+Die.d20(2));
+			planet.addResource(FERRIC, 30+Die.d20(4));
+			planet.addResource(VARDONNEK, 10+Die.d20(3));
+			planet.addResource(LARATHIC, 15+Die.d12(4));
+			planet.addResource(ERICATE, 15+Die.d12(3));
+			if (Die.d4()==1) planet.addResource(HELIACATE, Die.d10(2));
+			break;
+		case Vesperian:
+			planet.addResource(FERRIC, 10+Die.d20(2));
+			planet.addResource(SILICATE, 20+Die.d20(2));
+			planet.addResource(AQUAM, Die.d12(2));
+			break;
+		case Vestian:
+			planet.addResource(SILICATE, 40+Die.d20(4));
+			if (Die.d2()==1) planet.addResource(KRYSITE, 10+Die.d12(2));
+			if (Die.d6()==1) planet.addResource(KRYSITE, Die.d12());
+			if (Die.d4()==1) planet.addResource(AQUAM, Die.d10(2));
+			break;
+		case Hephaestian:
+			planet.addResource(SILICATE, 20+Die.d20(2));
+			planet.addResource(KRYSITE, 15+Die.d12(4));
+			planet.addResource(MAGNESITE, 15+Die.d20(3));
+			if (Die.d2()==1) {
+				planet.addResource(CARBONIC, Die.d10(3));
+				planet.addResource(ACENITE, Die.d6(2));
+			}
+			break;
+		case Ferrinian:
+			planet.addResource(SILICATE, 30+Die.d20(3));
+			planet.addResource(FERRIC, 10+Die.d20(3));
+			planet.addResource(VARDONNEK, 10+Die.d20(3));
+			if (planet.getTemperature().isHotterThan(Temperature.Hot)) {
+				planet.addResource(LARATHIC, 10+Die.d12(3));
+			}
+			if (planet.getRadius() > 8000) {
+				planet.addResource(ERICATE, 15+Die.d12(3));
+			}
+			break;
+		case Selenian:
+			planet.addResource(SILICATE, Die.d20(3));
+			if (Die.d4()==1) planet.addResource(TRITANIUM, Die.d6());
+			break;
+		}
+	}
+	private static void setTitanian(ObjectFactory factory, Star star, Planet planet) {
+		planet.addResource(AQUAM, 10+Die.d20(3));
+		planet.addResource(ISKINE, 10+Die.d12(3));
+		planet.addResource(PETROLEUM, Die.d12(2));
+	}
+
+	private static void setUtgardian(ObjectFactory factory, Star star, Planet planet) {
+		planet.addResource(AQUAM, 10+Die.d20(2));
+		planet.addResource(ISKINE, 20+Die.d20(4));
+		planet.addResource(REGIAM, Die.d20(2));		
+	}
+
+	private static void setJovian(ObjectFactory factory, Star star, Planet planet) {
+		planet.addResource(AURAM, 40+Die.d20(5));
+		planet.addResource(REGIAM, 10+Die.d20(2));
+		planet.addResource(TRITANIUM, 10+Die.d20(2));
+		planet.addResource(AQUAM, Die.d10(2));
+	}
+	
+	private static void setChlorine(ObjectFactory factory, Star star, Planet planet) {
+		planet.addResource(SILICATE, Die.d20(4));
+		planet.addResource(KRYSITE, Die.d12(4));
+		planet.addResource(MAGNESITE, Die.d12(2));
+		planet.addResource(FERRIC, Die.d20(2));
+		planet.addResource(REGIAM, Die.d20(3));
+		if (Die.d4()==1) planet.addResource(SYNTHOSIUM, Die.d12(2));
+	}
+	
+	private static void setSulphur(ObjectFactory factory, Star star, Planet planet) {
+		planet.addResource(SILICATE, Die.d20(4));
+		planet.addResource(FERRIC, Die.d20(2));
+		
+	}
+
+	private static void setArean(ObjectFactory factory, Star star, Planet planet) {
+		planet.addResource(SILICATE, Die.d20(4));
+		planet.addResource(KRYSITE, Die.d12(4));
+		planet.addResource(MAGNESITE, Die.d12(2));
+		planet.addResource(FERRIC, Die.d20(2));
+		if (Die.d2()==1) planet.addResource(ACENITE, Die.d12(3));
+	}
+	
+	private static void setHotAtmosphere(ObjectFactory factory, Star star, Planet planet) {
+		planet.addResource(SILICATE, Die.d20(4));
+		planet.addResource(FERRIC, Die.d20(2));
+		
+		switch (planet.getType()) {
+		case Cytherean:
+			if (Die.d3()==1) planet.addResource(ACENITE, Die.d10(2));
+			planet.addResource(PARDENIC, Die.d10(3));
+			planet.addResource(REGIAM, 20+Die.d20(4));
+			break;
+		case Phosphorian:
+			if (Die.d3()==1) planet.addResource(ACENITE, Die.d10(3));
+			planet.addResource(PARDENIC, Die.d10(1));
+			planet.addResource(REGIAM, 10+Die.d20(3));
+			if (Die.d4()==1) planet.addResource(MAGNESITE, 10+Die.d6(2));
+			break;
+		case JaniLithic:
+			planet.addResource(AURAM, Die.d20(2));
+			planet.addResource(REGIAM, Die.d12(2));
+			break;
+		}
+	}
+	
+	private static void setHotBarren(ObjectFactory factory, Star star, Planet planet) {
+		planet.addResource(SILICATE, Die.d20(4));
+		planet.addResource(FERRIC, Die.d20(2));
+		planet.addResource(HELIACATE, Die.d12());
+	}
+	
+	private static void setWorldOcean(ObjectFactory factory, Star star, Planet planet) {
+		planet.addResource(AQUAM, 100);
+	}
+	
 	/**
 	 * Set the resources on the given planet.
 	 */
 	public static void setResources(ObjectFactory factory, Star star, Planet planet) {
-		switch (planet.getType()) {
-		case Gaian:
-		case EoGaian:
-		case MesoGaian:
-		case PostGaian:
-		case ArchaeoGaian:
-		case GaianTundral:
-			setGaian(factory, star, planet);
-			break;
+		if (planet.getType().isBelt()) {
+			setBelt(factory, star, planet);
+		} else if (planet.getType().isAsteroid()) {
+			setAsteroid(factory, star, planet);
+		} else if (planet.getType().isDwarfPlanet()) {
+			switch (planet.getType()) {
+			case Cerean:
+			case Hadean:
+			case Vesperian:
+			case Vestian:
+			case Hephaestian:
+			case Ferrinian:
+			case Selenian:
+				setRockyDwarf(factory, star, planet);
+				break;
+			case Kuiperian:
+			case Iapetean:
+			case Tritonic:
+			case Europan:
+			case Stygian:
+			case LithicGelidian:
+				setIcyDwarf(factory, star, planet);
+				break;
+			case MesoTitanian: case EuTitanian: case TitaniLacustric:
+				setTitanian(factory, star, planet);
+				break;
+			case MesoUtgardian:	case EuUtgardian: case UtgardiLacustric:
+				setUtgardian(factory, star, planet);
+				break;
+			}
+		} else if (planet.getType().isTerrestrial()) {
+			switch (planet.getType()) {
+			case Gaian:
+			case EoGaian:
+			case MesoGaian:
+			case PostGaian:
+			case ArchaeoGaian:
+			case GaianTundral:
+				setGaian(factory, star, planet);
+				break;
+			case EoChloritic:
+			case MesoChloritic:
+			case ArchaeoChloritic:
+			case Chloritic:
+			case ChloriticTundral:
+			case PostChloritic:
+				setChlorine(factory, star, planet);
+				break;
+			case EoThio:
+			case MesoThio:
+			case ArchaeoThio:
+			case Thio:
+			case ThioTundral:
+			case PostThio:
+				setSulphur(factory, star, planet);
+				break;
+			case EoArean:
+			case AreanLacustric:
+			case Arean:
+				setArean(factory, star, planet);
+				break;
+			case Hermian:
+				setHotBarren(factory, star, planet);
+				break;
+			case Cytherean:
+			case Phosphorian:
+			case JaniLithic:
+				setHotAtmosphere(factory, star, planet);
+				break;
+			case Pelagic:
+			case Panthalassic:
+				setWorldOcean(factory, star, planet);
+				break;
+			}
+		} else if (planet.getType().isJovian()) {
+			setJovian(factory, star, planet);
 		}
 	}
 	
