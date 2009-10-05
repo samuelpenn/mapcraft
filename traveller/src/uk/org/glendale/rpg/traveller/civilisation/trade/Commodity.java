@@ -163,8 +163,18 @@ public class Commodity {
 		return techLevel;
 	}
 	
-	public boolean hasCode(CommodityCode code) {
-		return codes.contains(code);
+	/**
+	 * Does the commodity have any of the listed codes. Takes one or
+	 * more codes as arguments and returns true if one or more matches.
+	 * 
+	 * @param codeList		Variable argument list of codes to check.
+	 * @return				True if any code matches, false if all fail.
+	 */
+	public boolean hasCode(CommodityCode... codeList) {
+		for (CommodityCode code : codeList) {
+			if (codes.contains(code)) return true;
+		}
+		return false;
 	}
 	
 	public Commodity(ResultSet rs) throws SQLException {
@@ -258,5 +268,50 @@ public class Commodity {
 	
 	public int getParentId() {
 		return parentId;
+	}
+	
+	public String toString() {
+		return name+" ["+id+"]";
+	}
+	
+	public String toXML() {
+		StringBuffer	buffer = new StringBuffer();
+		
+		buffer.append(String.format("<commodity id='%d' name='%s' parent='%d'>", id, name, parentId));
+		buffer.append("<image>"+image+"</image>");
+		buffer.append("<tech>"+techLevel+"</tech>");
+		buffer.append("<cost>"+cost+"</cost>");
+		buffer.append("<legality>"+legality+"</legality>");
+		buffer.append("<consumption>"+consumptionRate+"</consumption>");
+		buffer.append("<production>"+productionRate+"</production>");
+		buffer.append("<codes>");
+		for (CommodityCode code : codes) {
+			buffer.append("<code>"+code+"</code>");
+		}
+		buffer.append("</codes>");
+		buffer.append("</commodity>");
+		return buffer.toString();
+	}
+	
+	public String toJSON() {
+		StringBuffer	buffer = new StringBuffer();
+		
+		buffer.append("{'id': '"+id+"', ");
+		buffer.append("'name': '"+name+"', ");
+		buffer.append("'parent': '"+parentId+"', ");
+		buffer.append("'image': '"+image+"', ");
+		buffer.append("'tech': '"+techLevel+"', ");
+		buffer.append("'cost': '"+cost+"', ");
+		buffer.append("'legality': '"+legality+"', ");
+		buffer.append("'consumption': '"+consumptionRate+"', ");
+		buffer.append("'production': '"+productionRate+"', ");
+		buffer.append("'codes': [");
+		boolean	first = true;
+		for (CommodityCode code : codes) {
+			if (first) first = false; else buffer.append(", ");
+			buffer.append("'"+code+"'");
+		}
+		buffer.append("] }");
+		return buffer.toString();		
 	}
 }

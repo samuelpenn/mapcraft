@@ -364,11 +364,12 @@ public class Trade {
 	
 	private long getProduction(Facility facility, int facilitySize, Commodity commodity, int density, Hashtable<Integer,TradeGood> goods) {
 		long	productionRate = planet.getPopulation() / commodity.getProductionRate();
+		System.out.println("         Base production "+productionRate);
 		productionRate = (productionRate * density * density) / 10000;
 		productionRate = commodity.getAmountModifiedByTech(planet.getTechLevel(), productionRate);
 		productionRate = (productionRate * facilitySize) / 100;
 		
-		System.out.println("         Produce 1/"+commodity.getProductionRate());
+		System.out.println("         Produce 1/"+commodity.getProductionRate()+" ("+productionRate+")");
 		if (goods.containsKey(commodity.getId())) {
 			long	amount = goods.get(commodity.getId()).getAmount();
 			System.out.println("         Already have "+goods.get(commodity.getId()).getAmount());
@@ -509,6 +510,97 @@ public class Trade {
 */
 			}
 		}
+	}
+	
+	private void dumpFacilityStats() {
+		Hashtable<Integer,Facility>		facilities = Constants.getFacilities();
+		Hashtable<Integer,Commodity>	commodities = Constants.getCommodities();
+		
+		Hashtable<Integer,Long>			planetFacilities = planet.getFacilities();
+
+		for (int fId : planetFacilities.keySet()) {
+			Facility	facility = facilities.get(fId);
+			long		facilitySize = planetFacilities.get(fId);
+			
+			System.out.println("["+facility.getName()+"] ("+facility.getType()+") ["+facilitySize+"%]");
+
+			Hashtable<CommodityCode,Double>	productionCodes = facility.getProductionCodes();
+			Hashtable<CommodityCode,Double>	requirementsCodes = facility.getRequirementCodes();
+
+			switch (facility.getType()) {
+			case Agriculture:
+			case Mining:
+				for (CommodityCode code : productionCodes.keySet()) {
+					int		modifiedSize = (int)(facilitySize * productionCodes.get(code));
+					System.out.print("    "+code+" ("+modifiedSize+"%): ");
+					for (int rId : resources.keySet()) {
+						Commodity	commodity = commodities.get(rId);
+						if (commodity != null && commodity.hasCode(code)) {
+							System.out.print("*"+commodity.getName()+", ");
+						}
+					}
+					for (TradeGood good : goods.values()) {
+						Commodity	commodity = commodities.get(good.getCommodityId());
+						if (commodity != null && commodity.hasCode(code) && resources.get(commodity.getId())==null) {
+							System.out.print(commodity.getName()+", ");
+						}
+					}
+					System.out.println("");
+				}
+				break;
+			case Industry:
+				for (CommodityCode code : requirementsCodes.keySet()) {
+					int		modifiedSize = (int)(facilitySize * requirementsCodes.get(code));
+					System.out.print("  --"+code+" ("+modifiedSize+"%): ");
+					for (TradeGood good : goods.values()) {
+						Commodity	commodity = commodities.get(good.getCommodityId());
+						if (commodity != null && commodity.hasCode(code)) {
+							System.out.print(commodity.getName()+", ");
+						}
+					}
+					System.out.println("");
+				}
+				for (CommodityCode code : productionCodes.keySet()) {
+					int		modifiedSize = (int)(facilitySize * productionCodes.get(code));
+					System.out.print("  ++"+code+" ("+modifiedSize+"%): ");
+					for (Commodity commodity : commodities.values()) {
+						if (commodity.hasCode(code) && canMake(commodity)) {
+							System.out.print(commodity.getName()+", ");
+						}
+					}
+					System.out.println("");
+				}
+				break;
+			}
+		}		
+	}
+	
+	/**
+	 * Check to see if this planet is capable of producing a commodity.
+	 * Assumes that a suitable facility is available, but checks
+	 * requirements such as technology level etc.
+	 * 
+	 * @param commodity		Commodity to check.
+	 * @return				True if planet has the right technology base, false otherwise.
+	 */
+	private boolean canMake(Commodity commodity) {
+		if (commodity.getTechLevel() > planet.getTechLevel()) {
+			return false;
+		}
+		if (commodity.hasCode(CommodityCode.Tp, CommodityCode.Tm, CommodityCode.Ti, CommodityCode.Tt, CommodityCode.Ta, CommodityCode.Tu)) {
+			boolean		able = false;
+			int			tl = planet.getTechLevel();
+			
+			if (commodity.hasCode(CommodityCode.Tp) && (tl == 0 || tl == 1)) able = true;
+			if (commodity.hasCode(CommodityCode.Tm) && (tl == 2 || tl == 3 || tl == 4)) able = true;
+			if (commodity.hasCode(CommodityCode.Ti) && (tl == 5 || tl == 6)) able = true;
+			if (commodity.hasCode(CommodityCode.Tt) && (tl == 7 || tl == 8)) able = true;
+			if (commodity.hasCode(CommodityCode.Ta) && (tl == 9 || tl == 10)) able = true;
+			if (commodity.hasCode(CommodityCode.Tu) && (tl > 10)) able = true;
+			
+			if (!able) return false;
+		}
+		return true;
 	}
 
 	private void manageResources3() {
@@ -1321,7 +1413,8 @@ public class Trade {
 				
 				Trade		trade = new Trade(factory, planet);
 				//trade.createFacilities();
-				trade.manageEconomy();
+				trade.dumpFacilityStats();
+				//trade.manageEconomy();
 				//trade.gatherResources();
 				//trade.calculatePlanetRequirements();
 				//trade.consumeResources();

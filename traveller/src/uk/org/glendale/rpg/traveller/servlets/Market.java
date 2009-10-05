@@ -85,8 +85,9 @@ public class Market extends HttpServlet {
 			}
 		}
 
+		ObjectFactory	factory = null;
 		try {
-			ObjectFactory		factory = new ObjectFactory();
+			factory = new ObjectFactory();
 			if (id == 0) {
 				outputCommodities(factory, request, response);
 			} else {
@@ -101,6 +102,8 @@ public class Market extends HttpServlet {
 			t.printStackTrace();
 			response.sendError(500, "Exception ("+t.getMessage()+")");
 			return;
+		} finally {
+			factory.close();
 		}
 	}
 	

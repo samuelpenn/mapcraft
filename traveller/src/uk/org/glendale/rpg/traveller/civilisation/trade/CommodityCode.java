@@ -76,6 +76,9 @@ public enum CommodityCode {
 	HoCk("Cooking utensils"),
 	HoLu("Artistic items"),
 	HoCl("Household cloths, blankets etc"),
+	// Tools
+	ToAg("Farming tools"),
+	ToHd("Hand tools"),
 	// Military
 	WpnH("Hand weapons"),
 	ArmL("Light armour"),
@@ -99,6 +102,7 @@ public enum CommodityCode {
 	OrAq("Aquam"),
 	OrAu("Auram"),
 	// Other
+	V("Virtual"),
 	Uq("Unique");
 	
 	private String name = null;

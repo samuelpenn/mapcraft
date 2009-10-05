@@ -9,6 +9,10 @@ DROP TABLE IF EXISTS glossary;
 DROP TABLE IF EXISTS map;
 DROP TABLE IF EXISTS globe;
 DROP TABLE IF EXISTS note;
+DROP TABLE IF EXISTS facility;
+DROP TABLE IF EXISTS commodity;
+DROP TABLE IF EXISTS facilities;
+DROP TABLE IF EXISTS ship;
 
 #
 # ALLEGIANCE
@@ -133,7 +137,7 @@ CREATE TABLE commodity (id int auto_increment not null,
                    PRIMARY KEY(id), UNIQUE KEY(name))
                    ENGINE=INNODB;
 
-CREATE TABLE facility (id int auto_increment not null, name varchar(64), type varchar(16), image varchar(32),
+CREATE TABLE facility (id int auto_increment not null, name varchar(64), type varchar(16), image varchar(48),
                        techLevel int default 0, capacity int default 0,
                        resource_id int default 0, inputs varchar(32) default '', outputs varchar(32) default '',
                        codes varchar(64) not null,
@@ -156,11 +160,61 @@ INSERT INTO facility VALUES(0, 'Imperium',         'Residential', 'res_imperium'
 INSERT INTO facility VALUES(0, 'High Imperium',    'Residential', 'res_high',      11,  1, 2, '', '', '');
 INSERT INTO facility VALUES(0, 'Advanced Imperium','Residential', 'res_advanced',  12,  1, 2, '', '', '');
 
+##
+# Primitive cultures (TL0 - TL1)
+#
 
-# TL0 Cultures (Neolithic)
+# Residential
+INSERT INTO facility VALUES(0, 'Tribal nomads',       'Residential', 'primitive/tribalnomads', 0, 1, 2,
+                            'Fo;BldL,20;HoTl,30;HoCk,40;HoCl,20', 
+                            'HoTl;HoCk;HoCl',
+                            '');
+INSERT INTO facility VALUES(0, 'Tribal settlements',  'Residential', 'primitive/tribalsettlements', 0, 1, 2, 
+                            'Fo;BldL,50;HoTl,40;HoCk;HoCl',
+                            'HoTl;HoCK;HoCl',
+                            '');
+INSERT INTO facility VALUES(0, 'Tribal states',       'Residential', 'primitive/tribalstates', 0, 1, 2,
+                            'Fo;BldL,50;BldH,50;HoTl,40;HoCk;HoCl',
+                            'HoTl;HoCK;HoCl', 
+                            '');
+INSERT INTO facility VALUES(0, 'Tribal empires',      'Residential', 'primitive/tribalempires', 0, 1, 2, 
+                            'Fo;BldL,50;BldH;HoTl,40;HoCk;HoCl',
+                            'HoTl;HoCK;HoCl', 
+                            '');
+
+# Agriculture
+INSERT INTO facility VALUES(0, 'Primitive gatherers', 'Agriculture', 'primitive/gatherers',   0,  1, 200,
+                            '', 'BldL,25;FoGa;FoHd,25', '');
+INSERT INTO facility VALUES(0, 'Primitive hunters',   'Agriculture', 'primitive/hunters',   0,  1, 203,
+                            '', 'FoHu,50', '');
+
+INSERT INTO facility VALUES(0, 'Primitive farming',   'Agriculture', 'primitive/farmers',   0,  1, 200, 
+                            '', 'BldL,50;FoAg,75', '');
+INSERT INTO facility VALUES(0, 'Primitive livestock', 'Agriculture', 'primitive/livestock',   0,  1, 203,
+                            '', 'FoHu,25;FoHd,75', '');
+
+# Mines
+INSERT INTO facility VALUES(0, 'Quarry', 'Mining', 'primitive/quarry',   0,  1, 1,
+                            '', 'OrSi,25', '');
+                            
+# Industry
+INSERT INTO facility VALUES(0, 'Primitive craftsman', 'Industry', 'primitive/industry', 0, 1, 1,
+                            'OrSi', 
+                            'BldH;Tp;WpnH,25;HoCk,50', '');
+INSERT INTO facility VALUES(0, 'Primitive handicraft', 'Industry', 'primitive/industry', 0, 1, 1,
+                            'FoMe', 
+                            'ClCv', '');
+
+##
+# Medieval cultures (TL2 - TL4)
+#
+INSERT INTO facility VALUES(0, 'Villages',     		  'Residential', 'medieval/villages', 2, 1, 2, '', '', '');
+INSERT INTO facility VALUES(0, 'Agricultural colony', 'Residential', 'medieval/colony',   3, 1, 2, '', '', '');
+
+
 INSERT INTO facility VALUES(0, 'Neolithic settlements', 'Residential', 'res_primitive',  0,  1, 0, '', '', '');
-INSERT INTO facility VALUES(0, 'Gatherers',         'Agriculture', 'agriculture',    0,  1, 200, '', '', '');
-INSERT INTO facility VALUES(0, 'Hunter',            'Agriculture', 'agriculture',    0,  1, 203, '', '', '');
+
+
 
 # TL1 Cultures (Bronze age)
 INSERT INTO facility VALUES(0, 'Bronze age rural',  'Residential', 'res_primitive',  1,  1, 0, '', '', '');
@@ -220,45 +274,45 @@ INSERT INTO commodity VALUES(8, 'Consumer goods', 'consumer', 'In', 0, 1000, 1, 
 
 
 # Silicate ores
-INSERT INTO commodity VALUES(1000, 'Silicate ore',  'silicate', 'Mi',    1,  50, 1, 7, 4, 6, 3, 'Or');
-INSERT INTO commodity VALUES(1001, 'Krysite ore',   'silicate', 'Mi', 1000, 100, 1, 6, 2, 6, 8, 'Or In Mt Ht Ut');
-INSERT INTO commodity VALUES(1002, 'Magnesite ore', 'silicate', 'Mi', 1000, 300,  1, 5, 2, 6, 8, 'Or In Hz Ht Ut');
-INSERT INTO commodity VALUES(1003, 'Ericate ore',   'silicate', 'Mi', 1000, 500, 1, 4, 0, 6,9, 'Or In Hz');
+INSERT INTO commodity VALUES(1000, 'Silicate ore',  'silicate', 'Mi',    1,  50, 1, 7, 4, 6, 3, 'Or BldH OrSi');
+INSERT INTO commodity VALUES(1001, 'Krysite ore',   'silicate', 'Mi', 1000, 100, 1, 6, 2, 6, 8, 'Or In OrSi');
+INSERT INTO commodity VALUES(1002, 'Magnesite ore', 'silicate', 'Mi', 1000, 300,  1, 5, 2, 6, 8, 'Or In Hz OrSi');
+INSERT INTO commodity VALUES(1003, 'Ericate ore',   'silicate', 'Mi', 1000, 500, 1, 4, 0, 6,9, 'Or In Hz OrSi');
 
 # Carbonic ores
-INSERT INTO commodity VALUES(1100, 'Carbonic ore',  'carbonic', 'Mi',    1, 100, 1, 6, 4, 6, 3, 'Or Lt Mt Ht Ut');
-INSERT INTO commodity VALUES(1101, 'Heliacate ore', 'carbonic', 'Mi', 1100, 200, 1, 5, 2, 6, 9, 'Or In Ht Ut');
-INSERT INTO commodity VALUES(1102, 'Acenite ore',   'carbonic', 'Mi', 1100, 500, 1, 4, 1, 6, 9, 'Or In Hz Ht Ut Sp');
-INSERT INTO commodity VALUES(1103, 'Pardenic ore',  'carbonic', 'Mi', 1100, 800, 1, 3, 0, 6, 10, 'Or In');
+INSERT INTO commodity VALUES(1100, 'Carbonic ore',  'carbonic', 'Mi',    1, 100, 1, 6, 4, 6, 3, 'Or OrCa');
+INSERT INTO commodity VALUES(1101, 'Heliacate ore', 'carbonic', 'Mi', 1100, 200, 1, 5, 2, 6, 9, 'Or OrCa In');
+INSERT INTO commodity VALUES(1102, 'Acenite ore',   'carbonic', 'Mi', 1100, 500, 1, 4, 1, 6, 9, 'Or OrCa In Hz Sp');
+INSERT INTO commodity VALUES(1103, 'Pardenic ore',  'carbonic', 'Mi', 1100, 800, 1, 3, 0, 6, 10, 'Or OrCa In');
 
 # Ferric ores
-INSERT INTO commodity VALUES(1200, 'Ferric ore',    'ferric', 'Mi',    1,  150, 1, 5, 3, 6, 2, 'Or');
-INSERT INTO commodity VALUES(1201, 'Vardonnek ore', 'ferric', 'Mi', 1200,  300, 1, 4, 2, 6, 8, 'Or In Ht Ut');
-INSERT INTO commodity VALUES(1202, 'Larathic ore',  'ferric', 'Mi', 1200,  600, 1, 3, 1, 6, 9, 'Or In Ut');
-INSERT INTO commodity VALUES(1203, 'Xithantite ore','ferric', 'Mi', 1200, 1200, 1, 2, 0, 6, 10, 'Or In');
+INSERT INTO commodity VALUES(1200, 'Ferric ore',    'ferric', 'Mi',    1,  150, 1, 5, 3, 6, 2, 'Or OrFe');
+INSERT INTO commodity VALUES(1201, 'Vardonnek ore', 'ferric', 'Mi', 1200,  300, 1, 4, 2, 6, 8, 'Or OrFe In');
+INSERT INTO commodity VALUES(1202, 'Larathic ore',  'ferric', 'Mi', 1200,  600, 1, 3, 1, 6, 9, 'Or OrFe In');
+INSERT INTO commodity VALUES(1203, 'Xithantite ore','ferric', 'Mi', 1200, 1200, 1, 2, 0, 6, 10, 'Or OrFe In');
 
 # Aquam ores
-INSERT INTO commodity VALUES(1300, 'Water',          'aquam', 'Mi',    1,  75, 1, 12, 3, 6, 6, 'Or In Mt Ht Ut');
-INSERT INTO commodity VALUES(1301, 'Doric crystals', 'aquam', 'Mi', 1300, 250, 1,  5, 2, 6, 9, 'Or In Hz Ut');
-INSERT INTO commodity VALUES(1302, 'Iskine crystals','aquam', 'Mi', 1300, 300, 1,  4, 1, 6, 8, 'Or In Ag Ht Ut');
-INSERT INTO commodity VALUES(1303, 'Oorcine ices',   'aquam', 'Mi', 1300, 600, 1,  3, 0, 6, 9, 'Or In Fr');
+INSERT INTO commodity VALUES(1300, 'Water',          'aquam', 'Mi',    1,  75, 1, 12, 3, 6, 6, 'Or OrAq In');
+INSERT INTO commodity VALUES(1301, 'Doric crystals', 'aquam', 'Mi', 1300, 250, 1,  5, 2, 6, 9, 'Or OrAq In Hz');
+INSERT INTO commodity VALUES(1302, 'Iskine crystals','aquam', 'Mi', 1300, 300, 1,  4, 1, 6, 8, 'Or OrAq In Ag');
+INSERT INTO commodity VALUES(1303, 'Oorcine ices',   'aquam', 'Mi', 1300, 600, 1,  3, 0, 6, 9, 'Or OrAq In Fr');
 
 # Auram ores
-INSERT INTO commodity VALUES(1400, 'Air',            'auram', 'Mi',    1,  120, 1, 11, 3, 6, 6, 'Or In Ht Ut');
-INSERT INTO commodity VALUES(1401, 'Regiam gas',     'auram', 'Mi', 1400,  440, 1,  5, 2, 6, 7, 'Or In HZ Ht Ut');
-INSERT INTO commodity VALUES(1402, 'Tritanium gas',  'auram', 'Mi', 1400,  480, 1,  3, 1, 6, 9, 'Or In Ht Ut');
-INSERT INTO commodity VALUES(1403, 'Synthosium gas', 'auram', 'Mi', 1400, 1060, 1,  2, 0, 3, 10, 'Or Hz');
+INSERT INTO commodity VALUES(1400, 'Air',            'auram', 'Mi',    1,  120, 1, 11, 3, 6, 6, 'Or OrAu In');
+INSERT INTO commodity VALUES(1401, 'Regiam gas',     'auram', 'Mi', 1400,  440, 1,  5, 2, 6, 7, 'Or OrAu In HZ');
+INSERT INTO commodity VALUES(1402, 'Tritanium gas',  'auram', 'Mi', 1400,  480, 1,  3, 1, 6, 9, 'Or OrAu In');
+INSERT INTO commodity VALUES(1403, 'Synthosium gas', 'auram', 'Mi', 1400, 1060, 1,  2, 0, 3, 10, 'Or OrAu Hz');
 
 # Other resources
-INSERT INTO commodity VALUES(1500, 'Petroleum',      'oil',   'Mi',    1,  200, 1, 6, 5, 6, 6, 'Or In Mt Ht Ut');
-INSERT INTO commodity VALUES(1501, 'Wood',           'wood',  'Ag',    1,  100, 1, 7, 6, 6, 1, 'In Ag Nt Pt Lt Mt Ht');
+INSERT INTO commodity VALUES(1500, 'Petroleum',      'oil',   'Mi',    1,  200, 1, 6, 5, 6, 6, 'Or In');
+INSERT INTO commodity VALUES(1501, 'Wood',           'wood',  'Ag',    1,  100, 1, 7, 6, 6, 1, 'In Ag BldL');
 
 # Basic agricultural resources
 INSERT INTO commodity VALUES(2000, 'Marine food',     'seafood',         'Ag', 2,    100, 1, 10,  7, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(2001, 'Primitive food',  'metazoa',         'Ag', 2000, 100, 1, 10,  7, 6, 1, 'Fo Vi Pe Tl');
-INSERT INTO commodity VALUES(2002, 'Base organics',   'base_organics',   'Ag', 2001,   5, 1, 4,  12, 6, 1, 'Fo Pe FO FM Lq');
-INSERT INTO commodity VALUES(2003, 'Simple organics', 'simple_organics', 'Ag', 2001,  10, 1, 4,  11, 6, 1, 'Fo Pe FO FM Lq');
-INSERT INTO commodity VALUES(2004, 'Metazoa',         'metazoa',         'Ag', 2001,   8, 1, 4,  11, 6, 1, 'Fo Pe FO FM Lq');
+INSERT INTO commodity VALUES(2001, 'Primitive food',  'metazoa',         'Ag', 2000, 100, 1, 10,  7, 6, 1, 'Fo Vi FoOr Pe Tl');
+INSERT INTO commodity VALUES(2002, 'Base organics',   'base_organics',   'Ag', 2001,   5, 1, 4,  12, 6, 1, 'Fo Pe FoOr Lq');
+INSERT INTO commodity VALUES(2003, 'Simple organics', 'simple_organics', 'Ag', 2001,  10, 1, 4,  11, 6, 1, 'Fo Pe FoOr Lq');
+INSERT INTO commodity VALUES(2004, 'Metazoa',         'metazoa',         'Ag', 2001,   8, 1, 4,  11, 6, 1, 'Fo Pe FoOr Lq');
 
 INSERT INTO commodity VALUES(2010, 'Simple marine',   'simple_marine',   'Ag', 2000,  35, 1, 5,   6, 6, 1, 'Fo Pe Lq Tl');
 INSERT INTO commodity VALUES(2011, 'Crustacean',      'shellfish',       'Ag', 2010,  35, 1, 5,   6, 6, 1, 'Fo Pe Lq Tl');
@@ -279,33 +333,33 @@ INSERT INTO commodity VALUES(2043, 'Large fish',      'fish',            'Ag', 2
 INSERT INTO commodity VALUES(2100, 'Land food',       'food',            'Ag', 2,     100, 1, 10,  7, 6, 1, 'Fo');
 INSERT INTO commodity VALUES(2101, 'Land plants',     'food',            'Ag', 2100,  100, 1, 10,  7, 6, 1, 'Fo');
 INSERT INTO commodity VALUES(2104, 'Land animals',    'meat',            'Ag', 2100,  350, 1, 7,   5, 6, 1, 'Fo');
-INSERT INTO commodity VALUES(2110, 'Moss',            'moss',            'Ag', 2100,   20, 1, 4,   9, 6, 1, 'Fo Pe Tl FV Lq');
-INSERT INTO commodity VALUES(2120, 'Fungi',           'fungi',           'Ag', 2100,   50, 1, 5,   7, 6, 1, 'Fo Pe Tl FV FC');
+INSERT INTO commodity VALUES(2110, 'Moss',            'moss',            'Ag', 2100,   20, 1, 4,   9, 6, 1, 'Fo Pe Tl Lq FoGa');
+INSERT INTO commodity VALUES(2120, 'Fungi',           'fungi',           'Ag', 2100,   50, 1, 5,   7, 6, 1, 'Fo Pe Tl FoGa');
 INSERT INTO commodity VALUES(2130, 'Crops',           'food',            'Ag', 2100,  100, 1, 10,  7, 6, 1, 'Fo');
-INSERT INTO commodity VALUES(2131, 'Ferns',           'ferns',           'Ag', 2130,   30, 1, 6,   8, 6, 1, 'Fo Pe Tl FV FC Lq');
-INSERT INTO commodity VALUES(2132, 'Vegetables',      'vegetables',      'Ag', 2130,  100, 1, 10,  7, 6, 1, 'Fo Pe Tl FV FC Vi');
-INSERT INTO commodity VALUES(2133, 'Fruits',          'fruits',          'Ag', 2130,  150, 1, 9,   7, 6, 1, 'Fo Pe Tl FV FC');
-INSERT INTO commodity VALUES(2134, 'Grain',           'grain',           'Ag', 2130,   75, 1, 10,  6, 6, 2, 'Fo Pe Tl FV FC Vi');
-INSERT INTO commodity VALUES(2135, 'Rice',            'rice',            'Ag', 2130,   55, 1, 7,   8, 6, 1, 'Fo Pe Tl FV FC');
+INSERT INTO commodity VALUES(2131, 'Ferns',           'ferns',           'Ag', 2130,   30, 1, 6,   8, 6, 1, 'Fo Pe FoGa FoAg Lq');
+INSERT INTO commodity VALUES(2132, 'Vegetables',      'vegetables',      'Ag', 2130,  100, 1, 10,  7, 6, 1, 'Fo Pe FoAg Vi');
+INSERT INTO commodity VALUES(2133, 'Fruits',          'fruits',          'Ag', 2130,  150, 1, 9,   7, 6, 1, 'Fo Pe FoAg FoGa');
+INSERT INTO commodity VALUES(2134, 'Grain',           'grain',           'Ag', 2130,   75, 1, 10,  6, 6, 2, 'Fo Pe FoAg Vi');
+INSERT INTO commodity VALUES(2135, 'Rice',            'rice',            'Ag', 2130,   55, 1, 7,   8, 6, 1, 'Fo Pe FoAg Vi');
 
 
-INSERT INTO commodity VALUES(2200, 'Insects',         'insects',         'Ag', 2100,   50, 1, 6,   6, 6, 1, 'Fo Pe FA Lq');
-INSERT INTO commodity VALUES(2300, 'Amphibians',      'amphibians',      'Ag', 2100,  150, 1, 6,   6, 6, 1, 'Fo Pe FA');
-INSERT INTO commodity VALUES(2400, 'Animals',         'medium_animals',  'Ag', 2100,  150, 1, 6,   6, 6, 1, 'Fo Pe FA');
-INSERT INTO commodity VALUES(2410, 'Tiny animals',    'tiny_animals',    'Ag', 2400,  175, 1, 6,   5, 6, 1, 'Fo Pe FA Lq');
-INSERT INTO commodity VALUES(2420, 'Small animals',   'small_animals',   'Ag', 2400,  2, 1, 7,   5, 6, 1, 'Fo Pe FA');
-INSERT INTO commodity VALUES(2430, 'Medium animals',  'medium_animals',  'Ag', 2400,  250, 1, 8,   5, 6, 1, 'Fo Pe FA Hq');
-INSERT INTO commodity VALUES(2440, 'Large animals',   'large_animals',   'Ag', 2400,  350, 1, 7,   4, 6, 1, 'Fo Pe FA Hq Lu');
-INSERT INTO commodity VALUES(2450, 'Huge animals',    'huge_animals',    'Ag', 2400,  450, 1, 7,   4, 6, 1, 'Fo Pe FA Hq Lu');
+INSERT INTO commodity VALUES(2200, 'Insects',         'insects',         'Ag', 2100,   50, 1, 6,   6, 6, 1, 'Fo Pe FoMe Lq');
+INSERT INTO commodity VALUES(2300, 'Amphibians',      'amphibians',      'Ag', 2100,  150, 1, 6,   6, 6, 1, 'Fo Pe FoMe');
+INSERT INTO commodity VALUES(2400, 'Animals',         'medium_animals',  'Ag', 2100,  150, 1, 6,   6, 6, 1, 'Fo Pe FoMe');
+INSERT INTO commodity VALUES(2410, 'Tiny animals',    'tiny_animals',    'Ag', 2400,  175, 1, 6,   5, 6, 1, 'Fo Pe FoMe FoAg Lq');
+INSERT INTO commodity VALUES(2420, 'Small animals',   'small_animals',   'Ag', 2400,  2, 1, 7,   5, 6, 1, 'Fo Pe FoMe FoHd FoHu');
+INSERT INTO commodity VALUES(2430, 'Medium animals',  'medium_animals',  'Ag', 2400,  250, 1, 8,   5, 6, 1, 'Fo Pe FoMe FoHd FoHu Hq');
+INSERT INTO commodity VALUES(2440, 'Large animals',   'large_animals',   'Ag', 2400,  350, 1, 7,   4, 6, 1, 'Fo Pe FoMe FoHu Hq Lu');
+INSERT INTO commodity VALUES(2450, 'Huge animals',    'huge_animals',    'Ag', 2400,  450, 1, 7,   4, 6, 1, 'Fo Pe FoMe Lu');
 
 INSERT INTO commodity VALUES(3000, 'Wool',                'textiles',    'In',    3, 100, 1, 7, 4, 6, 1, 'In');
 INSERT INTO commodity VALUES(3001, 'Silk',                'textiles',    'In',    3, 100, 1, 7, 4, 6, 3, 'In');
 INSERT INTO commodity VALUES(3002, 'Simple textiles',     'textiles',    'In',    3, 100, 1, 7, 4, 6, 1, 'In');
 
-INSERT INTO commodity VALUES(3100, 'Primitive clothing',  'textiles',    'In',    3, 100, 1, 7, 4, 6, 0, 'In Cl Nt Pt Lt');
-INSERT INTO commodity VALUES(3101, 'Furs',                'textiles',    'In', 3100, 100, 1, 7, 4, 6, 0, 'In Cl Nt Pt');
-INSERT INTO commodity VALUES(3102, 'Animal skins',        'textiles',    'In', 3100, 100, 1, 7, 4, 6, 0, 'In Cl Nt');
-INSERT INTO commodity VALUES(3103, 'Simple leathers',     'textiles',    'In', 3100, 100, 1, 7, 4, 6, 2, 'In Cl Pt Lt');
+INSERT INTO commodity VALUES(3100, 'Primitive clothing',  'textiles',    'In',    3, 100, 1, 7, 4, 6, 0, 'V In Cl');
+INSERT INTO commodity VALUES(3101, 'Furs',                'textiles',    'In', 3100, 100, 1, 7, 4, 6, 0, 'In Cl ClCv');
+INSERT INTO commodity VALUES(3102, 'Animal skins',        'textiles',    'In', 3100, 100, 1, 7, 4, 6, 0, 'In Cl ClCv');
+INSERT INTO commodity VALUES(3103, 'Simple leathers',     'textiles',    'In', 3100, 100, 1, 7, 4, 6, 2, 'In Cl ClCv');
 
 INSERT INTO commodity VALUES(3200, 'Civilian clothing',   'textiles',    'In',    3, 100, 1, 7, 4, 6, 1, 'In Cl');
 INSERT INTO commodity VALUES(3300, 'Industrial clothing', 'textiles',    'In',    3, 100, 1, 7, 4, 6, 1, 'In Cl');
@@ -316,21 +370,21 @@ INSERT INTO commodity VALUES(5000, 'Metals',          'alloys', 'In', 5,  900, 1
 INSERT INTO commodity VALUES(5001, 'Refined metals',  'alloys', 'In', 5, 1600, 1, 5, 5, 6, 4, 'In');
 
 INSERT INTO commodity VALUES(6000, 'Agricultural machinary',  'machinery', 'In',    6, 2500, 1, 3, 3, 6, 5, 'Ag');
-INSERT INTO commodity VALUES(6100, 'Stone farm tools',        'tools',     'In', 6000,  150, 1, 4, 4, 6, 0, 'Ag');
-INSERT INTO commodity VALUES(6101, 'Bronze farm tools',       'tools',     'In', 6000,  200, 1, 4, 4, 6, 1, 'Ag');
-INSERT INTO commodity VALUES(6102, 'Iron farm tools',         'tools',     'In', 6000,  250, 1, 4, 4, 6, 2, 'Ag');
-INSERT INTO commodity VALUES(6103, 'Medieval farm tools',     'tools',     'In', 6000,  300, 1, 4, 4, 6, 3, 'Ag');
+INSERT INTO commodity VALUES(6001, 'Stone farm tools',        'tools',     'In', 6000,  150, 1, 4, 4, 6, 0, 'Ag Tp');
+INSERT INTO commodity VALUES(6002, 'Bronze farm tools',       'tools',     'In', 6000,  200, 1, 4, 4, 6, 1, 'Ag Tp');
+INSERT INTO commodity VALUES(6003, 'Iron farm tools',         'tools',     'In', 6000,  250, 1, 4, 4, 6, 2, 'Ag Tm');
+INSERT INTO commodity VALUES(6004, 'Medieval farm tools',     'tools',     'In', 6000,  300, 1, 4, 4, 6, 3, 'Ag Tm');
 
-INSERT INTO commodity VALUES(500, 'Farm implements',        'machinery', 'In', 6, 1000, 1, 4, 7, 6,  3, 'Ag Ma Lo');
-INSERT INTO commodity VALUES(501, 'Farm machinery',         'machinery', 'In', 6, 1000, 1, 4, 7, 6,  5, 'Ag Ma Lo');
-INSERT INTO commodity VALUES(502, 'Agricultural machinery', 'machinery', 'In', 6, 1000, 1, 4, 7, 6,  7, 'Ag Ma Lo');
-INSERT INTO commodity VALUES(503, 'Agricultural robotics',  'machinery', 'In', 6, 1000, 1, 4, 7, 6,  9, 'Ag Ma Lo');
-INSERT INTO commodity VALUES(504, 'Advanced agribots',      'machinery', 'In', 6, 1000, 1, 4, 7, 6, 11, 'Ag Ma Lo');
+INSERT INTO commodity VALUES(500, 'Farm implements',        'machinery', 'In', 6, 1000, 1, 4, 7, 6,  3, 'Ag Ma');
+INSERT INTO commodity VALUES(501, 'Farm machinery',         'machinery', 'In', 6, 1000, 1, 4, 7, 6,  5, 'Ag Ma');
+INSERT INTO commodity VALUES(502, 'Agricultural machinery', 'machinery', 'In', 6, 1000, 1, 4, 7, 6,  7, 'Ag Ma');
+INSERT INTO commodity VALUES(503, 'Agricultural robotics',  'machinery', 'In', 6, 1000, 1, 4, 7, 6,  9, 'Ag Ma');
+INSERT INTO commodity VALUES(504, 'Advanced agribots',      'machinery', 'In', 6, 1000, 1, 4, 7, 6, 11, 'Ag Ma');
 
 INSERT INTO commodity VALUES(600, 'Medieval goods',         'machinery', 'Ag',   6,  250, 1, 4, 7, 6, 3, '');
-INSERT INTO commodity VALUES(601, 'Medieval farm tools',    'machinery', 'Ag', 600,  400, 1, 4, 5, 6, 3, 'Ma Ag Lo');
-INSERT INTO commodity VALUES(602, 'Medieval hand tools',    'machinery', 'In', 600,  250, 1, 5, 6, 6, 3, 'Ma Lo');
-INSERT INTO commodity VALUES(602, 'Medieval textiles',      'textiles',  'In', 600,  250, 1, 5, 6, 6, 3, 'Ma Lo');
+INSERT INTO commodity VALUES(601, 'Medieval farm tools',    'machinery', 'Ag', 600,  400, 1, 4, 5, 6, 3, 'Ma Ag');
+INSERT INTO commodity VALUES(602, 'Medieval hand tools',    'machinery', 'In', 600,  250, 1, 5, 6, 6, 3, 'Ma');
+INSERT INTO commodity VALUES(602, 'Medieval textiles',      'textiles',  'In', 600,  250, 1, 5, 6, 6, 3, 'Ma');
 
 # Requirements
 CREATE TABLE requirements (commodity_id INT NOT NULL, requires_id INT NOT NULL, number INT DEFAULT 1);
@@ -341,7 +395,11 @@ CREATE TABLE resources (planet_id INT NOT NULL, commodity_id INT NOT NULL, densi
 
 
 CREATE TABLE trade (id INT AUTO_INCREMENT NOT NULL, planet_id INT NOT NULL,
-                    commodity_id int not null, amount bigint default 0, consumed bigint default 0, price int not null,
+                    commodity_id int not null, amount bigint default 0, 
+                    produced bigint default 0, consumed bigint default 0, 
+                    bought bigint default 0, sold bigint default 0,
+                    weeklyin bigint default 0, weeklyout bigint default 0,
+                    price int not null,
                     PRIMARY KEY(id),
                     FOREIGN KEY(planet_id) REFERENCES planet(id),
                     FOREIGN KEY(commodity_id) REFERENCES commodity(id))

@@ -91,7 +91,7 @@ public class Civilisation {
 	private static final long	MILLION =  1000000;
 	private static final long	BILLION =  1000000000;
 	
-	public void generate(long population, int techLevel) {
+	private String getCivilisationKey(long population, int techLevel) {
 		String		phrase = null;
 
 		switch (planet.getHabitability()) {
@@ -116,10 +116,7 @@ public class Civilisation {
 			phrase = "hostile";
 			break;
 		}
-		// Don't bother populating if the population will be too small.
-		if (population < 100) {
-			return;
-		} else if (population < 10 * THOUSAND) {
+		if (population < 10 * THOUSAND) {
 			phrase += ".tiny";
 		} else if (population < 1 * MILLION) {
 			phrase += ".small";
@@ -151,6 +148,65 @@ public class Civilisation {
 			phrase += ".ultratech";
 			break;
 		}
+		return phrase;
+	}
+
+	/**
+	 * Assign facilities for a world that has been generated from a UWP.
+	 * In this case, we don't bother setting or modifying the population,
+	 * government type, tech level or law level.
+	 */
+	public void assign() {
+		String	phrase = getCivilisationKey(planet.getPopulation(), planet.getTechLevel());
+		String	culture = getWord(getPhrase(phrase));
+		long	cultureSize = 100;
+		if (culture.indexOf(",") != -1) {
+			cultureSize = Integer.parseInt(culture.split(",")[1]);
+			culture = culture.split(",")[0];
+		}
+		String		facilityName = getPhrase(culture+".name");
+		System.out.println(phrase+": "+facilityName+" ("+cultureSize+"%)");
+		
+		String		tradeCodes = getPhrase(culture+".codes");
+		String		facilityList = getPhrase(culture+".facilities");
+		System.out.println("Trade Codes: "+tradeCodes);
+
+		Hashtable<Integer,Long>		facilities = new Hashtable<Integer,Long>();
+		Facility					facility = null;
+
+		try {
+			// Primary residential facility.
+			facility = Constants.getFacility(facilityName);
+			facilities.put(facility.getId(), cultureSize);
+		} catch (ObjectNotFoundException e) {
+			e.printStackTrace();
+		}
+		for (String f : facilityList.split(" ")) {
+			String		type = f.split(",")[0];
+			long		size = Integer.parseInt(f.split(",")[1]);
+			try {
+				facility = Constants.getFacility(getPhrase(type+".name"));
+				System.out.println(facility.getName()+" ["+size+"]");
+				facilities.put(facility.getId(), size);
+			} catch (ObjectNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		factory.setFacilitiesForPlanet(planet.getId(),facilities);
+	}
+	
+	/**
+	 * Generate a set of facilities for a new world.
+	 * 
+	 * @param population
+	 * @param techLevel
+	 */
+	public void generate(long population, int techLevel) {
+		String		phrase = getCivilisationKey(population, techLevel);
+
+		if (population < 100) {
+			return;
+		}
 		
 		String	culture = getWord(getPhrase(phrase));
 		long	cultureSize = 100;
@@ -171,6 +227,7 @@ public class Civilisation {
 		Facility					facility = null;
 		
 		try {
+			// Primary residential facility.
 			facility = Constants.getFacility(facilityName);
 			facilities.put(facility.getId(), cultureSize);
 		} catch (ObjectNotFoundException e) {

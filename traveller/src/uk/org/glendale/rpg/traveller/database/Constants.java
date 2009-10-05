@@ -18,7 +18,7 @@ public class Constants {
 	private static Hashtable<Integer,Commodity>		commodities = null;
 	private static Hashtable<String,Allegiance>		allegencies = null;
 	
-	private static void refresh() {
+	public static void refresh() {
 		ObjectFactory		factory = new ObjectFactory();
 		
 		facilities = factory.getFacilities();
