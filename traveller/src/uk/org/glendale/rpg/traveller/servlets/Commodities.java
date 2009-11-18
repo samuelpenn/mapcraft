@@ -60,6 +60,8 @@ public class Commodities extends HttpServlet {
 		String		action = "info";
 		int			id = 0;
 		
+		System.out.println("Called Commodities.doGet()");
+		
 		try {
 			id = Integer.parseInt(uri.replaceAll("/([0-9]+)([/.].*)?", "$1"));
 		} catch (NumberFormatException e) {

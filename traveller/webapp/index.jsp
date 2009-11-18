@@ -29,7 +29,7 @@
 			<p><%= pageDescription %></p>
 		</div>
 		
-		<jsp:include page="includes/links.jsp" flush="false"/>
+		<jsp:include page="/includes/links.jsp" flush="false"/>
 		
 		<div class="body">
 			<p>

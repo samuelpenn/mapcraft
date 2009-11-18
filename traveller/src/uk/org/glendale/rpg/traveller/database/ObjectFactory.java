@@ -799,7 +799,7 @@ public class ObjectFactory {
 	}
 	
 	public Hashtable<Integer,Commodity> getAllCommodities() {
-		String					sql = "select * from commodity";
+		String					sql = "select * from commodity order by id";
 		ResultSet				rs = null;
 		Hashtable<Integer,Commodity>	list = new Hashtable<Integer,Commodity>();
 		
