@@ -99,6 +99,8 @@ public class Facility {
 					}
 				} catch (NumberFormatException e) {
 					// Just ignore any invalid data for now.
+				} catch (Throwable e) {
+					// Again, just ignore
 				}
 				code = code.split(",")[0];
 			}

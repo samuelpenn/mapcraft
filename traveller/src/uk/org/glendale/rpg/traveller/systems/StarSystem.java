@@ -2152,8 +2152,10 @@ public class StarSystem implements Comparable {
 	main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
 		
-		StarSystem		sys = new StarSystem(factory, 60181);
-		System.out.println("eC Mirriam            0303 B9998A6-A B                 A 534 Im G2 V");
+		StarSystem		sys = new StarSystem(factory, 55819);
+		Planet			p = sys.getMainWorld();
+		System.out.println(p.getName()+", "+p.getType()+", "+p.getPopulation());
+		//System.out.println("eC Mirriam            0303 B9998A6-A B                 A 534 Im G2 V");
 		System.out.println(sys.getUWP());
 
 		factory.close();

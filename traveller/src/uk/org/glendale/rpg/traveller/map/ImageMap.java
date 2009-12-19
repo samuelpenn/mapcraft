@@ -269,8 +269,8 @@ public class ImageMap {
     }
 
     public static void main(String[] args) throws Exception {
-    	//drawAllSectors();
+    	drawAllSectors();
     	//drawDensityMap(1).save(new File("/home/sam/density.jpg"));
-    	drawAllegianceMap(1).save(new File("/home/sam/allegiance.jpg"));
+    	//drawAllegianceMap(1).save(new File("/home/sam/allegiance.jpg"));
     }
 }

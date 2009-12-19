@@ -76,8 +76,10 @@ public class UWP {
 		
 		if (value < 0) {
 			System.out.println(">>>> Hex ["+value+"]");
+			return "0";
 		} else if (value > codes.length()) {
 			System.out.println(">>>> Hex ["+value+"]");
+			return "Z";
 		}
 		
 		return codes.substring(value, value+1);

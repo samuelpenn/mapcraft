@@ -54,6 +54,9 @@ public enum PlanetFeature {
 	EquatorialRidge("Re"),
 	PolarRidge("Rp"),
 	Smooth("Sm"),
+	Fractured("Fr"),
+	Hexagons("Hx"),
+	Spirals("Sp"),
 	GiantCrater("Gc"), // Large crater on the equator, big collision.
 	// Finally, the following are unique codes which vary depending
 	// on the type of the world. They represent very rare features.

@@ -17,10 +17,10 @@ public enum PlanetType {
 	IceBelt(Category.Belt, 0.0, 0),
 	OortCloud(Category.Belt, 0.0, 0),
 	
-	Vulcanian(Category.Asteroid, 7.5, 80, "hotrock"),		// Asteroid close to parent sun, heavy metals.
-	Silicaceous(Category.Asteroid, 4.0, 120),				// Asteroid with nickle-iron core.
-	Sideritic(Category.Asteroid, 6.0, 100),					// Pure nickel-iron, very dense.
-	Basaltic(Category.Asteroid, 4.0, 50),					// Cooled larva on surface, smooth. Rare.
+	Vulcanian(Category.Asteroid, 7.5, 100, "hotrock"),		// Asteroid close to parent sun, heavy metals.
+	Silicaceous(Category.Asteroid, 4.0, 150),				// Asteroid with nickle-iron core.
+	Sideritic(Category.Asteroid, 6.0, 120),					// Pure nickel-iron, very dense.
+	Basaltic(Category.Asteroid, 4.0, 80),					// Cooled larva on surface, smooth. Rare.
 	Carbonaceous(Category.Asteroid, 3.0, 150),  			// Very dark, rich in carbon. Outer middle solar systems. (C-type)
 	Enceladean(Category.Asteroid, 1.6, 250, "ice"),    		// Enceladus (ice, active)
 	Mimean(Category.Asteroid, 1.1, 200, "ice"),        		// Mimas (ice, inactive)
@@ -74,9 +74,11 @@ public enum PlanetType {
 	PostThio(Category.Terrestrial, 5.5, 6500),
 
 	Hermian(Category.Terrestrial, 5.0, 2500, "hotrock"), 		// Mercury
-	EoArean(Category.Terrestrial, 5.0, 4000), 
-	AreanLacustric(Category.Terrestrial, 4.5, 3500), 
+	EoArean(Category.Terrestrial, 4.5, 3500), 
+	MesoArean(Category.Terrestrial, 4.5, 3500),
+	AreanLacustric(Category.Terrestrial, 4.5, 3500), // Watery Arean 
 	Arean(Category.Terrestrial, 4.5, 3500),
+	AreanXenic(Category.Terrestrial, 4.5, 3500),   // Hot Arean
 	Cytherean(Category.Terrestrial, 5.5, 6200),    // Venus
 	Phosphorian(Category.Terrestrial, 5.5, 6200),  // Cloudless Venus
 	JaniLithic(Category.Terrestrial, 5.5, 5500),   // Dry, hot, atmosphere.

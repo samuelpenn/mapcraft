@@ -58,6 +58,9 @@ public class PlanetFactory {
 	private static final String TRITANIUM = "Tritanium gas";
 	private static final String SYNTHOSIUM = "Synthosium gas";
 	
+	private static final String BASE_ORGANICS = "Base organics";
+	private static final String SIMPLE_ORGANICS = "Simple organics";
+	
 	public PlanetFactory(ObjectFactory factory, Star star) {
 		this.factory = factory;
 		this.star = star;
@@ -736,9 +739,7 @@ public class PlanetFactory {
 	}
 
 	/**
-	 * Primal Mars-like world where life is just beginning to take hold on
-	 * land. However, the world has become too cold, and is beginning to
-	 * freeze. Life is unlikely to evolve into anything more complex.
+	 * Mars-like world which has a large amount of surface water.
 	 */
 	void defineAreanLacustric(Planet planet) {
 		// Atmosphere type
@@ -765,8 +766,8 @@ public class PlanetFactory {
 		}
 		planet.setTemperature(star.getOrbitTemperature(planet.getEffectiveDistance()));
 
-		planet.setHydrographics(Die.d20() * 3);
-		switch (Die.d6()) {
+		planet.setHydrographics(Die.d6(3) * 5);
+		switch (Die.d6()+earthFudge) {
 		case 1:
 			planet.setLifeLevel(LifeType.Archaean);
 			break;
@@ -778,6 +779,9 @@ public class PlanetFactory {
 			break;
 		case 6:
 			planet.setLifeLevel(LifeType.SimpleLand);
+			break;
+		default:
+			planet.setLifeLevel(LifeType.ComplexLand);
 			break;
 		}
 		setDayLength(planet, 1.0);
@@ -1432,25 +1436,91 @@ public class PlanetFactory {
 		}
 	}
 	
+	/**
+	 * Basaltic worlds are mostly silicate, but with a basalt crust
+	 * formed by ancient lava flows early in its creation.
+	 */
 	void defineBasaltic(Planet planet) {
 		setDayLength(planet, 1.0);
-		planet.addResource(SILICATE, 30+Die.d20(2));
-		planet.addResource(CARBONIC, 30+Die.d20(2));
+		Resources.setResources(factory, star, planet);
 		
-		planet.addResource(MAGNESITE, 60+Die.d20(2));
+		// Special features.
+		switch (Die.d6(3)) {
+		case 3: case 4:
+			switch (Die.d3()) {
+			case 1: case 2:
+				planet.addFeature(PlanetFeature.FastRotation);
+				planet.setDay(Die.d10(5)*100);
+				break;
+			case 3:
+				planet.addFeature(PlanetFeature.PartialRings);
+				break;
+			}
+			break;
+		case 5: case 6:
+			switch (Die.d3()) {
+			case 1:
+				planet.addFeature(PlanetFeature.GiantCrater);
+				break;
+			case 2:
+				planet.addFeature(PlanetFeature.HeavilyCratered);
+				break;
+			case 3:
+				planet.addFeature(PlanetFeature.Fractured);
+				break;
+			}
+			break;
+		case 7: case 8:
+			switch (Die.d4()) {
+			case 1:
+				planet.addFeature(PlanetFeature.Smooth);
+				break;
+			case 2:
+				planet.addFeature(PlanetFeature.EquatorialRidge);
+				break;
+			case 3:
+				planet.addFeature(PlanetFeature.Hexagons);
+				break;
+			case 4:
+				planet.addFeature(PlanetFeature.Spirals);
+				break;
+			}
+			break;
+		}
 	}
 	
+	/**
+	 * Asteroid very close to its star. Probably tidally locked. Heavy metals.
+	 */
 	void defineVulcanian(Planet planet) {
-		setDayLength(planet, 1.0);
-		planet.addResource(CARBONIC, 20+Die.d20(2));
-		planet.addResource(FERRIC, 10+Die.d12(2));		
-		planet.addResource(SILICATE, 10+Die.d12(2));
-		
-		planet.addResource(HELIACATE, 10+Die.d8(2));
+		int		period = (int)star.getOrbitPeriod(planet.getDistance());
+		switch (Die.d6(2)) {
+		case 2:
+			period = Die.d6(3) * 1000;
+			break;
+		case 3: case 4: case 5:
+			period = (period * 2)/3;
+			break;
+		case 6: case 7: case 8:
+			period = period;
+			break;
+		case 9: case 10: case 11:
+			period = (period * 3)/2;
+			break;
+		case 12:
+			period /= Die.d4();
+			break;
+		}
+		planet.setDay(period);
+		Resources.setResources(factory, star, planet);
 	}
 
+	/**
+	 * Silicate asteroid.
+	 */
 	void defineSilicaceous(Planet planet) {
 		setDayLength(planet, 1.0);
+		Resources.setResources(factory, star, planet);
 		planet.addResource(SILICATE, 60+Die.d20(2));
 		planet.addResource(CARBONIC, 20+Die.d20(2));
 		
@@ -1780,7 +1850,7 @@ public class PlanetFactory {
 				planet = getWorld(name, distance, PlanetType.Ferrinian);
 				break;
 			case 8:
-				planet = getWorld(name, distance, PlanetType.Vulcanian);
+				planet = getWorld(name, distance, PlanetType.Sideritic);
 				break;
 			case 9:
 				planet = getWorld(name, distance, PlanetType.Basaltic);
@@ -1809,11 +1879,17 @@ public class PlanetFactory {
 		} else {
 			// Warm worlds, possibility of atmosphere, even life.
 			switch (Die.d6() + earthFudge) {
-			case 1: case 2: case 3:
+			case 1: case 2:
 				planet = getWorld(name, distance, PlanetType.Hermian);
 				break;
-			case 4: case 5:
+			case 3:
+				planet = getWorld(name, distance, PlanetType.AreanXenic);
+				break;
+			case 4:
 				planet = getHotAtmosphere(name, distance);
+				break;
+			case 5:
+				planet = getWorld(name, distance, PlanetType.AreanLacustric);
 				break;
 			default:
 				// Earth-like worlds.
@@ -1826,6 +1902,9 @@ public class PlanetFactory {
 		return planet;
 	}
 	
+	/**
+	 * Cool worlds fall between Hot and Cold, and include all Earth-like worlds.
+	 */
 	public Planet getCoolWorld(String name, int distance) {
 		Planet					planet = null;
 		
@@ -1838,8 +1917,11 @@ public class PlanetFactory {
 			case 2:
 				planet = getWorld(name, distance, PlanetType.Arean);
 				break;
-			case 3: case 4:
+			case 3:
 				planet = getWorld(name, distance, PlanetType.EoArean);
+				break;
+			case 4:
+				planet = getWorld(name, distance, PlanetType.MesoArean);
 				break;
 			default:
 				planet = getWarmGaian(name, distance);
@@ -2111,10 +2193,7 @@ public class PlanetFactory {
 					switch (Die.d8()+i) {
 					case 1: // Large Asteroid.
 						switch (Die.d6()) {
-						case 1: case 2:
-							moon = getWorld(name, distance, PlanetType.Vulcanian, planet);
-							break;
-						case 3:
+						case 1: case 2: case 3:
 							moon = getWorld(name, distance, PlanetType.Basaltic, planet);
 							break;
 						case 4: 

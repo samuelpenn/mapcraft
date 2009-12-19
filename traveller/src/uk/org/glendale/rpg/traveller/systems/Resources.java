@@ -19,7 +19,6 @@ import uk.org.glendale.rpg.utils.Die;
 public class Resources {
 	private static final String VEGETABLES = "Vegetables";
 	private static final String MEAT = "Meat";
-	private static final String SEAFOOD = "Seafood";
 	private static final String WOOD = "Wood";
 	
 	private static final String FERRIC = "Ferric ore";
@@ -44,11 +43,15 @@ public class Resources {
 	private static final String ISKINE = "Iskine crystals";
 	private static final String OORCINE = "Oorcine ices";
 	
-	private static final String REGIAM = "Regiam gas";
-	private static final String TRITANIUM = "Tritanium gas";
-	private static final String SYNTHOSIUM = "Synthosium gas";
+	private static final String REGIAM = "Regiam gas";            // Hydrogen/Helium gases
+	private static final String TRITANIUM = "Tritanium gas";      // Radioactive gases (Tritium)
+	private static final String SYNTHOSIUM = "Synthosium gas";    // Complex organic molecules, extreme cold.
+	private static final String HALOGEN = "Halogen gas";          // Highly reactive gases (Chlorine, Fluorine)
 	
-	private static final String PETROLEUM = "Petroleum";
+	private static final String PETROLEUM = "Petroleum";          // Liquid hydrocarbons
+	private static final String METHANE = "Methane gas";          // Natural gas (Methane)
+	private static final String ACIDS = "Acid";                   // Acids                  
+
 	
 	/**
 	 * Add resources to the planet based on the atmosphere composition
@@ -59,7 +62,7 @@ public class Resources {
 		int		air = 0;
 
 		switch (planet.getAtmosphereType()) {
-		case WaterVapour: case Primordial:
+		case WaterVapour:
 			air = 10;
 			break;
 		case OrganicToxins: case Pollutants:
@@ -73,6 +76,18 @@ public class Resources {
 		case HighOxygen: case Standard:
 			airResource = AURAM;
 			air = 100;
+			break;
+		case Chlorine:
+			airResource = HALOGEN;
+			air = 50;
+			break;
+		case Flourine:
+			airResource = HALOGEN;
+			air = 80;
+			break;
+		case Primordial:
+			airResource = METHANE;
+			air = 60;
 			break;
 		default:
 			air = 0;
@@ -117,7 +132,8 @@ public class Resources {
 		
 		if (planet.hasTradeCode(TradeCode.Fl)) {
 			// Non-water oceans;
-			water = 0;
+			waterResource = ACIDS;
+			water /= 3;
 		} else if (water > 0) {
 			waterResource = AQUAM;
 		}
@@ -159,6 +175,26 @@ public class Resources {
 	private static final String		HUGE_ANIMALS = "Huge animals";
 	private static final String		FRUITS = "Fruits";
 	private static final String		GRAIN = "Grain";
+	
+	/**
+	 * Get resources based on a world with Organic level of life.
+	 */
+	private static void organicLife(ObjectFactory factory, Star star, Planet planet) {
+		int		life = 0;
+		switch (planet.getTemperature()) {
+		case UltraCold:	     life = 2;  break;
+		case ExtremelyCold:  life = 5;  break;
+		case VeryCold:       life = 10;	break;
+		case Cold:           life = 15; break;
+		case Cool:           life = 20;	break;
+		case Standard:       life = 25;	break;
+		case Warm:           life = 35; break;
+		case Hot:            life = 15; break;
+		case VeryHot:        life = 5;  break;
+		case ExtremelyHot:   life = 2;  break;
+		case UltraHot:       life = 1;  break;
+		}
+	}
 
 	private static void basicLife(ObjectFactory factory, Star star, Planet planet) {
 		// Basic organic resources.
@@ -491,36 +527,35 @@ public class Resources {
 		int		water = 0, doric = 0, iskine = 0, oorcine = 0;
 		int		air = 0, regiam = 0, tritanium = 0, synthosium = 0;
 		int		petroleum = 0;
-
+		
 		switch (planet.getType()) {
 		case Vulcanian:
-			silicate = Die.d20(5);
-			ferric = Die.d20(6);
+			silicate = Die.d20(4);
+			ferric = Die.d20(3);
 			vardonnek = ferric/2;
-			larathic = ferric/Die.d6(2);
-			if (star != null && star.getStarClass() == StarClass.D) {
-				xithantite = Die.d12(3);
-			}
+			larathic = Die.d6(3)*2;
 			break;
 		case Silicaceous:
 			silicate = 20 + Die.d20(5);
-			krysite = Die.d20(4);
-			if (Die.d4() == 1) carbonic = Die.d12(3);
+			krysite = planet.getRadius()/10 + Die.d4();
+			ferric = planet.getRadius()/20;
 			break;
 		case Sideritic:
 			ferric = 40 + Die.d20(5);
 			vardonnek = 20 + Die.d20(4);
-			larathic = vardonnek / Die.d4(2);
+			silicate = Die.d20(2);
 			if (star != null && star.getStarClass() == StarClass.D) {
-				xithantite = Die.d12(4);
+				xithantite = planet.getRadius()/5;
 			}
 			break;
 		case Basaltic:
 			silicate = 20 + Die.d20(4);
-			krysite = Die.d12(4);
-			magnesite = 20 + Die.d12(4);
-			ferric = Die.d20(2);
-			carbonic = Die.d20(2);
+			krysite = planet.getRadius()/5 + Die.d6();
+			magnesite = planet.getRadius()/10 + Die.d4();
+			ferric = planet.getRadius()/20;
+			if (star != null && star.getStarClass() == StarClass.D) {
+				xithantite = planet.getRadius()/10;
+			}
 			break;
 		case Carbonaceous:
 			silicate = Die.d20(3);
@@ -706,6 +741,26 @@ public class Resources {
 		planet.addResource(MAGNESITE, Die.d12(2));
 		planet.addResource(FERRIC, Die.d20(2));
 		if (Die.d2()==1) planet.addResource(ACENITE, Die.d12(3));
+		
+		switch (planet.getLifeLevel()) {
+		case Organic:
+			planet.addResource(BASE_ORGANICS, Die.d12());
+			break;
+		case Archaean:
+			planet.addResource(BASE_ORGANICS, Die.d6(3)*3);
+			planet.addResource(SIMPLE_ORGANICS, Die.d6(4)*5);
+			break;
+		case Aerobic:
+			break;
+		case ComplexOcean:
+			break;
+		case SimpleLand:
+			break;
+		case ComplexLand:
+			break;
+		case Extensive:
+			break;
+		}
 	}
 	
 	private static void setHotAtmosphere(ObjectFactory factory, Star star, Planet planet) {
@@ -804,6 +859,8 @@ public class Resources {
 			case EoArean:
 			case AreanLacustric:
 			case Arean:
+			case MesoArean:
+			case AreanXenic:
 				setArean(factory, star, planet);
 				break;
 			case Hermian:

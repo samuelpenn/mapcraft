@@ -42,21 +42,29 @@ import uk.org.glendale.rpg.utils.Die;
 public class Description {
 	private StringBuffer		buffer = new StringBuffer();
 	private Planet				planet = null;
+
+	// Base package where the text properties can be found.
+	private static final String		TEXT_BASE = "uk.org.glendale.rpg.traveller.systems.text.";
+	// List of each of the text files we need to load.
+	private static final String[] 	TEXT_BUNDLES = { "descriptions", "asteroids" };
 	
-	private static final String	BUNDLE = "uk.org.glendale.rpg.traveller.systems.descriptions";
-	private static Properties	phrases = null;
+	private static Properties		phrases = null;
 	
 	/**
-	 * Automatically load the list of random phrases from the resource bundle.
+	 * Automatically load the list of random phrases from the resource bundles.
+	 * The text is now split into multiple bundles, to make writing it easier.
 	 */
     static {
-        ResourceBundle      bundle = ResourceBundle.getBundle(BUNDLE);
         phrases = new Properties();
 
-        Enumeration keys = bundle.getKeys();
-        while (keys.hasMoreElements()) {
-            String key = (String)keys.nextElement();
-            phrases.setProperty(key, bundle.getString(key));
+        for (String bundleName : TEXT_BUNDLES ) {
+    		ResourceBundle      bundle = ResourceBundle.getBundle(TEXT_BASE + bundleName);
+
+    		Enumeration keys = bundle.getKeys();
+    		while (keys.hasMoreElements()) {
+    			String key = (String)keys.nextElement();
+    			phrases.setProperty(key, bundle.getString(key));
+    		}
         }
     }
     
@@ -151,7 +159,7 @@ public class Description {
 				String		prop = line.substring(line.indexOf("$")+1);
 				String		value = "";
 				
-				prop = prop.replaceAll("[^A-Za-z].*", "");
+				prop = prop.replaceAll("[^A-Za-z0-9].*", "");
 				//System.out.println(prop);
 				
 				value = getProperty(prop);
@@ -241,12 +249,24 @@ public class Description {
 	 * looks like a number, then it will be formatted and truncated to 1dp if
 	 * necessary.
 	 * 
+	 * If the property name is of the form xDy, then a dice roll is actually
+	 * done instead, rolling x dice of size y. e.g., $3D6 translates as roll
+	 * 3 six sided dice, and return the result.
+	 * 
 	 * @param name		Name of property to fetch.
 	 * @return			Value of the property, or empty string.
 	 */
 	private String getProperty(String name) {
 		String		value = "";
 		if (planet == null) return value;
+	
+		// Possible to make die rolls.
+		if (name.matches("[0-9]D[0-9]")) {
+			int		number = Integer.parseInt(name.replaceAll("([0-9]+)D[0-9]+", "$1"));
+			int		type = Integer.parseInt(name.replaceAll("[0-9]+D([0-9])+", "$1"));
+			
+			return ""+Die.die(type, number);
+		}
 		
 		try {
 			Method		method = planet.getClass().getMethod("get"+name);
@@ -263,7 +283,7 @@ public class Description {
 				// Do nothing.
 			}
 		} catch (Throwable e) {
-			e.printStackTrace();
+			System.out.println("getProperty: Cannot find method for ["+name+"]");
 			value = "";
 		}
 		
@@ -367,17 +387,27 @@ public class Description {
 		return buffer.toString();
 	}
 	
+	private static void wrap(String text) {
+		int		col = 0;
+		for (char c : text.toCharArray()) {
+			System.out.print(c);
+			if (col++ > 70 && c == ' ') {
+				System.out.println("");
+				col = 0;
+			}
+		}
+	}
+	
 	/**
 	 * Test things.
 	 */
 	public static void main(String[] args) throws Exception {
 		ObjectFactory	factory = new ObjectFactory();
-		Planet		p = factory.getPlanet(176110);
+		Planet		p = factory.getPlanet(594704);
 		Description d = new Description(p);
-		Description.setDescription(p);
-		p.persist();
-		System.out.println(p.getHydrographics());
-		System.out.println(d.getDescription("planet.Gaian"));
+		//Description.setDescription(p);
+		//p.persist();
+		wrap(d.getFullDescription("planet.Silicaceous"));
 		factory.close();
 		System.exit(0);
 		

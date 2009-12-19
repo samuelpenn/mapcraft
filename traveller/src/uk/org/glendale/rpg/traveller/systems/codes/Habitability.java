@@ -77,6 +77,10 @@ public enum Habitability {
 		badness += planet.getTemperature().getBadness();
 		badness += planet.getLifeLevel().getBadness();
 		
+		if (planet.getType().isJovian()) {
+			badness += 100;
+		}
+		
 		if (planet.getHydrographics() < 1) {
 			badness += 7;
 		} else if (planet.getHydrographics() < 5) {

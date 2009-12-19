@@ -113,6 +113,10 @@ public class Sector {
 				throw e;
 			}
 		}
+		
+		public static String[] getArrayOfNames() {
+			return new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P" };
+		}
 	}
 	
 	/**
@@ -202,6 +206,19 @@ public class Sector {
 		this.factory = factory;
 		if (!read("name='"+name.replaceAll("'", "''")+"'")) {
 			throw new ObjectNotFoundException("Could not find a sector named ["+name+"]");
+		}
+	}
+
+	public Sector(ObjectFactory factory, String name, int x, int y, String allegiance, HashSet<SectorCode> codes) {
+		this.factory = factory;
+		this.name = name;
+		this.x = x;
+		this.y = y;
+		this.allegiance = allegiance;
+		this.codes = codes;
+		
+		if (!read("x="+x+" and y="+y) && name != null) {
+			persist();
 		}
 	}
 
@@ -416,6 +433,22 @@ public class Sector {
 		return SubSector.getByCoordinate(x, y);
 	}
 	
+	public String getSubSectorName(SubSector sub) {
+		String			name = sub.toString();
+		ResultSet		rs = null;
+		
+		try {
+			rs = factory.read("subsector", "sector_id="+getId()+" and idx="+sub.getId());
+			if (rs.next()) {
+				name = rs.getString("name");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return name;
+	}
+	
 	/**
 	 * @param x		X coordinate of point in sector, 1-40
 	 * @param y		Y coordinate of point in sector, 1-32.
@@ -435,6 +468,16 @@ public class Sector {
 		}
 		
 		return name;
+	}
+	
+	public String getCodesAsString() {
+		String		s = "";
+		
+		for (SectorCode code : codes) {
+			s+= code.toString()+" ";
+		}
+		
+		return s.trim();
 	}
 	
 	/**
@@ -712,8 +755,6 @@ public class Sector {
 					//String			name = baseName + Sector.getSubSector(uwp.getX(), uwp.getY())+number;
 					//uwp.depopulate(name);
 	            	
-					// Seed the random number generator.
-					new Random(getX()*100000+getY()*1000 + uwp.getX()*40 +  uwp.getY());
 					if (factory.getStarSystem(id, uwp.getX(), uwp.getY()) != null) continue;
 	            	new StarSystem(factory, id, uwp);
             	} catch (Throwable e) {
@@ -1038,7 +1079,120 @@ public class Sector {
 			String		filename = position.substring(y+11, y+12).toLowerCase()+position.substring(x+12, x+13).toUpperCase();
 			//String		filename = Integer.toString(y+15, 36).toLowerCase()+Integer.toString(x+16, 36).toUpperCase();
 			
-			if (!sector.getName().equals("Karleaya")) continue;
+			//if (!sector.getName().equals("Karleaya")) continue;
+			
+			System.out.println("Creating "+sector.getId()+": "+sector.getName());
+			
+			try {
+				File		file = new File("data/core/gni/"+filename+".GNI");
+				if (file.canRead()) {
+					sector.create(file);
+				}
+			} catch (Throwable e) {
+				System.out.println("Error in data for ["+filename+"]");
+				e.printStackTrace();
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Creates a universe from our own format of UWP data files. They consist of
+	 * a directory full of *.uwp files, one per sector. This are actually Java
+	 * style property files, in order to make them easier to parse.
+	 */
+	public static void createKnownSpace(File directory) {
+		//readSectorNames();
+		
+		ObjectFactory		factory = new ObjectFactory();
+		Vector<Sector>		sectors = factory.getSectors();
+		String				position = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		
+		if (!directory.exists() || !directory.isDirectory()) {
+			System.out.println("Source directory can't be accessed");
+			return;
+		}
+		
+		for (File file : directory.listFiles()) {
+			if (!file.getName().endsWith(".uwp")) {
+				continue;
+			}
+			factory.close();
+			factory = null;
+			factory = new ObjectFactory();
+			
+			System.out.println("Processing ["+file.getName()+"]");
+			Properties		props = new Properties();
+			try {
+				props.load(new FileInputStream(file));
+			} catch (FileNotFoundException e) {
+				System.out.println("Unable to find file ["+file.getName()+"]");
+				continue;
+			} catch (IOException e) {
+				System.out.println("Unable to read from file ["+file.getName()+"]");
+			}
+			
+			String		sectorName = props.getProperty("Sector");
+			String		sectorCodes = props.getProperty("Codes");
+			String		sectorAllegiance = props.getProperty("Allegiance");
+			int			sectorX = Integer.parseInt(props.getProperty("CoordX"));
+			int			sectorY = Integer.parseInt(props.getProperty("CoordY"));
+			
+			Sector		sector = null;
+			try {
+				// Grab an existing sector
+				sector = new Sector(factory, sectorName);
+				continue;
+			} catch (ObjectNotFoundException e) {
+				// This is a new sector, so create an entry for it.
+				HashSet<SectorCode>		codes = new HashSet<SectorCode>();
+				
+				for (String c : sectorCodes.split(" ")) {
+					try {
+						codes.add(SectorCode.valueOf(c));
+					} catch (IllegalArgumentException ee) {
+						System.out.println("!! Cannot identify ["+c+"]");
+					}
+				}
+				
+				sector = new Sector(factory, sectorName, sectorX, sectorY, sectorAllegiance, codes);
+				
+				// Create entries for all the sub sectors
+				for (String n : SubSector.getArrayOfNames() ) {
+					String		name = props.getProperty(n, n);
+					SubSector	sub = SubSector.valueOf(n);
+
+					Hashtable<String,Object>	table = new Hashtable<String, Object>();
+	        		table.put("id", 0);
+	        		table.put("sector_id", sector.getId());
+	        		table.put("idx", sub.getId());
+	        		table.put("name", name);
+	        		factory.persist("subsector", table);
+				}
+			}
+			
+			// Now we have a sector, so create all the star systems.
+			Enumeration		keys = props.propertyNames();
+			while (keys.hasMoreElements()) {
+				String	key = (String)keys.nextElement();
+				if (key.matches("[0-9]{4}")) {
+					try {
+						new StarSystem(factory, sector.getId(), new UWP(props.getProperty(key)));
+					} catch (Throwable e) {
+						System.out.println("Unable to process ["+sectorName+"] ["+key+"]");
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
+		for (Sector sector : sectors) {
+			int			x = sector.getX();
+			int			y = sector.getY();
+			String		filename = position.substring(y+11, y+12).toLowerCase()+position.substring(x+12, x+13).toUpperCase();
+			//String		filename = Integer.toString(y+15, 36).toLowerCase()+Integer.toString(x+16, 36).toUpperCase();
+			
+			//if (!sector.getName().equals("Karleaya")) continue;
 			
 			System.out.println("Creating "+sector.getId()+": "+sector.getName());
 			
@@ -1079,6 +1233,65 @@ public class Sector {
 				return;
 			}
 		}		
+	}
+	
+	public static void outputUWPs(File directory) {
+		final String		code = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		ObjectFactory		factory = new ObjectFactory();
+		
+		for (Sector sector : factory.getSectors()) {
+			int		x = sector.getX();
+			int		y = sector.getY();
+			
+			System.out.println("["+x+","+y+"] ["+sector.getName()+"]");
+			
+			String	filename = String.format("%s/sector_%s%s.uwp", directory.getAbsolutePath(),
+						code.charAt(x+12), code.charAt(y+12));
+
+			try {
+				FileWriter	writer = new FileWriter(new File(filename));
+				
+				writer.write("Sector: "+sector.getName()+"\n");
+				writer.write("CoordX: "+x+"\n");
+				writer.write("CoordY: "+y+"\n");
+				writer.write("Allegiance:"+sector.getAllegiance()+"\n");
+				writer.write("Codes: "+sector.getCodesAsString()+"\n");
+				writer.write("\n");
+				for (String letter : new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P" }) {
+					writer.write(letter+": ");
+					SubSector	ss = SubSector.valueOf(letter);
+					writer.write(sector.getSubSectorName(ss)+"\n");
+				}
+				writer.write("\n");
+				
+				writer.write("# 1-18: Name\n");
+				writer.write("# 20-23: HexNbr\n");
+				writer.write("# 25-33: UWP\n");
+				writer.write("# 36: Bases\n");
+				writer.write("# 38-52: Codes & Comments\n");
+				writer.write("# 54: Zone\n");
+				writer.write("# 57-59: PBG\n");
+				writer.write("# 61-62: Allegiance\n");
+				writer.write("# 64-80: Stellar Data\n");
+				writer.write("\n");
+				writer.write("# --\n");
+				for (StarSystem system : factory.getStarSystemsBySector(sector.getId())) {
+					String uwp = system.getUWP();
+					if (uwp == null || uwp.length() == 0) {
+						uwp = new UWP(factory, system).toString();
+						System.out.println("System ["+system.getId()+"] in ["+sector.getName()+"/"+sector.getId()+"] ["+uwp+"]");
+					}
+					if (uwp.matches("^[0-9a-z][0-9A-Z] [^ ].*")) {
+						uwp = uwp.substring(3);
+					}
+					writer.write(system.getXAsString()+system.getYAsString()+":"+uwp+"\n");
+				}
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
 	}
 		
 	public static void createTravellerSub() {
@@ -1181,8 +1394,10 @@ public class Sector {
 		//populateUWPs();
 		//createTraveller();
 		//createMissingSectors();
+		createKnownSpace(new File("/home/sam/src/mapcraft/traveller/data/knownspace"));
+		//outputUWPs(new File("/home/sam/src/mapcraft/traveller/data/knownspace"));
 		
-		createSector(45);
+		//createSector(45);
 		//regenerate(28);
 		
 		System.exit(0);
