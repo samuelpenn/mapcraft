@@ -1513,6 +1513,57 @@ public class PlanetFactory {
 		}
 		planet.setDay(period);
 		Resources.setResources(factory, star, planet);
+
+		// Special features.
+		switch (Die.d6(3)) {
+		case 3: case 4:
+			switch (Die.d3()) {
+			case 1: case 2:
+				if (Die.d10()==1) {
+					planet.addFeature(PlanetFeature.AA);
+				} else {
+					planet.addFeature(PlanetFeature.AR);
+				}
+				break;
+			case 3:
+				// Deep passages
+				planet.addFeature(PlanetFeature.UB);
+				break;
+			}
+			break;
+		case 5: case 6:
+			switch (Die.d4()) {
+			case 1:
+				planet.addFeature(PlanetFeature.GiantCrater);
+				break;
+			case 2:
+				planet.addFeature(PlanetFeature.HeavilyCratered);
+				break;
+			case 3:
+				// Molten rock
+				planet.addFeature(PlanetFeature.UA);
+				break;
+			case 4:
+				// Formations
+				planet.addFeature(PlanetFeature.UC);
+				break;
+			}
+			break;
+		case 7: case 8:
+			switch (Die.d3()) {
+			case 1:
+				planet.addFeature(PlanetFeature.Fractured);
+				break;
+			case 2:
+				planet.addFeature(PlanetFeature.AC);
+				break;
+			case 3:
+				// Dust
+				planet.addFeature(PlanetFeature.Dust);
+				break;
+			}
+			break;
+		}
 	}
 
 	/**
@@ -1825,10 +1876,10 @@ public class PlanetFactory {
 		if (distance < star.getEarthDistance()/3) {
 			switch (Die.d10()) {
 			case 1: case 2:
-				planet = getWorld(name, distance, PlanetType.AsteroidBelt);
+				planet = getBelt(name, distance);
 				break;
 			case 3: case 4:
-				planet = getWorld(name, distance, PlanetType.Vulcanian);
+				planet = getAsteroid(name, distance);
 				break;
 			case 5: case 6: case 7:
 				planet = getWorld(name, distance, PlanetType.Hadean);
@@ -1844,16 +1895,13 @@ public class PlanetFactory {
 			// Very hot worlds, close to the star.
 			switch (Die.d6(3)) {
 			case 3: case 4: case 5: case 6:
-				planet = getWorld(name, distance, PlanetType.AsteroidBelt);
+				planet = getBelt(name, distance);
 				break;
-			case 7:
-				planet = getWorld(name, distance, PlanetType.Ferrinian);
-				break;
-			case 8:
-				planet = getWorld(name, distance, PlanetType.Sideritic);
+			case 7: case 8:
+				planet = getAsteroid(name, distance);
 				break;
 			case 9:
-				planet = getWorld(name, distance, PlanetType.Basaltic);
+				planet = getWorld(name, distance, PlanetType.Ferrinian);
 				break;
 			case 10: case 11:
 				// Iron rich dwarf planet
@@ -2095,17 +2143,184 @@ public class PlanetFactory {
 		return planet;
 	}
 	
-	public Planet getBelt(String name, int distance) {
-		Planet					planet = null;
+	/**
+	 * Get a single asteroid. The type of asteroid is determined by how close
+	 * the planet is to the star.
+	 */
+	public Planet getAsteroid(String name, int distance) {
+		PlanetType	type = null;
+		Temperature	temperature = star.getOrbitTemperature(distance);
 
-		if (distance < star.getEarthDistance()*30) {
-			planet = getWorld(name, distance, PlanetType.AsteroidBelt);
-		} else {
-			planet = getOortCloud(name, distance);
+		switch (temperature) {
+		case UltraHot: // 15Mkm
+		case ExtremelyHot: // 25Mkm
+			type = PlanetType.Vulcanian;
+			break;
+		case VeryHot: // 50Mkm
+			switch (Die.d8()) {
+			case 1: case 2: case 3:
+				type = PlanetType.Vulcanian;
+				break;
+			case 4: case 5: case 6:
+				type = PlanetType.Silicaceous;
+				break;
+			case 7: case 8:
+				type = PlanetType.Sideritic;
+				break;
+			}
+			break;
+		case Hot: // 75Mkm
+			switch (Die.d8()) {
+			case 1:
+				type = PlanetType.Vulcanian;
+				break;
+			case 2: case 3: case 4: case 5:
+				type = PlanetType.Silicaceous;
+				break;
+			case 6: case 7: case 8:
+				type = PlanetType.Sideritic;
+				break;
+			}
+			break;
+		case Warm: // 100Mkm
+			switch (Die.d8()) {
+			case 1: case 2: case 3:
+				type = PlanetType.Silicaceous;
+				break;
+			case 4: case 5: case 6: case 7:
+				type = PlanetType.Sideritic;
+				break;
+			case 8:
+				type = PlanetType.Basaltic;
+				break;
+			}
+			break;
+		case Standard: // 120Mkm
+			switch (Die.d8()) {
+			case 1: case 2:
+				type = PlanetType.Silicaceous;
+				break;
+			case 3: case 4: case 5: case 6:
+				type = PlanetType.Sideritic;
+				break;
+			case 7: case 8:
+				type = PlanetType.Basaltic;
+				break;
+			}
+			break;
+		case Cool: // 200Mkm
+			switch (Die.d8()) {
+			case 1: case 2: case 3: case 4: case 5:
+				type = PlanetType.Sideritic;
+				break;
+			case 6: case 7:
+				type = PlanetType.Basaltic;
+				break;
+			case 8:
+				type = PlanetType.Carbonaceous;
+			}
+			break;
+		case Cold: // 500Mkm
+			switch (Die.d8()) {
+			case 1: case 2:
+				type = PlanetType.Sideritic;
+				break;
+			case 3:
+				type = PlanetType.Basaltic;
+				break;
+			case 4: case 5:
+				type = PlanetType.Carbonaceous;
+				break;
+			case 6: case 7: case 8:
+				type = PlanetType.Mimean;
+				break;
+			}
+			break;
+		case VeryCold: // 2000Mkm
+			switch (Die.d8()) {
+			case 1:
+				type = PlanetType.Sideritic;
+				break;
+			case 2:
+				type = PlanetType.Carbonaceous;
+				break;
+			default:
+				type = PlanetType.Mimean;
+				break;
+			}
+			break;
+		case ExtremelyCold: // 8000Mkm
+			switch (Die.d6()) {
+			case 1: case 2:
+				type = PlanetType.Mimean;
+				break;
+			default:
+				type = PlanetType.Oortean;
+				break;
+			}
+			break;
+		case UltraCold: // +
+			type = PlanetType.Oortean;
+			break;
 		}
-		planet.setDay(0);
+		return getWorld(name, distance, type);
+	}
+	
+	/**
+	 * Get an asteroid belt. Exact type is determined by proximity to star.
+	 */
+	public Planet getBelt(String name, int distance) {
+		PlanetType	type = null;
+		Temperature	temperature = star.getOrbitTemperature(distance);
 		
-		return planet;
+		switch (temperature) {
+		case UltraHot:
+		case ExtremelyHot:
+			type = PlanetType.VulcanianBelt;
+			break;
+		case VeryHot:
+		case Hot:
+			switch (Die.d3()) {
+			case 1:
+				type = PlanetType.VulcanianBelt;
+				break;
+			case 2: case 3:
+				type = PlanetType.MetallicBelt;
+				break;
+			}
+			break;
+		case Warm:
+		case Standard:
+			switch (Die.d2()) {
+			case 1:
+				type = PlanetType.MetallicBelt;
+				break;
+			case 2:
+				type = PlanetType.AsteroidBelt;
+				break;
+			}
+			break;
+		case Cool:
+			type = PlanetType.AsteroidBelt;
+			break;
+		case Cold:
+			if (Die.d2() == 1) {
+				type = PlanetType.AsteroidBelt;
+			} else {
+				type = PlanetType.IceBelt;
+			}
+			break;
+		case VeryCold:
+		case ExtremelyCold:
+			type = PlanetType.IceBelt;
+			break;
+		case UltraCold:
+			type = PlanetType.OortCloud;
+			break;
+			
+		}
+		
+		return getWorld(name, distance, type);
 	}
 	
 	public Planet getIceWorld(String name, int distance) {

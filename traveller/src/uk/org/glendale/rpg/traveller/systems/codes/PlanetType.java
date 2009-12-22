@@ -14,6 +14,8 @@ package uk.org.glendale.rpg.traveller.systems.codes;
 public enum PlanetType {
 	Undefined(Category.Belt, 0.0, 0), 
 	AsteroidBelt(Category.Belt, 0.0, 0),
+	VulcanianBelt(Category.Belt, 0.0, 0),
+	MetallicBelt(Category.Belt, 0.0, 0),
 	IceBelt(Category.Belt, 0.0, 0),
 	OortCloud(Category.Belt, 0.0, 0),
 	

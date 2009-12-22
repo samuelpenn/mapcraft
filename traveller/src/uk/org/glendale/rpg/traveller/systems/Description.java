@@ -46,7 +46,7 @@ public class Description {
 	// Base package where the text properties can be found.
 	private static final String		TEXT_BASE = "uk.org.glendale.rpg.traveller.systems.text.";
 	// List of each of the text files we need to load.
-	private static final String[] 	TEXT_BUNDLES = { "descriptions", "asteroids" };
+	private static final String[] 	TEXT_BUNDLES = { "descriptions", "asteroids", "belts", "dwarfs" };
 	
 	private static Properties		phrases = null;
 	

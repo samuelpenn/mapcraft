@@ -1343,6 +1343,12 @@ public class WorldBuilder {
 		
 		//createPlanetType(PlanetType.Hephaestian);
 		ObjectFactory		factory = new ObjectFactory();
+		
+		Planet	p = factory.getPlanet(594547);
+		imagePlanet(factory, p);
+		
+		System.exit(0);
+		
 		Vector<Planet>		planets = factory.getPlanetsBySystem(10373);
 		
 		for (Planet planet : planets) {

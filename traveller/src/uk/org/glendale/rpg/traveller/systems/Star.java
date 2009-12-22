@@ -285,7 +285,9 @@ public class Star {
 		Temperature		temperature = Temperature.Standard;
 		double			constant = getSolarConstant();
 		
-		if (distance < 25 * constant) {
+		if (distance < 15 * constant) {
+			temperature = Temperature.UltraHot;
+		} else if (distance < 25 * constant) {
 			temperature = Temperature.ExtremelyHot;
 		} else if (distance < 50 * constant) {
 			temperature = Temperature.VeryHot;
@@ -301,8 +303,10 @@ public class Star {
 			temperature = Temperature.Cold;
 		} else if (distance < 2000 * constant) {
 			temperature = Temperature.VeryCold;
-		} else {
+		} else if (distance < 8000 * constant) {
 			temperature = Temperature.ExtremelyCold;
+		} else {
+			temperature = Temperature.UltraCold;
 		}
 		
 		return temperature;

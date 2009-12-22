@@ -38,6 +38,7 @@ public enum PlanetFeature {
 	CrateredSeas("CS"),
 	Dry("Dr"),
 	Wet("We"),
+	Dust("Du"),
 	PartialRings("R0"),
 	FaintRings("R1"),
 	Rings("R2"),
@@ -58,6 +59,10 @@ public enum PlanetFeature {
 	Hexagons("Hx"),
 	Spirals("Sp"),
 	GiantCrater("Gc"), // Large crater on the equator, big collision.
+	AR("Ruins"),
+	AC("Ruins of colony"),
+	AA("Ancients Ruins"),
+	AX("Alien Ruins"),
 	// Finally, the following are unique codes which vary depending
 	// on the type of the world. They represent very rare features.
 	UA, UB, UC, UD, UE, UF, UG, UH, UI, UJ, UK, UL, UM, 

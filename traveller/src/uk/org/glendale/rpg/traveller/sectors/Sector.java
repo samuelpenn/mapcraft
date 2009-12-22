@@ -1394,8 +1394,8 @@ public class Sector {
 		//populateUWPs();
 		//createTraveller();
 		//createMissingSectors();
-		createKnownSpace(new File("/home/sam/src/mapcraft/traveller/data/knownspace"));
-		//outputUWPs(new File("/home/sam/src/mapcraft/traveller/data/knownspace"));
+		//createKnownSpace(new File("/home/sam/src/mapcraft/traveller/data/knownspace"));
+		outputUWPs(new File("/home/sam/src/mapcraft/traveller/data/knownspace"));
 		
 		//createSector(45);
 		//regenerate(28);
