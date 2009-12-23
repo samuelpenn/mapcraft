@@ -583,7 +583,18 @@ public class UWP {
     	government = 0;
     }
     
-    
+    /**
+     * Try and work out what the allegiance should be. Much of the data is
+     * post-3rd Imperium, so allegiances need to be retrofitted back to a
+     * classic Traveller era. Also, I want a simplified allegiance system
+     * anyway.
+     */
+    private String sanitiseAllegiance(String code) {
+    	String[] im = { "Li", "Fi", "St" };
+    	String[] jp = { "Jo", "Jp", "JP", "Jr", "Ju", "Jv" };
+    	
+    	return code;
+    }
     
     private void debug(String name, String value) {
     	System.out.println(name+": ["+value+"]");

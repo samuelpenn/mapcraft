@@ -24,8 +24,8 @@ public enum PlanetType {
 	Sideritic(Category.Asteroid, 6.0, 120),					// Pure nickel-iron, very dense.
 	Basaltic(Category.Asteroid, 4.0, 80),					// Cooled larva on surface, smooth. Rare.
 	Carbonaceous(Category.Asteroid, 3.0, 150),  			// Very dark, rich in carbon. Outer middle solar systems. (C-type)
-	Enceladean(Category.Asteroid, 1.6, 250, "ice"),    		// Enceladus (ice, active)
-	Mimean(Category.Asteroid, 1.1, 200, "ice"),        		// Mimas (ice, inactive)
+	Enceladean(Category.Asteroid, 1.6, 220, "ice"),    		// Enceladus (ice, active)
+	Mimean(Category.Asteroid, 1.1, 180, "ice"),        		// Mimas (ice, inactive)
 	Oortean(Category.Asteroid, 1.5, 100, "ice"),			// World out in the Oort cloud.
 	
 	Hadean(Category.Dwarf, 7.0, 500, "hotrock"),           	// Planetoid very iron rich, just a core.

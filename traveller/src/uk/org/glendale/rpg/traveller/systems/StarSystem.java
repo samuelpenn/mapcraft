@@ -148,26 +148,6 @@ public class StarSystem implements Comparable {
 		} else {
 			return null;
 		}
-		/*
-		Planet		mainWorld = getMainWorld();
-		String		uwp = "";
-		
-		uwp += mainWorld.getStarport().toString();
-		uwp += (int)(mainWorld.getRadius() / 1.25 / 1000);
-		uwp += mainWorld.getAtmos
-		
-		
-		uwpLine = String.format("XX %20s%4s ", name, Sector.getCoordinate(x, y));
-
-		starport = getAlpha(string, 0);
-        diameter = getDigit(string, 1);
-        atmosphere = getDigit(string, 2);
-        hydrographic = getDigit(string, 3);
-        population = getDigit(string, 4);
-        government = getDigit(string, 5);
-        lawLevel = getDigit(string, 6);
-        techLevel = getDigit(string, 8);
-	*/	
 	}
 	
 	/**
