@@ -1,4 +1,9 @@
 
+DROP TABLE IF EXISTS requirements;
+DROP TABLE IF EXISTS trade;
+DROP TABLE IF EXISTS resources;
+DROP TABLE IF EXISTS log;
+DROP TABLE IF EXISTS ship;
 DROP TABLE IF EXISTS planet;
 DROP TABLE IF EXISTS star;
 DROP TABLE IF EXISTS system;
@@ -12,25 +17,34 @@ DROP TABLE IF EXISTS note;
 DROP TABLE IF EXISTS facility;
 DROP TABLE IF EXISTS commodity;
 DROP TABLE IF EXISTS facilities;
-DROP TABLE IF EXISTS ship;
+DROP TABLE IF EXISTS numbers;
 
 #
 # ALLEGIANCE
 #
 CREATE TABLE allegiance(id int not null auto_increment, code varchar(4) not null,
 						name varchar(240) not null,
-                        colour varchar(12) default '#000000',
+                        colour varchar(12) default '#777777',
                         language varchar(16),
                         tech int default 0, law int default 0, population int default 0,
                         PRIMARY KEY (id), KEY(code), KEY(name));
 
-INSERT INTO allegiance values(0, 'Un', 'Unaligned', '#000000', NULL, 0, 0);
+INSERT INTO allegiance VALUES(0, 'Un', 'Unaligned', '#777777', NULL, -2, -1, -1);
+INSERT INTO allegiance VALUES(0, 'Im', 'Imperium', '#FFFFFF', NULL, 0, 0, 0);
+INSERT INTO allegiance VALUES(0, 'Zh', 'Zhodani', '#00FFFF', NULL, 0, +1, 0);
+INSERT INTO allegiance VALUES(0, 'So', 'Solomani', '#FF00FF', NULL, 0, 0, 0);
+INSERT INTO allegiance VALUES(0, 'As', 'Aslan', '#FF5555', NULL, 0, 0, 0);
+INSERT INTO allegiance VALUES(0, 'Va', 'Vargr', '#994444', NULL, -1, -1, 0);
+INSERT INTO allegiance VALUES(0, 'KC', 'K''kree Client State', '#55FF55', NULL, -1, 0, -1);
+INSERT INTO allegiance VALUES(0, 'Hi', 'Hiver Federation', '#FFFF00', NULL, +1, 0, 0);
+INSERT INTO allegiance VALUES(0, 'Ju', 'Julian Protectorate', '#55FFFF', NULL, -1, -1, 0);
 
 #
 # SECTOR
 #
 CREATE TABLE sector (id int auto_increment not null, name varchar(250) not null, 
 					 x int not null, y int not null, codes varchar(32) default '', 
+					 allegiance varchar(4) default 'Un',
 					 PRIMARY KEY(id)) ENGINE=INNODB;
 
 #
@@ -121,7 +135,7 @@ CREATE TABLE ship (id int auto_increment not null, name varchar(64) not null, ty
                    cargo int not null, cash int not null,
                    flag varchar(64) default 'Imperium',
                    PRIMARY KEY(id), 
-                   FOREIGN KEY (system_id) REFERENCES system(id)
+                   FOREIGN KEY (system_id) REFERENCES system(id),
                    FOREIGN KEY (planet_id) REFERENCES planet(id))
                    ENGINE=INNODB;
                    
@@ -242,7 +256,6 @@ INSERT INTO facility VALUES(0, 'HiTech Mines',     'Mining', 'mining',  8,  8, 1
 INSERT INTO facility VALUES(0, 'UltraTech Mines',  'Mining', 'mining', 10, 16, 1, '6,X;7,X', '', '');
 
 # Agriculture
-INSERT INTO facility VALUES(0, 'Simple farming',   'Agriculture', 'agriculture',  1,   2, 200, '', '', '');
 INSERT INTO facility VALUES(0, 'Agriculture',      'Agriculture', 'agriculture',  3,   3, 200, '', '', '');
 INSERT INTO facility VALUES(0, 'Agriculture 5',    'Agriculture', 'agriculture',  5,   5, 200, '', '', '');
 INSERT INTO facility VALUES(0, 'Agriculture 7',    'Agriculture', 'agriculture',  7,  10, 200, '', '', '');
@@ -254,10 +267,10 @@ INSERT INTO facility VALUES(0, 'Fishing 6',        'Agriculture', 'agriculture',
 INSERT INTO facility VALUES(0, 'Fishing 8',        'Agriculture', 'agriculture',  8,  10, 204, '', '', '');
 INSERT INTO facility VALUES(0, 'Fishing 10',       'Agriculture', 'agriculture', 10,  25, 204, '', '', '');
 
-INSERT INTO facility VALUES(0, "Farm",       "Agriculture", "agriculture",  2,     0, 0, 'X,1', 'X,1');
-INSERT INTO facility VALUES(0, "Mine",       "Mining", "mining",            3,     0, 0, 'X,1', 'X,1');
-INSERT INTO facility VALUES(0, "Refinery",   "Industry", "industry",        4,     0, 1, '1,5', '5,3');
-INSERT INTO facility VALUES(0, "Factory",    "Industry", "industry",        5,     0, 5, '5,5', '6,1');
+INSERT INTO facility VALUES(0, "Farm",       "Agriculture", "agriculture",  2,     0, 0, 'X,1', 'X,1', '');
+INSERT INTO facility VALUES(0, "Mine",       "Mining", "mining",            3,     0, 0, 'X,1', 'X,1', '');
+INSERT INTO facility VALUES(0, "Refinery",   "Industry", "industry",        4,     0, 1, '1,5', '5,3', '');
+INSERT INTO facility VALUES(0, "Factory",    "Industry", "industry",        5,     0, 5, '5,5', '6,1', '');
 
 
 
@@ -381,10 +394,6 @@ INSERT INTO commodity VALUES(502, 'Agricultural machinery', 'machinery', 'In', 6
 INSERT INTO commodity VALUES(503, 'Agricultural robotics',  'machinery', 'In', 6, 1000, 1, 4, 7, 6,  9, 'Ag Ma');
 INSERT INTO commodity VALUES(504, 'Advanced agribots',      'machinery', 'In', 6, 1000, 1, 4, 7, 6, 11, 'Ag Ma');
 
-INSERT INTO commodity VALUES(600, 'Medieval goods',         'machinery', 'Ag',   6,  250, 1, 4, 7, 6, 3, '');
-INSERT INTO commodity VALUES(601, 'Medieval farm tools',    'machinery', 'Ag', 600,  400, 1, 4, 5, 6, 3, 'Ma Ag');
-INSERT INTO commodity VALUES(602, 'Medieval hand tools',    'machinery', 'In', 600,  250, 1, 5, 6, 6, 3, 'Ma');
-INSERT INTO commodity VALUES(602, 'Medieval textiles',      'textiles',  'In', 600,  250, 1, 5, 6, 6, 3, 'Ma');
 
 # Requirements
 CREATE TABLE requirements (commodity_id INT NOT NULL, requires_id INT NOT NULL, number INT DEFAULT 1);
@@ -410,13 +419,13 @@ CREATE TABLE trade (id INT AUTO_INCREMENT NOT NULL, planet_id INT NOT NULL,
 #
 # SHIP TEST DATA
 #
-insert into ship values(0, "Child of Adkynson", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-insert into ship values(0, "Child of Free Enterprise", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-insert into ship values(0, "Child of Boccob", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-insert into ship values(0, "Child of Tax Havens", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-insert into ship values(0, "Child of Greed", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-insert into ship values(0, "Child of Liberty", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-insert into ship values(0, "Child of Mathematics", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-insert into ship values(0, "Child of Vacuum", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-insert into ship values(0, "Child of the Stars", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-insert into ship values(0, "Child of Serendipity", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+#insert into ship values(0, "Child of Adkynson", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+#insert into ship values(0, "Child of Free Enterprise", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+#insert into ship values(0, "Child of Boccob", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+#insert into ship values(0, "Child of Tax Havens", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+#insert into ship values(0, "Child of Greed", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+#insert into ship values(0, "Child of Liberty", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+#insert into ship values(0, "Child of Mathematics", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+#insert into ship values(0, "Child of Vacuum", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+#insert into ship values(0, "Child of the Stars", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+#insert into ship values(0, "Child of Serendipity", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);

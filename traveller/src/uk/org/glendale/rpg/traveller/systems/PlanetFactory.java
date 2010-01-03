@@ -1586,10 +1586,13 @@ public class PlanetFactory {
 		planet.addResource(FERRIC, 20+Die.d20(2));		
 	}
 
+	/**
+	 * Black, carbon rich asteroid.
+	 */
 	void defineCarbonaceous(Planet planet) {
 		setDayLength(planet, 1.0);
 		planet.addResource(CARBONIC, 60+Die.d20(2));
-		planet.addResource(SILICATE, 20+Die.d20(2));
+		planet.addResource(SILICATE, 5+Die.d8(2));
 	}
 	
 	void defineEnceladean(Planet planet) {
