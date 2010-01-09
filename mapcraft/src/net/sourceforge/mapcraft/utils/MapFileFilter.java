@@ -20,7 +20,7 @@ import java.io.*;
 /**
  * File filter dialog to load map files.
  * Keeps track of where files were loaded from previously, and presents
- * this location as the first choice, otherwise defauls to home directory.
+ * this location as the first choice, otherwise defaults to home directory.
  */
 public class MapFileFilter extends FileFilter {
 	private String 			MAP_EXTENSION = "map";
