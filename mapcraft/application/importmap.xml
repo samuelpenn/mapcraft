@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<article>
+    <import-map uri="mymap" scale="1">
+        <crop x="2" y="7" w="5" h="5"/>
+    </import-map>
+</article>

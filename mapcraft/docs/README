@@ -1,0 +1,94 @@
+
+MAPCRAFT, Version 0.3pre1 (Alpha Software)
+
+Copyright (C) 2002-2004 Samuel Penn, sam@bifrost.demon.co.uk
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2,
+or (at your option) any later version. See the file COPYING.
+
+
+The main project home page is now at:
+http://mapcraft.sourceforge.net/
+
+Latest source and everything else can be obtained there.
+
+INSTALL AND RUN
+---------------
+
+Scripts have been included for both UNIX and MS Windows, though the
+latter have not been tested. If you have downloaded the tarball,
+then the software can be run using either of the two scripts
+(mapcraft for UNIX, mapcraft.bat for MS Windows).
+
+To see a sample map, try (on UNIX):
+./mapcraft -load maps/island.map
+
+Requirements
+------------
+
+You will need at least Java 1.4 - it has been tested on 1.4.2, but
+may work on previous versions of 1.4. Ensure that java is in your
+PATH before running the scripts.
+
+To compile the sources, you will also need Ant 1.6. Earlier versions
+of Ant do not have all the required libraries bundled with them, so
+extra libraries will also be required.
+
+WHAT IS IT?
+
+Mapcraft is a Java application for creating and editing maps
+for use in a roleplaying game. The style of maps generated
+are hex based maps, in a style similar to that used for the
+large scale Harn maps.
+
+Currently, it is in the very early stages of development,
+but it can be used to create and save maps. The maps are
+saved in an XML file format, so can be exported to other
+programs using a bit of XML.
+
+Currently, there is very little documentation, it's somewhat
+slow, and needs a lot of extra features before it becomes
+really useful. See the PLAN for a list of planned features.
+
+It has only been tested on Linux, using JDK 1.4. You will
+also need the Apache xerces jar files in your CLASSPATH.
+
+RUNNING
+
+To run, you should be able to use:
+
+./mapcraft
+
+You may need to source the profile first. There are several
+example maps in the 'maps' directory.
+
+
+
+RELEASE HISTORY
+
+Current (0.3)
+    Removed dependencies on Xalan. Uses XML classes in Java 1.4.
+    Various other improvements to GUI.
+    Now part of Sourceforge.
+
+Version 0.2.1
+    Full world maps, with xplanet output (command line only)
+    Towns/cities no longer fixed to a tile.
+    Much improved GUI.
+
+Version 0.2
+    Better GUI frontend.
+    Zooming.
+    Support for hills.
+    Beginnings of river support.
+    Support for square tile maps.
+
+Version 0.1
+
+    Display and edit a map.
+    Create and edit sites (towns, castles etc).
+    Save a map.
+    Terrain and site palette.
+    Hex grid display.

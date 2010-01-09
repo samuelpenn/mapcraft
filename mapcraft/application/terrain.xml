@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+
+<map>
+    <header>
+        <name>Terrain Set</name>
+        <author>Samuel Penn</author>
+        <id>terrain.0</id>
+        <parent>none</parent>
+        <cvs>
+            <version>$Revision$</version>
+            <date>$Date$</date>
+        </cvs>
+        <format>0.0.2</format>
+        <shape>Hexagonal</shape>
+    </header>
+
+    <terrainset id="basic" path=".">
+        <terrain id="0">
+            <name>null</name>
+            <description>Unchartable</description>
+            <image>hex.png</image>
+            <solid value="false"/>
+        </terrain>
+
+        <terrain id="1">
+            <name>sea.ocean</name>
+            <description>Ocean</description>
+            <image>sea.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="2">
+            <name>sea.ocean</name>
+            <description>Sea</description>
+            <image>sea.png</image>
+            <solid value="false"/>
+        </terrain>
+
+        <terrain id="10">
+            <name>clear.flat</name>
+            <description>Cropland</description>
+            <image>cropland.png</image>
+            <solid value="false"/>
+        </terrain>
+        <terrain id="11">
+            <name>clear.wooded</name>
+            <description>Mixed woods</description>
+            <image>woods.png</image>
+        </terrain>
+
+        <terrain id="20">
+            <name>wild.heath</name>
+            <description>Heath</description>
+            <image>heath.png</image>
+        </terrain>
+        <terrain id="21">
+            <name>wild.moor</name>
+            <description>Moor</description>
+            <image>moor.png</image>
+        </terrain>
+        <terrain id="22">
+            <name>wild.marsh</name>
+            <description>Marshland</description>
+            <image>marsh.png</image>
+        </terrain>
+
+        <terrain id="30">
+            <name>woods.light</name>
+            <description>Light woods</description>
+            <image>lightwoods.png</image>
+        </terrain>
+        <terrain id="31">
+            <name>woods.medium</name>
+            <description>Medium woods</description>
+            <image>mediumwoods.png</image>
+        </terrain>
+        <terrain id="32">
+            <name>woods.thick</name>
+            <description>Thick woods</description>
+            <image>thickwoods.png</image>
+        </terrain>
+
+        <terrain id="40">
+            <name>mountains.foot</name>
+            <description>Foot hills</description>
+            <image>hills.png</image>
+        </terrain>
+
+        <terrain id="41">
+            <name>mountains.low</name>
+            <description>Low mountains</description>
+            <image>hills.png</image>
+        </terrain>
+
+    </terrainset>
+
+    <terrainset id="places" path="places">
+        <terrain id="1">
+            <name>town.village</name>
+            <description>Village</description>
+            <image>village.png</image>
+        </terrain>
+
+        <terrain id="2">
+            <name>town.town</name>
+            <description>Town</description>
+            <image>town.png</image>
+        </terrain>
+    </terrainset>
+
+    <tileset id="root">
+        <dimensions>
+            <scale>1</scale>
+            <width>1</width>
+            <height>1</height>
+        </dimensions>
+
+        <tiles>
+            <tile x="0" y="0" terrain="0" />
+        </tiles>
+    </tileset>
+</map>

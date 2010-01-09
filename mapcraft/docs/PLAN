@@ -1,0 +1,148 @@
+Project Plan
+
+0.1 (Basics)
+*   Decide on file format. SAX/DOM decision. DOM!
+*   File format versioning support - future requirement.
+*   Support scrolling map.
+*   Support terrain palette.
+*   Support named places.
+*   Display labels for places.
+*   Edit place info.
+*   Try and use PNG format graphics.
+*   Move source files into package directories.
+*   Fix bugs in cursor position.
+*   Produce correct headers/id for new/saved maps.
+
+0.2 (Basics extra)
+*   Support of named areas (setting tiles only).
+*   Resize boundaries of a map (cmd line).
+*   Hex overlay of map.
+*   Hills support.
+*   Faster display - precrop tile display etc.
+*   Toolbar support for brush types.
+*   Support square tiles for indoor maps.
+*   Support printing to image file. (0.3)
+*   Support for multiple display resolutions. (0.3)
+*   Brush size options. (0.8)
+*   File load/save inferface. (0.6)
+*   Toolbar for common features. (0.6)
+*   Wrapper class to provide GUI framework. (0.6)
+
+0.2.1
+*   Full world maps (inc 2D sphere support) (0.5).
+*   Output to xplanet texture format (0.5).
+*   Decouple sites from tiles.
+*   Control over font used with sites.
+*   Resize of site labels depending on tile size.
+*   Consistency in naming. Sites = things, hills = features. Always.
+*   Map creation dialogs.
+
+0.2.2
+*   Support rivers as vectors, inc graphical editing.
+*   Support roads as vectors, inc graphical editing.
+*   Properties on sites.
+*   Rotation for tiles and features.
+*   Rotation for Things (0.4).
+*   Oversized Things (0.4).
+*   Rotation on hexagonal maps as well as square maps.
+*   Move <thing>/<river> tags into <tileset> ready for multi-tileset support.
+
+0.2.3
+*   Support GUI map cropping and linking to submaps.
+*   Support GUI basic resize facility (ignores parent links).
+*   Make Tile class have package scope.
+*   Crop to highlighted regions (requires highlight support).
+*   Crop to named area.
+*   Crop to things.
+*   Crop to rivers and roads.
+*   All images included in the jar file (0.7).
+
+# SOURCEFORGE MOVE
+# Change version numbering to be more Gentoo-like
+
+0.3 (Install/build support)
+*   Work out exact (minimal) build dependencies.
+*   Work out exact (minimal) run dependencies.
+*   Load everything (including terrain info) from jar file.
+*   Generic UNIX run script that doesn't assume my own environment.
+*   Maybe think about MS Windows script.
+*   Change packages to be net.sourceforge rather than uk.co.demon.bifrost
+    
+0.4 (Rescale/merge support in GUI)
+    Support GUI rescale facility (up and down).
+    Support GUI for merging siblings.
+    GUI for Merging child maps back into parent.
+    Create image from the GUI.
+
+0.5 (Display issues)
+    Fix display issues with area editing.
+    Fix display issues with site editing.
+    Feedback in a status bar to say what editing.
+    Ability to set flags on tiles. Need to name each flag, and store in tileset.
+    Orientation and style of map labels.
+
+0.6 (Printing/XSLT support)
+    Show A3/A4 crop areas on map as grid.
+    Auto-print overlapped image tiles to A3/A4 size.
+
+0.7 (Finish standard features)
+    Edit and set river properties, including name.
+    Names for rivers and roads displayed on map.
+    Creating/editing areas in GUI.
+    Font styles for site labels.
+    GUI resize should modify x/y offset for parent link.
+    GUI resize should fetch extra tiles from parent, if there is one.
+    
+0.8 (Height issues)
+    Height palette. 2D display only.
+    Contours.
+    Fancy coastlines.
+    Longitude/latitude calculation.
+    Should be able to support full Harn map.
+
+0.9 (Multiple tilesets)
+    Fix low level support for multiple tilesets.
+    Multiple floors for indoor maps.
+    Transparent overlay of floors over each other.
+    Calculation of connecting stairs between floors.
+
+0.10 (UI design considerations)
+    Map properties dialog/editor.
+    Drop down palette menus from toolbar.
+    Create world maps from the GUI.
+
+0.11 (Web support)
+    Output of web image maps (hrefs to places only).
+    Applet viewer.
+
+0.12 (Helper)
+    Anti-aliase on rescale.
+    Diff support for scaled children.
+    Fill option.
+
+0.13 (Optimisation)
+    Any necessary speed enhancements.
+    Any necessary memory efficiency enhancements.
+
+# Move into beta release at this point.    
+    
+1.0 (Release)
+    Stability fixes.
+    Run from jar file.
+    Preferences file etc.
+    Schema for file format.
+    Documentation.
+
+1.x (Wish list)
+    href linking to documents on areas/places.
+    3D display of terrain areas (isometric).
+    3D display of terrain areas (perspective).
+    Autogeneration of small area maps (villages etc).
+    Undo support.
+    Auto river generation.
+    Editing terrain/place types.
+    Variable coast masks for nicer display.
+    Links into yagsbook for inline display of maps.
+    Output SVG
+    Random village names? Based on dictionary.
+

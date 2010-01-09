@@ -1,0 +1,225 @@
+
+Uses MapXML as a base package to work from.
+
+uk.co.demon.bifrost.rpg.mapxml
+uk.co.demon.bifrost.rpg.worldcraft
+
+Uses hex based tiles.
+
+A full world will have to support 'null' hexes which cannot be mapped
+to. These are to represent the spherical world.
+
+Maybe use xplanet to render 3D images? Need high resolution map for this.
+
+44,000km world:
+    5km        8800
+    25km        1760
+    125km    352
+
+125km hex is probably highest resolution can support, at least until we
+have SAX support, and even then it gets dodgy. SAX support tricky since
+we keep stuff in memory in MapXML object.
+
+
+Harn Maps
+
+Standard Harn map is 84x50 hexes in size, with each hex being 20km.
+This gives a map size of 1680km x 1000km, which is a single country.
+
+
+Euressa Maps
+
+168x100 hexes.
+
+
+Blob Data (0.0.3)
+
+Each column of tiles is represented as a blob of data. Each
+character is a 6bit value, 0-63. Each tile is represented as
+follows:
+    tthhhmcf
+
+    tt = Terrain type. 0-4095
+    hhh = Height (m). 0-262143 (0 = -100km below sea level)
+    m = mountains. 0..63
+    c = coastline. 0..63
+    f = flags. 6 flags. Undefined.
+
+
+
+Hills
+
+    0   No hills
+    1   Low hills
+    2   High hills
+    3   Low mountains
+    4   Medium mountains
+    5   High mountains
+
+UI?
+
+How is this going to work? Do we need a 'hill' palette as
+well? This is going to get cluttered!
+
+
+
+Fancy Coastlines
+
+Fancy coastlines are drawn 'on the fly' using PNG masks.
+Used to allow us to cope with half hexes of water.
+
+Have only 6bits to play with.
+Each bit represents whether that side of the hex is water.
+All water facing sides have show coastline, but if bit is
+set, then this side has lots of water. Does not have to be
+water facing, to allow for channels between land hexes.
+
+
+
+
+Places:
+    <place name="" x="" y="">
+        <type></type>
+    </place>
+
+Types:
+    Village
+    Town
+    City
+    Earthmaster
+    Gargun
+    
+Roads
+
+Can we draw roads in real time? Makes them very straight...
+Look at Java 2D stuff. No need to draw lots of gif files though.
+
+
+Different types of painting tools:
+    Terrain
+    Height
+    Places
+    Rivers
+    Roads
+    Areas
+
+
+
+
+Map Identification
+
+Each map has a unique identifier string - millisecond time of creation
+and map name, e.g.:  "harn.105578476346"
+
+<map>
+    <header>
+        <name>Harn</name>
+        <id>harn.105578476346</id>
+        <parent>harn.105573423739</parent>
+        <author>Samuel Penn</author>
+        <cvs>
+            <version></version>
+            <date></date>
+        </cvs>
+        <format>0.0.2</format>
+    </header>
+
+</map>
+
+
+Tilesets?
+
+Are they still needed? With current memory constraints, we may want to
+dump them, and jut use linking instead. This would make things a lot
+simpler.
+
+Current position of river info won't work if we have multiple tilesets.
+How do we port diffs to children/parents? We could do a comparison of two
+maps of different scales, work out what the other scale 'should' look
+like, and set it.
+
+Easier than any automatic function that works on tilesets.
+
+Drop tilesets.
+
+May want to have different terrain palettes in different scales of the
+map as well. Much better if maps completely independent. Still have
+parent reference however.
+
+
+
+Hills/Height
+
+Height will be represented with blobs.
+There will be a height scale, probably 10m. Heights can be positive and
+negative. 2 chars will be used for each tile. Map will have a base height
+as well, just in case we need it for small maps, and height scale can be
+changed from the default.
+
+Hills will be a mask, similar to rivers. Represents how hilly a tile is.
+Could, in theory, have very tight blobs - probably only need 4 values for
+hills, so one char could represent many tiles. Or double up hill and
+river data.
+
+0 = flat
+1 = rolling hills
+2 = hilly
+3 = very hilly
+
+
+Rivers
+
+Use vectors. A vector consists of a list of tiles (x,y) which it
+passes through. Begin near the coast and work upstream.
+A river has a name, a width. Width may change.
+
+Endpoint may be a coastline, a lake or another river.
+
+public class River {
+    short        id;
+    String        name;
+    Vector        segments; // RiverSegments
+}
+
+class RiverSegment {
+    short        id;
+    short        width;        // metres
+    byte            upstream;
+    byte            downstream;
+}
+
+Roads
+
+Road types:
+    Track
+    Trail
+    Road
+    Paved
+    
+Rivers and roads should use the same backend for display.
+Have a Path and PathSegment class possibly.
+
+
+Sites
+
+<thing type="3" x="64" y="334">
+    <name>Underhill</name>
+    <description>Some place</description>
+    <properties>
+        <property name="population">340</property>
+    </properties>
+</thing>
+
+<terrain id="3">
+    <name></name>
+    <description></description>
+    <image></image>
+    <properties>
+        <property name=""></property>
+    </properties>
+</terrain>
+
+
+
+
+
