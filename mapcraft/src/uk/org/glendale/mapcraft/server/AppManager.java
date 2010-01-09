@@ -1,5 +1,6 @@
 package uk.org.glendale.mapcraft.server;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -10,7 +11,10 @@ import java.util.ResourceBundle;
 
 import javax.sql.DataSource;
 
+import uk.org.glendale.mapcraft.graphics.MapSector;
+import uk.org.glendale.mapcraft.map.Map;
 import uk.org.glendale.mapcraft.server.database.MapData;
+import uk.org.glendale.mapcraft.server.database.MapManager;
 
 public class AppManager {
 	private static Properties		properties = new Properties();
@@ -39,7 +43,6 @@ public class AppManager {
 	}
 	
 	public Connection getDatabaseConnection() {
-		MapData		data = null;
 		Connection	cx = null;
 		
 		if (dataSource == null && connection == null) {
@@ -52,7 +55,6 @@ public class AppManager {
 			} else if (connection != null) {
 				cx = connection;
 			}
-			data = new MapData(cx);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -96,9 +98,25 @@ public class AppManager {
         }
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		AppManager		app = new AppManager();
 		
 		app.configureDatabase();
+		
+		MapManager		manager = new MapManager(app.getDatabaseConnection());
+		
+		MapInfo			info = manager.getMap("test");
+		MapData			data = new MapData(info, app.getDatabaseConnection());
+		Map				map = new Map(info, data);
+		
+		map.setTerrain(10, 10, 2);
+		map.setTerrain(11, 10, 2);
+		map.setTerrain(10, 11, 2);
+		System.out.println(map.getTerrain(10,10));
+		System.out.println(map.getTerrain(10,11));
+		System.out.println(map.getTerrain(10,12));
+		map.saveAll();
+		MapSector		imageMap = new MapSector(new File("/home/sam/src/mapcraft/mapcraft/WebContent/webapp/images/map/style/paper"));
+		imageMap.drawSector(map);
 	}
 }

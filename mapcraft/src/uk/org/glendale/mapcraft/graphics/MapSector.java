@@ -16,6 +16,8 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 
 import uk.org.glendale.graphics.SimpleImage;
+import uk.org.glendale.mapcraft.map.Map;
+import uk.org.glendale.mapcraft.map.Sector;
 import uk.org.glendale.rpg.utils.Die;
 
 import com.sun.image.codec.jpeg.JPEGCodec;
@@ -103,7 +105,7 @@ public class MapSector {
 	public void drawSector(int width, int height) throws IOException {
 		SimpleImage		image = new SimpleImage(width*49+25, height*54+54, "#FFFFFF");
 		
-		String[]		icons = { "sea", "meadow", "woods", "hills" };
+		String[]		icons = { "sea", "grass", "woods", "hills" };
 		String[]		testMap = { "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
 				                    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" };
 		
@@ -128,6 +130,34 @@ public class MapSector {
 			}
 		}
 		image.save(new File("/home/sam/hexmap.jpg"));
+	}
+	
+	public void drawSector(Map map) throws IOException {
+		SimpleImage		image = new SimpleImage(Sector.WIDTH*49+25, Sector.HEIGHT*54+54, "#FFFFFF");
+		
+		String[]		icons = { "", "sea", "grass", "woods", "hills" };
+
+		for (int y=0; y < Sector.HEIGHT; y++) {
+			for (int x=0; x < Sector.WIDTH; x+=2) {
+				Image	i = getIcon(icons[map.getTerrain(x, y)]);
+				try {
+					image.paint(i, x*49, y*54+(x%2)*27, 65, 65);
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			for (int x=1; x < Sector.WIDTH; x+=2) {
+				Image	i = getIcon(icons[map.getTerrain(x, y)]);
+				try {
+					image.paint(i, x*49, y*54+(x%2)*27, 65, 65);
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		image.save(new File("/home/sam/hexmap.jpg"));		
 	}
 	
 	public static void main(String[] args) throws Exception {

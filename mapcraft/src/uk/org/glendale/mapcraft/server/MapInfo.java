@@ -1,5 +1,9 @@
 package uk.org.glendale.mapcraft.server;
 
+import java.util.Hashtable;
+
+import uk.org.glendale.mapcraft.map.Terrain;
+
 /**
  * Keeps track of metadata about a map.
  * 
@@ -13,6 +17,8 @@ public class MapInfo {
 	private int		width;
 	private int		height;
 	private boolean	world;
+	
+	private Hashtable<Integer,Terrain>	terrain = new Hashtable<Integer,Terrain>();
 	
 	public MapInfo(String name, String title, int width, int height, boolean world) {
 		this.name = name;
@@ -72,4 +78,11 @@ public class MapInfo {
 		return height;
 	}
 	
+	public void addTerrain(Terrain t) {
+		terrain.put(t.getId(), t);
+	}
+	
+	public Terrain getTerrain(int id) {
+		return terrain.get(id);
+	}
 }
