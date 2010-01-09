@@ -97,12 +97,11 @@ public class AreaSetDialog extends JDialog {
 
     }
 
-    private Object[]
+    private String[]
     getListData(AreaSet set) {
-        Area        a;
-        ArrayList   array = new ArrayList();
+        ArrayList<String>   array = new ArrayList<String>();
         
-        for (Iterator iter = set.iterator(); iter.hasNext(); ) {
+        for (Iterator<Area> iter = set.iterator(); iter.hasNext(); ) {
             Area    area = (Area) iter.next();
             String  name = area.getName();
             
@@ -112,7 +111,7 @@ public class AreaSetDialog extends JDialog {
             array.add(name);
         }
         
-        return array.toArray();
+        return array.toArray(new String[0]);
     }
     /**
      * Setup and display the centre pane. This contains the list of areas

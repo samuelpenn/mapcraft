@@ -85,7 +85,7 @@ public class AreaDialog extends JDialog {
         // The list must include a 'null' item, and must not contain
         // this area's name.
         String[]    array = set.toNameArray();
-        ArrayList   list = new ArrayList();
+        ArrayList<String>   list = new ArrayList<String>();
         list.add("");
         for (int i=0; i < array.length; i++) {
             if (!array[i].equals(area.getName())) {

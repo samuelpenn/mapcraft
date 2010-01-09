@@ -27,23 +27,24 @@ import net.sourceforge.mapcraft.map.elements.Terrain;
  */
  public class AreaSet implements Cloneable {
 
-    protected ArrayList    list;
+    protected ArrayList<Area>    list;
 
 	/**
 	 * Create a new, empty, AreaSet.
 	 */
     public
     AreaSet() {
-        list = new ArrayList();
+        list = new ArrayList<Area>();
     }
 
 	/**
 	 * Create a clone of this AreaSet.
 	 */
-    public Object
+    @SuppressWarnings("unchecked")
+	public Object
     clone() throws CloneNotSupportedException {
         AreaSet    a = new AreaSet();
-        a.list = (ArrayList)list.clone();
+        a.list = (ArrayList<Area>)list.clone();
         return (Object)a;
     }
 
@@ -61,7 +62,7 @@ import net.sourceforge.mapcraft.map.elements.Terrain;
 	 * 
 	 * @return	Return an iterator over Area objects.
 	 */
-    public Iterator
+    public Iterator<Area>
     iterator() {
         return list.iterator();
     }
@@ -126,7 +127,7 @@ import net.sourceforge.mapcraft.map.elements.Terrain;
 
     public Area
     getArea(String name) {
-        Iterator    it = list.iterator();
+        Iterator<Area>    it = list.iterator();
         Area        a = null;
         boolean     found = false;
 
@@ -147,7 +148,7 @@ import net.sourceforge.mapcraft.map.elements.Terrain;
 
     public Area
     getArea(int id) {
-        Iterator    it = list.iterator();
+        Iterator<Area>    it = list.iterator();
         Area        a = null;
         boolean     found = false;
 
@@ -169,7 +170,7 @@ import net.sourceforge.mapcraft.map.elements.Terrain;
     public Area[]
     toArray() {
         Area[]      array = new Area[list.size()];
-        Iterator    iter = iterator();
+        Iterator<Area>    iter = iterator();
         int         i = 0;
 
         while (iter.hasNext()) {
@@ -183,7 +184,7 @@ import net.sourceforge.mapcraft.map.elements.Terrain;
     public String[]
     toNameArray() {
         String[]    names = new String[list.size()];
-        Iterator    iter = iterator();
+        Iterator<Area>    iter = iterator();
         int         i = 0;
 
         while (iter.hasNext()) {
@@ -201,7 +202,7 @@ import net.sourceforge.mapcraft.map.elements.Terrain;
     public Terrain[]
     toTerrainArray() {
         Terrain[]   array = new Terrain[list.size()+1];
-        Iterator    iter = iterator();
+        Iterator<Area>    iter = iterator();
         int         i = 0;
 
         array[i++] = new Terrain((short)0, "Undefined", "Undefined", null);

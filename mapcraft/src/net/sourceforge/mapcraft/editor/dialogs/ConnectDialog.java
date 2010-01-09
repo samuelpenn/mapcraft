@@ -120,7 +120,7 @@ public class ConnectDialog extends JDialog {
         // Set up a combo box displaying all the possible maps.
         // The list must include a 'null' item, and must not contain
         // this area's name.
-        ArrayList   nameList = new ArrayList();
+        ArrayList<String>   nameList = new ArrayList<String>();
         nameList.add("");
         for (int i=0; i < list.length; i++) {
             nameList.add(list[i].name);
