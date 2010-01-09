@@ -1,0 +1,10 @@
+
+
+CREATE TABLE mapcraft (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(16) NOT NULL, title VARCHAR(64) NOT NULL, 
+                       width INT NOT NULL, height INT NOT NULL, world TINYINT DEFAULT 0, PRIMARY KEY(id), UNIQUE(name));
+
+
+CREATE TABLE terrain (id INT NOT NULL, name VARCHAR(32) NOT NULL, image VARCHAR(32) NOT NULL, 
+					  category VARCHAR(16) NOT NULL, height INT DEFAULT 0);
+
+CREATE TABLE map (x INT NOT NULL, y INT NOT NULL, terrain_id INT NOT NULL);
