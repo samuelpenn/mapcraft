@@ -34,7 +34,7 @@
 
     <target name="jar" depends="build">
         <jar jarfile="${jar.file}"
-             manifest="MANIFEST.MF">
+             manifest="${app.dir}/MANIFEST.MF">
 
             <fileset dir="${build.dir}">
                 <include name="**/*.class"/>
