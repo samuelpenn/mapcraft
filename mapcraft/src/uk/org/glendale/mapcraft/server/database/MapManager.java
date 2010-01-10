@@ -71,9 +71,10 @@ public class MapManager {
 		while (rs.next()) {
 			int		id = rs.getInt("id");
 			String	name = rs.getString("name");
+			String	title = rs.getString("title");
 			String	image = rs.getString("image");
 			
-			info.addTerrain(new Terrain(id, name, image, 0));
+			info.addTerrain(new Terrain(id, name, title, image, 0));
 		}
 		rs.close();
 	}
@@ -107,18 +108,21 @@ public class MapManager {
 	private void createTables(String prefix) throws SQLException {
 		Statement		stmnt = cx.createStatement();
 		
-		stmnt.executeUpdate("CREATE TABLE "+prefix+"_terrain (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, PRIMARY KEY(id))");
+		stmnt.executeUpdate("CREATE TABLE "+prefix+"_terrain (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, PRIMARY KEY(id))");
 		stmnt.executeUpdate("CREATE TABLE "+prefix+"_map (x INT NOT NULL, y INT NOT NULL, terrain_id INT NOT NULL, PRIMARY KEY(x, y))");
 		
-		addTerrain(prefix, "Sea", "sea");
-		addTerrain(prefix, "Grassland", "grass");
-		addTerrain(prefix, "Hills", "hills");
-		addTerrain(prefix, "Woods", "woods");
+		addTerrain(prefix, "water.sea", "Sea", "sea");
+		addTerrain(prefix, "temperate.grassland", "Grassland", "grass");
+		addTerrain(prefix, "temperate.hills", "Hills", "hills");
+		addTerrain(prefix, "temperate.woodland", "Light woodland", "woods");
+		addTerrain(prefix, "temperate.moors", "Moorland", "moors");
+		addTerrain(prefix, "temperate.heath", "Heathland", "heath");
+		addTerrain(prefix, "temperate.crops", "Farmland", "cropland");
 		
 		fillMap(getMap(prefix), 1);
 	}
 	
-	private void addTerrain(String prefix, String name, String image) throws SQLException {
+	private void addTerrain(String prefix, String name, String title, String image) throws SQLException {
 		Statement		stmt = cx.createStatement();
 		stmt.executeUpdate("INSERT INTO "+prefix+"_terrain (name, image) VALUES('"+name+"', '"+image+"')");
 	}

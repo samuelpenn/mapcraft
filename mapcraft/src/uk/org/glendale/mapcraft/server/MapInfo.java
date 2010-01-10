@@ -85,4 +85,13 @@ public class MapInfo {
 	public Terrain getTerrain(int id) {
 		return terrain.get(id);
 	}
+	
+	public Terrain getTerrain(String name) {
+		for (Terrain t : terrain.values()) {
+			if (t.getName().equals(name)) {
+				return t;
+			}
+		}
+		return null;
+	}
 }

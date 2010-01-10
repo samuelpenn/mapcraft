@@ -109,14 +109,15 @@ public class AppManager {
 		MapData			data = new MapData(info, app.getDatabaseConnection());
 		Map				map = new Map(info, data);
 		
-		map.setTerrain(10, 10, 2);
-		map.setTerrain(11, 10, 2);
-		map.setTerrain(10, 11, 2);
-		System.out.println(map.getTerrain(10,10));
-		System.out.println(map.getTerrain(10,11));
-		System.out.println(map.getTerrain(10,12));
-		map.saveAll();
-		MapSector		imageMap = new MapSector(new File("/home/sam/src/mapcraft/mapcraft/WebContent/webapp/images/map/style/paper"));
-		imageMap.drawSector(map);
+		//map.setTerrain(10, 10, 2);
+		//map.setTerrain(11, 10, 2);
+		//map.setTerrain(10, 11, 2);
+		//System.out.println(map.getTerrain(10,10));
+		//System.out.println(map.getTerrain(10,11));
+		//System.out.println(map.getTerrain(10,12));
+		//map.saveAll();
+		MapSector		imageMap = new MapSector(map, new File("/home/sam/src/mapcraft/mapcraft/WebContent/webapp/images/map/style/colour"));
+		imageMap.drawMap(0, 0, 200, 100);
+		imageMap.save(new File("/home/sam/hexmap.jpg"));
 	}
 }

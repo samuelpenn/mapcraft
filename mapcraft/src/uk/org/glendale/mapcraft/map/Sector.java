@@ -73,19 +73,56 @@ public class Sector {
 		this.dirty = false;
 	}
 	
+	/**
+	 * Read the terrain at this location. If the tile is unset, search
+	 * upwards for the nearest set terrain item.
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public int getTerrain(int x, int y) {
 		this.lastUsed = System.currentTimeMillis();
-		int		t = terrain[x%WIDTH][y%HEIGHT];
-		if (t == -1) {
-			return terrain[0][0];
+		x %= WIDTH; y %= HEIGHT;
+		int		t = terrain[x][y];
+		if (t > -1) {
+			return t;
 		}
-		return t;
+		// Look for sub-sector value.
+		x -= x%8; y-= y%10;
+		if (terrain[x][y] > -1) return terrain[x][y];
+		// Return sector value.
+		return terrain[0][0];
 	}
 	
 	public void setTerrain(int x, int y, int terrainId) {
 		this.lastUsed = System.currentTimeMillis();
-		terrain[x%WIDTH][y%HEIGHT] = terrainId;
-		changed[x%WIDTH][y%HEIGHT] = true;
+		x %= WIDTH; y %= HEIGHT;
+		int		old = terrain[x][y];
+		terrain[x][y] = terrainId;
+		changed[x][y] = true;
 		dirty = true;
+		
+		if (x==0 && y==0) {
+			// Need to modify any sub-sectors to inherit the old
+			// value if they are still inheriting this value.
+			for (int xx=0; xx < 32; xx+=8) {
+				for (int yy=0; yy < 40; yy+=10) {
+					if (terrain[xx][yy] == -1) {
+						terrain[xx][yy] = old;
+						changed[xx][yy] = true;
+					}
+				}
+			}
+		} else if (x%8 == 0 && y%10 ==0) {
+			for (int xx=x; xx < x+8; xx++) {
+				for (int yy=y; yy < y+10; yy++) {
+					if (terrain[xx][yy] == -1) {
+						terrain[xx][yy] = old;
+						changed[xx][yy] = true;
+					}
+				}
+			}
+		}
 	}
 }

@@ -24,6 +24,10 @@ public class Map {
 		this.data = data;
 	}
 	
+	public MapInfo getInfo() {
+		return info;
+	}
+	
 	/**
 	 * Retrieve a cached sector, or read it from the database if it
 	 * isn't cached. Sectors are identified by the coordinate of

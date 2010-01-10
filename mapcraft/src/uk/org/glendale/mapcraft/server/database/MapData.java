@@ -91,7 +91,7 @@ public class MapData {
 			int		x = rs.getInt(1);
 			int		y = rs.getInt(2);
 			int		terrainId = rs.getInt(3);
-			terrainData[x][y] = terrainId;
+			terrainData[x%Sector.WIDTH][y%Sector.HEIGHT] = terrainId;
 		}
 		sector.setTerrainData(terrainData);
 		
