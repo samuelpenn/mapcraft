@@ -1,6 +1,5 @@
 package uk.org.glendale.mapcraft.map;
 
-import java.awt.Point;
 import java.sql.SQLException;
 import java.util.Hashtable;
 

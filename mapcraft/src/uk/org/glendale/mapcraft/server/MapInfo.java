@@ -2,6 +2,8 @@ package uk.org.glendale.mapcraft.server;
 
 import java.util.Hashtable;
 
+import javax.faces.bean.ManagedBean;
+
 import uk.org.glendale.mapcraft.map.Terrain;
 
 /**
@@ -10,6 +12,7 @@ import uk.org.glendale.mapcraft.map.Terrain;
  * @author Samuel Penn
  *
  */
+@ManagedBean
 public class MapInfo {
 	private String	name;
 	private String	title;
@@ -20,11 +23,20 @@ public class MapInfo {
 	
 	private Hashtable<Integer,Terrain>	terrain = new Hashtable<Integer,Terrain>();
 	
+	public MapInfo() {
+		
+	}
+	
 	public MapInfo(String name, String title, int width, int height, boolean world) {
 		this.name = name;
 		this.title = title;
 		this.width = width;
 		this.height = height;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+		this.title = "Map of "+name;
 	}
 	
 	/**
