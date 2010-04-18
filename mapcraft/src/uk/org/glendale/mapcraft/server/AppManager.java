@@ -9,6 +9,12 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 import javax.sql.DataSource;
 
 import uk.org.glendale.mapcraft.graphics.MapSector;
@@ -16,7 +22,7 @@ import uk.org.glendale.mapcraft.map.Map;
 import uk.org.glendale.mapcraft.server.database.MapData;
 import uk.org.glendale.mapcraft.server.database.MapManager;
 
-public class AppManager {
+public class AppManager implements ServletContextListener {
 	private static Properties		properties = new Properties();
 	
 	private DataSource				dataSource = null;
@@ -119,5 +125,40 @@ public class AppManager {
 		MapSector		imageMap = new MapSector(map, new File("/home/sam/src/mapcraft/mapcraft/WebContent/webapp/images/map/style/colour"));
 		imageMap.drawMap(0, 0, 200, 100);
 		imageMap.save(new File("/home/sam/hexmap.jpg"));
+	}
+	
+	
+	private static AppManager	appManager = null;
+	
+	private DataSource	ds = null;
+
+	@Override
+	public void contextDestroyed(ServletContextEvent arg0) {
+		ds = null;
+	}
+
+	@Override
+	public void contextInitialized(ServletContextEvent arg0) {
+		System.out.println("Mapcraft: Context initialised");
+		
+		try {
+			InitialContext ic = new InitialContext();
+			ds = (DataSource) ic.lookup("java:com/env/jdbc/Mapcraft");
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+		AppManager.appManager = new AppManager();
+		AppManager.appManager.setDataSource(ds);
+		AppManager.appManager.configureDatabase();
+		if (ds == null) {
+			System.out.println("No datasource");
+		} else {
+			System.out.println("Successfully obtained data source");
+		}
+		
+	}
+	
+	public static AppManager getInstance() {
+		return appManager;
 	}
 }

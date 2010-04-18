@@ -35,6 +35,14 @@ public class MapManager {
 		refresh();
 	}
 	
+	public void disconnect() {
+		try {
+			cx.close();
+		} catch (SQLException e) {
+			
+		}
+	}
+	
 	private void prepareStatements() throws SQLException {
 		selectMaps = cx.prepareStatement(selectMapsSQL);
 		insertMaps = cx.prepareStatement(insertMapsSQL);
