@@ -14,30 +14,13 @@
 	</h:head>
 	
 	<h:body>
-		<h1>Mapcraft</h1>
-		
-		<p>
-			Just a test page for <b>${serverInfo.serverName}</b>
-		</p>
-		
-		<h4>List of Maps</h4>
-		
-		<!-- Should use ui:repeat, but doesn't work -->
+		<f:metadata>
+			<f:viewParam id="name" name="Name" value="#{mapInfo.name}"/>
+		</f:metadata>
+		<h1>${mapInfo.title}</h1>
 
-		<ul>
-			<c:forEach var="map" items="${serverInfo.maps}">
-				<li><a href="mapinfo.xhtml?name=${map.name}">${map.title}</a></li>
-			</c:forEach>
-		</ul>
-		
-				
-		<h:form>
-			<h:inputText id="mapId" value="">
-			</h:inputText>
-			
-			<h:commandButton id="submit" value="Submit" action="/mapcraft/rest/test"/>
-		
-		
-		</h:form>
+		<p>
+			${param.name}
+		</p>
 	</h:body>
 </html>

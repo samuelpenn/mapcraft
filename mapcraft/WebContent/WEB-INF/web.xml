@@ -30,7 +30,11 @@
    			<param-value>uk.org.glendale.mapcraft.rest.Mapcraft</param-value>
    		</init-param>
    	</servlet>
-   	
+
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    </servlet>   	
     
     <servlet>
    		<servlet-name>Map Image</servlet-name>
@@ -45,6 +49,11 @@
    	<servlet-mapping>
    		<servlet-name>Map Image</servlet-name>
    		<url-pattern>/map</url-pattern>
+   	</servlet-mapping>
+   	
+   	<servlet-mapping>
+   		<servlet-name>Faces Servlet</servlet-name>
+   		<url-pattern>*.xhtml</url-pattern>
    	</servlet-mapping>
 
    	<listener>
