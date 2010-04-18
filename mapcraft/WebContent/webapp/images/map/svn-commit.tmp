@@ -1,0 +1,11 @@
+Added new terrain types.
+
+--This line, and those below, will be ignored--
+
+AM   style/paper/tundra.png
+AM   style/paper/moors.png
+AM   style/paper/montane.png
+AM   style/paper/cropland.png
+AM   style/paper/taiga.png
+AM   style/paper/mixed_forest.png
+AM   style/paper/heath.png

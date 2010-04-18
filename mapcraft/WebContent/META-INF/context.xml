@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Context>
+    <Resource name="jdbc/Mapcraft" auth="Container"
+            type="javax.sql.DataSource" username="mapcraft" password="mapcraft"
+            driverClassName="com.msql.jdbc.Driver"
+            url="jdbc:mysql://192.168.161.101:3306/mapcraft"
+            maxActive="8" maxIdle="4"
+            testOnBorrow="true"
+            validationQuery="select 1"
+            timeBetweenEvictionRunsMillis="30000"
+            />
+
+</Context>
