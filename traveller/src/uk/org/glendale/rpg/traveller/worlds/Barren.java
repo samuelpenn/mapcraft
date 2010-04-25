@@ -12,19 +12,11 @@
 package uk.org.glendale.rpg.traveller.worlds;
 
 import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.MouseListener;
 import java.io.File;
 
-import javax.swing.JFrame;
-
 import uk.org.glendale.rpg.traveller.systems.Planet;
-import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
-import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
-import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
@@ -108,9 +100,6 @@ class Barren extends WorldBuilder {
 		System.out.println("Creating Barren world");
 	}
 
-	private Canvas		canvas = null;
-	private int[][]		waterMap = null;
-	
 	public boolean useImage = false;
 	
 	private class FloodPlain {

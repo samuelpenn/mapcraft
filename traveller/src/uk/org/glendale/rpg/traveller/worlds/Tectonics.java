@@ -1,5 +1,8 @@
 package uk.org.glendale.rpg.traveller.worlds;
 
+import java.io.File;
+import java.util.Hashtable;
+
 import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
@@ -20,12 +23,20 @@ class Tectonics extends WorldBuilder {
 	private int[][]		shelfMap = null;
 	private int			tileWidth = getTileWidth();
 	private int			tileHeight = getTileHeight();
+	private int			seaPercentage = 0;
+
+	private Hashtable<TileType, Terrain>	terrain = new Hashtable<TileType, Terrain>();
 	
 	public Tectonics(int width, int height) {
 		super(width, height);
 		createTileMap();
+		
+		terrain.put(TileType.SEABED, Terrain.create("seabed", 70, 70, 70, 0.5, 0.5, 0.5, false));
+		terrain.put(TileType.DESERT, Terrain.create("desert", 100, 100, 100, 1, 1, 1, false));
+		terrain.put(TileType.MOUNTAINS, Terrain.create("mountains", 100, 100, 100, 1, 1, 1, false));
+		terrain.put(TileType.WATER, Terrain.create("water", 0, 0, 200, 0.1, 0.2, 0, true));
 	}
-	
+		
 	protected void generateContinents() {
 		int			number = Die.d6()+2;
 
@@ -48,6 +59,12 @@ class Tectonics extends WorldBuilder {
 		}		
 	}
 	
+	/**
+	 * Calculates how much of the world surface is actually covered by
+	 * continental shelf.
+	 * 
+	 * @return	Percentage, 0 to 100.
+	 */
 	private int getShelfPercentage() {
 		int		size = 0;
 		
@@ -86,7 +103,7 @@ class Tectonics extends WorldBuilder {
 		}
 		
 		// Randomly grow the continental shelves.
-		while (getShelfPercentage() < (100-planet.getHydrographics())) {
+		while (getShelfPercentage() < (100-seaPercentage)) {
 			for (int y=0; y < tileHeight; y++) {
 				for (int x=0; x < tileWidth; x++) {
 					if (getShelfId(x,y) > 0 && Die.d10() >= getShelfId(x,y)) {
@@ -417,24 +434,201 @@ class Tectonics extends WorldBuilder {
 		System.out.println("");
 	}
 	
+	protected void fractalLandscape() {
+		// The size of the current tile map.
+		int		tw = width/tileSize;
+		int		th = height/tileSize;
+
+		// The size of the next tile map.
+		int		nw = tw * 2;
+		int		nh = th * 2;
+		
+		WorldBuilder.TileType[][]   oldMap = tileMap;
+		WorldBuilder.TileType[][]	newMap = new TileType[nw][nh]; 
+		
+		boolean done = false;
+		while (!done) {
+			for (int y=0; y < nh; y++) {
+				for (int x=0; x < nw; x++) {
+					int		oldy = (y + Die.d3() - 2)/2;
+					int		oldx = (x + Die.d3() - 2)/2;
+					
+					if (oldx < 0) oldx += tw;
+					if (oldx >= tw) oldx -= tw;
+					if (oldy < 0) oldy = 0;
+					if (oldy > th-1) oldy = th-1;
+					newMap[x][y] = oldMap[oldx][oldy];
+				}
+			}
+			oldMap = newMap;
+			if (nw < width) {
+				tw = nw; th = nh;
+				nw *= 2; nh *= 2;
+				newMap = new TileType[nw][nh];
+			} else {
+				done = true;
+			}
+		}
+		
+		// Get rid of single pixels
+		for (int y=1; y < nh-1; y++) {
+			for (int x=1; x < nw-1; x++) {
+				if (newMap[x-1][y] == newMap[x+1][y] && newMap[x][y+1] == newMap[x][y-1] && newMap[x-1][y] == newMap[x][y-1]) {
+					newMap[x][y] = newMap[x-1][y];
+				}
+			}
+		}
+		
+		// Generate the graphical landscape
+		int		div = width / nw;
+		for (int y=0; y < height; y++) {
+			for (int x=0; x < width; x++) {
+				setTerrain(x, y, terrain.get(oldMap[x/div][y/div]));
+			}
+		}
+		
+	}
+
+	/**
+	 * Given the rough tile map, try and generate a higher resolution
+	 * landscape from this, using the tile guide plus the fractal
+	 * height map as a basis.
+	 */
+	protected void generateLandscape() {
+		int		tw = width/tileSize;
+		int		th = height/tileSize;
+		
+		for (int y=0; y < th; y++) {
+			for (int x=0; x < tw; x++) {
+				switch (getTile(x, y)) {
+				case DESERT:
+					setTile(x, y, new ITileSetter() { 
+							public void set(int averageHeight, int x, int y) {
+								setTerrain(x, y, terrain.get(TileType.DESERT));
+							} });
+					break;
+				case SEABED:
+					setTile(x, y, new ITileSetter() { 
+							public void set(int averageHeight, int x, int y) {
+								setTerrain(x, y, terrain.get(TileType.SEABED));
+							} });
+					break;
+				case ARCTIC:
+					setTile(x, y, new ITileSetter() { 
+							public void set(int averageHeight, int x, int y) {
+								setTerrain(x, y, terrain.get(TileType.ARCTIC));
+							} });
+					break;
+				case MOUNTAINS:
+					setTile(x, y, new ITileSetter() { 
+						public void set(int averageHeight, int x, int y) {
+							if (getHeight(x, y) > averageHeight) {
+								setTerrain(x, y, terrain.get(TileType.MOUNTAINS));
+							} else {
+								//setHeight(x, y, 1.1);
+								setTerrain(x, y, terrain.get(TileType.DESERT));
+							}
+						} });
+					break;
+				case TEMPERATE:
+					setTile(x, y, new ITileSetter() {
+						public void set(int averageHeight, int x, int y) {
+							if (getHeight(x, y) > averageHeight) {
+								setTerrain(x, y, terrain.get(TileType.TEMPERATE));
+							} else {
+								setTerrain(x, y, terrain.get(TileType.TEMPERATE));
+							}
+						} });						
+					break;
+				case SCRUB:
+					setTile(x, y, new ITileSetter() {
+						public void set(int averageHeight, int x, int y) {
+							if (getHeight(x, y) > averageHeight) {
+								setTerrain(x, y, terrain.get(TileType.DESERT));
+							} else {
+								setTerrain(x, y, terrain.get(TileType.SCRUB));
+							}
+						} });						
+					break;
+				case JUNGLE:
+					setTile(x, y, new ITileSetter() {
+						public void set(int averageHeight, int x, int y) {
+							if (getHeight(x, y) > averageHeight) {
+								setTerrain(x, y, terrain.get(TileType.JUNGLE));
+							} else {
+								setTerrain(x, y, terrain.get(TileType.TEMPERATE));
+							}
+						} });						
+					break;					
+				case WATER:
+					setTile(x, y, new ITileSetter() { 
+						public void set(int averageHeight, int x, int y) { 
+							if (getHeight(x, y) < planet.getHydrographics()) {
+								setTerrain(x, y, terrain.get(TileType.WATER));
+								setHeight(x, y, 0.5);
+							} else {
+								setTerrain(x, y, terrain.get(TileType.WATER));
+							}
+						} });
+					break;
+				}
+			}
+		}
+		
+		/*
+		// Now try and fix mountains.
+		int		fixed = 1, thing = 3;
+		while (fixed > 0) {
+			fixed = 0;
+			for (int y=0; y < height; y++) {
+				for (int x=0; x < width; x++) {
+					if (getTerrain(x, y) == rock) continue;
+					int		h = getHeight(x, y)+thing;
+					if (getHeight(x-1, y) < h && getTerrain(x-1, y) == rock) {
+						setTerrain(x, y, rock); fixed++;
+					} else if (getHeight(x+1, y) < h && getTerrain(x+1, y) == rock) {
+						setTerrain(x, y, rock); fixed++;
+					} else if (getHeight(x, y-1) < h && getTerrain(x, y-1) == rock) {
+						setTerrain(x, y, rock); fixed++;
+					} else if (getHeight(x, y+1) < h && getTerrain(x, y+1) == rock) {						
+						setTerrain(x, y, rock); fixed++;
+					}
+				}
+			}
+			//if (Die.d6() == 1) thing ++;
+		}
+		*/		
+	}
+
+	public void generate() {
+		if (seaPercentage == 0 && planet.getHydrographics() > 0) {
+			seaPercentage = planet.getHydrographics();
+		} else if (seaPercentage ==  0) {
+			seaPercentage = Die.d20(3)+20;
+		}
+		// Work out large scale tiles.
+		generateContinents();
+		copyShelfToTiles();
+		setTiles();
+
+		//marineClimate();
+		//makeItRain();
+
+		fractalLandscape();
+		
+	}
+	
 	public static void main(String[] args) throws Exception {
 		Tectonics	t = new Tectonics(512, 256);
-		t.setPlanet(new Planet("Earth", PlanetType.Gaian,6400));
-		t.planet.setHydrographics(70);
+		t.setPlanet(new Planet("Earth", PlanetType.Gaian, 6400));
+		t.planet.setHydrographics(30);
 		t.planet.setTilt(22);
-		t.planet.setTemperature(Temperature.Standard);
+		t.planet.setTemperature(Temperature.Cold);
 		t.planet.setLifeLevel(LifeType.None);
 		t.planet.setAtmosphereType(AtmosphereType.Standard);
 		t.planet.setAtmospherePressure(AtmospherePressure.Standard);
 
-		t.generateContinents();
-		//t.debugShelfMap();
-		t.copyShelfToTiles();
-
-		t.setTiles();
-		t.debugTiles();
-		t.addWater();
-		t.marineClimate();
-		t.debugTemperatureMap();
+		t.generate();
+		t.getWorldMap(2).save(new File("/home/sam/gaian.jpg"));
 	}
 }
