@@ -105,7 +105,7 @@ public class RockWorld extends Tectonics {
 
 		fractalLandscape();
 
-		generateImpacts();
+		//generateImpacts();
 	}
 
 	public static void main(String[] args) throws Exception {
