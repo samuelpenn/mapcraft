@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      
+	<body>
+		<ui:composition template="template.xhtml">
+			<ui:define name="title">KnownSpace Dashboard</ui:define>
+	
+	
+			<ui:define name="body">
+				<p>
+					Web dashboard application. Nothing special here yet.
+				</p>
+				
+				<h:form>
+					<div id="mainboard">
+						<div id="sector">
+							<h4>Sector Information</h4>
+							
+							<!-- Should use ui:repeat, but doesn't work -->
+					
+							<h:selectOneMenu label="Sector" value="#{dashboard.selectedSector}">
+								<f:selectItems value="${sectorFactory.allSectors}"/>
+							</h:selectOneMenu>
+								
+						
+							<h:commandButton id="submit" value="Submit" action="/mapcraft/rest/test"/>
+						</div> <!-- sector -->
+					</div> <!-- mainboard -->	
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
+</html>

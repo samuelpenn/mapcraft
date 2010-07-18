@@ -71,7 +71,34 @@
    		<servlet-name>Commodities</servlet-name>
    		<servlet-class>uk.org.glendale.rpg.traveller.servlets.Commodities</servlet-class>
    	</servlet>
-    	
+   	
+   	<!--
+   	
+   	-->
+   	<servlet>
+   		<servlet-name>Jersey Web Application</servlet-name>
+   		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+   		<init-param>
+   			<param-name>javax.ws.rs.Application</param-name>
+   			<param-value>uk.org.glendale.worldgen.server.WebApplication</param-value>
+   		</init-param>
+   	</servlet>
+
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    </servlet>
+ 
+   	<servlet-mapping>
+   	  <servlet-name>Jersey Web Application</servlet-name>
+   	  <url-pattern>/api/*</url-pattern>
+   	</servlet-mapping>
+
+   	<servlet-mapping>
+   		<servlet-name>Faces Servlet</servlet-name>
+   		<url-pattern>*.xhtml</url-pattern>
+   	</servlet-mapping>
+            	
    	<servlet-mapping>
    		<servlet-name>Information Getter</servlet-name>
    		<url-pattern>/get</url-pattern>
@@ -121,12 +148,11 @@
    		<servlet-name>Commodities</servlet-name>
    		<url-pattern>/commodity/*</url-pattern>
    	</servlet-mapping>
-<!--    	
+
    	<listener>
         <listener-class>
-	        uk.org.glendale.cities.handlers.StartupListener
+	        uk.org.glendale.worldgen.server.AppManager
         </listener-class>
     </listener>	
--->	
     	
 </web-app>

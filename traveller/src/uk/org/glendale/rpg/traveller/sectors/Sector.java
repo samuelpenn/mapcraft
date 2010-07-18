@@ -20,6 +20,8 @@ import java.net.MalformedURLException;
 import java.sql.*;
 import java.util.*;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.database.ObjectNotFoundException;

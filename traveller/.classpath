@@ -8,16 +8,35 @@
 	<classpathentry kind="lib" path="/usr/share/tomcat-servlet-api-2.5/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="/usr/share/sun-java3d-bin/lib/j3dcore.jar">
 		<attributes>
-			<attribute value="/opt/sun-java3d-bin/lib64" name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/opt/sun-java3d-bin/lib64"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/usr/share/sun-java3d-bin/lib/j3dutils.jar">
 		<attributes>
-			<attribute value="/opt/sun-java3d-bin/lib64" name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/opt/sun-java3d-bin/lib64"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/usr/share/sun-java3d-bin/lib/vecmath.jar"/>
 	<classpathentry kind="lib" path="support/catalina-ant.jar"/>
 	<classpathentry kind="lib" path="support/catalina.jar"/>
+	<classpathentry kind="lib" path="support/jax-ws-api.jar"/>
+	<classpathentry kind="lib" path="support/jax-ws.jar"/>
+	<classpathentry kind="lib" path="support/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="support/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="support/jsr311-api.jar"/>
+	<classpathentry kind="lib" path="support/jersey-bundle-1.3.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/c3p0.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/antlr-2.7.6.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/commons-collections-3.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/hibernate3.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/javassist-3.9.0.GA.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jstl-1.2.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jta-1.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/slf4j-api-1.5.8.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/slf4j-simple-1.5.11.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/asm-3.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/hibernate-jpa-2.0-api-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/Mapcraft/support/libs/jsf-api.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

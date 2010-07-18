@@ -19,6 +19,13 @@ public enum PlanetType {
 	IceBelt(Category.Belt, 0.0, 0),
 	OortCloud(Category.Belt, 0.0, 0),
 	
+	MatrioshkaBrain(Category.Construct, 0.0, 0),
+	RingWorld(Category.Construct, 0.0, 0),
+	Orbital(Category.Construct, 0.0, 0),
+	DysonSphere(Category.Construct, 0.0, 0),
+	GlobusCassus(Category.Construct, 0.0, 0),
+	OrbitalRing(Category.Construct, 0.0, 0),
+	
 	Vulcanian(Category.Asteroid, 7.5, 100, "hotrock"),		// Asteroid close to parent sun, heavy metals.
 	Silicaceous(Category.Asteroid, 4.0, 150),				// Asteroid with nickle-iron core.
 	Sideritic(Category.Asteroid, 6.0, 120),					// Pure nickel-iron, very dense.
@@ -95,7 +102,7 @@ public enum PlanetType {
 	EpiStellarJovian(Category.Jovian, 1.2, 100000, "jovian");
 	
 	private enum Category {
-		Belt, Asteroid, Terrestrial, Dwarf, Jovian;
+		Belt, Asteroid, Terrestrial, Dwarf, Jovian, Construct;
 	}
 	
 	private Category		category = Category.Terrestrial;

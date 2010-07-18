@@ -51,6 +51,10 @@ public class ObjectFactory {
 							  Config.getDatabaseUser(), Config.getDatabasePassword());
 	}
 	
+	public ObjectFactory(Connection cx) {
+		db = new Database(cx);
+	}
+	
 	private static ObjectFactory getInstance() {
 		if (instance == null || connectionCount++ > RECYCLE) {
 			instance = new ObjectFactory();
