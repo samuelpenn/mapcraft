@@ -15,6 +15,7 @@ import org.hibernate.Transaction;
 
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorFactory;
+import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 import uk.org.glendale.worldgen.server.AppManager;
 import uk.org.glendale.worldgen.server.HibernateUtil;
 
@@ -52,6 +53,10 @@ public class Hibernate {
 		
 		System.out.println(sf.getSector("Xaagr").getId());
 		System.out.println(sf.getSector(132).getName());
+		
+		StarSystem ss = em.find(StarSystem.class, 37967);
+		System.out.println(ss.getName());
+		System.out.println(ss.getSector().getName());
 		
 		/*
 		Transaction	newTransaction = newSession.beginTransaction();

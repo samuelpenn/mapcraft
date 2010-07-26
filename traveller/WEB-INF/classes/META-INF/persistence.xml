@@ -8,7 +8,8 @@
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		
 		<class>uk.org.glendale.worldgen.astro.sector.Sector</class>
-		
+		<class>uk.org.glendale.worldgen.astro.starsystem.StarSystem</class>
+				
 		<properties>
 			<property name="hibernate.archive.autodetection" value="class"/>
 			
