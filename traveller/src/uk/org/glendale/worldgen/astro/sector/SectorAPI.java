@@ -22,7 +22,12 @@ import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.server.AppManager;
 import uk.org.glendale.worldgen.server.Foo;
 
-
+/**
+ * Provides a REST style interface for obtaining information about
+ * sectors.
+ * 
+ * @author Samuel Penn
+ */
 @Path("/sector/{name}")
 public class SectorAPI {
 	@Resource(name="java:com/env/jdbc/Traveller")
