@@ -29,6 +29,10 @@
 							<h:selectOneMenu label="Sector" value="#{dashboard.selectedSector}">
 								<f:selectItems value="${sectorFactory.allSectors}"/>
 							</h:selectOneMenu>
+							
+							<h:selectOneMenu label="System" value="#{dashboard.selectedSystem}" rendered="#{dashboard.selectedSector != null}">
+								<f:selectItems value="${dashboard.systemsList}"/>
+							</h:selectOneMenu>
 								
 						
 							<h:commandButton id="submit" value="Submit" action="/mapcraft/rest/test"/>
