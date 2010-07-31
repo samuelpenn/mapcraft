@@ -68,4 +68,8 @@ public class SectorFactory {
 			return (Sector)q.getSingleResult();
 		}
 	}
+	
+	public void close() {
+		em.close();
+	}
 }

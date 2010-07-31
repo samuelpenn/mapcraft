@@ -38,6 +38,7 @@ public class AppManager implements ServletContextListener {
 	private Connection				connection = null;
 	
 	private static String			universe = null;
+	private static String			rootPath = null;
 	
 	static {
 		ResourceBundle		bundle = ResourceBundle.getBundle("uk.org.glendale.rpg.traveller.config");
@@ -238,6 +239,12 @@ public class AppManager implements ServletContextListener {
 			System.out.println("Successfully obtained data source");
 		}
 		
+		rootPath = arg0.getServletContext().getRealPath("");
+
+	}
+	
+	public static String getRootPath() {
+		return rootPath;
 	}
 	
 	public static AppManager getInstance() {

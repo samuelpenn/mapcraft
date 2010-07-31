@@ -43,12 +43,16 @@ public class StarSystemFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<StarSystem>	getStarSystemsInSector(Sector sector) {
-		Query q = em.createQuery("from StarSystem s where s.sector = :sector order by s.x, s.y asc");
+		Query q = em.createQuery("from StarSystem s where s.sector = :sector order by s.name asc");
 		q.setParameter("sector", sector);
 		
 		List<StarSystem>	systems = q.getResultList();
 		
 		return systems;
+	}
+	
+	public void close() {
+		em.close();
 	}
 
 }

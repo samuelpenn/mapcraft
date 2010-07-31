@@ -1,5 +1,6 @@
 package uk.org.glendale.worldgen.astro.sector;
 
+import java.awt.Image;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -52,9 +53,7 @@ public class SectorAPI {
 
 		SectorFactory	sf = new SectorFactory(app.getEntityManager());
 		
-		
 		return sf.getSector(name);
-
 	}
 
 	

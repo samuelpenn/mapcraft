@@ -30,6 +30,7 @@ import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.Star;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
 import uk.org.glendale.rpg.traveller.systems.codes.*;
+import uk.org.glendale.worldgen.astro.sector.SubSector;
 
 /**
  * Create a bitmap image of a subsector map. Designed for display on a webpage,
@@ -68,26 +69,6 @@ public class SubSectorImage {
 		System.out.println("setSymbolBase: ["+base+"]");
 		SYMBOL_BASE = base;
 	}
-	
-	public enum SubSector {
-		A(0, 0), B(1, 0), C(2, 0), D(3, 0),
-		E(0, 1), F(1, 1), G(2, 1), H(3, 1),
-		I(0, 2), J(1, 2), K(2, 2), L(3, 2),
-		M(0, 3), N(1, 3), O(2, 3), P(3, 3);
-		
-		private int		x = 0;
-		private int		y = 0;
-		
-		private SubSector(int x, int y) {
-			this.x = x;
-			this.y = y;
-		}
-		
-		public int getX() { return x; }
-		public int getY() { return y; }
-		
-	}
-	
 	
 	/**
 	 * Create a new SubSectorImage for the given sector and sub sector

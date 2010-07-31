@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import uk.org.glendale.worldgen.astro.sector.SectorAPI;
+import uk.org.glendale.worldgen.astro.sector.SubSectorAPI;
+import uk.org.glendale.worldgen.astro.starsystem.StarSystemAPI;
 import uk.org.glendale.worldgen.dashboard.Dashboard;
 
 
@@ -18,6 +20,8 @@ public class WebApplication extends Application {
 	public Set<Class<?>> getClasses() {
 		Set<Class<?>> s = new HashSet<Class<?>>();
 		s.add(SectorAPI.class);
+		s.add(SubSectorAPI.class);
+		s.add(StarSystemAPI.class);
 		return s;
 	}
 }
