@@ -31,11 +31,23 @@
 							</h:selectOneMenu>
 							
 							<h:selectOneMenu label="System" value="#{dashboard.selectedSystem}" rendered="#{dashboard.selectedSector != null}">
-								<f:selectItems value="${dashboard.systemsList}"/>
+								<f:selectItems value="${dashboard.systemsList}" var="system"
+								               itemValue="#{system.id}" itemLabel="#{system}"/>
 							</h:selectOneMenu>
-								
-						
+							
 							<h:commandButton id="submit" value="Submit" action="/mapcraft/rest/test"/>
+							
+							<br/>
+							
+							<h:panelGrid columns="2" rendered="#{dashboard.selectedSystem != null}">
+								<h:panelGroup>
+									<img src="${dashboard.subSectorURL}"/>
+								</h:panelGroup>
+								
+								<h:panelGroup>
+									<h4>System</h4>
+								</h:panelGroup>
+							</h:panelGrid>
 						</div> <!-- sector -->
 					</div> <!-- mainboard -->	
 				</h:form>
