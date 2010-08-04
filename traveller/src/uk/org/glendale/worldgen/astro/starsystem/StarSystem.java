@@ -1,5 +1,7 @@
 package uk.org.glendale.worldgen.astro.starsystem;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -7,11 +9,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import uk.org.glendale.rpg.traveller.systems.StarSystem.Zone;
+import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.sector.Sector;
 
 /**
@@ -39,6 +44,9 @@ public class StarSystem {
 	@Column(name="base")		private String		base;
 	@Column(name="uwp")			private String		uwp;
 	@Column(name="selection")	private int			selection;
+	
+	@OneToMany(mappedBy="system")
+	private List<Planet>	planets;
 	
 
 	public StarSystem() {
@@ -124,6 +132,10 @@ public class StarSystem {
 	
 	public String getUWPAsString() {
 		return uwp;
+	}
+	
+	public List<Planet> getPlanets() {
+		return planets;
 	}
 	
 	public String toString() {

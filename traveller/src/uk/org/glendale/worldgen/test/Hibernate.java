@@ -13,6 +13,7 @@ import javax.persistence.Persistence;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorFactory;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
@@ -58,9 +59,13 @@ public class Hibernate {
 		StarSystem ss = em.find(StarSystem.class, 37967);
 		System.out.println(ss.getName());
 		System.out.println(ss.getSector().getName()+": "+ss.getZone());
+		System.out.println(ss.getPlanets().size());
+		for (Planet p : ss.getPlanets()) {
+			System.out.println(p.getName());
+		}
 		
-		StarSystemFactory	ssf = new StarSystemFactory(em);
-		ssf.getStarSystemsInSector(s);
+		//StarSystemFactory	ssf = new StarSystemFactory(em);
+		//ssf.getStarSystemsInSector(s);
 		
 		/*
 		Transaction	newTransaction = newSession.beginTransaction();

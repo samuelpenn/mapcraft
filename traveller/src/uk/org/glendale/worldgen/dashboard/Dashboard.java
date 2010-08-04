@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.event.ValueChangeEvent;
 
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorFactory;
@@ -34,6 +35,10 @@ public class Dashboard {
 
 	public String getTitle() {
 		return title;
+	}
+	
+	public void selectedSector(ValueChangeEvent event) {
+		selectedSector = (String)event.getNewValue();
 	}
 	
 	public String getSelectedSector() {
@@ -85,7 +90,7 @@ public class Dashboard {
 			SectorFactory		sectorFactory = new SectorFactory(app.getEntityManager());
 			Sector	currentSector = sectorFactory.getSector(selectedSector);
 			sectorFactory.close();
-			return "/traveller/api/subsector/"+currentSector.getId()+"/"+subSector+"?scale=48";
+			return "/traveller/api/subsector/"+currentSector.getId()+"/"+subSector+"?scale=32";
 		}
 		return "";
 	}
