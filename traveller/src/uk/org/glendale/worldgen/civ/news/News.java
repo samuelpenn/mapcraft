@@ -2,6 +2,10 @@ package uk.org.glendale.worldgen.civ.news;
 
 import javax.persistence.Entity;
 
+import uk.org.glendale.worldgen.astro.planet.Planet;
+import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
+import uk.org.glendale.worldgen.civ.ship.Ship;
+
 /**
  * Defines a news item. News travels around the galaxy at the speed of the
  * fastest ship. When an event occurs on a world, a record of the event is
@@ -24,5 +28,94 @@ import javax.persistence.Entity;
  */
 @Entity
 public class News {
+	private int 		id;
+	private long 		eventTime;
+	private int			priority;
+	private News		originalEvent;
+	private NewsType	type;
+	
+	private StarSystem	originalSystem;
+	private Planet		originalPlanet;
+	private Ship		originalShip;
+	private String		text;
+	
+	private long		recordTime;
+	private	StarSystem	recordSystem;
+	private Ship		recordShip;
+	
+	public static int	HIGHEST_PRIORITY = 10;
+	public static int	HIGH_PRIORITY = 7;
+	public static int	MEDIUM_PRIORITY = 5;
+	public static int	LOW_PRIORITY = 3;
+	public static int	LOWEST_PRIORITY = 1;
+	
+	/**
+	 * Gets the unique id that identifies this news item.
+	 */
+	public int getId() {
+		return id;
+	}
 
+	/**
+	 * Gets the time the event that generated this news item occurred.
+	 *  
+	 * @return		Time in seconds since start of simulation.
+	 */
+	public long getEventTime() {
+		return eventTime;
+	}
+	
+	/**
+	 * Gets the priority of this news. Highest priority events are rated 10,
+	 * and drop by one each time the news is replicated to a new system.
+	 * Anything lower than 1 (LOWEST) is automatically deleted. High priority
+	 * events stay around for longer.
+	 * 
+	 * @return		Priority, 10 is highest, 1 is lowest.
+	 */
+	public int getPriority() {
+		return priority;
+	}
+	
+	/**
+	 * Gets the original event this record is based on.
+	 */
+	public News getOriginalEvent() {
+		return originalEvent;
+	}
+	
+	/**
+	 * Gets the type of the news event.
+	 */
+	public NewsType getType() {
+		return type;
+	}
+	
+	public StarSystem getOriginalSystem() {
+		return originalSystem;
+	}
+	
+	public Planet getOriginalPlanet() {
+		return originalPlanet;
+	}
+	
+	public Ship getOriginalShip() {
+		return originalShip;
+	}
+	
+	public String getText() {
+		return text;
+	}
+	
+	public long getRecordTime() {
+		return recordTime;
+	}
+	
+	public StarSystem getRecordSystem() {
+		return recordSystem;
+	}
+	
+	public Ship getRecordShip() {
+		return recordShip;
+	}
 }

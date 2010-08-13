@@ -15,9 +15,15 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.FilterJoinTable;
+import org.hibernate.annotations.Where;
+
 import uk.org.glendale.rpg.traveller.systems.StarSystem.Zone;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.sector.Sector;
+import uk.org.glendale.worldgen.astro.star.Star;
 
 /**
  * Represents a star system within a sector. A star system will have one or
@@ -27,6 +33,7 @@ import uk.org.glendale.worldgen.astro.sector.Sector;
  */
 @Entity @Table(name="system")
 @XmlRootElement(name="system")
+@FilterDef(name="noMoons")
 public class StarSystem {
 	// Unique identifier used as primary key.
 	@Id @GeneratedValue
@@ -45,8 +52,12 @@ public class StarSystem {
 	@Column(name="uwp")			private String		uwp;
 	@Column(name="selection")	private int			selection;
 	
-	@OneToMany(mappedBy="system")
+	@OneToMany(mappedBy="system", fetch=FetchType.LAZY)
+	@Where(clause="moon=0")
 	private List<Planet>	planets;
+	
+	@OneToMany(mappedBy="system", fetch=FetchType.LAZY)
+	private List<Star>		stars;
 	
 
 	public StarSystem() {
@@ -134,8 +145,24 @@ public class StarSystem {
 		return uwp;
 	}
 	
+	/**
+	 * Gets the list of planets in this star system. Only major planets are
+	 * returned, moons are not listed and must be fetched from the Planet
+	 * itself.
+	 * 
+	 * @return	List of major planets in this system.
+	 */
 	public List<Planet> getPlanets() {
 		return planets;
+	}
+	
+	/**
+	 * Gets the list of stars in this star system.
+	 * 
+	 * @return	List of stars in this system.
+	 */
+	public List<Star> getStars() {
+		return stars;
 	}
 	
 	public String toString() {

@@ -71,7 +71,8 @@ public class Dashboard {
 	}
 	
 	public StarSystem getSystemData() {
-		return null;
+		StarSystemFactory	systemFactory = new StarSystemFactory(app.getEntityManager());
+		return systemFactory.getStarSystem(selectedSystemId);
 	}
 	
 	public String getSubSectorURL() {
