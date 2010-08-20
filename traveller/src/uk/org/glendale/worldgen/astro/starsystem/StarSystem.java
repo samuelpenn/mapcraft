@@ -1,5 +1,6 @@
 package uk.org.glendale.worldgen.astro.starsystem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -64,6 +65,25 @@ public class StarSystem {
 		
 	}
 	
+	public StarSystem(Sector sector, String name, int x, int y) {
+		if (sector == null) {
+			throw new IllegalArgumentException("StarSystem must belong to a valid Sector");
+		}
+		this.sector = sector;
+		if (name == null || name.trim().length() == 0) {
+			throw new IllegalArgumentException("Name must be valid");
+		}
+		this.name = name;
+		if (x < 1 || x > 40) {
+			throw new IllegalArgumentException("X coordinate must be between 1 and 40");
+		}
+		this.x = x;
+		if (y < 1 || y > 32) {
+			throw new IllegalArgumentException("Y coordinate must be between 1 and 32");
+		}
+		this.y = y;
+	}
+	
 	/**
 	 * Gets the unique ID for this stat system.
 	 * 
@@ -82,7 +102,7 @@ public class StarSystem {
 	public String getName() {
 		return name;
 	}
-	
+		
 	/**
 	 * Gets the sector to which this star system belongs.
 	 * 
@@ -91,7 +111,7 @@ public class StarSystem {
 	public Sector getSector() {
 		return sector;
 	}
-	
+		
 	/**
 	 * Gets the X coordinate of the system within the sector, ranging
 	 * from 1 through to 40 inclusive.
@@ -156,6 +176,17 @@ public class StarSystem {
 		return planets;
 	}
 	
+	public void addPlanet(Planet planet) {
+		if (planets == null) {
+			planets = new ArrayList<Planet>();
+		}
+		planets.add(planet);
+	}
+	
+	public void setPlanets(List<Planet> planets) {
+		this.planets = planets;
+	}
+	
 	/**
 	 * Gets the list of stars in this star system.
 	 * 
@@ -163,6 +194,17 @@ public class StarSystem {
 	 */
 	public List<Star> getStars() {
 		return stars;
+	}
+	
+	public void addStar(Star star) {
+		if (stars == null) {
+			stars = new ArrayList<Star>();
+		}
+		stars.add(star);
+	}
+	
+	public void setStars(List<Star> stars) {
+		this.stars = stars;
 	}
 	
 	public String toString() {

@@ -25,6 +25,7 @@ public class Star {
 	// Astronomical data
 	@ManyToOne @JoinColumn(name="system_id", referencedColumnName = "id")
 	private StarSystem			system;
+
 	@Column(name="parent_id")		private int					parentId;
 	@Column(name="distance")		private int					distance;
 	@Column(name="form")			private StarForm			form;
@@ -52,6 +53,13 @@ public class Star {
 		return name;
 	}
 	
+	public void setName(String name) {
+		if (name == null || name.trim().length() == 0) {
+			throw new IllegalArgumentException("Name is not valid");
+		}
+		this.name = name.trim();
+	}
+	
 	/**
 	 * Gets the id of the parent around which this star orbits. If the star has
 	 * no parent, this is zero.
@@ -60,6 +68,10 @@ public class Star {
 	 */
 	public int getParentId() {
 		return parentId;
+	}
+	
+	public void setParentId(int parentId) {
+		this.parentId = parentId;
 	}
 	
 	/**
@@ -73,6 +85,13 @@ public class Star {
 		return distance;
 	}
 	
+	public void setDistance(int distance) {
+		if (distance < 0) {
+			throw new IllegalArgumentException("Distance cannot be negative");
+		}
+		this.distance = distance;
+	}
+	
 	/**
 	 * Gets the form of this star. The majority of stars will be of form 'Star'.
 	 * A small number will be 'WhiteDwarf', and there may exist 'NeutroStar'
@@ -82,6 +101,10 @@ public class Star {
 	 */
 	public StarForm getForm() {
 		return form;
+	}
+	
+	public void setForm(StarForm form) {
+		this.form = form;
 	}
 	
 	/**
@@ -94,6 +117,10 @@ public class Star {
 		return classification;
 	}
 	
+	public void setClassification(StarClass classification) {
+		this.classification = classification;
+	}
+	
 	/**
 	 * Gets the spectral type of the star, using the Hertzsprung Russell diagram.
 	 * This is a two character code, e.g. our sun is G2.
@@ -102,5 +129,9 @@ public class Star {
 	 */
 	public String getType() {
 		return type;
+	}
+	
+	public void setType(String type) {
+		this.type = type;
 	}
 }
