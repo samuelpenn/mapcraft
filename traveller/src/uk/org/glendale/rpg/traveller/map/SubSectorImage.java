@@ -29,6 +29,7 @@ import uk.org.glendale.rpg.traveller.sectors.Sector;
 import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.Star;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
+import uk.org.glendale.rpg.traveller.systems.Zone;
 import uk.org.glendale.rpg.traveller.systems.codes.*;
 import uk.org.glendale.worldgen.astro.sector.SubSector;
 
@@ -316,9 +317,9 @@ public class SubSectorImage {
 					int		cy = (int)(getY(x, y) - (scale * SIN60));	// Y coordinate of centre.
 
 					String	colour = "#000000";
-					if (system.getZone() == StarSystem.Zone.Red) {
+					if (system.getZone() == Zone.Red) {
 						colour = "#FF0000";
-					} else if (system.getZone() == StarSystem.Zone.Amber) {
+					} else if (system.getZone() == Zone.Amber) {
 						colour = "#FF8000";
 					}
 

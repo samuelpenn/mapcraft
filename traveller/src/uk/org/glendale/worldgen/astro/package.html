@@ -1,0 +1,48 @@
+<body>
+	<p>
+		The <strong>uk.org.glendale.worldgen.astro</strong> package holds the
+		entity definitions and logic for all astronomical objects within the
+		universe. This includes sectors, star systems, stars and planets.
+	</p>
+	
+	<p>
+		Each type of entity has its own package, which includes entities,
+		factories, generators and API classes. The format of each package is
+		similar for each, and code has been split across several classes to
+		try and reduce the maintenance headache.
+	</p>
+	
+	<h4>Entity</h4>
+	
+	<p>
+		The entity class describes the meta data for the entity, and contains
+		only a minimal amount of logic (if any). The idea is to keep these as
+		simple as possible. They are named for the entity.
+	</p>
+	
+	<h4>API</h4>
+	
+	<p>
+		These are named as &lt;entityt&gt;API, and contain the logic for the
+		entity during its lifetime, as well as declaring public methods for
+		controlling the entity. Web Services are defined in here using
+		javax.ws.* annotations.
+	</p>
+	
+	<h4>Factory</h4>
+	
+	<p>
+		These are named as &lt;entity&gt;Factory, and contain the logic for
+		fetching existing instances of this entity.
+	</p>
+	
+	<h4>Generator</h4>
+
+	<p>
+		These are named as &lt;entity&gt;Generator, and contain the logic for
+		creating new instances of this entity. Creation logic is separated from
+		fetching logic because for many of these entities, creation is very
+		complex but happens rarely. By splitting it from the Factory class, we
+		allow the Factory class (which is used frequently) to be simpler.
+	</p>
+</body>

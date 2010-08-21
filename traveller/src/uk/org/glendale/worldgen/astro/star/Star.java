@@ -3,6 +3,7 @@ package uk.org.glendale.worldgen.astro.star;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import uk.org.glendale.rpg.traveller.systems.codes.SpectralType;
 import uk.org.glendale.rpg.traveller.systems.codes.StarClass;
 import uk.org.glendale.rpg.traveller.systems.codes.StarForm;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
@@ -32,7 +33,8 @@ public class Star {
 	@Column(name="form")			private StarForm			form;
 	@Enumerated(EnumType.STRING)
 	@Column(name="class")			private StarClass			classification;
-	@Column(name="type")			private String				type;
+	@Enumerated(EnumType.STRING)
+	@Column(name="type")			private SpectralType		type;
 
 	Star() {
 		
@@ -141,11 +143,11 @@ public class Star {
 	 * 
 	 * @return		Spectral type of star.
 	 */
-	public String getType() {
+	public SpectralType getSpectralType() {
 		return type;
 	}
 	
-	public void setType(String type) {
+	public void setSpectralType(SpectralType type) {
 		this.type = type;
-	}
+	}	
 }

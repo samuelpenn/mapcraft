@@ -1,5 +1,6 @@
 package uk.org.glendale.worldgen.astro.star;
 
+import uk.org.glendale.rpg.traveller.systems.codes.SpectralType;
 import uk.org.glendale.rpg.traveller.systems.codes.StarClass;
 import uk.org.glendale.rpg.traveller.systems.codes.StarForm;
 import uk.org.glendale.rpg.utils.Die;
@@ -28,7 +29,7 @@ public class StarGenerator {
 		
 		primary.setForm(StarForm.Star);
 		primary.setClassification(StarClass.V);
-		primary.setType("G2");
+		primary.setSpectralType(SpectralType.G2);
 		
 		return primary;
 	}
@@ -45,7 +46,7 @@ public class StarGenerator {
 		
 		secondary.setForm(StarForm.Star);
 		secondary.setClassification(StarClass.VI);
-		secondary.setType("M5");
+		secondary.setSpectralType(SpectralType.M5);
 		
 		// This is a place holder value.
 		secondary.setParentId(primary.getId());
@@ -66,7 +67,7 @@ public class StarGenerator {
 		
 		tertiary.setForm(StarForm.WhiteDwarf);
 		tertiary.setClassification(StarClass.D);
-		tertiary.setType("D");
+		tertiary.setSpectralType(SpectralType.D7);
 		
 		tertiary.setParentId(secondary.getId());
 		tertiary.setDistance(Die.d10(5)*1000);

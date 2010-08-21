@@ -34,7 +34,6 @@ import uk.org.glendale.rpg.traveller.sectors.Sector;
 import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.Star;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
-import uk.org.glendale.rpg.traveller.systems.StarSystem.Zone;
 
 /**
  * A RESTful implementation of a web service that enables access to the universe.

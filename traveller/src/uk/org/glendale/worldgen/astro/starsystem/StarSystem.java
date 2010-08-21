@@ -4,18 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.annotations.*;
-import org.hibernate.annotations.Where;
 
 import uk.org.glendale.rpg.traveller.systems.Zone;
 import uk.org.glendale.worldgen.astro.planet.Planet;
@@ -44,16 +38,17 @@ public class StarSystem {
 	@Column(name="x")			private int			x;
 	@Column(name="y")			private int			y;
 	@Column(name="allegiance")	private String		allegiance;
+	@Enumerated(EnumType.STRING)
 	@Column(name="zone")		private Zone		zone;
 	@Column(name="base")		private String		base; // Isn't used.
 	@Column(name="uwp")			private String		uwp;
 	@Column(name="selection")	private int			selection;
 	
-	@OneToMany(mappedBy="system", fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="system", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@Where(clause="moon=0")
 	private List<Planet>	planets;
 	
-	@OneToMany(mappedBy="system", fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="system", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	private List<Star>		stars;
 	
 

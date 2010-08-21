@@ -60,10 +60,6 @@ public class StarSystem implements Comparable {
 	private String			base = null;
 	private String			uwpLine = null;
 	
-	public enum Zone {
-		Green, Amber, Red;
-	}
-	
 	public int getId() {
 		return id;
 	}
@@ -1042,12 +1038,12 @@ public class StarSystem implements Comparable {
 		planetFactory.setFudgeFactor(fudgeFactor);
 		
 		if (distance < 10) {
-			// There should be a limit to how close to the star to be.
+			// There should be a limit to how close to the star a planet can be.
 			if (star.getStarForm() == StarForm.Star) {
 				distance = 10 + Die.d10();
 				increase = 10 + Die.d10(2);
 			} else {
-				// Stellar remanent, so assume it was a large star to star with,
+				// Stellar remanent, so assume it was a large star to start with,
 				// or closer worlds have been destroyed.
 				distance = 50 + Die.d10(5) * 5;
 				increase = distance + Die.d10(2) - Die.d10(2);

@@ -4,9 +4,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import uk.org.glendale.rpg.traveller.systems.Zone;
+import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.star.Star;
+import uk.org.glendale.worldgen.astro.star.StarAPI;
 import uk.org.glendale.worldgen.astro.star.StarGenerator;
 
 /**
@@ -79,10 +81,52 @@ public class StarSystemGenerator {
 				system.addStar(tertiary);
 			}
 		}
+		
+		for (int s = 0; s < system.getStars().size(); s++) {
+			generatePlanets(system, s);
+		}
 	}
 	
-	void generatePlanets(StarSystem system) {
+	private void generatePlanets(StarSystem system, int starIndex) {
+		Star	star = system.getStars().get(starIndex);
+		int		numPlanets = Die.d6(2) - starIndex*3;
+		int		increase = StarAPI.getInnerLimit(star);
+		int		distance = StarAPI.getInnerLimit(star)+Die.die(increase, 2);
 		
+		for (int p=0; p < numPlanets; p++) {
+			Temperature		orbitTemperature = StarAPI.getOrbitTemperature(star, distance);
+			
+			switch (orbitTemperature) {
+			case UltraHot:
+			case ExtremelyHot:
+				// Unlikely
+				break;
+			case VeryHot:
+				// Mercury
+				break;
+			case Hot:
+			case Warm:
+				// Venus.
+				break;
+			case Standard:
+				// Earth.
+				break;
+			case Cool:
+			case Cold:
+				// Mars, Asteroids
+				break;
+			case VeryCold:
+				// Jupiter, Saturn
+				break;
+			case ExtremelyCold:
+				// Uranus, Neptune.
+				break;
+			case UltraCold:
+				// Kuiper belt
+				break;
+			}
+		}
+
 	}
 	
 }
