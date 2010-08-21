@@ -32,17 +32,24 @@ public class Planet {
 	@Column(name="radius")			private int					radius;
 	
 	// Planet data
+	@Enumerated(EnumType.STRING)
 	@Column(name="type")			private PlanetType			type;
+	@Enumerated(EnumType.STRING)
 	@Column(name="atmosphere")		private AtmosphereType		atmosphere;
+	@Enumerated(EnumType.STRING)
 	@Column(name="pressure")		private AtmospherePressure	pressure;
+	@Enumerated(EnumType.STRING)
 	@Column(name="life")			private LifeType			lifeLevel;
+	@Enumerated(EnumType.STRING)
 	@Column(name="temperature")		private Temperature			temperature;
 	@Column(name="hydrographics")	private int					hydrographics;
 	@Column(name="day")				private int					dayLength;
 	
 	// Civilisation data
 	@Column(name="population")		private long				population;
+	@Enumerated(EnumType.STRING)
 	@Column(name="starport")		private StarportType		starport;
+	@Enumerated(EnumType.STRING)
 	@Column(name="government")		private GovernmentType		government;
 	@Column(name="law")				private int					lawLevel;
 	@Column(name="tech")			private int					techLevel;
@@ -51,6 +58,17 @@ public class Planet {
 	@Column(name="trade")			private String				tradeCodes;
 	@Column(name="features")		private String				featureCodes;
 	@Column(name="nextevent")		private long				nextEvent;
+	
+	Planet() {
+		
+	}
+	
+	Planet(StarSystem system, int parentId, boolean isMoon, String name) {
+		this.system = system;
+		this.parentId = parentId;
+		this.isMoon = isMoon;
+		this.name = name;
+	}
 	
 	/**
 	 * Gets the unique id for this planet.
