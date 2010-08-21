@@ -31,6 +31,9 @@ public class Sector {
 	@Column(name="codes")		private String		codes;
 	@Column(name="allegiance")	private String		allegiance;
 	
+	public static final	int			WIDTH = 32;
+	public static final int			HEIGHT = 40;
+	
 	public Sector() {
 		this.id = 0;
 		this.name = "Unnamed";
@@ -38,6 +41,14 @@ public class Sector {
 		this.y = 0;
 		this.codes = "";
 		this.allegiance = "Un";
+	}
+	
+	Sector(String name, int x, int y, String codes, String allegiance) {
+		this.name = name;
+		this.x = x;
+		this.y = y;
+		this.codes = codes.trim();
+		this.allegiance = allegiance.trim();
 	}
 	
 	/**

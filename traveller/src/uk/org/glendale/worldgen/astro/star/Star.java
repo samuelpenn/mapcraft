@@ -28,10 +28,20 @@ public class Star {
 
 	@Column(name="parent_id")		private int					parentId;
 	@Column(name="distance")		private int					distance;
+	@Enumerated(EnumType.STRING)
 	@Column(name="form")			private StarForm			form;
+	@Enumerated(EnumType.STRING)
 	@Column(name="class")			private StarClass			classification;
 	@Column(name="type")			private String				type;
 
+	Star() {
+		
+	}
+	
+	Star(StarSystem system) {
+		this.system = system;
+	}
+	
 	/**
 	 * Gets the unique id of the star. All star ids are unique across the
 	 * entire universe.
@@ -42,6 +52,10 @@ public class Star {
 		return id;
 	}
 	
+	public StarSystem getSystem() {
+		return system;
+	}
+		
 	/**
 	 * Gets the name of the star. Names should be unique within a star system.
 	 * If there are multiple stars, normally the first is named Alpha, the

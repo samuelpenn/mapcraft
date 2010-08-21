@@ -13,7 +13,7 @@ import org.hibernate.Transaction;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
- * Factory class for obtaining Sector objects.
+ * Factory class for obtaining existing Sector objects.
  * 
  * @author Samuel Penn
  */
@@ -68,6 +68,7 @@ public class SectorFactory {
 			return (Sector)q.getSingleResult();
 		}
 	}
+
 	
 	public void close() {
 		em.close();

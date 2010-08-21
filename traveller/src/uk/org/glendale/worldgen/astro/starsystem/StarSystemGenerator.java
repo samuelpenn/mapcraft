@@ -1,5 +1,9 @@
 package uk.org.glendale.worldgen.astro.starsystem;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+
+import uk.org.glendale.rpg.traveller.systems.Zone;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.star.Star;
@@ -11,43 +15,74 @@ import uk.org.glendale.worldgen.astro.star.StarGenerator;
  * @author Samuel Penn
  */
 public class StarSystemGenerator {
-	private StarSystem				system;
+	private EntityManager			entityManager;
 	
-	public StarSystemGenerator(Sector sector, String name, int x, int y) {
-		system = new StarSystem(sector, name, x, y);
+	public StarSystemGenerator(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
+	
+	public StarSystem createStarSystem(Sector sector, String name, int x, int y) {
+		StarSystem system = new StarSystem(sector, name, x, y);
+		system.setAllegiance("Un");
+		system.setZone(Zone.Green);
+		
+		EntityTransaction		transaction = entityManager.getTransaction();
+		try {
+			transaction.begin();
+			entityManager.persist(system);
+
+			generateStars(system);
+			
+			transaction.commit();
+		} catch (Throwable t) {
+			transaction.rollback();
+		}
+		
+		return system;
 	}
 	
 	/**
-	 * Randomly generate stars for this system. 50% of systems will have a
-	 * single star, 33% will have 2 stars and the rest 3 stars. All double
-	 * systems will have a primary and distant secondary. All tertiary
+	 * Randomly generate stars for this system. Most systems will have a
+	 * single star, some will have two and a few three. All binary
+	 * systems will have a primary and distant secondary. All triple
 	 * systems will have the third star in close orbit around the secondary.
 	 */
-	void generateStars() {
+	private void generateStars(StarSystem system) {
 		if (system == null) {
 			throw new IllegalArgumentException("Star system has not been defined");
 		}
 		int		numStars = 0;
-		switch (Die.d6()) {
+		switch (Die.d10()) {
 		case 1: case 2: case 3:
+		case 4: case 5: case 6:
 			numStars = 1;
 			break;
-		case 4: case 5:
+		case 7: case 8: case 9:
 			numStars = 2;
 			break;
-		case 6:
+		case 10:
 			numStars = 3;
 			break;
 		}
 		
-		StarGenerator	starGenerator = new StarGenerator(system.getName(), numStars > 1);
-		system.addStar(starGenerator.generatePrimary());
+		StarGenerator	starGenerator = new StarGenerator(system, numStars > 1);
+		Star	primary = starGenerator.generatePrimary();
+		entityManager.persist(primary);
+		system.addStar(primary);
 		if (numStars > 1) {
-			system.addStar(starGenerator.generateSecondary());
+			Star	secondary = starGenerator.generateSecondary();
+			entityManager.persist(secondary);
+			system.addStar(secondary);
 			if (numStars > 2) {
-				system.addStar(starGenerator.generateTertiary());
+				Star	tertiary = starGenerator.generateTertiary();
+				entityManager.persist(tertiary);
+				system.addStar(tertiary);
 			}
 		}
+	}
+	
+	void generatePlanets(StarSystem system) {
+		
 	}
 	
 }

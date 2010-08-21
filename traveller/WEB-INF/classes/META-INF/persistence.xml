@@ -10,21 +10,13 @@
 		<class>uk.org.glendale.worldgen.astro.sector.Sector</class>
 		<class>uk.org.glendale.worldgen.astro.starsystem.StarSystem</class>
 		<class>uk.org.glendale.worldgen.astro.planet.Planet</class>
+		<class>uk.org.glendale.worldgen.astro.star.Star</class>
 				
 		<properties>
 			<property name="hibernate.archive.autodetection" value="class"/>
 			
 			<property name="hibernate.show_sql" value="true"/>
-			<property name="hibernate.format_sql" value="true"/>
-			<!--
-			<property name="hibernate.connection.driver_class" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
-			<property name="hibernate.connection.url" value="jdbc:sqlserver://localhost:1433;databaseName=hibernate"/>
-			<property name="hibernate.connection.username" value="sa"/>
-			<property name="hibernate.connection.password" value="aiimirethink"/>
-			
-			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect"/>
-			-->
-		
+			<property name="hibernate.format_sql" value="true"/>		
 		</properties>
 
 	</persistence-unit>

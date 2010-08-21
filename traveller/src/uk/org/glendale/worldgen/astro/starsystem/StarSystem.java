@@ -3,7 +3,7 @@ package uk.org.glendale.worldgen.astro.starsystem;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -11,17 +11,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.FilterJoinTable;
+import org.hibernate.annotations.*;
 import org.hibernate.annotations.Where;
 
-import uk.org.glendale.rpg.traveller.systems.StarSystem.Zone;
+import uk.org.glendale.rpg.traveller.systems.Zone;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.star.Star;
@@ -49,7 +45,7 @@ public class StarSystem {
 	@Column(name="y")			private int			y;
 	@Column(name="allegiance")	private String		allegiance;
 	@Column(name="zone")		private Zone		zone;
-	@Column(name="base")		private String		base;
+	@Column(name="base")		private String		base; // Isn't used.
 	@Column(name="uwp")			private String		uwp;
 	@Column(name="selection")	private int			selection;
 	
@@ -74,11 +70,11 @@ public class StarSystem {
 			throw new IllegalArgumentException("Name must be valid");
 		}
 		this.name = name;
-		if (x < 1 || x > 40) {
+		if (x < 1 || x > 32) {
 			throw new IllegalArgumentException("X coordinate must be between 1 and 40");
 		}
 		this.x = x;
-		if (y < 1 || y > 32) {
+		if (y < 1 || y > 40) {
 			throw new IllegalArgumentException("Y coordinate must be between 1 and 32");
 		}
 		this.y = y;
@@ -114,9 +110,9 @@ public class StarSystem {
 		
 	/**
 	 * Gets the X coordinate of the system within the sector, ranging
-	 * from 1 through to 40 inclusive.
+	 * from 1 through to 32 inclusive.
 	 * 
-	 * @return	X coordinate, 1-40.
+	 * @return	X coordinate, 1-32.
 	 */
 	public int getX() {
 		return x;
@@ -124,9 +120,9 @@ public class StarSystem {
 	
 	/**
 	 * Gets the Y coordinate of the system within the sector, ranging
-	 * from 1 through to 32 inclusive.
+	 * from 1 through to 40 inclusive.
 	 * 
-	 * @return	Y coordinate, 1-32.
+	 * @return	Y coordinate, 1-40.
 	 */
 	public int getY() {
 		return y;
@@ -143,6 +139,10 @@ public class StarSystem {
 		return allegiance;
 	}
 	
+	public void setAllegiance(String allegiance) {
+		this.allegiance = allegiance;
+	}
+	
 	/**
 	 * Gets the zone rating of this system. This is normally Red, Amber
 	 * or Green. By far the majority of systems will be Green.
@@ -153,12 +153,16 @@ public class StarSystem {
 		return zone;
 	}
 	
-	public String getBase() {
-		return base;
+	public void setZone(Zone zone) {
+		this.zone = zone;
 	}
 	
 	public int getSelection() {
 		return selection;
+	}
+	
+	public void setSelection(int selection) {
+		this.selection = selection;
 	}
 	
 	public String getUWPAsString() {
