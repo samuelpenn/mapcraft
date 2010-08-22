@@ -59,7 +59,7 @@ public class Planet {
 	@Column(name="features")		private String				featureCodes;
 	@Column(name="nextevent")		private long				nextEvent;
 	
-	Planet() {
+	public Planet() {
 		
 	}
 	

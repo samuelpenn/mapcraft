@@ -4,6 +4,7 @@ import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.worldgen.astro.planet.builders.BarrenWorld;
 import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
+import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
 import uk.org.glendale.worldgen.astro.star.*;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 
@@ -28,39 +29,40 @@ public class PlanetGenerator {
 		case UltraHot:
 		case ExtremelyHot:
 			// Unlikely
-			builder = new BarrenWorld(planet, PlanetType.Hermian);
+			builder = new Hermian();
 			break;
 		case VeryHot:
 			// Mercury
-			builder = new BarrenWorld(planet, PlanetType.Hermian);
+			builder = new Hermian();
 			break;
 		case Hot:
 		case Warm:
 			// Venus.
-			builder = new BarrenWorld(planet, PlanetType.Hermian);
+			builder = new Hermian();
 			break;
 		case Standard:
 			// Earth.
-			builder = new BarrenWorld(planet, PlanetType.Hermian);
+			builder = new Hermian();
 			break;
 		case Cool:
 		case Cold:
 			// Mars, Asteroids
-			builder = new BarrenWorld(planet, PlanetType.Hermian);
+			builder = new Hermian();
 			break;
 		case VeryCold:
 			// Jupiter, Saturn
-			builder = new BarrenWorld(planet, PlanetType.Hermian);
+			builder = new Hermian();
 			break;
 		case ExtremelyCold:
 			// Uranus, Neptune.
-			builder = new BarrenWorld(planet, PlanetType.Hermian);
+			builder = new Hermian();
 			break;
 		case UltraCold:
 			// Kuiper belt
-			builder = new BarrenWorld(planet, PlanetType.Hermian);
+			builder = new Hermian();
 			break;
 		}
+		builder.setPlanet(planet);
 
 		return planet;
 	}
