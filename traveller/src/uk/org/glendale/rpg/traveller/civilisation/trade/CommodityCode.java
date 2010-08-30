@@ -8,6 +8,8 @@
  */
 package uk.org.glendale.rpg.traveller.civilisation.trade;
 
+import javax.persistence.Entity;
+
 /**
  * These codes describe types of goods which are shipped between worlds.
  * They present everything from how hard/easy a good is to produce, to the
@@ -106,6 +108,10 @@ public enum CommodityCode {
 	Uq("Unique");
 	
 	private String name = null;
+	
+	CommodityCode() {
+		this.name = "Unnamed";
+	}
 	
 	CommodityCode(String name) {
 		this.name = name;

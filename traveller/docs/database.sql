@@ -150,6 +150,10 @@ CREATE TABLE commodity (id int auto_increment not null,
                    codes varchar(64) not null,
                    PRIMARY KEY(id), UNIQUE KEY(name))
                    ENGINE=INNODB;
+                   
+CREATE TABLE commodity_codes (commodity_id int not null, code varchar(8) not null,
+                   FOREIGN KEY(commodity_id) REFERENCES commodity(id))
+                   ENGINE=INNODB;
 
 CREATE TABLE facility (id int auto_increment not null, name varchar(64), type varchar(16), image varchar(48),
                        techLevel int default 0, capacity int default 0,
@@ -399,7 +403,9 @@ INSERT INTO commodity VALUES(504, 'Advanced agribots',      'machinery', 'In', 6
 CREATE TABLE requirements (commodity_id INT NOT NULL, requires_id INT NOT NULL, number INT DEFAULT 1);
 
 # Measure of what a planet produces naturally. Mostly ores and agricultural produce.
-CREATE TABLE resources (planet_id INT NOT NULL, commodity_id INT NOT NULL, density INT NOT NULL,
+CREATE TABLE resources (id INT AUTO_INCREMENT NOT NULL, 
+                        planet_id INT NOT NULL, commodity_id INT NOT NULL, density INT NOT NULL,
+                        PRIMARY KEY(id),
                         UNIQUE KEY(planet_id, commodity_id)) ENGINE=INNODB;
 
 

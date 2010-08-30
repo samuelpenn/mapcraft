@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+
+<commodities>
+    <commodity name="Minerals">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>100</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>7</pr><cr>8</cr>
+        <codes>Or</codes>
+    </commodity>
+
+    <commodity name="Food">
+        <source>Ag</source>
+        <image>food</image>
+        <cost>25</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>5</pr><cr>5</cr>
+        <codes>Fo</codes>
+    </commodity>
+
+    <commodity name="Textiles">
+        <source>Ag</source>
+        <image>textiles</image>
+        <cost>35</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>5</pr><cr>5</cr>
+        <codes>Cl</codes>
+    </commodity>
+
+    <commodity name="Luxuries">
+        <source>Ag</source>
+        <image>luxuries</image>
+        <cost>1000</cost>
+        <volume>1</volume>
+        <law>5</law>
+        <tech>0</tech>
+        <pr>10</pr><cr>9</cr>
+        <codes>Lu</codes>
+    </commodity>
+
+    <commodity name="Alloys">
+        <source>In</source>
+        <image>alloys</image>
+        <cost>500</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>2</tech>
+        <pr>9</pr><cr>9</cr>
+        <codes>Ma In</codes>
+    </commodity>
+
+    <commodity name="Machinery">
+        <source>In</source>
+        <image>machinery</image>
+        <cost>1500</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>5</tech>
+        <pr>10</pr><cr>10</cr>
+        <codes>Ma In Tl</codes>
+    </commodity>
+
+    <commodity name="Computers">
+        <source>In</source>
+        <image>computers</image>
+        <cost>5000</cost>
+        <volume>1</volume>
+        <law>5</law>
+        <tech>7</tech>
+        <pr>11</pr><cr>11</cr>
+        <codes>Ma In TL</codes>
+    </commodity>
+
+    <commodity name="Consumer Goods">
+        <source>In</source>
+        <image>consumer</image>
+        <cost>300</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>1</tech>
+        <pr>9</pr><cr>9</cr>
+    </commodity>
+
+
+    <commodity name="Ferric Ore" parent="Minerals">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>150</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>1</tech>
+        <pr>8</pr>
+        <cr>9</cr>
+        <codes>Or Me</codes>
+    </commodity>
+
+    <commodity name="Rare Metals" parent="Ferric Ore">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>800</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>1</tech>
+        <pr>10</pr>
+        <cr>11</cr>
+        <codes>Or Me</codes>
+    </commodity>
+
+    <commodity name="Heavy Metals" parent="Ferric Ore">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>350</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>1</tech>
+        <pr>9</pr>
+        <cr>10</cr>
+        <codes>Or Me</codes>
+    </commodity>
+
+    <commodity name="Radioactives" parent="Ferric Ore">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>700</cost>
+        <volume>1</volume>
+        <law>1</law>
+        <tech>1</tech>
+        <pr>12</pr>
+        <cr>13</cr>
+        <codes>Or Hz</codes>
+    </commodity>
+
+    <commodity name="Silicate Ore" parent="Minerals">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>50</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>7</pr>
+        <cr>8</cr>
+        <codes>Or</codes>
+	</commodity>
+
+    <commodity name="Silicate Crystals" parent="Silicate Ore">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>250</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>9</pr>
+        <cr>11</cr>
+        <codes>Or</codes>
+    </commodity>
+
+    <commodity name="Carbonic Ore" parent="Minerals">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>100</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>7</pr>
+        <cr>8</cr>
+        <codes>Or</codes>
+    </commodity>
+
+</commodities>

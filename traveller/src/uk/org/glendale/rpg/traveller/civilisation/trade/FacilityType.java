@@ -38,5 +38,9 @@ public enum FacilityType {
 	 * Consumes many types of resources, generally has no
 	 * primary resource. May create resources.
 	 */
-	StarPort;
+	StarPort,
+	/**
+	 * A resource which produces commodities.
+	 */
+	Resource;
 }

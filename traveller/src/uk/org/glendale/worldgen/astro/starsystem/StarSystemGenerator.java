@@ -95,11 +95,11 @@ public class StarSystemGenerator {
 		int		increase = StarAPI.getInnerLimit(star);
 		int		distance = StarAPI.getInnerLimit(star)+Die.die(increase, 2);
 		
-		PlanetGenerator		planetGenerator = new PlanetGenerator(system, star);
+		PlanetGenerator		planetGenerator = new PlanetGenerator(entityManager, system, star);
 		for (int p=0; p < numPlanets; p++) {
 			String	planetName = star.getName()+" "+(p+1);
 			Planet	planet = planetGenerator.generatePlanet(planetName, p, distance);
-			
+			entityManager.persist(planet);
 		}
 
 	}

@@ -1,5 +1,7 @@
 package uk.org.glendale.worldgen.astro.planet;
 
+import javax.persistence.EntityManager;
+
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.worldgen.astro.planet.builders.BarrenWorld;
@@ -11,8 +13,10 @@ import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 public class PlanetGenerator {
 	private StarSystem		system;
 	private Star			star;
+	private EntityManager	entityManager;
 	
-	public PlanetGenerator(StarSystem system, Star star) {
+	public PlanetGenerator(EntityManager entityManager, StarSystem system, Star star) {
+		this.entityManager = entityManager;
 		this.system = system;
 		this.star = star;
 	}
@@ -62,7 +66,9 @@ public class PlanetGenerator {
 			builder = new Hermian();
 			break;
 		}
+		builder.setEntityManager(entityManager);
 		builder.setPlanet(planet);
+		builder.generate();
 
 		return planet;
 	}

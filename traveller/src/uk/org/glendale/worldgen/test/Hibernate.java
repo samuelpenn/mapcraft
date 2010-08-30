@@ -15,6 +15,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import uk.org.glendale.worldgen.astro.planet.Planet;
+import uk.org.glendale.worldgen.astro.planet.Resource;
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorFactory;
 import uk.org.glendale.worldgen.astro.sector.SectorGenerator;
@@ -52,6 +53,19 @@ public class Hibernate {
 		Session		newSession = appManager.getHibernate().openSession();
 		
 		EntityManager em = appManager.getEntityManager();
+		
+		/*
+		Planet	p = em.find(Planet.class, 595082);
+		System.out.println(p.getName());
+		List<Resource> l = p.getResources();
+		if (l == null) {
+			System.out.println("No resources");
+		} else {
+			System.out.println("Resources: "+l.size());
+			System.out.println(l.get(0).getCommodity().getName());
+		}
+		*/
+		
 		//Sector s = em.find(Sector.class, 132);
 		//System.out.println(s.getName());
 		
@@ -59,7 +73,8 @@ public class Hibernate {
 		SectorGenerator	sg = new SectorGenerator(em);
 		
 		Sector		sector = sf.getSector("Test");
-		//sg.fillRandomSector(sector, new Names("names"), 10);
+		sg.clearSector(sector);
+		sg.fillRandomSector(sector, new Names("names"), 1);
 		
 		/*
 		StarSystem ss = new StarSystemFactory(em).getStarSystem(39227);
@@ -68,7 +83,7 @@ public class Hibernate {
 			System.out.println(star.getName()+" ("+star.getId()+")");
 		}
 		*/
-		sg.clearSector(sector);
+		//sg.clearSector(sector);
 		
 		
 		//System.out.println(sf.getSector("Xaagr").getId());

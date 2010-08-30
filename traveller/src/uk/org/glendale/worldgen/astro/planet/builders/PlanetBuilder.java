@@ -4,6 +4,8 @@ import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 
+import javax.persistence.EntityManager;
+
 import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
@@ -11,12 +13,24 @@ import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
+import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
+import uk.org.glendale.worldgen.civ.commodity.Commodity;
+import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
+import uk.org.glendale.worldgen.server.AppManager;
+import uk.org.glendale.worldgen.text.PlanetDescription;
 
 public abstract class PlanetBuilder {
+	protected EntityManager	entityManager;
 	protected Planet		planet;
-	
+
+	protected CommodityFactory	commodityFactory;
+
 	public PlanetBuilder() {
 		generateFractalHeightMap();
+	}
+	
+	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 	
 	public void setPlanet(Planet planet) {
@@ -28,6 +42,18 @@ public abstract class PlanetBuilder {
 		planet.setPressure(AtmospherePressure.None);
 		
 		planet.setLifeType(LifeType.None);
+	}
+	
+	public void addResource(String commodityName, int density) {
+		if (commodityFactory == null) {
+			commodityFactory = new CommodityFactory(entityManager);
+		}
+		Commodity	commodity = commodityFactory.getCommodity(commodityName);
+		addResource(commodity, density);
+	}
+	
+	public void addResource(Commodity commodity, int density) {
+		planet.addResource(commodity, density);
 	}
 	
 	/**
@@ -44,6 +70,11 @@ public abstract class PlanetBuilder {
 	 * Generate resources for this planet.
 	 */
 	public abstract void generateResources();
+	
+	public void generateDescription() {
+		PlanetDescription description = new PlanetDescription(planet);
+		planet.setDescription(description.getFullDescription());
+	}
 	
 	
 	public static final int MAP_WIDTH = 1024;
@@ -407,7 +438,7 @@ public abstract class PlanetBuilder {
 			int y = Die.rollZero(TILE_HEIGHT);
 			if (shelfMap[y][x] == 0) {
 				shelfMap[y][x] = num--;
-				heightMap[y][x] = Die.d3();
+				heightMap[y][x] = 10 + Die.d6(2);
 			}
 		}
 		
@@ -428,9 +459,10 @@ public abstract class PlanetBuilder {
 						
 						if (shelfMap[yy][xx] == 0) {
 							shelfMap[yy][xx] = shelfMap[y][x];
+							heightMap[yy][xx] = heightMap[y][x];
 						} else if (shelfMap[yy][xx] > 0 && shelfMap[yy][xx] != shelfMap[y][x]) {
-							heightMap[yy][xx] += Die.d3();
-							heightMap[y][x] += 1;
+							heightMap[yy][xx] += Die.d6(2);
+							heightMap[y][x] += Die.d4();
 						}
 					}
 				}
@@ -461,7 +493,9 @@ public abstract class PlanetBuilder {
 		try {
 			image.save(new File("/home/sam/b.jpg"));
 
-			drawer.getWorldGlobe(2).save(new File("/home/sam/globe.jpg"));
+			if (AppManager.getDrawGlobe()) {
+				drawer.getWorldGlobe(2).save(new File("/home/sam/globe.jpg"));
+			}
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -472,7 +506,7 @@ public abstract class PlanetBuilder {
 	
 	public static void main(String[] args) throws Exception {
 		System.out.println(GraphicsEnvironment.isHeadless());
-		PlanetBuilder	barren = new BarrenWorld();
+		PlanetBuilder	barren = new Hermian();
 		barren.setPlanet(new Planet());
 		barren.generateMap();
 		System.exit(0);

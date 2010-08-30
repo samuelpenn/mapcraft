@@ -40,6 +40,9 @@ public class AppManager implements ServletContextListener {
 	private static String			universe = null;
 	private static String			rootPath = null;
 	
+	private static boolean			drawPlanetGlobe = false;
+	private static boolean			stretchPlanetMap = false;
+	
 	static {
 		ResourceBundle		bundle = ResourceBundle.getBundle("uk.org.glendale.rpg.traveller.config");
 		
@@ -245,6 +248,18 @@ public class AppManager implements ServletContextListener {
 	
 	public static String getRootPath() {
 		return rootPath;
+	}
+	
+	public static boolean getDrawGlobe() {
+		return properties.getProperty(universe+".planet.drawGlobe", "false").equals("true");
+	}
+
+	public static boolean getStretchMap() {
+		return properties.getProperty(universe+".planet.stretchMap", "false").equals("true");
+	}
+	
+	public static boolean getDrawMap() {
+		return properties.getProperty(universe+".planet.drawMap", "true").equals("true");
 	}
 	
 	public static AppManager getInstance() {

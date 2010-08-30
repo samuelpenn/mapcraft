@@ -11,11 +11,13 @@
 		<class>uk.org.glendale.worldgen.astro.starsystem.StarSystem</class>
 		<class>uk.org.glendale.worldgen.astro.planet.Planet</class>
 		<class>uk.org.glendale.worldgen.astro.star.Star</class>
+		<class>uk.org.glendale.worldgen.civ.commodity.Commodity</class>
+		<class>uk.org.glendale.worldgen.astro.planet.Resource</class>
 				
 		<properties>
 			<property name="hibernate.archive.autodetection" value="class"/>
 			
-			<property name="hibernate.show_sql" value="true"/>
+			<property name="hibernate.show_sql" value="false"/>
 			<property name="hibernate.format_sql" value="true"/>		
 		</properties>
 

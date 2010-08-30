@@ -72,7 +72,7 @@ public class MapDrawer {
 		
 		for (int x=0; x < width; x++) {
 			for (int y=0; y < height; y++) {
-				String		name = map[y][x].getRGB(heightMap[y][x]*3);
+				String		name = map[y][x].getRGB(heightMap[y][x]);
 				Image		i = getImage(name, scale);
             	try {
 					image.paint(i, x*scale, y*scale, scale, scale);

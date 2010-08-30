@@ -1,16 +1,26 @@
 package uk.org.glendale.worldgen.astro.planet;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import uk.org.glendale.rpg.traveller.civilisation.trade.CommodityCode;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.GovernmentType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
+import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.StarportType;
 import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
+import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
+import uk.org.glendale.worldgen.civ.commodity.Commodity;
 
 
 @Entity @Table(name="planet")
@@ -29,35 +39,50 @@ public class Planet {
 	@Column(name="parent_id")		private int					parentId;
 	@Column(name="moon")			private boolean				isMoon;
 	@Column(name="distance")		private int					distance;
-	@Column(name="radius")			private int					radius;
+	@Column(name="radius")			private int					radius = 1000;
 	
 	// Planet data
 	@Enumerated(EnumType.STRING)
-	@Column(name="type")			private PlanetType			type;
+	@Column(name="type")			private PlanetType			type = PlanetType.Undefined;
 	@Enumerated(EnumType.STRING)
-	@Column(name="atmosphere")		private AtmosphereType		atmosphere;
+	@Column(name="atmosphere")		private AtmosphereType		atmosphere = AtmosphereType.Vacuum;
 	@Enumerated(EnumType.STRING)
-	@Column(name="pressure")		private AtmospherePressure	pressure;
+	@Column(name="pressure")		private AtmospherePressure	pressure = AtmospherePressure.None;
 	@Enumerated(EnumType.STRING)
-	@Column(name="life")			private LifeType			lifeLevel;
+	@Column(name="life")			private LifeType			lifeLevel = LifeType.None;
 	@Enumerated(EnumType.STRING)
-	@Column(name="temperature")		private Temperature			temperature;
+	@Column(name="temperature")		private Temperature			temperature = Temperature.UltraCold;
 	@Column(name="hydrographics")	private int					hydrographics;
-	@Column(name="day")				private int					dayLength;
+	@Column(name="day")				private int					dayLength = 86400;
 	
 	// Civilisation data
 	@Column(name="population")		private long				population;
 	@Enumerated(EnumType.STRING)
-	@Column(name="starport")		private StarportType		starport;
+	@Column(name="starport")		private StarportType		starport = StarportType.X;
 	@Enumerated(EnumType.STRING)
-	@Column(name="government")		private GovernmentType		government;
+	@Column(name="government")		private GovernmentType		government = GovernmentType.Anarchy;
 	@Column(name="law")				private int					lawLevel;
 	@Column(name="tech")			private int					techLevel;
 	@Column(name="description")		private String				description;
 	@Column(name="base")			private String				baseType;
-	@Column(name="trade")			private String				tradeCodes;
-	@Column(name="features")		private String				featureCodes;
+	
+	
+	@ElementCollection
+	@JoinTable(name="planet_codes", joinColumns=@JoinColumn(name="planet_id"))
+	@Enumerated(EnumType.STRING) @Column(name="code")
+	private Set<TradeCode>	tradeCodes = EnumSet.noneOf(TradeCode.class);
+
+	@ElementCollection
+	@JoinTable(name="planet_features", joinColumns=@JoinColumn(name="planet_id"))
+	@Enumerated(EnumType.STRING) @Column(name="code")
+	private Set<PlanetFeature>	featureCodes = EnumSet.noneOf(PlanetFeature.class);
+	
 	@Column(name="nextevent")		private long				nextEvent;
+	
+	
+	@ElementCollection(fetch=FetchType.LAZY)
+	@JoinTable(name="resources", joinColumns = @JoinColumn(name="planet_id"))
+	private List<Resource>			resources = new ArrayList<Resource>();
 	
 	public Planet() {
 		
@@ -301,15 +326,71 @@ public class Planet {
 		return description;
 	}
 	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+		
 	public long getNextEvent() {
 		return nextEvent;
 	}
 	
-	public String getTradeCodes() {
+	public Set getTradeCodes() {
 		return tradeCodes;
 	}
 	
-	public String getFeatureCodes() {
+	public void addTradeCode(TradeCode code) {
+		this.tradeCodes.add(code);
+	}
+	
+	public void removeTradeCode(TradeCode code) {
+		this.tradeCodes.remove(code);
+	}
+	
+	public Set getFeatureCodes() {
 		return featureCodes;
+	}
+	
+	public void addFeature(PlanetFeature code) {
+		this.featureCodes.add(code);
+	}
+	
+	public void removeFeature(PlanetFeature code) {
+		this.featureCodes.remove(code);
+	}
+	
+	public List<Resource> getResources() {
+		return resources;
+	}
+	
+	public Resource getResource(Commodity commodity) {
+		for (Resource r : resources) {
+			if (r.getCommodity().equals(commodity)) {
+				return r;
+			}
+		}
+		return null;
+	}
+	
+	public void addResource(Resource resource) {
+		removeResource(resource.getCommodity());
+		if (resource.getDensity() > 1) {
+			resources.add(resource);
+		}
+	}
+	
+	public void addResource(Commodity commodity, int density) {
+		removeResource(commodity);
+		if (density > 1) {
+			resources.add(new Resource(commodity, density));
+		}		
+	}
+	
+	public void removeResource(Commodity commodity) {
+		for (Resource r : resources) {
+			if (r.getCommodity().equals(commodity)) {
+				resources.remove(r);
+				break;
+			}
+		}
 	}
 }
