@@ -67,6 +67,17 @@
         <codes>Ma In Tl</codes>
     </commodity>
 
+    <commodity name="Tools">
+        <source>In</source>
+        <image>tools</image>
+        <cost>500</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>10</pr><cr>10</cr>
+        <codes>Ma In Tl</codes>
+    </commodity>
+
     <commodity name="Computers">
         <source>In</source>
         <image>computers</image>
@@ -173,4 +184,145 @@
         <codes>Or</codes>
     </commodity>
 
+    <commodity name="Water" parent="Minerals">
+        <source>Mi</source>
+        <image>water</image>
+        <cost>10</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>2</pr>
+        <cr>4</cr>
+        <codes>Or OrAq De Vi</codes>
+    </commodity>
+
+    <commodity name="Deuterium" parent="Minerals">
+        <source>In</source>
+        <image>water</image>
+        <cost>100</cost>
+        <volume>1</volume>
+        <law>4</law>
+        <tech>7</tech>
+        <pr>7</pr><cr>10</cr>
+        <codes>Or OrAq In Tt Ta Tu</codes>
+    </commodity>
+
+    <commodity name="Helium 3" parent="Minerals">
+        <source>In</source>
+        <image>water</image>
+        <cost>1000</cost>
+        <volume>1</volume>
+        <law>3</law>
+        <tech>7</tech>
+        <pr>9</pr><cr>12</cr>
+        <codes>Or OrAu In Tt Ta Tu</codes>
+    </commodity>
+
+    <!-- Organic Resources etc -->
+
+    <commodity name="Base Organics" parent="Food">
+        <source>Ag</source><image>food</image>
+        <cost>4</cost><volume>1</volume>
+        <law>6</law><tech>8</tech>
+        <pr>4</pr><cr>5</cr>
+        <codes>Fo Lq Pe</codes>
+        <description>
+            Base organic matter that is the precursor to life. May
+            be used as a basis for food after extensive processing.
+        </description>
+    </commodity>
+
+    <commodity name="Simple Organics" parent="Food">
+        <source>Ag</source><image>food</image>
+        <cost>7</cost><volume>1</volume>
+        <law>6</law><tech>8</tech>
+        <pr>4</pr><cr>5</cr>
+        <codes>Fo Lq Pe</codes>
+        <description>
+            Earliest single celled life, may be used as a basis for
+            food after extensive processing.
+        </description>
+    </commodity>
+
+    <!-- TL 0 (Stone Age) Commodities -->
+
+    <commodity name="Animal Skins" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>10</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>4</pr><cr>5</cr>
+        <codes>Cl ClCv Tp</codes>
+    </commodity>
+
+    <commodity name="Stone Tools" parent="Tools">
+        <source>Ag</source><image>textiles</image>
+        <cost>10</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>4</pr><cr>6</cr>
+        <codes>To HoTl Tp</codes>
+    </commodity>
+
+    <commodity name="Stone Weapons" parent="Tools">
+        <source>Ag</source><image>textiles</image>
+        <cost>10</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>4</pr><cr>7</cr>
+        <codes>WpnH Tp</codes>
+    </commodity>
+
+    <commodity name="Neolithic Artwork" parent="Luxuries">
+        <source>Ag</source><image>textiles</image>
+        <cost>10</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>5</pr><cr>8</cr>
+        <codes>Lu HoLu Fr Lq</codes>
+    </commodity>
+
+    <commodity name="Primitive Textiles" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>15</cost><volume>1</volume>
+        <law>6</law><tech>1</tech>
+        <pr>4</pr><cr>5</cr>
+        <codes>Cl ClCv Tp</codes>
+    </commodity>
+
+    <commodity name="Simple Textiles" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>15</cost><volume>1</volume>
+        <law>6</law><tech>2</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Cl ClCv Tp Tm</codes>
+    </commodity>
+
+    <commodity name="Pre-Industrial Textiles" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>20</cost><volume>1</volume>
+        <law>6</law><tech>4</tech>
+        <pr>5</pr><cr>8</cr>
+        <codes>Cl ClCv Tp Tm</codes>
+    </commodity>
+
+    <commodity name="Industrial Textiles" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>25</cost><volume>1</volume>
+        <law>6</law><tech>5</tech>
+        <pr>5</pr><cr>8</cr>
+        <codes>Cl ClCv Tp Tm Ti</codes>
+    </commodity>
+
+    <commodity name="Machined Textiles" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>25</cost><volume>1</volume>
+        <law>6</law><tech>6</tech>
+        <pr>6</pr><cr>9</cr>
+        <codes>Cl ClCv Tp Tm Ti</codes>
+    </commodity>
+
+    <commodity name="Consumer Textiles" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>30</cost><volume>1</volume>
+        <law>6</law><tech>7</tech>
+        <pr>6</pr><cr>9</cr>
+        <codes>Cl ClCv Tp Tm Ti Tt</codes>
+    </commodity>
 </commodities>
