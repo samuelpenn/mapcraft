@@ -333,7 +333,6 @@ public class PlanetDescription {
 		addText(buffer, rootKey, 100);
 		addText(buffer, rootKey+".temperature."+planet.getTemperature(), 100);
 		addText(buffer, rootKey+".atmosphere."+planet.getAtmosphere(), 100);
-		addText(buffer, rootKey+".atmosphere."+planet.getAtmosphere(), 100);
 		addText(buffer, rootKey+".biosphere."+planet.getLifeType(), 100);
 		
 		// Add description for any physical features.
@@ -352,8 +351,9 @@ public class PlanetDescription {
 		}
 		
 		// Add description for any trade codes.
-		/*
-		for (String code : planet.getTradeCodes()) {
+		Iterator<TradeCode> codes = planet.getTradeCodes().iterator();
+		while (codes.hasNext()) {
+			TradeCode	code = codes.next();
 			String	key = rootKey+".trade."+code;
 			if (phrases.getProperty(key) != null) {
 				addText(buffer, key, 100);
@@ -364,7 +364,7 @@ public class PlanetDescription {
 				}
 			}
 		}
-		*/
+
 		return buffer.toString();
 	}
 	

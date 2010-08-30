@@ -39,6 +39,7 @@ public class StarSystemGenerator {
 			
 			transaction.commit();
 		} catch (Throwable t) {
+			t.printStackTrace();
 			transaction.rollback();
 		}
 		
@@ -100,6 +101,9 @@ public class StarSystemGenerator {
 			String	planetName = star.getName()+" "+(p+1);
 			Planet	planet = planetGenerator.generatePlanet(planetName, p, distance);
 			entityManager.persist(planet);
+			
+			distance += Die.die(increase, 2);
+			increase *= (1.0 + Die.d6(2)/20.0);
 		}
 
 	}

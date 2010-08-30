@@ -7,6 +7,7 @@ import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.worldgen.astro.planet.builders.BarrenWorld;
 import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
+import uk.org.glendale.worldgen.astro.planet.builders.rock.Arean;
 import uk.org.glendale.worldgen.astro.star.*;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 
@@ -46,12 +47,12 @@ public class PlanetGenerator {
 			break;
 		case Standard:
 			// Earth.
-			builder = new Hermian();
+			builder = new Arean();
 			break;
 		case Cool:
 		case Cold:
 			// Mars, Asteroids
-			builder = new Hermian();
+			builder = new Arean();
 			break;
 		case VeryCold:
 			// Jupiter, Saturn
@@ -69,6 +70,8 @@ public class PlanetGenerator {
 		builder.setEntityManager(entityManager);
 		builder.setPlanet(planet);
 		builder.generate();
+		
+		System.out.println(system.getId()+": "+planet.getName()+" ("+planet.getType()+")");
 
 		return planet;
 	}
