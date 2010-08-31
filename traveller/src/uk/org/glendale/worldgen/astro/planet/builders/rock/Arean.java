@@ -6,7 +6,13 @@ import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.BarrenWorld;
+import uk.org.glendale.worldgen.astro.planet.builders.Tile;
 
+/**
+ * A barren, Mars-like world.
+ * 
+ * @author Samuel Penn
+ */
 public class Arean extends BarrenWorld {
 	
 	public Arean() {
@@ -19,7 +25,7 @@ public class Arean extends BarrenWorld {
 		}
 		planet.setType(PlanetType.Arean);
 		int		radius = PlanetType.Arean.getRadius();
-		planet.setRadius(radius / 2 + Die.die(radius, 2));
+		planet.setRadius(radius / 2 + Die.die(radius, 2)/2);
 		planet.addTradeCode(TradeCode.Ba);
 		if (planet.getRadius() > 4000) {
 			planet.setPressure(AtmospherePressure.Thin);
@@ -30,11 +36,26 @@ public class Arean extends BarrenWorld {
 			planet.setAtmosphere(AtmosphereType.CarbonDioxide);
 		} else if (planet.getRadius() > 2000) {
 			planet.setPressure(AtmospherePressure.Trace);
-			planet.setAtmosphere(AtmosphereType.CarbonDioxide);
+			if (Die.d2() == 1) {
+				planet.setAtmosphere(AtmosphereType.CarbonDioxide);
+			} else {
+				planet.setAtmosphere(AtmosphereType.InertGases);
+			}
 		}
 		generateMap();
 		generateResources();
 		generateDescription();
+	}
+	
+	public void generateMap() {
+		setCraterMinSize(10);
+		setCraterNumbers(50);
+		
+		base = new Tile("Base", "#774444", false);
+		crust = new Tile("Crust", "#aa8888", false);
+		mountains = new Tile("Mountains", "#aa9988", false);
+		
+		super.generateMap();
 	}
 
 	@Override
@@ -53,11 +74,18 @@ public class Arean extends BarrenWorld {
 		if (water > 5) {
 			planet.addTradeCode(TradeCode.Ic);
 		}
+		int	gases = 0;
+		switch (planet.getPressure()) {
+		case Trace:
+			gases = Die.d4();
+			break;
+		case VeryThin:
+			gases = 2 + Die.d4(2);
+			break;
+		case Thin:
+			gases = 5 + Die.d6(2);
+			break;
+		}
+		addResource("Inert Gases", gases);
 	}
-	
-	@Override
-	public void generateDescription() {
-		planet.setDescription("Like Mars");
-	}
-
 }

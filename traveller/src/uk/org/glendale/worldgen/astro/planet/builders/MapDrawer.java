@@ -85,7 +85,7 @@ public class MapDrawer {
 		if (fractalMap != null) {
 			for (int x=0; x < width*scale; x++) {
 				for (int y=0; y < height*scale; y++) {
-					String		h = Integer.toHexString(fractalMap[y][x]);
+					String		h = Integer.toHexString(fractalMap[y][x]/5);
 					if (h.length() < 2) h = "0"+h;
 					String 		colour = fractalTint + h;
 					

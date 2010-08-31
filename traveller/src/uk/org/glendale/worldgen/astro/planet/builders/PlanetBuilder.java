@@ -1,6 +1,7 @@
 package uk.org.glendale.worldgen.astro.planet.builders;
 
 import java.awt.GraphicsEnvironment;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -12,8 +13,11 @@ import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.planet.MapImage;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
+import uk.org.glendale.worldgen.astro.planet.builders.gaian.Gaian;
+import uk.org.glendale.worldgen.astro.planet.builders.jovian.EuJovian;
 import uk.org.glendale.worldgen.civ.commodity.Commodity;
 import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
 import uk.org.glendale.worldgen.server.AppManager;
@@ -22,6 +26,8 @@ import uk.org.glendale.worldgen.text.PlanetDescription;
 public abstract class PlanetBuilder {
 	protected EntityManager	entityManager;
 	protected Planet		planet;
+	
+	private String			fractalColour = null;
 
 	protected CommodityFactory	commodityFactory;
 
@@ -54,6 +60,10 @@ public abstract class PlanetBuilder {
 	
 	public void addResource(Commodity commodity, int density) {
 		planet.addResource(commodity, density);
+	}
+	
+	protected void setFractalColour(String colour) {
+		this.fractalColour = colour;
 	}
 	
 	/**
@@ -237,6 +247,14 @@ public abstract class PlanetBuilder {
 		}
 		
 		return (count * 100) / size;
+	}
+	
+	protected int getLatitude(int y, int height) {
+		int		latitude = Math.abs(height/2 - y);
+		
+		latitude = (int)(90 * (1.0 * latitude / (height/2.0))); 
+		
+		return latitude;
 	}
 	
 	/**
@@ -487,14 +505,24 @@ public abstract class PlanetBuilder {
 		//map = scaleMap(map, 4);
 		//map = stretchMap(map);
 		MapDrawer drawer = new MapDrawer(map, 1);
-		//drawer.setFractalMap(fractalMap, "#997777");
+		if (fractalColour != null) {
+			drawer.setFractalMap(fractalMap, fractalColour);
+		}
 		drawer.setHeightMap(heightMap);
 		SimpleImage image = drawer.getWorldMap();
 		try {
-			image.save(new File("/home/sam/b.jpg"));
+			MapImage	surfaceMap = new MapImage();
+			surfaceMap.setType(MapImage.Projection.Mercator);
+			surfaceMap.setData(image.save().toByteArray());
+			planet.addImage(surfaceMap);
+			
+			image.save(new File("/home/sam/tmp/maps/"+planet.getType()+".jpg"));
 
 			if (AppManager.getDrawGlobe()) {
-				drawer.getWorldGlobe(2).save(new File("/home/sam/globe.jpg"));
+				MapImage	globeMap = new MapImage();
+				globeMap.setType(MapImage.Projection.Globe);
+				globeMap.setData(drawer.getWorldGlobe(2).save().toByteArray());
+				planet.addImage(globeMap);
 			}
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
@@ -506,9 +534,9 @@ public abstract class PlanetBuilder {
 	
 	public static void main(String[] args) throws Exception {
 		System.out.println(GraphicsEnvironment.isHeadless());
-		PlanetBuilder	barren = new Hermian();
+		PlanetBuilder	barren = new Gaian();
 		barren.setPlanet(new Planet());
-		barren.generateMap();
+		barren.generate();
 		System.exit(0);
 		
 		/*

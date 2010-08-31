@@ -103,7 +103,7 @@ public class StarSystemGenerator {
 			entityManager.persist(planet);
 			
 			distance += Die.die(increase, 2);
-			increase *= (1.0 + Die.d6(2)/20.0);
+			increase *= (1.0 + Die.d6(2)/10.0);
 		}
 
 	}

@@ -331,7 +331,7 @@ public class Trade {
 				consumersAvailable /= 10;
 			} 
 		}
-		if (c.hasCode(CommodityCode.Mn)) {
+		if (c.hasCode(CommodityCode.Mi)) {
 			// Specialist mining tools.
 			if (!planet.hasTradeCode(TradeCode.Mi)) {
 				consumersAvailable /= 1000;

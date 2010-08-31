@@ -29,7 +29,7 @@ public class Hermian extends BarrenWorld {
 		planet.setType(PlanetType.Hermian);
 		
 		int		radius = PlanetType.Hermian.getRadius();
-		planet.setRadius(radius / 2 + Die.die(radius, 2));
+		planet.setRadius(radius / 2 + Die.die(radius, 2)/2);
 		if (planet.getRadius() > 3000) {
 			planet.setPressure(AtmospherePressure.Trace);
 			planet.setAtmosphere(AtmosphereType.InertGases);
@@ -65,5 +65,6 @@ public class Hermian extends BarrenWorld {
 		if (Die.d4() == 1) {
 			addResource("Rare Metals", 5 + Die.d6(2));
 		}
+		addResource("Helium 3", Die.d6(2));
 	}
 }

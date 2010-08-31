@@ -1,5 +1,6 @@
 package uk.org.glendale.worldgen.astro.planet;
 
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Hashtable;
@@ -8,6 +9,9 @@ import java.util.Set;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchProfile.FetchOverride;
 
 import uk.org.glendale.rpg.traveller.civilisation.trade.CommodityCode;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
@@ -83,6 +87,10 @@ public class Planet {
 	@ElementCollection(fetch=FetchType.LAZY)
 	@JoinTable(name="resources", joinColumns = @JoinColumn(name="planet_id"))
 	private List<Resource>			resources = new ArrayList<Resource>();
+	
+	@ElementCollection(fetch=FetchType.LAZY)
+	@JoinTable(name="planet_maps", joinColumns = @JoinColumn(name="planet_id"))
+	private List<MapImage>		map = new ArrayList<MapImage>();
 	
 	public Planet() {
 		
@@ -392,5 +400,9 @@ public class Planet {
 				break;
 			}
 		}
+	}
+	
+	public void addImage(MapImage image) {
+		this.map.add(image);
 	}
 }

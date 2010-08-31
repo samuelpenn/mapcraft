@@ -7,6 +7,8 @@ import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.worldgen.astro.planet.builders.BarrenWorld;
 import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
+import uk.org.glendale.worldgen.astro.planet.builders.gaian.Gaian;
+import uk.org.glendale.worldgen.astro.planet.builders.jovian.EuJovian;
 import uk.org.glendale.worldgen.astro.planet.builders.rock.Arean;
 import uk.org.glendale.worldgen.astro.star.*;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
@@ -47,7 +49,7 @@ public class PlanetGenerator {
 			break;
 		case Standard:
 			// Earth.
-			builder = new Arean();
+			builder = new Gaian();
 			break;
 		case Cool:
 		case Cold:
@@ -56,15 +58,15 @@ public class PlanetGenerator {
 			break;
 		case VeryCold:
 			// Jupiter, Saturn
-			builder = new Hermian();
+			builder = new EuJovian();
 			break;
 		case ExtremelyCold:
 			// Uranus, Neptune.
-			builder = new Hermian();
+			builder = new EuJovian();
 			break;
 		case UltraCold:
 			// Kuiper belt
-			builder = new Hermian();
+			builder = new EuJovian();
 			break;
 		}
 		builder.setEntityManager(entityManager);

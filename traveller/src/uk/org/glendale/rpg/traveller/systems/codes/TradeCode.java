@@ -39,6 +39,7 @@ public enum TradeCode {
 	As ("Asteroid"),
 	Va ("Vacuum world"),
 	Ic ("Ice world"),
+	Jv ("Jovian world"),
 	Fl ("Non-water fluid oceans"),
 	Cp ("Subsector capital"),
 	Cx ("Sector capital");
