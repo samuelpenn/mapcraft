@@ -28,6 +28,7 @@ public abstract class PlanetBuilder {
 	protected Planet		planet;
 	
 	private String			fractalColour = null;
+	private int				hydrographics = 0;
 
 	protected CommodityFactory	commodityFactory;
 
@@ -64,6 +65,10 @@ public abstract class PlanetBuilder {
 	
 	protected void setFractalColour(String colour) {
 		this.fractalColour = colour;
+	}
+	
+	protected void setHydrographics(int hydrographics) {
+		this.hydrographics = hydrographics;
 	}
 	
 	/**
@@ -431,7 +436,9 @@ public abstract class PlanetBuilder {
 	
 	protected void addContinents(Tile base, Tile shelf, Tile mountains) {
 		int		num = 9;
-		int		percentage = 20+Die.d20(3);
+		if (hydrographics == 0) {
+			hydrographics = 20+Die.d20(3);
+		}
 		
 		// The shelf map is used to grow continents.
 		// A value of 0 is seabed, -1 is out of bounds.
@@ -461,7 +468,7 @@ public abstract class PlanetBuilder {
 		}
 		
 		// Randomly grow the continental shelves.
-		while (getShelfPercentage(shelfMap) < (100-percentage)) {
+		while (getShelfPercentage(shelfMap) < (100-hydrographics)) {
 			for (int y=0; y < TILE_HEIGHT; y++) {
 				for (int x=0; x < TILE_WIDTH; x++) {
 					if (shelfMap[y][x] < 0) {

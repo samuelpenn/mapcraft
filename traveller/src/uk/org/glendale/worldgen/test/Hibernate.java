@@ -15,7 +15,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import uk.org.glendale.worldgen.astro.planet.Planet;
+import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
 import uk.org.glendale.worldgen.astro.planet.Resource;
+import uk.org.glendale.worldgen.astro.planet.MapImage.Projection;
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorFactory;
 import uk.org.glendale.worldgen.astro.sector.SectorGenerator;
@@ -72,10 +74,16 @@ public class Hibernate {
 		SectorFactory	sf = new SectorFactory(em);
 		SectorGenerator	sg = new SectorGenerator(em);
 		
-		Sector		sector = sf.getSector("Test");
-		sg.clearSector(sector);
-		sg.fillRandomSector(sector, new Names("names"), 1);
+		//Sector		sector = sf.getSector("Test");
+		//sg.clearSector(sector);
+		//sg.fillRandomSector(sector, new Names("names"), 1);
 		
+		PlanetFactory	pf = new PlanetFactory(em);
+		Planet	p = pf.getPlanet(597483);
+		System.out.println(p.getName());
+		byte[]	image = p.getFlatImage();
+		System.out.println(image.length);
+
 		/*
 		StarSystem ss = new StarSystemFactory(em).getStarSystem(39227);
 		System.out.println(ss.getName());
@@ -84,11 +92,10 @@ public class Hibernate {
 		}
 		*/
 		//sg.clearSector(sector);
-		
-		
+
 		//System.out.println(sf.getSector("Xaagr").getId());
 		//System.out.println(sf.getSector(132).getName());
-				
+
 		/*
 		StarSystem ss = em.find(StarSystem.class, 37967);
 		System.out.println(ss.getName());
@@ -98,10 +105,10 @@ public class Hibernate {
 			System.out.println(p.getName());
 		}
 		*/
-		
+
 		//StarSystemFactory	ssf = new StarSystemFactory(em);
 		//ssf.getStarSystemsInSector(s);
-		
+
 		/*
 		Transaction	newTransaction = newSession.beginTransaction();
 		

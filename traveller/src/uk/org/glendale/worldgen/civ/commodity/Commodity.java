@@ -63,7 +63,9 @@ public class Commodity {
 		consumption = production = 20;
 		volume = 1;
 		lawLevel = 6;
+		techLevel = 0;
 		parent = null;
+		cost = 100;
 	}
 	
 	/**

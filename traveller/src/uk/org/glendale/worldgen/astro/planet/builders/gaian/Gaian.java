@@ -55,6 +55,7 @@ public class Gaian extends GaianWorld {
 		
 		planet.setTemperature(planet.getTemperature().getHotter());
 		planet.setHydrographics(15 + Die.d20(4));
+		setHydrographics(planet.getHydrographics());
 		planet.setLifeType(LifeType.Extensive);
 		
 		sea = new Tile("Sea", "#4444aa", true);
@@ -89,8 +90,16 @@ public class Gaian extends GaianWorld {
 	
 	@Override
 	public void generateResources() {
-		// TODO Auto-generated method stub
-		
+		addResource("Water", planet.getHydrographics());
+		if (planet.getAtmosphere() == AtmosphereType.LowOxygen) {
+			addResource("Oxygen", 20);
+		} else {
+			addResource("Oxygen", 40);
+		}
+		addResource("Silicate Ore", 20 + Die.d10(3));
+		addResource("Ferric Ore", 10 + Die.d8(3));
+		addResource("Carbonic Ore", 10 + Die.d10(3));
+		addEcologicalResources();
 	}
 
 }

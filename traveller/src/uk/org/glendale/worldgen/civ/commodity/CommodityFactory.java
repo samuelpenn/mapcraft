@@ -6,6 +6,7 @@ import java.io.IOException;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.transaction.Transaction;
 import javax.xml.parsers.DocumentBuilder;
@@ -44,7 +45,11 @@ public class CommodityFactory {
 	public Commodity getCommodity(String name) {
 		Query q = em.createQuery("from Commodity where name = :n");
 		q.setParameter("n", name);
-		return (Commodity)q.getSingleResult();
+		try {
+			return (Commodity)q.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 	
 	private void createCommodities(File file) throws ParserConfigurationException, SAXException, IOException {
@@ -59,7 +64,14 @@ public class CommodityFactory {
 			Node		node = list.item(i);
 			Commodity	commodity = new Commodity();
 			String		name = node.getAttributes().getNamedItem("name").getNodeValue();
+			
+			if (getCommodity(name) != null) {
+				continue;
+			}
+			
+			// Defaults
 			commodity.setName(name);
+			commodity.setImagePath(name.toLowerCase().replaceAll(" ", ""));
 			NodeList	params = node.getChildNodes();
 			System.out.println(name);
 			for (int j=0; j < params.getLength(); j++) {

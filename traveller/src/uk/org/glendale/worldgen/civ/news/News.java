@@ -26,7 +26,6 @@ import uk.org.glendale.worldgen.civ.ship.Ship;
  * 
  * @author Samuel Penn
  */
-@Entity
 public class News {
 	private int 		id;
 	private long 		eventTime;

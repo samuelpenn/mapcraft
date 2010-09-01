@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import uk.org.glendale.worldgen.astro.planet.PlanetAPI;
+import uk.org.glendale.worldgen.astro.planet.PlanetImageAPI;
 import uk.org.glendale.worldgen.astro.sector.SectorAPI;
 import uk.org.glendale.worldgen.astro.sector.SubSectorAPI;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystemAPI;
@@ -22,6 +24,8 @@ public class WebApplication extends Application {
 		s.add(SectorAPI.class);
 		s.add(SubSectorAPI.class);
 		s.add(StarSystemAPI.class);
+		s.add(PlanetAPI.class);
+		s.add(PlanetImageAPI.class);
 		return s;
 	}
 }

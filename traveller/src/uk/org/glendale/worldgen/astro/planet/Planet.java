@@ -23,6 +23,7 @@ import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.StarportType;
 import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
+import uk.org.glendale.worldgen.astro.planet.MapImage.Projection;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 import uk.org.glendale.worldgen.civ.commodity.Commodity;
 
@@ -404,5 +405,18 @@ public class Planet {
 	
 	public void addImage(MapImage image) {
 		this.map.add(image);
+	}
+	
+	public byte[] getFlatImage() {
+		if (map == null || map.size() == 0) {
+			return null;
+		}
+		for (int i=0; i < map.size(); i++) {
+			MapImage mi = map.get(i);
+			if (mi.getType() == Projection.Mercator) {
+				return mi.getData();
+			}
+		}
+		return null;
 	}
 }

@@ -11,7 +11,6 @@ import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
  * 
  * @author Samuel Penn
  */
-@Entity @Table(name="ship")
 @XmlRootElement
 public class Ship {
 	private int			id;
