@@ -51,23 +51,26 @@ public class StarSystemGenerator {
 	 * single star, some will have two and a few three. All binary
 	 * systems will have a primary and distant secondary. All triple
 	 * systems will have the third star in close orbit around the secondary.
+	 * 
+	 * Multiple-star systems are kept deliberately rarer than reality for
+	 * reasons of simplicity.
 	 */
 	private void generateStars(StarSystem system) {
 		if (system == null) {
 			throw new IllegalArgumentException("Star system has not been defined");
 		}
 		int		numStars = 0;
-		switch (Die.d10()) {
-		case 1: case 2: case 3:
-		case 4: case 5: case 6:
-			numStars = 1;
-			break;
-		case 7: case 8: case 9:
-			numStars = 2;
-			break;
-		case 10:
+		switch (Die.d6(3)) {
+		case 3:
+			// Triple star system.
 			numStars = 3;
 			break;
+		case 4: case 5: case 6:
+			// Binary star system.
+			numStars = 2;
+			break;
+		default:
+			numStars = 1;
 		}
 		
 		StarGenerator	starGenerator = new StarGenerator(system, numStars > 1);
@@ -90,10 +93,16 @@ public class StarSystemGenerator {
 		}
 	}
 	
+	/**
+	 * Randomly generate planets for a star.
+	 * 
+	 * @param system		System to generate planets for.
+	 * @param starIndex		Star within the system.
+	 */
 	private void generatePlanets(StarSystem system, int starIndex) {
 		Star	star = system.getStars().get(starIndex);
 		int		numPlanets = Die.d6(2) - starIndex*3;
-		int		increase = StarAPI.getInnerLimit(star);
+		int		increase = StarAPI.getInnerLimit(star) + Die.d6(2);
 		int		distance = StarAPI.getInnerLimit(star)+Die.die(increase, 2);
 		
 		PlanetGenerator		planetGenerator = new PlanetGenerator(entityManager, system, star);
@@ -102,8 +111,8 @@ public class StarSystemGenerator {
 			Planet	planet = planetGenerator.generatePlanet(planetName, p, distance);
 			entityManager.persist(planet);
 			
-			distance += Die.die(increase, 2);
-			increase *= (1.0 + Die.d6(2)/10.0);
+			distance += Die.die(increase, 2) + Die.d10(2);
+			increase = (int)(increase * (1.0 + Die.d6(2)/10.0)) + Die.d4();
 		}
 
 	}

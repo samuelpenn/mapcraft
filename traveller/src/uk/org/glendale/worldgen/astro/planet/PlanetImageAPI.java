@@ -6,6 +6,11 @@ import javax.ws.rs.*;
 
 import uk.org.glendale.worldgen.astro.planet.MapImage.Projection;
 
+/**
+ * Provide API for obtaining planet surface images.
+ * 
+ * @author Samuel Penn
+ */
 @Path("/planetimage/{id}")
 public class PlanetImageAPI {
 	@GET

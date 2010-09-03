@@ -11,26 +11,23 @@
       
 	<body>
 		<ui:composition template="template.xhtml">
-			<ui:define name="title">KnownSpace Dashboard</ui:define>
-	
+			<ui:define name="title">
+				${dashboard.selectedSector} / ${dashboard.systemData.name}
+			</ui:define>
 	
 			<ui:define name="body">
-				<p>
-					Web dashboard application. Nothing special here yet.
-				</p>
-				
 				<h:form>
 					<div id="mainboard">
 						<div id="sector">
-							<h4>Sector Information</h4>
-							
-							<!-- Should use ui:repeat, but doesn't work -->
-					
-							<h:selectOneMenu label="Sector" value="#{dashboard.selectedSector}">
+							<h:selectOneMenu label="Sector" value="#{dashboard.selectedSector}" 
+											 onchange="submit()"
+											 valueChangeListener="#{dashboard.selectedSector}">
 								<f:selectItems value="${sectorFactory.allSectors}"/>
 							</h:selectOneMenu>
 							
-							<h:selectOneMenu label="System" value="#{dashboard.selectedSystem}" rendered="#{dashboard.selectedSector != null}">
+							<h:selectOneMenu label="System" value="#{dashboard.selectedSystem}" 
+							                 rendered="#{dashboard.selectedSector != null}"
+							                 onchange="submit()">
 								<f:selectItems value="${dashboard.systemsList}" var="system"
 								               itemValue="#{system.id}" itemLabel="#{system}"/>
 							</h:selectOneMenu>
@@ -45,7 +42,44 @@
 								</h:panelGroup>
 								
 								<h:panelGroup>
-									<h4>System</h4>
+									<h2>#{dashboard.systemData.mainWorld.name} (#{dashboard.systemData.mainWorld.type})</h2>
+									
+									<p>
+										<b>Distance:</b> ${dashboard.systemData.mainWorld.distance} MKm<br/>
+										<b>Radius:</b> ${dashboard.systemData.mainWorld.radius} km<br/>
+										<b>Temperature:</b> ${dashboard.systemData.mainWorld.temperature}<br/>
+										<b>Atmosphere:</b> ${dashboard.systemData.mainWorld.atmosphere}<br/>
+										<b>Pressure:</b> ${dashboard.systemData.mainWorld.pressure}<br/>
+									</p>
+									
+									<h:panelGroup rendered="#{dashboard.systemData.mainWorld.population != 0}">
+										<p>
+											<b>Population:</b> ${dashboard.systemData.mainWorld.population}<br/>
+											<b>Star Port:</b> ${dashboard.systemData.mainWorld.starport}<br/>
+											<b>Government:</b> ${dashboard.systemData.mainWorld.government}<br/>
+											<b>Law Level:</b> ${dashboard.systemData.mainWorld.lawLevel}<br/>
+											<b>Tech Level:</b> ${dashboard.systemData.mainWorld.techLevel}<br/>
+										</p>
+									</h:panelGroup>
+									
+									
+									<!--
+									<c:forEach var="star" items="${dashboard.systemData.stars}">
+										<h3>${star.name} (${star.spectralType})</h3>
+										
+										<c:forEach var="planet" items="${dashboard.systemData.planets}">
+											<h:panelGroup rendered="#{star.id == planet.parentId}">
+												<h4>${planet.name} (${planet.type})</h4>
+												
+												<p>
+													<b>Distance:</b> ${planet.distance}<br/>
+													<b>Radius:</b> ${planet.radius}<br/>
+													<b>Atmosphere:</b> ${planet.atmosphere} ${planet.pressure}
+												</p>
+											</h:panelGroup>
+										</c:forEach>
+									</c:forEach>
+									-->
 								</h:panelGroup>
 							</h:panelGrid>
 						</div> <!-- sector -->

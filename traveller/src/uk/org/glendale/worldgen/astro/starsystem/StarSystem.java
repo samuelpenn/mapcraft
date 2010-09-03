@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.*;
 
 import uk.org.glendale.rpg.traveller.systems.Zone;
+import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.star.Star;
@@ -204,6 +205,35 @@ public class StarSystem {
 	
 	public void setStars(List<Star> stars) {
 		this.stars = stars;
+	}
+	
+	/**
+	 * Get the main world of this star system. The main world is determined
+	 * by a number of factors, in order of star port type, population and
+	 * world type.
+	 * 
+	 * @return	Main world of this star system.
+	 */
+	public Planet getMainWorld() {
+		Planet		mainWorld = null;
+		for (Planet p : planets) {
+			if (mainWorld == null) {
+				mainWorld = p;
+			} else if (p.getStarport().getMinimumTechLevel() > mainWorld.getStarport().getMinimumPopulation()) {
+				mainWorld = p;
+			} else if (p.getPopulation() > mainWorld.getPopulation()) {
+				mainWorld = p;
+			} else if (p.getType().isTerrestrial() && !mainWorld.getType().isTerrestrial()) {
+				mainWorld = p;
+			} else {
+				int mB = mainWorld.getTemperature().getBadness() + mainWorld.getAtmosphere().getBadness() + mainWorld.getPressure().getBadness();
+				int pB = p.getTemperature().getBadness() + p.getAtmosphere().getBadness() + p.getPressure().getBadness();
+				if (pB < mB) {
+					mainWorld = p;
+				}
+			}
+		}
+		return mainWorld;
 	}
 	
 	public String toString() {

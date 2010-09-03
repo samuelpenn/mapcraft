@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
+import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.BarrenWorld;
 import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
@@ -52,6 +53,14 @@ public class PlanetGenerator {
 			builder = new Gaian();
 			break;
 		case Cool:
+			switch (Die.d6()) {
+			case 1: case 2:
+				builder = new Gaian();
+				break;
+			default:
+				builder = new Arean();
+			}
+			break;
 		case Cold:
 			// Mars, Asteroids
 			builder = new Arean();

@@ -38,23 +38,43 @@ public class Dashboard {
 	}
 	
 	public void selectedSector(ValueChangeEvent event) {
-		selectedSector = (String)event.getNewValue();
+		setSelectedSector((String)event.getNewValue());
 	}
 	
 	public String getSelectedSector() {
+		if (selectedSector == null) {
+			SectorFactory		sectorFactory = new SectorFactory(app.getEntityManager());
+			List<Sector>		list = sectorFactory.getAllSectors();
+			selectedSector = list.get(0).getName();
+		}
 		return selectedSector;
 	}
 	
 	public void setSelectedSector(String sector) {
 		this.selectedSector = sector;
+		this.selectedSystemId = 0;
+		this.selectedSystemId = getSelectedSystem();
 	}
 	
 	public int getSelectedSystem() {
+		if (selectedSystemId == 0) {
+			if (selectedSector == null) {
+				selectedSector = getSelectedSector();
+			}
+			selectedSystemId = getSystemsList().get(0).getId();
+		}
 		return selectedSystemId;
 	}
 	
 	public void setSelectedSystem(int systemId) {
-		this.selectedSystemId = systemId;
+		StarSystemFactory	systemFactory = new StarSystemFactory(app.getEntityManager());
+		StarSystem			system = systemFactory.getStarSystem(systemId);
+		
+		if (system.getSector().getName().equals(selectedSector)) {
+			this.selectedSystemId = systemId;
+		} else {
+			this.selectedSystemId = 0;
+		}
 	}
 	
 	public List<StarSystem> getSystemsList() {
@@ -72,10 +92,18 @@ public class Dashboard {
 	
 	public StarSystem getSystemData() {
 		StarSystemFactory	systemFactory = new StarSystemFactory(app.getEntityManager());
+		
+		if (selectedSystemId == 0) {
+			selectedSystemId = getSelectedSystem();
+		}
+		
 		return systemFactory.getStarSystem(selectedSystemId);
 	}
 	
 	public String getSubSectorURL() {
+		if (selectedSystemId == 0) {
+			selectedSystemId = getSelectedSystem();
+		}
 		if (selectedSystemId != 0) {
 			/*
 			String x = selectedSystem.replaceAll(".*\\(([0-9]{2})([0-9]{2})\\)", "$1");

@@ -110,35 +110,97 @@ public enum StarClass {
 		SpectralType[]      values = SpectralType.values();
 		
 		switch (this) {
-		case BH: case N:
-			// Assume coolest type.
-			type = SpectralType.M9;
+		case BH:
+			// Radiate in X-ray frequencies.
+			type = SpectralType.valueOf("X"+Die.d6()+3);
+			break;
+		case N:
+			// Radiate in X-ray frequencies.
+			type = SpectralType.valueOf("X"+Die.d4()+5);
 			break;
 		case D:
 			// Surprisingly hot, actually. These are white dwarfs.
-			type = values[Die.d10(3)+10];
+			type = SpectralType.valueOf("D"+Die.d8()+1);
 			break;
 		case VI:
-			// Most will be cool, around M0
-			type = values[Die.d6(3)];
+			// Sub-dwarf stars, most will be cool, of type M or L.
+			switch (Die.d6()) {
+			case 1: case 2: case 3: case 4:
+				type = SpectralType.valueOf("M"+(Die.d10()-1));
+				break;
+			case 5: case 6:
+				type = SpectralType.valueOf("L"+(Die.d10()-1));
+				break;
+			}
 			break;
 		case V:
 			// Wide range, average around G.
-			type = values[Die.d20(2)];
+			switch (Die.d6()) {
+			case 1: case 2:
+				type = SpectralType.valueOf("F"+(Die.d10()-1));
+				break;
+			case 3: case 4:
+				type = SpectralType.valueOf("G"+(Die.d10()-1));
+				break;
+			case 5: case 6:
+				type = SpectralType.valueOf("K"+(Die.d10()-1));
+				break;
+			}
 			break;
 		case IV:
-			type = values[Die.d10(3) + 15];
+			// Sub giant stars.
+			switch (Die.d6(2)) {
+			case 2: case 3: case 4:
+				type = SpectralType.valueOf("K"+(Die.d6()+3));
+				break;
+			case 5: case 6: case 7: case 8:
+				type = SpectralType.valueOf("M"+(Die.d10()-1));
+				break;
+			case 9: case 10: case 11:
+				type = SpectralType.valueOf("F"+(Die.d10()-1));
+				break;
+			case 12:
+				type = SpectralType.valueOf("A"+(Die.d6()+3));
+				break;
+			}
 			break;
 		case III:
-			type = values[Die.d10(3) + 25];
+			// Giant stars. May be red-giants, or hot giants.
+			switch (Die.d6(2)) {
+			case 2: case 3: case 4: case 5:
+				type = SpectralType.valueOf("M"+(Die.d10()-1));
+				break;
+			case 6: case 7: case 8: case 9:
+				type = SpectralType.valueOf("F"+(Die.d6()-1));
+				break;
+			case 10: case 11:
+				type = SpectralType.valueOf("A"+(Die.d10()-1));
+				break;
+			case 12:
+				type = SpectralType.valueOf("B"+(Die.d6()+3));
+				break;
+			}
 			break;
 		case II:
-			type = values[Die.d10(3) + 30];
+			// Large giant stars
+			switch (Die.d6(2)) {
+			case 2: case 3: case 4: case 5:
+			case 6: case 7: case 8: case 9:
+				type = SpectralType.valueOf("M"+(Die.d10()-1));
+				break;
+			case 10: case 11:
+				type = SpectralType.valueOf("A"+(Die.d4()-1));
+				break;
+			case 12:
+				type = SpectralType.valueOf("B"+(Die.d10()-1));
+				break;
+			}
 			break;
 		case Ib:
-			type = values[Die.d10(2) + 45];
+			type = SpectralType.valueOf("B"+(Die.d10()-1));
 			break;
 		case Ia:
+			type = SpectralType.valueOf("O"+(Die.d10()-1));
 			type = values[Die.d10(2) + 50];
 			break;
 		}

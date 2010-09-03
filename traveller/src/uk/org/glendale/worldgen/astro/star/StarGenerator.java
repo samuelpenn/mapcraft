@@ -27,9 +27,31 @@ public class StarGenerator {
 		primary = new Star(system);
 		primary.setName(system.getName()+((multipleStars)?" Alpha":""));
 		
+		StarClass		starClass = null;
+		
 		primary.setForm(StarForm.Star);
-		primary.setClassification(StarClass.V);
-		primary.setSpectralType(SpectralType.G2);
+		// Select the general class of the star. Smaller numbers
+		// are larger stars.
+		switch (Die.d6(3)) {
+		case 3:
+			starClass = StarClass.II;
+			break;
+		case 4: case 5:
+			starClass = StarClass.III;
+			break;
+		case 6: case 7:
+			starClass = StarClass.IV;
+			break;
+		case  8: case  9: case 10:
+		case 11: case 12: case 13:
+			starClass = StarClass.V;
+			break;
+		case 14: case 15: case 16: case 17: case 18:
+			starClass = StarClass.VI;
+			break;
+		}
+		primary.setClassification(starClass);
+		primary.setSpectralType(starClass.getSpectralType());
 		
 		return primary;
 	}
@@ -46,7 +68,7 @@ public class StarGenerator {
 		
 		secondary.setForm(StarForm.Star);
 		secondary.setClassification(StarClass.VI);
-		secondary.setSpectralType(SpectralType.M5);
+		secondary.setSpectralType(SpectralType.valueOf("M"+(Die.d10()-1)));
 		
 		// This is a place holder value.
 		secondary.setParentId(primary.getId());

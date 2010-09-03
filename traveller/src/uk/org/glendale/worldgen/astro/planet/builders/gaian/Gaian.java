@@ -1,35 +1,44 @@
 package uk.org.glendale.worldgen.astro.planet.builders.gaian;
 
-import sun.security.action.GetLongAction;
-import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
-import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
-import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
-import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
+import uk.org.glendale.rpg.traveller.systems.codes.*;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.GaianWorld;
 import uk.org.glendale.worldgen.astro.planet.builders.Tile;
 
-
+/**
+ * Generate an Earth-like world. These are the most suitable planets for
+ * human-like life, though they can vary greatly in just how suitable they
+ * are.
+ * 
+ * @author Samuel Penn
+ */
 public class Gaian extends GaianWorld {
 	
 	public void generate() {
 		planet.setType(PlanetType.Gaian);
 		int		radius = PlanetType.Gaian.getRadius();
 		planet.setRadius(radius/2 + Die.die(radius, 2)/2);
+		planet.setDayLength(Die.d6(2)*10000 + Die.die(30000));
+		
+		int		populationModifier = 0;
 		
 		// Set the type of atmosphere.
 		switch (Die.d6(3)) {
 		case 3: case 4:
 			planet.setAtmosphere(AtmosphereType.LowOxygen);
+			populationModifier--;
 			break;
 		case 5: case 6: case 7:
 			planet.setAtmosphere(AtmosphereType.Pollutants);
+			populationModifier--;
 			break;
 		case 14: case 15: case 16:
 			planet.setAtmosphere(AtmosphereType.HighOxygen);
+			populationModifier++;
 			break;
 		case 17: case 18:
 			planet.setAtmosphere(AtmosphereType.HighCarbonDioxide);
+			populationModifier--;
 			break;
 		default:
 			planet.setAtmosphere(AtmosphereType.Standard);
@@ -39,15 +48,18 @@ public class Gaian extends GaianWorld {
 		switch (Die.d6(2) + planet.getRadius()/2000) {
 		case 3: case 4:
 			planet.setPressure(AtmospherePressure.VeryThin);
+			populationModifier-=2;
 			break;
 		case 5: case 6: case 7:
 			planet.setPressure(AtmospherePressure.Thin);
+			populationModifier--;
 			break;
 		case 14: case 15: case 16:
 			planet.setPressure(AtmospherePressure.Dense);
 			break;
 		case 17: case 18:
 			planet.setPressure(AtmospherePressure.VeryDense);
+			populationModifier--;
 			break;
 		default:
 			planet.setPressure(AtmospherePressure.Standard);			
@@ -58,12 +70,90 @@ public class Gaian extends GaianWorld {
 		setHydrographics(planet.getHydrographics());
 		planet.setLifeType(LifeType.Extensive);
 		
+		if (planet.getHydrographics() > 50 && planet.getHydrographics() < 85) {
+			populationModifier++;
+		}
+		if (planet.getTemperature() == Temperature.Warm){
+			populationModifier++;
+		}
+		
 		sea = new Tile("Sea", "#4444aa", true);
 		land = new Tile("Land", "#aaaa44", false);
 		mountains = new Tile("Mountains", "#B0B0B0", false);
 		
 		generateMap();
 		generateResources();
+		
+		// Temporary population adding fix.
+		switch (Die.d6(2)) {
+		case -2: case -1: case 0: case 1:
+			planet.setPopulation(Die.d100() * 100);
+			planet.setStarport(StarportType.E);
+			planet.setTechLevel(Die.d4()+2);
+			planet.addTradeCode(TradeCode.Ag);
+			planet.addTradeCode(TradeCode.Ni);
+			break;
+		case 2: case 3:
+			planet.setPopulation(Die.d100() * 10000);
+			planet.setStarport(StarportType.E);
+			planet.setTechLevel(Die.d4()+3);
+			planet.addTradeCode(TradeCode.Ag);
+			planet.addTradeCode(TradeCode.Ni);
+			break;
+		case 4: case 5:
+			planet.setPopulation(Die.d10() * 1000000);
+			planet.setStarport(StarportType.D);
+			planet.setTechLevel(Die.d4()+4);
+			planet.addTradeCode(TradeCode.Ag);
+			break;
+		case 6: case 7:
+			planet.setPopulation(Die.d10() * 10000000L);
+			planet.setStarport(StarportType.C);
+			planet.setTechLevel(Die.d3()+5);
+			break;
+		case 8 :case 9:
+			planet.setPopulation(Die.d10() * 100000000L);
+			planet.setStarport(StarportType.B);
+			planet.setTechLevel(Die.d3()+6);
+			planet.addTradeCode(TradeCode.In);
+			break;
+		case 10: case 11:
+			planet.setPopulation(Die.d10() * 1000000000L);
+			planet.setStarport(StarportType.A);
+			planet.setTechLevel(Die.d4()+8);
+			planet.addTradeCode(TradeCode.In);
+			planet.addTradeCode(TradeCode.Na);
+			break;
+		default:
+			planet.setPopulation(Die.d10() * 10000000000L);
+			planet.setStarport(StarportType.A);
+			planet.setTechLevel(Die.d3()+9);
+			planet.addTradeCode(TradeCode.In);
+			planet.addTradeCode(TradeCode.Na);
+		}
+		switch (Die.d6(2)) {
+		case 2: case 3:
+			planet.setGovernment(GovernmentType.Balkanization);
+			planet.setLawLevel(Die.d3());
+			planet.addTradeCode(TradeCode.Po);
+			break;
+		case 4: case 5:
+			planet.setGovernment(GovernmentType.CharismaticLeader);
+			planet.setLawLevel(Die.d3()+3);
+			break;
+		case 6: case 7: case 8:
+			planet.setGovernment(GovernmentType.RepresentativeDemocracy);
+			planet.setLawLevel(Die.d3()+1);
+			break;
+		case 9: case 10:
+			planet.setGovernment(GovernmentType.ImpersonalBureaucracy);
+			planet.setLawLevel(Die.d2()+4);
+			break;
+		case 11: case 12:
+			planet.setGovernment(GovernmentType.TheocraticOligarchy);
+			planet.setLawLevel(Die.d4()+2);
+			break;		
+		}
 	}
 	
 	protected void addEcology() {
@@ -75,7 +165,7 @@ public class Gaian extends GaianWorld {
 		for (int y=0; y < TILE_HEIGHT; y++) {
 			int		latitude = getLatitude(y, TILE_HEIGHT);
 			for (int x=getWest(y); x < getEast(y); x++) {
-				if (latitude > 70) {
+				if (latitude > 70 && planet.getTemperature().isColderThan(Temperature.Warm)) {
 					map[y][x] = ice;
 				} else if (latitude > 35 && map[y][x] == land) {
 					map[y][x] = woodland;
