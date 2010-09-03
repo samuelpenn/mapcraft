@@ -44,14 +44,38 @@
 								<h:panelGroup>
 									<h2>#{dashboard.systemData.mainWorld.name} (#{dashboard.systemData.mainWorld.type})</h2>
 									
-									<p>
-										<b>Distance:</b> ${dashboard.systemData.mainWorld.distance} MKm<br/>
-										<b>Radius:</b> ${dashboard.systemData.mainWorld.radius} km<br/>
-										<b>Temperature:</b> ${dashboard.systemData.mainWorld.temperature}<br/>
-										<b>Atmosphere:</b> ${dashboard.systemData.mainWorld.atmosphere}<br/>
-										<b>Pressure:</b> ${dashboard.systemData.mainWorld.pressure}<br/>
-									</p>
+									<table width="100%">
+										<tr>
+											<th>Distance</th>
+											<td>
+												<h:outputText value="${dashboard.systemData.mainWorld.distance}">
+													<f:convertNumber type="number"/>
+												</h:outputText> Mkm
+											</td>
+											<th>Radius</th>
+											<td>
+												<h:outputText value="${dashboard.systemData.mainWorld.radius}">
+													<f:convertNumber type="number"/>
+												</h:outputText> km
+											</td>
+											<th>Day</th>
+											<td>${dashboard.systemData.mainWorld.dayLengthAsString}</td>
+										</tr>
+										
+										<tr>
+											<th>Atmosphere</th>
+											<td>${dashboard.systemData.mainWorld.atmosphere}</td>
+											
+											<th>Pressure</th>
+											<td>${dashboard.systemData.mainWorld.pressure}</td>
+											
+											<th>Temperature</th>
+											<td>${dashboard.systemData.mainWorld.temperature}</td>
+										</tr>
+									</table>
 									
+									<img src="/traveller/api/planetimage/${dashboard.systemData.mainWorld.id}" width="100%"/>
+
 									<h:panelGroup rendered="#{dashboard.systemData.mainWorld.population != 0}">
 										<p>
 											<b>Population:</b> ${dashboard.systemData.mainWorld.population}<br/>
@@ -61,7 +85,6 @@
 											<b>Tech Level:</b> ${dashboard.systemData.mainWorld.techLevel}<br/>
 										</p>
 									</h:panelGroup>
-									
 									
 									<!--
 									<c:forEach var="star" items="${dashboard.systemData.stars}">

@@ -265,6 +265,29 @@ public class Planet {
 		return dayLength;
 	}
 	
+	public String getDayLengthAsString() {
+		String	day = "";
+		int		d = dayLength;
+		
+		if (d > 86400) {
+			day += (d/86400)+"d ";
+			d = d % 86400;
+		}
+		if (d > 3600 && dayLength < (86400 * 100)) {
+			day += (d/3600)+"h ";
+			d = d % 3600;
+		}
+		if (d > 60 && dayLength < (86400 * 10)) {
+			day += (d/60)+"m ";
+			d = d % 60;
+		}
+		if (d > 0 && dayLength < (43200)) {
+			day += d+"s";
+		}
+		
+		return day.trim();
+	}
+	
 	public void setDayLength(int dayLength) {
 		if (dayLength < 1) {
 			throw new IllegalArgumentException("Day length must be positive");
