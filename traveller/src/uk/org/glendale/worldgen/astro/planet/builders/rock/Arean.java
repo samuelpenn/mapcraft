@@ -14,17 +14,17 @@ import uk.org.glendale.worldgen.astro.planet.builders.Tile;
  * @author Samuel Penn
  */
 public class Arean extends BarrenWorld {
-	
-	public Arean() {
-		super();
+
+	public PlanetType getPlanetType() {
+		return PlanetType.Arean;
 	}
 	
 	public void generate() {
 		if (planet == null) {
 			throw new IllegalStateException("Use setPlanet() to set the planet first");
 		}
-		planet.setType(PlanetType.Arean);
-		int		radius = PlanetType.Arean.getRadius();
+		planet.setType(getPlanetType());
+		int		radius = getPlanetType().getRadius();
 		planet.setRadius(radius / 2 + Die.die(radius, 2)/2);
 		planet.addTradeCode(TradeCode.Ba);
 		if (planet.getRadius() > 4000) {

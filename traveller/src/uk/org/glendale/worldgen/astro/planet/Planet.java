@@ -59,6 +59,7 @@ public class Planet {
 	@Column(name="temperature")		private Temperature			temperature = Temperature.UltraCold;
 	@Column(name="hydrographics")	private int					hydrographics;
 	@Column(name="day")				private int					dayLength = 86400;
+	@Column(name="tilt")			private int					axialTilt = 0;
 	
 	// Civilisation data
 	@Column(name="population")		private long				population;
@@ -170,6 +171,13 @@ public class Planet {
 		return distance;
 	}
 	
+	/**
+	 * Sets the distance of this planet from its primary. If the primary
+	 * is a star (isMoon == false), then the distance is measured in millions
+	 * of km, otherwise this planet is a moon and the units are km.
+	 * 
+	 * @param distance		Distance from primary, MKm (if primary is a star) or km.
+	 */
 	public void setDistance(int distance) {
 		if (distance <= 0) {
 			throw new IllegalArgumentException("Distance must be greater than zero");
@@ -177,10 +185,20 @@ public class Planet {
 		this.distance = distance;
 	}
 	
+	/**
+	 * Gets the radius of the planet in kilometres.
+	 * 
+	 * @return	Radius of planet in km.
+	 */
 	public int getRadius() {
 		return radius;
 	}
 	
+	/**
+	 * Sets the radius of the planet.
+	 * 
+	 * @param radius	Planet radius, in kilometres.
+	 */
 	public void setRadius(int radius) {
 		if (radius < 0) {
 			throw new IllegalArgumentException("Radius cannot be negative");
@@ -210,10 +228,24 @@ public class Planet {
 		this.type = type;
 	}
 	
+	/**
+	 * Gets the type of atmosphere for this planet. If there is no atmosphere,
+	 * then the type is Vacuum, otherwise it determines the principle components
+	 * of the atmosphere.
+	 * 
+	 * @return	Atmosphere type.
+	 */
 	public AtmosphereType getAtmosphere() {
 		return atmosphere;
 	}
 	
+	/**
+	 * Sets the type of atmosphere for this planet. If a null or Vacuum type is
+	 * set, then the type is Vacuum and the pressure is automatically changed
+	 * to be None.
+	 * 
+	 * @param atmosphere	Type of atmosphere.
+	 */
 	public void setAtmosphere(AtmosphereType atmosphere) {
 		this.atmosphere = atmosphere;
 		if (atmosphere == null || atmosphere == AtmosphereType.Vacuum) {
@@ -254,6 +286,14 @@ public class Planet {
 		} else {
 			this.hydrographics = hydrographics;
 		}
+	}
+	
+	public int getAxialTilt() {
+		return axialTilt;
+	}
+	
+	public void setAxialTilt(int axialTilt) {
+		this.axialTilt = axialTilt;
 	}
 
 	/**

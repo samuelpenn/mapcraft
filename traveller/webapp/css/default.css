@@ -69,3 +69,23 @@ table.statistics td {
 	text-align: left;
 	border: 1px solid #000044;
 }
+
+
+table.mainPlanet {
+	width: 100%;
+}
+
+table.mainPlanet th {
+	text-align: left;
+	font-weight: bold;
+	background-color: #662222;
+	color: white;
+}
+
+table.mainPlanet td {
+	text-align: left;
+}
+
+.mainPanel {
+	vertical-align: top;
+}

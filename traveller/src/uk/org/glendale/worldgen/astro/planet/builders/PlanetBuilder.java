@@ -4,6 +4,8 @@ import java.awt.GraphicsEnvironment;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -12,12 +14,16 @@ import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
+import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.MapImage;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
 import uk.org.glendale.worldgen.astro.planet.builders.gaian.Gaian;
+import uk.org.glendale.worldgen.astro.planet.builders.ice.Europan;
 import uk.org.glendale.worldgen.astro.planet.builders.jovian.EuJovian;
+import uk.org.glendale.worldgen.astro.star.Star;
+import uk.org.glendale.worldgen.astro.star.StarAPI;
 import uk.org.glendale.worldgen.civ.commodity.Commodity;
 import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
 import uk.org.glendale.worldgen.server.AppManager;
@@ -26,6 +32,7 @@ import uk.org.glendale.worldgen.text.PlanetDescription;
 public abstract class PlanetBuilder {
 	protected EntityManager	entityManager;
 	protected Planet		planet;
+	protected Star			star;
 	
 	private String			fractalColour = null;
 	private int				hydrographics = 0;
@@ -35,9 +42,15 @@ public abstract class PlanetBuilder {
 	public PlanetBuilder() {
 		generateFractalHeightMap();
 	}
-	
+		
+	public abstract PlanetType getPlanetType();
+
 	public void setEntityManager(EntityManager entityManager) {
 		this.entityManager = entityManager;
+	}
+	
+	public void setStar(Star star) {
+		this.star = star;
 	}
 	
 	public void setPlanet(Planet planet) {
@@ -56,6 +69,10 @@ public abstract class PlanetBuilder {
 			commodityFactory = new CommodityFactory(entityManager);
 		}
 		Commodity	commodity = commodityFactory.getCommodity(commodityName);
+		if (commodity == null) {
+			System.out.println("Cannot find commodity ["+commodityName+"]");
+			return;
+		}
 		addResource(commodity, density);
 	}
 	
@@ -468,7 +485,19 @@ public abstract class PlanetBuilder {
 		}
 		
 		// Randomly grow the continental shelves.
-		while (getShelfPercentage(shelfMap) < (100-hydrographics)) {
+		// There's a chance we could get stuck, unable to reach the
+		// target. In which case, give up.
+		int		lastPercentage = 0, stuckCount = 0;
+		int		currentPercentage = getShelfPercentage(shelfMap);
+		while (currentPercentage < (100-hydrographics)) {
+			if (currentPercentage == lastPercentage) {
+				if (stuckCount++ > 10) {
+					break;
+				}
+			} else {
+				lastPercentage = currentPercentage;
+				stuckCount = 0;
+			}
 			for (int y=0; y < TILE_HEIGHT; y++) {
 				for (int x=0; x < TILE_WIDTH; x++) {
 					if (shelfMap[y][x] < 0) {
@@ -491,7 +520,8 @@ public abstract class PlanetBuilder {
 						}
 					}
 				}
-			}		
+			}
+			currentPercentage = getShelfPercentage(shelfMap);
 		}
 
 		map = new Tile[TILE_HEIGHT][TILE_WIDTH];
@@ -538,10 +568,39 @@ public abstract class PlanetBuilder {
 		return image;
 	}
 	
+	/**
+	 * Get a list of moon types to add to this world. This list is
+	 * used to generate the moons after the planet has been persisted.
+	 * If the list is null or empty, the world has no moons.
+	 * 
+	 * @return	List of planet types for moons.
+	 */
+	public PlanetBuilder[] getMoonBuilders() {
+		return null;
+	}
+	
+	/**
+	 * Get the distance to the first moon of this planet. This is based
+	 * on the size of the planet and the typical size of the moon.
+	 * 
+	 * @return		Distance in kilometres.
+	 */
+	public int getFirstMoonDistance() {
+		if (getMoonBuilders() != null && getMoonBuilders().length > 0) {
+			int distance = (planet.getRadius() * getMoonBuilders()[0].getPlanetType().getRadius())/(200+Die.d100(2));
+			if (getMoonBuilders()[0].getPlanetType().getRadius() > planet.getRadius()/5) {
+				// This is closer to being a double planet system, so
+				// greatly increase the distance.
+				distance *= 10;
+			}
+			return distance;
+		}
+		return 0;
+	}
 	
 	public static void main(String[] args) throws Exception {
 		System.out.println(GraphicsEnvironment.isHeadless());
-		PlanetBuilder	barren = new Gaian();
+		PlanetBuilder	barren = new Europan();
 		barren.setPlanet(new Planet());
 		barren.generate();
 		System.exit(0);

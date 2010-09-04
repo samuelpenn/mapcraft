@@ -76,7 +76,7 @@ CREATE TABLE star (id int auto_increment not null, name varchar(250),
 #
 CREATE TABLE planet (id int auto_increment not null, system_id int not null, 
 					parent_id int not null, moon boolean default false,
-					name varchar(250), distance int not null, radius int not null, 
+					name varchar(250), distance int not null, radius int not null, tilt int default 0,
 					type varchar(32) not null, starport varchar(8) DEFAULT 'X', 
 					atmosphere varchar(32) DEFAULT 'Vacuum', 
 					pressure varchar(32) DEFAULT 'None', 
@@ -105,6 +105,7 @@ create index glossary1_idx on glossary (uri);
 create table subsector(id int not null auto_increment, sector_id int not null,
                        idx int not null, name varchar(64), primary key(id));
 
+create table planet_maps (planet_id int not null, type varchar(12) not null, image longblob not null, primary key(planet_id));
 create table map (planet_id int not null, image longblob not null, primary key(planet_id));
 create table globe (planet_id int not null, image longblob not null, primary key(planet_id));
 

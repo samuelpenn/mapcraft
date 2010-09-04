@@ -14,9 +14,13 @@ import uk.org.glendale.worldgen.astro.planet.builders.Tile;
  */
 public class Gaian extends GaianWorld {
 	
+	public PlanetType getPlanetType() {
+		return PlanetType.Gaian;
+	}
+	
 	public void generate() {
-		planet.setType(PlanetType.Gaian);
-		int		radius = PlanetType.Gaian.getRadius();
+		planet.setType(getPlanetType());
+		int		radius = getPlanetType().getRadius();
 		planet.setRadius(radius/2 + Die.die(radius, 2)/2);
 		planet.setDayLength(Die.d6(2)*10000 + Die.die(30000));
 		

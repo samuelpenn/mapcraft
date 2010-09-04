@@ -21,14 +21,17 @@ public class Hermian extends BarrenWorld {
 	public Hermian() {
 		super();
 	}
+	
+	public PlanetType getPlanetType() {
+		return PlanetType.Hermian;
+	}
 		
 	public void generate() {
 		if (planet == null) {
 			throw new IllegalStateException("Use setPlanet() to set the planet first");
 		}
-		planet.setType(PlanetType.Hermian);
-		
-		int		radius = PlanetType.Hermian.getRadius();
+		planet.setType(getPlanetType());
+		int		radius = getPlanetType().getRadius();
 		planet.setRadius(radius / 2 + Die.die(radius, 2)/2);
 		if (planet.getRadius() > 3000) {
 			planet.setPressure(AtmospherePressure.Trace);

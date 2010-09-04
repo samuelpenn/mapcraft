@@ -1,5 +1,7 @@
 package uk.org.glendale.worldgen.astro.starsystem;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
@@ -94,6 +96,35 @@ public class StarSystemGenerator {
 	}
 	
 	/**
+	 * Get the orbit number as a Roman numeral. Should work
+	 * up to 39.
+	 * 
+	 * @param orbit		Orbit number, 1+
+	 * @return			Roman numeral.
+	 */
+	private String getOrbitNumber(int orbit) {
+		String	x = "";
+		
+		while (orbit >= 10) {
+			x += "X";
+			orbit -= 10;
+		}
+		switch (orbit) {
+		case 1: return x+"I";
+		case 2: return x+"II";
+		case 3: return x+"III";
+		case 4: return x+"IV";
+		case 5: return x+"V";
+		case 6: return x+"VI";
+		case 7: return x+"VII";
+		case 8: return x+"VIII";
+		case 9: return x+"IX";
+		}
+		
+		return x;
+	}
+	
+	/**
 	 * Randomly generate planets for a star.
 	 * 
 	 * @param system		System to generate planets for.
@@ -107,10 +138,22 @@ public class StarSystemGenerator {
 		
 		PlanetGenerator		planetGenerator = new PlanetGenerator(entityManager, system, star);
 		for (int p=0; p < numPlanets; p++) {
-			String	planetName = star.getName()+" "+(p+1);
+			String	planetName = star.getName()+" "+getOrbitNumber(p+1);
 			Planet	planet = planetGenerator.generatePlanet(planetName, p, distance);
 			entityManager.persist(planet);
+			System.out.println("Persisted planet ["+planet.getId()+"] ["+planet.getName()+"]");
 			
+			List<Planet>	moons = planetGenerator.generateMoons(planet);
+			for (Planet moon : moons) {
+				System.out.println("Persisting ["+moon.getName()+"]");
+				entityManager.persist(moon);
+				System.out.println("Persisted moon ["+moon.getId()+"] ["+moon.getName()+"]");
+			}
+			
+			if (planet.getType().isJovian()) {
+				// Give extra room for Jovian worlds.
+				distance += Die.die(increase, 2) + Die.d10(3);
+			}
 			distance += Die.die(increase, 2) + Die.d10(2);
 			increase = (int)(increase * (1.0 + Die.d6(2)/10.0)) + Die.d4();
 		}

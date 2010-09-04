@@ -37,14 +37,14 @@
 							<br/>
 							
 							<h:panelGrid columns="2" rendered="#{dashboard.selectedSystem != null}">
-								<h:panelGroup>
+								<h:panelGroup styleClass="mainPanel">
 									<img src="${dashboard.subSectorURL}"/>
 								</h:panelGroup>
 								
-								<h:panelGroup>
+								<h:panelGroup styleClass="mainPanel">
 									<h2>#{dashboard.systemData.mainWorld.name} (#{dashboard.systemData.mainWorld.type})</h2>
 									
-									<table width="100%">
+									<table class="mainPlanet">
 										<tr>
 											<th>Distance</th>
 											<td>
@@ -72,18 +72,50 @@
 											<th>Temperature</th>
 											<td>${dashboard.systemData.mainWorld.temperature}</td>
 										</tr>
+
+										<tr>
+											<th>Life type</th>
+											<td>${dashboard.systemData.mainWorld.lifeType}</td>
+											
+											<th>Hydrographics</th>
+											<td>${dashboard.systemData.mainWorld.hydrographics}%</td>
+											
+											<th>Axial Tilt</th>
+											<td>${dashboard.systemData.mainWorld.axialTilt}</td>
+										</tr>
 									</table>
 									
 									<img src="/traveller/api/planetimage/${dashboard.systemData.mainWorld.id}" width="100%"/>
+									
+									<p>${dashboard.systemData.mainWorld.description}</p>
 
 									<h:panelGroup rendered="#{dashboard.systemData.mainWorld.population != 0}">
-										<p>
-											<b>Population:</b> ${dashboard.systemData.mainWorld.population}<br/>
-											<b>Star Port:</b> ${dashboard.systemData.mainWorld.starport}<br/>
-											<b>Government:</b> ${dashboard.systemData.mainWorld.government}<br/>
-											<b>Law Level:</b> ${dashboard.systemData.mainWorld.lawLevel}<br/>
-											<b>Tech Level:</b> ${dashboard.systemData.mainWorld.techLevel}<br/>
-										</p>
+										<table class="mainPlanet">
+											<tr>
+												<th>Population</th>
+												<td>
+													<h:outputText value="${dashboard.systemData.mainWorld.population}">
+														<f:convertNumber type="number"/>
+													</h:outputText>
+												</td>
+												<th>Star Port</th>
+												<td>
+													${dashboard.systemData.mainWorld.starport}
+													(${dashboard.systemData.mainWorld.starport.description})
+												</td>
+												
+												<th>Tech Level</th>
+												<td>${dashboard.systemData.mainWorld.techLevel}</td>
+											</tr>
+											<tr>
+												<th>Government</th>
+												<td>${dashboard.systemData.mainWorld.government}</td>
+												<th>Law Level</th>
+												<td>${dashboard.systemData.mainWorld.lawLevel}</td>
+												<th>Trade Codes</th>
+												<td></td>												
+											</tr>
+										</table>
 									</h:panelGroup>
 									
 									<!--

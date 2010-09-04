@@ -3,10 +3,13 @@ package uk.org.glendale.worldgen.astro.planet.builders;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
+import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.planet.builders.ice.Europan;
 import uk.org.glendale.worldgen.server.AppManager;
 
-public class JovianWorld extends PlanetBuilder {
+public abstract class JovianWorld extends PlanetBuilder {
 	protected List<Tile>	tiles;
 
 	public JovianWorld() {
@@ -17,6 +20,7 @@ public class JovianWorld extends PlanetBuilder {
 		tiles = new ArrayList<Tile>();
 		tiles.add(new Tile("Dark", "#999977", false));
 		tiles.add(new Tile("Light", "#cccc99", false));
+		
 		
 		generateMap();
 		generateResources();
@@ -55,6 +59,28 @@ public class JovianWorld extends PlanetBuilder {
 	@Override
 	public void generateResources() {
 		addResource("Hydrogen", 60 + Die.d20(2));
+	}
+	
+	private PlanetBuilder[]		moonBuilders = null;
+	
+	/**
+	 * Gets a list of planet types typically found as moons of a Jovian world.
+	 */
+	public PlanetBuilder[] getMoonBuilders() {
+		if (moonBuilders != null) {
+			return moonBuilders;
+		}
+		int				numMoons = Die.d3(2);
+		
+		System.out.println("JovianWorlds: Adding "+numMoons+" moons");
+		
+		moonBuilders = new PlanetBuilder[numMoons];
+		
+		for (int i=0; i < numMoons; i++) {
+			moonBuilders[i] = new Europan();
+		}
+		
+		return moonBuilders;
 	}
 
 }

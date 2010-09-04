@@ -2,6 +2,7 @@ package uk.org.glendale.worldgen.astro.planet.builders.jovian;
 
 import java.util.ArrayList;
 
+import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.JovianWorld;
@@ -13,13 +14,37 @@ import uk.org.glendale.worldgen.astro.planet.builders.Tile;
  * @author Samuel Penn
  */
 public class EuJovian extends JovianWorld {
-	public EuJovian() {
+	public PlanetType getPlanetType() {
+		return PlanetType.EuJovian;
 	}
 	
 	@Override
 	public void generate() {
 		
-		planet.setType(PlanetType.EuJovian);
+		planet.setType(getPlanetType());
+		int		radius = getPlanetType().getRadius();
+		planet.setRadius(radius / 2 + Die.die(radius, 2)/2);
+		planet.setDayLength(2000 + Die.d100()*1000 + Die.die(10000));
+		planet.setAxialTilt(Die.d10());
+		
+		// Does this world have rings? Most Jovian worlds seem to.
+		switch(Die.d6(3)) {
+		case 3:
+			planet.addFeature(PlanetFeature.ExtensiveIceRings);
+			break;
+		case 4:
+			planet.addFeature(PlanetFeature.BrightIceRings);
+			break;
+		case 5: case 6:
+			planet.addFeature(PlanetFeature.IceRings);
+			break;
+		case 7: case 8: case 9: case 10:
+			planet.addFeature(PlanetFeature.FaintIceRings);
+			break;
+		case 14: case 15: case 16: case 17: case 18:
+			planet.addFeature(PlanetFeature.PartialIceRings);
+			break;
+		}
 		
 		tiles = new ArrayList<Tile>();
 		tiles.add(new Tile("Dark", "#aaaa77", false));
