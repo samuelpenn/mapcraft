@@ -6,6 +6,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.planet.Planet;
+import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystemFactory;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystemGenerator;
@@ -60,12 +62,17 @@ public class SectorGenerator {
 	 */
 	public void clearSector(Sector sector) {
 		StarSystemFactory	factory = new StarSystemFactory(entityManager);
+		PlanetFactory		pfactory = new PlanetFactory(entityManager);
 		List<StarSystem>	systems = factory.getStarSystemsInSector(sector);
 
 		EntityTransaction	transaction = entityManager.getTransaction();
 		transaction.begin();
 		for (StarSystem system : systems) {
 			System.out.println(system.getName());
+			List<Planet>	planets = pfactory.getPlanets(system);
+			for (Planet planet : planets) {
+				entityManager.remove(planet);
+			}
 			entityManager.remove(system);
 		}
 		transaction.commit();

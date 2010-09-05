@@ -41,6 +41,12 @@ public enum TradeCode {
 	Ic ("Ice world"),
 	Jv ("Jovian world"),
 	Fl ("Non-water fluid oceans"),
+	H0 ("Ideal"),
+	H1 ("Habitable"),
+	H2 ("Difficult"),
+	H3 ("Inhospitable"),
+	H4 ("Hostile"),
+	H5 ("Extremely Hostile"),
 	Cp ("Subsector capital"),
 	Cx ("Sector capital");
 	

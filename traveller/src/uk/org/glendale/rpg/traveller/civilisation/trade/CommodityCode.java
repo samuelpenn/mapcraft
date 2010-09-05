@@ -115,6 +115,11 @@ public enum CommodityCode {
 	V7("V7"),
 	V8("V8"),
 	V9("V9"),
+	PR("Produces"),
+	P0("Produce 100%"),
+	P1("Produce 50%"),
+	P2("Produce 25%"),
+	P3("Produce 10%"),
 	// Other
 	V("Virtual"),
 	Uq("Unique");

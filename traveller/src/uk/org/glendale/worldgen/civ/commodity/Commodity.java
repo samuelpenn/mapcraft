@@ -48,9 +48,8 @@ public class Commodity {
 	@Column(name="consumption")	private int			consumption;
 	@Column(name="law")			private int			lawLevel;
 	@Column(name="tech")		private int			techLevel;
-	
-	
-	@ElementCollection
+
+	@ElementCollection(fetch=FetchType.EAGER)
 	@JoinTable(name="commodity_codes", joinColumns=@JoinColumn(name="commodity_id"))
 	@Enumerated(EnumType.STRING)
 	@Column(name="code")
@@ -169,6 +168,10 @@ public class Commodity {
 		return production;
 	}
 	
+	long getProduction(long population) {
+		return (long) (population / Math.pow(10, production/2.0));
+	}
+	
 	void setProductionRating(int pr) {
 		this.production = pr;
 	}
@@ -185,6 +188,10 @@ public class Commodity {
 	 */
 	public int getConsumptionRating() {
 		return consumption;
+	}
+	
+	long getConsumption(long population) {
+		return (long) (population / Math.pow(10, consumption/2.0));
 	}
 	
 	void setConsumptionRating(int cr) {
@@ -225,6 +232,10 @@ public class Commodity {
 	
 	void addCode(CommodityCode code) {
 		codes.add(code);
+	}
+	
+	public boolean hasCode(CommodityCode code) {
+		return codes.contains(code);
 	}
 	
 }

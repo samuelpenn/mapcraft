@@ -23,6 +23,7 @@ public class Gaian extends GaianWorld {
 		int		radius = getPlanetType().getRadius();
 		planet.setRadius(radius/2 + Die.die(radius, 2)/2);
 		planet.setDayLength(Die.d6(2)*10000 + Die.die(30000));
+		planet.setAxialTilt(Die.d10(3));
 		
 		int		populationModifier = 0;
 		
@@ -69,16 +70,27 @@ public class Gaian extends GaianWorld {
 			planet.setPressure(AtmospherePressure.Standard);			
 		}
 		
+		
 		planet.setTemperature(planet.getTemperature().getHotter());
 		planet.setHydrographics(15 + Die.d20(4));
 		setHydrographics(planet.getHydrographics());
-		planet.setLifeType(LifeType.Extensive);
 		
 		if (planet.getHydrographics() > 50 && planet.getHydrographics() < 85) {
 			populationModifier++;
 		}
 		if (planet.getTemperature() == Temperature.Warm){
 			populationModifier++;
+		}
+
+		if (populationModifier < -2) {
+			planet.addTradeCode(TradeCode.H2);
+			planet.setLifeType(LifeType.SimpleLand);
+		} else if (populationModifier < 0) {
+			planet.addTradeCode(TradeCode.H1);
+			planet.setLifeType(LifeType.ComplexLand);
+		} else {
+			planet.addTradeCode(TradeCode.H0);
+			planet.setLifeType(LifeType.Extensive);
 		}
 		
 		sea = new Tile("Sea", "#4444aa", true);

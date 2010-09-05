@@ -3,6 +3,7 @@ package uk.org.glendale.worldgen.astro.planet.builders.barren;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
+import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
@@ -33,7 +34,12 @@ public class Selenian extends BarrenWorld {
 		int		radius = getPlanetType().getRadius();
 		planet.setRadius(radius / 2 + Die.die(radius, 2)/2);
 		planet.setAtmosphere(AtmosphereType.Vacuum);
-		planet.addTradeCode(TradeCode.Va);			
+		planet.addTradeCode(TradeCode.Va);
+		if (planet.getTemperature().isHotterThan(Temperature.ExtremelyHot)) {
+			planet.addTradeCode(TradeCode.H4);
+		} else {
+			planet.addTradeCode(TradeCode.In);
+		}
 
 		generateMap();
 		generateResources();

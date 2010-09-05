@@ -355,11 +355,16 @@ public class SubSectorImage {
 							StarportType	starport = mainWorld.getStarport();
 							int				tl = mainWorld.getTechLevel();
 							if (starport != StarportType.X) {
-								double	fontSize = scale * 0.2;
-								plotText(getX(x, y) + (scale * 0.30), getY(x, y) - scale*1.1, starport.toString()+"/"+tl, Font.PLAIN, (int)fontSize, "#000000");
+								double	fontSize = scale * 0.25;
+								int		font = Font.PLAIN;
+								if (starport == StarportType.A){
+									fontSize = scale * 0.3;
+									font = Font.BOLD;
+								}
+								plotText(getX(x, y) + (scale * 0.25), getY(x, y) - scale*1.1, starport.toString()+"/"+tl, font, (int)fontSize, "#000000");
 							} else {
-								double	fontSize = scale * 0.2;
-								plotText(getX(x, y) + (scale * 0.30), getY(x, y) - scale*1.1, "-/"+tl, Font.PLAIN, (int)fontSize, "#000000");							
+								double	fontSize = scale * 0.25;
+								plotText(getX(x, y) + (scale * 0.25), getY(x, y) - scale*1.1, "-/"+tl, Font.PLAIN, (int)fontSize, "#000000");							
 							}
 							if (scale > 40) {
 								if (system.hasLife(LifeType.Extensive)) {

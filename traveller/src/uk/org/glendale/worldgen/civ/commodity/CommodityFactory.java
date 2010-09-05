@@ -2,6 +2,8 @@ package uk.org.glendale.worldgen.civ.commodity;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
@@ -50,6 +52,16 @@ public class CommodityFactory {
 		} catch (NoResultException e) {
 			return null;
 		}
+	}
+	
+	public List<Commodity> getChildren(Commodity parent) {
+		Query q = em.createQuery("from Commodity where parent = :c");
+		q.setParameter("c", parent);
+		try {
+			return q.getResultList();
+		} catch (NoResultException e) {
+			return new ArrayList<Commodity>();
+		}		
 	}
 	
 	private void createCommodities(File file) throws ParserConfigurationException, SAXException, IOException {

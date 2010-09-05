@@ -27,6 +27,7 @@ public class Arean extends BarrenWorld {
 		int		radius = getPlanetType().getRadius();
 		planet.setRadius(radius / 2 + Die.die(radius, 2)/2);
 		planet.addTradeCode(TradeCode.Ba);
+		planet.addTradeCode(TradeCode.H3);
 		if (planet.getRadius() > 4000) {
 			planet.setPressure(AtmospherePressure.Thin);
 			planet.setAtmosphere(AtmosphereType.CarbonDioxide);

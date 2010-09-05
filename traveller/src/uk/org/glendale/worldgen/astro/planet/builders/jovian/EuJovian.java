@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
+import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.JovianWorld;
 import uk.org.glendale.worldgen.astro.planet.builders.Tile;
@@ -26,7 +27,8 @@ public class EuJovian extends JovianWorld {
 		planet.setRadius(radius / 2 + Die.die(radius, 2)/2);
 		planet.setDayLength(2000 + Die.d100()*1000 + Die.die(10000));
 		planet.setAxialTilt(Die.d10());
-		
+		planet.addTradeCode(TradeCode.H5);
+
 		// Does this world have rings? Most Jovian worlds seem to.
 		switch(Die.d6(3)) {
 		case 3:

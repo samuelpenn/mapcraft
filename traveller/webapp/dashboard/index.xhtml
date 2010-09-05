@@ -113,10 +113,16 @@
 												<th>Law Level</th>
 												<td>${dashboard.systemData.mainWorld.lawLevel}</td>
 												<th>Trade Codes</th>
-												<td></td>												
+												<td>
+													<ui:repeat var="code" value="${dashboard.systemData.mainWorld.tradeCodeList}">
+														<h:outputText value="${code}"/>
+														<h:outputText value=" "/>
+													</ui:repeat>
+												</td>												
 											</tr>
 										</table>
 									</h:panelGroup>
+									
 									
 									<!--
 									<c:forEach var="star" items="${dashboard.systemData.stars}">

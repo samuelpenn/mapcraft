@@ -26,21 +26,23 @@ package uk.org.glendale.rpg.traveller.systems.codes;
  * @author Samuel Penn
  */
 public enum StarportType {
-	A(10, 1000000, new double[] { 1.5, 1, 1, 0.5, 0.5, 0, 0, 0 }),
-	B(9, 100000, new double[] { 1, 1, 0.5, 0.5, 0, 0, -0.5, -1}),
-	C(8, 10000, new double[] { 1, 0.5, 0.5, 0, 0, -0.5, -1, -1.5}), 
-	D(7, 1000, new double[] { 0.5, 0.5, 0, 0, -0.5, -1, -1.5, -2}),
-	E(5, 0, new double[] { 0.5, 0, 0, -0.5, -1, -1.5, -2, -2.5}),
-	X(0, 0, new double[] { 0, 0, -2.5, -3, -3.5, -4, -4.5, -5});
+	A(10, 1000000, new double[] { 1.5, 1, 1, 0.5, 0.5, 0, 0, 0 }, "Major"),
+	B(9, 100000, new double[] { 1, 1, 0.5, 0.5, 0, 0, -0.5, -1}, "Large"),
+	C(8, 10000, new double[] { 1, 0.5, 0.5, 0, 0, -0.5, -1, -1.5}, "Medium"), 
+	D(7, 1000, new double[] { 0.5, 0.5, 0, 0, -0.5, -1, -1.5, -2}, "Small"),
+	E(5, 0, new double[] { 0.5, 0, 0, -0.5, -1, -1.5, -2, -2.5}, "Minimal"),
+	X(0, 0, new double[] { 0, 0, -2.5, -3, -3.5, -4, -4.5, -5}, "None");
 	
 	int			minTechLevel = 0;
 	int			minPopulation = 0;
 	double[]	wtnModifier = null;
+	String		description = null;
 	
-	StarportType(int minTechLevel, int minPopulation, double[] wtn) {
+	StarportType(int minTechLevel, int minPopulation, double[] wtn, String description) {
 		this.minTechLevel = minTechLevel;
 		this.minPopulation = minPopulation;
 		this.wtnModifier = wtn;
+		this.description = description;
 	}
 	
 	/**
@@ -102,5 +104,9 @@ public enum StarportType {
 		}
 		
 		return X;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 }

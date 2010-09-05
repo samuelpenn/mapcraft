@@ -9,6 +9,7 @@ import javax.persistence.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
@@ -35,6 +36,31 @@ public class PlanetFactory {
 	 */
 	public Planet getPlanet(int id) {
 		return em.find(Planet.class, id);
+	}
+	
+	/**
+	 * Gets the list of all planets in the star system. This list includes
+	 * moons as well as actual planets.
+	 * 
+	 * @param system	System to list planets for.
+	 * @return			List of all planets and moons.
+	 */
+	public List<Planet> getPlanets(StarSystem system) {
+		Query query = em.createQuery("from Planet p where p.system = :s");
+		query.setParameter("s", system);
+		
+		List<Planet>	list = query.getResultList();
+		
+		return list;
+	}
+	
+	public List<Planet>	getMoons(Planet planet) {
+		Query query = em.createQuery("from Planet p where p.parent_id = :s");
+		query.setParameter("s", planet.getId());
+		
+		List<Planet>	list = query.getResultList();
+		
+		return list;		
 	}
 	
 	public byte[] getPlanetImage(int id, MapImage.Projection projection) {

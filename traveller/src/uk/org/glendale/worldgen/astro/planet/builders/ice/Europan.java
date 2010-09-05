@@ -34,6 +34,7 @@ public class Europan extends IceWorld {
 		} else {
 			planet.addTradeCode(TradeCode.Va);			
 		}
+		planet.addTradeCode(TradeCode.H3);
 		
 		// Work out ecology, if any.
 		switch (Die.d6(3)) {

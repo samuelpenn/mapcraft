@@ -73,12 +73,12 @@ public class Planet {
 	@Column(name="base")			private String				baseType;
 	
 	
-	@ElementCollection
+	@ElementCollection(fetch=FetchType.EAGER)
 	@JoinTable(name="planet_codes", joinColumns=@JoinColumn(name="planet_id"))
 	@Enumerated(EnumType.STRING) @Column(name="code")
 	private Set<TradeCode>	tradeCodes = EnumSet.noneOf(TradeCode.class);
 
-	@ElementCollection
+	@ElementCollection(fetch=FetchType.EAGER)
 	@JoinTable(name="planet_features", joinColumns=@JoinColumn(name="planet_id"))
 	@Enumerated(EnumType.STRING) @Column(name="code")
 	private Set<PlanetFeature>	featureCodes = EnumSet.noneOf(PlanetFeature.class);
@@ -408,6 +408,15 @@ public class Planet {
 	
 	public Set getTradeCodes() {
 		return tradeCodes;
+	}
+	
+	public List<TradeCode> getTradeCodeList() {
+		List<TradeCode>	 list = new ArrayList<TradeCode>();
+		
+		for (TradeCode c : tradeCodes) {
+			list.add(c);
+		}
+		return list;
 	}
 	
 	public void addTradeCode(TradeCode code) {

@@ -3,6 +3,7 @@ package uk.org.glendale.worldgen.astro.planet.builders.barren;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
+import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
@@ -40,6 +41,15 @@ public class Hermian extends BarrenWorld {
 		} else {
 			planet.addTradeCode(TradeCode.Va);			
 		}
+		
+		if (planet.getTemperature().isHotterThan(Temperature.ExtremelyHot)) {
+			// Hostile world.
+			planet.addTradeCode(TradeCode.H4);
+		} else {
+			// Inhospitable.
+			planet.addTradeCode(TradeCode.H3);
+		}
+		
 		generateMap();
 		generateResources();
 		generateDescription();

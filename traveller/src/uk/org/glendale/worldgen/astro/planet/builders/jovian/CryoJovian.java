@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
+import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.JovianWorld;
 import uk.org.glendale.worldgen.astro.planet.builders.Tile;
@@ -33,6 +34,7 @@ public class CryoJovian extends JovianWorld {
 		if (planet.getAxialTilt() == 30) {
 			planet.setAxialTilt(Die.d20(3));
 		}
+		planet.addTradeCode(TradeCode.H5);
 		
 		// Does this world have rings? Most Jovian worlds seem to.
 		switch(Die.d6(3)) {
