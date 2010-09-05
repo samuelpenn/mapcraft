@@ -1,5 +1,7 @@
 package uk.org.glendale.worldgen.civ.commodity;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import uk.org.glendale.rpg.traveller.civilisation.trade.CommodityCode;
@@ -31,6 +33,7 @@ public class CommodityAPI {
 		System.out.println("Base production number: "+producedGoods);
 
 		List<Commodity>	children = factory.getChildren(base);
+		Hashtable<Commodity,TradeGood> goods = new Hashtable<Commodity,TradeGood>();
 		if (base.hasCode(CommodityCode.PR)) {
 			System.out.println("Has PR code ("+children.size()+")");
 			children.add(base);
@@ -48,8 +51,32 @@ public class CommodityAPI {
 				
 				if (producedChild > 0) {
 					System.out.println(child.getName()+": "+producedChild);
+					goods.put(child, new TradeGood(child, producedChild, child.getCost()));
 				}
 			}
+		}
+		if (base.hasCode(CommodityCode.VR)) {
+			for (Commodity child : children) {
+				double	modifier = 0.0;
+				int		level = 0;
+				if (child.hasCode(CommodityCode.V0)) {
+					level = 0;
+				} else if (child.hasCode(CommodityCode.V1) && density >= 20) {
+					level = 20;
+				} else if (child.hasCode(CommodityCode.V2) && density >= 40) {
+					level = 40;
+				} else if (child.hasCode(CommodityCode.V3) && density >= 60) {
+					level = 60;
+				} else if (child.hasCode(CommodityCode.V4) && density >= 80) {
+					level = 80;
+				} else {
+					// Not a variable resource child, so ignored.
+					continue;
+				}
+			}
+		}
+		if (goods.size() == 0) {
+			goods.put(base, new TradeGood(base, producedGoods, base.getCost()));
 		}
 	}
 	
