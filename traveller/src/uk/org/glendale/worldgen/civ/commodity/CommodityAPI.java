@@ -21,7 +21,7 @@ public class CommodityAPI {
 		factory = new CommodityFactory();
 	}
 	
-	public void produceFromResource(Planet planet, Resource resource) {
+	public List<TradeGood> produceFromResource(Planet planet, Resource resource) {
 		Commodity	base = resource.getCommodity();
 		int			density = resource.getDensity();
 		
@@ -61,23 +61,48 @@ public class CommodityAPI {
 				int		level = 0;
 				if (child.hasCode(CommodityCode.V0)) {
 					level = 0;
-				} else if (child.hasCode(CommodityCode.V1) && density >= 20) {
+				} else if (child.hasCode(CommodityCode.V1) && density >= 15) {
 					level = 20;
-				} else if (child.hasCode(CommodityCode.V2) && density >= 40) {
+				} else if (child.hasCode(CommodityCode.V2) && density >= 35) {
 					level = 40;
-				} else if (child.hasCode(CommodityCode.V3) && density >= 60) {
+				} else if (child.hasCode(CommodityCode.V3) && density >= 55) {
 					level = 60;
-				} else if (child.hasCode(CommodityCode.V4) && density >= 80) {
+				} else if (child.hasCode(CommodityCode.V4) && density >= 75) {
 					level = 80;
 				} else {
 					// Not a variable resource child, so ignored.
 					continue;
 				}
+				long	producedChild = 0;
+				if (goods.get(child) != null) {
+					producedChild = goods.get(child).getQuantity();
+				} else {
+					producedChild = child.getProduction(effectivePopulation);
+				}
+				level = density - level;
+				if (level < 0) {
+					producedChild /= Math.pow(10, Math.abs(level));
+				} else if (level < 2) {
+					producedChild /= 3;
+				} else if (level < 5) {
+					producedChild /= 2;
+				} else if (child.hasCode(CommodityCode.VL) && level > 25) {
+					level -= 20;
+					producedChild /= Math.pow(10, level/10.0);
+				}
+				goods.put(child, new TradeGood(child, producedChild, child.getCost()));
 			}
 		}
 		if (goods.size() == 0) {
 			goods.put(base, new TradeGood(base, producedGoods, base.getCost()));
 		}
+		
+		List<TradeGood> list = new ArrayList<TradeGood>();
+		for (TradeGood tg: goods.values()) {
+			list.add(tg);
+		}
+		
+		return list;
 	}
 	
 	public static void main(String[] args) {
@@ -94,7 +119,11 @@ public class CommodityAPI {
 		for (Resource r : list) {
 			//System.out.println(r.getCommodity().getName());
 			if (r.getCommodity().getName().equals("Mammals")) {
-				api.produceFromResource(planet, r);
+				List<TradeGood> goods = api.produceFromResource(planet, r);
+				
+				for (TradeGood tg : goods) {
+					System.out.println(" --> "+tg.getCommodity().getName()+": "+tg.getQuantity());
+				}
 			}
 		}
 	}
