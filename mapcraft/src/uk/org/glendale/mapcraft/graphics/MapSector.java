@@ -60,27 +60,31 @@ public class MapSector {
 
 	public void drawMap(int orgX, int orgY, int width, int height) throws IOException {
 		image = new SimpleImage(width*49+25, height*54+54, "#FFFFFF");
-		
+
 		// Always start on an even column.
 		orgX -= orgX%2;
 		
-		for (int y=orgY; y < orgY+height; y++) {
-			for (int x=orgX; x < orgX+width; x+=2) {
-				Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
+		if (orgX < 0) {
+			orgX = 0;
+		}
+		if (orgY < 0) {
+			orgY = 0;
+		}
+		System.out.println(bleeding);
+		
+		for (int y=orgY-(bleeding?1:0); y < orgY+height+(bleeding?1:0); y++) {
+			for (int x=orgX-(bleeding?2:0); x < orgX+width+(bleeding?2:0); x+=2) {
 				try {
+					Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
 					image.paint(i, (x-orgX)*49, (y-orgY)*54+(x%2)*27, 65, 65);
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (Throwable e) {
 				}
 			}
-			for (int x=orgX+1; x < orgX+width; x+=2) {
-				Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
+			for (int x=orgX+1-(bleeding?2:0); x < orgX+width+(bleeding?2:0); x+=2) {
 				try {
+					Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
 					image.paint(i, (x-orgX)*49, (y-orgY)*54+(x%2)*27, 65, 65);
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (Throwable e) {
 				}
 			}
 		}

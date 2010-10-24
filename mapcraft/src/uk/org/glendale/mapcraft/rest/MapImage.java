@@ -15,19 +15,19 @@ package uk.org.glendale.mapcraft.rest;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.sql.*;
-import java.util.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 
 import uk.org.glendale.mapcraft.graphics.MapSector;
+import uk.org.glendale.mapcraft.map.Map;
 import uk.org.glendale.mapcraft.server.AppManager;
 import uk.org.glendale.mapcraft.server.MapInfo;
 import uk.org.glendale.mapcraft.server.database.MapData;
 import uk.org.glendale.mapcraft.server.database.MapManager;
 
 import javax.ws.rs.*;
-import javax.ws.rs.Path;
+import javax.ws.rs.core.MediaType;
 
 /**
  * 
@@ -40,72 +40,63 @@ import javax.ws.rs.Path;
 @Path("/map/{mapname}")
 public class MapImage {
 	
-	private int getInteger(String param) {
-		int		value = 0;
-		if (param != null) {
-			try {
-				value = Integer.parseInt(param);
-			} catch (NumberFormatException e) {
-				
-			}
-		}
-		return value;
-	}
 	
+	/**
+	 * Gets an image for the given part of the specified map. The map coordinates
+	 * are from the top left of the map. The origin of the entire map is (0, 0).
+	 * If bleeding is specified, then the map is drawn right to the edge of the
+	 * drawable area, including tiles outside the normal bounds. This allows
+	 * smaller maps to be tiled together perfectly.
+	 * 
+	 * Once drawn, a map is cached on disc.
+	 * 
+	 * @param mapName		Map to retrieve image for.
+	 * @param x				X origin coordinate for the map (left).
+	 * @param y				Y original coordinate for the map (top).
+	 * @param width			Width of the map to draw.
+	 * @param height		Height of the map to draw.
+	 * @param scale			Scale to use for each tile (in pixels).
+	 * @param bleed			If true, use bleeding.
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	@GET
-	@Produces("/image/jpeg")
-	public void getImage(@PathParam("mapname") String mapName) {
+	@Produces("image/jpeg")
+	public File getImage(@PathParam("mapname") String mapName,
+						@QueryParam("x") int x, @QueryParam("y") int y,
+						@QueryParam("w") @DefaultValue("32") int width, 
+						@QueryParam("h") @DefaultValue("40") int height,
+						@QueryParam("s") @DefaultValue("8") int scale,
+						@QueryParam("b") @DefaultValue("false") boolean bleed) throws SQLException, IOException {
 		
-	}
-	
-	
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-    	String	urlPath = request.getPathInfo();
-    	String	paramMap = null;
-    	String  paramArea = null;
-    	
-    	if (urlPath == null || urlPath.length() == 0) {
-    		response.sendError(400, "Need to specify a map");
-    	}
-    	
-    	String[]	paths = urlPath.split("/+");
-    	if (paths.length > 1) {
-    		// Name of the map to retrieve.
-    		paramMap = paths[1];
-    	}
-    	if (paths.length > 2) {
-    		// Name of the area to draw.
-    		paramArea = paths[2];
-    	}
-    	int		x = getInteger(request.getParameter("x"));
-    	int		y = getInteger(request.getParameter("y"));
-    	int		width = getInteger(request.getParameter("w"));
-    	int		height = getInteger(request.getParameter("h"));
-    	int		scale = getInteger(request.getParameter("s"));
-    	
-		AppManager		app = AppManager.getInstance();
+		MapManager		manager = new MapManager(AppManager.getInstance().getDatabaseConnection());
 		
-		System.out.println(paramMap);
+		MapInfo			info = manager.getMap(mapName);
+		MapData			data = new MapData(info, AppManager.getInstance().getDatabaseConnection());
+		Map				map = new Map(info, data);
 		
-		try {
-			MapManager		manager = new MapManager(app.getDatabaseConnection());
-			
-			MapInfo			info = manager.getMap("test");
-			System.out.println(info.getTitle());
-			MapData			data = new MapData(info, app.getDatabaseConnection());
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if (x < 0 || y < 0 || width < 0 || height < 0) {
+			throw new IllegalArgumentException("Cannot specify negative coordinates");
 		}
-    }
-    
-    /**
-     * Process requests from a client.
-     */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        
-    }
-	
+		
+		if (x > info.getWidth()) {
+			throw new IllegalArgumentException("X origin exceeds map width of "+info.getWidth());
+		}
+		if (y > info.getHeight()) {
+			throw new IllegalArgumentException("Y origin exceeds map height of "+info.getHeight());
+		}
+		
+		String		root = AppManager.getInstance().getRootPath();
+		String		filename = String.format("%s-%d-%d-%d-%d-%d%s.jpg", mapName, x, y, width, height, scale, bleed?"b":"");
+		File		image = new File(root+"/images/cache/"+filename);
+		
+		if (!image.exists()) {
+			MapSector	imageMap = new MapSector(map, new File(root+"/images/map/style/colour"));
+			imageMap.setBleeding(bleed);
+			imageMap.drawMap(x, y, width, height);
+			imageMap.save(image);
+		}
+		return image;
+	}	
 }

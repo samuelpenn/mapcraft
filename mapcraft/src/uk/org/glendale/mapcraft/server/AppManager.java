@@ -13,12 +13,11 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 import javax.sql.DataSource;
 
 import uk.org.glendale.mapcraft.graphics.MapSector;
 import uk.org.glendale.mapcraft.map.Map;
+import uk.org.glendale.mapcraft.map.Sector;
 import uk.org.glendale.mapcraft.server.database.MapData;
 import uk.org.glendale.mapcraft.server.database.MapManager;
 
@@ -28,6 +27,7 @@ public class AppManager implements ServletContextListener {
 	private DataSource				dataSource = null;
 	private String					databaseClass = null;
 	private Connection				connection = null;
+	private String					root = null;
 	
 	static {
 		ResourceBundle		bundle = ResourceBundle.getBundle("uk.org.glendale.mapcraft.config");
@@ -123,23 +123,33 @@ public class AppManager implements ServletContextListener {
 		//System.out.println(map.getTerrain(10,12));
 		//map.saveAll();
 		MapSector		imageMap = new MapSector(map, new File("/home/sam/src/mapcraft/mapcraft/WebContent/webapp/images/map/style/colour"));
-		imageMap.drawMap(0, 0, 200, 100);
+		imageMap.setBleeding(true);
+		imageMap.drawMap(0, 0, Sector.WIDTH, Sector.HEIGHT);
 		imageMap.save(new File("/home/sam/hexmap.jpg"));
 	}
 	
+	private void setRootPath(String root) {
+		this.root = root;
+	}
+	
+	public String getRootPath() {
+		return root;
+	}
 	
 	private static AppManager	appManager = null;
 	
 	private DataSource	ds = null;
 
 	@Override
-	public void contextDestroyed(ServletContextEvent arg0) {
+	public void contextDestroyed(ServletContextEvent context) {
 		ds = null;
 	}
 
 	@Override
-	public void contextInitialized(ServletContextEvent arg0) {
+	public void contextInitialized(ServletContextEvent context) {
 		System.out.println("Mapcraft: Context initialised");
+		
+		System.out.println(context.getServletContext().getContextPath());
 		
 		try {
 			InitialContext ic = new InitialContext();
@@ -150,6 +160,7 @@ public class AppManager implements ServletContextListener {
 		AppManager.appManager = new AppManager();
 		AppManager.appManager.setDataSource(ds);
 		AppManager.appManager.configureDatabase();
+		AppManager.appManager.setRootPath(context.getServletContext().getRealPath("/"));
 		if (ds == null) {
 			System.out.println("No datasource");
 		} else {

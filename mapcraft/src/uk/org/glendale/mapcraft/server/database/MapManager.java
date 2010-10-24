@@ -48,6 +48,11 @@ public class MapManager {
 		insertMaps = cx.prepareStatement(insertMapsSQL);
 	}
 	
+	/**
+	 * Refresh list of all available maps on this server.
+	 * 
+	 * @throws SQLException
+	 */
 	public void refresh() throws SQLException {
 		selectMaps.clearParameters();
 		ResultSet	rs = selectMaps.executeQuery();
@@ -109,7 +114,6 @@ public class MapManager {
 		insertMaps.setBoolean(5, world);
 		
 		insertMaps.executeUpdate();
-		refresh();
 		createTables(name);
 	}
 	
@@ -127,12 +131,18 @@ public class MapManager {
 		addTerrain(prefix, "temperate.heath", "Heathland", "heath");
 		addTerrain(prefix, "temperate.crops", "Farmland", "cropland");
 		
+		refresh();
 		fillMap(getMap(prefix), 1);
 	}
 	
 	private void addTerrain(String prefix, String name, String title, String image) throws SQLException {
-		Statement		stmt = cx.createStatement();
-		stmt.executeUpdate("INSERT INTO "+prefix+"_terrain (name, image) VALUES('"+name+"', '"+image+"')");
+		PreparedStatement	ps = cx.prepareStatement("INSERT INTO "+prefix+"_terrain (name, image, title) VALUES(?,?,?)");
+		
+		ps.setString(1, name);
+		ps.setString(2, image);
+		ps.setString(3, title);
+		
+		ps.execute();
 	}
 	
 	private void fillMap(MapInfo map, int terrainId) throws SQLException {
@@ -152,11 +162,18 @@ public class MapManager {
 		return maps.get(name);
 	}
 	
+	public void getMap(MapInfo info) {
+		MapInfo	map = maps.get(info.getName());
+		info.setTitle(map.getTitle());
+		info.setHeight(map.getHeight());
+		info.setWidth(map.getWidth());
+	}
+	
 	public static void main(String[] args) throws Exception {
 		AppManager		app = new AppManager();
 		
 		MapManager		manager = new MapManager(app.getDatabaseConnection());
-		manager.createMap("test", "First Test Map", 1000, 1000, false);
-		System.out.println(manager.getMap("test").getTitle());
+		manager.createMap("eorthe", "World of Eorthe", 8000, 4000, true);
+		System.out.println(manager.getMap("eorthe").getTitle());
 	}
 }

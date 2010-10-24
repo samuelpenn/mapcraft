@@ -1,10 +1,12 @@
 package uk.org.glendale.mapcraft.server;
 
+import java.sql.SQLException;
 import java.util.Hashtable;
 
-import javax.faces.bean.ManagedBean;
+import javax.faces.bean.*;
 
 import uk.org.glendale.mapcraft.map.Terrain;
+import uk.org.glendale.mapcraft.server.database.MapManager;
 
 /**
  * Keeps track of metadata about a map.
@@ -12,7 +14,7 @@ import uk.org.glendale.mapcraft.map.Terrain;
  * @author Samuel Penn
  *
  */
-@ManagedBean
+@ManagedBean @RequestScoped
 public class MapInfo {
 	private String	name;
 	private String	title;
@@ -23,8 +25,11 @@ public class MapInfo {
 	
 	private Hashtable<Integer,Terrain>	terrain = new Hashtable<Integer,Terrain>();
 	
-	public MapInfo() {
-		
+	private MapManager	manager = null;
+	
+	
+	public MapInfo() throws SQLException {
+		manager = new MapManager(AppManager.getInstance().getDatabaseConnection());
 	}
 	
 	public MapInfo(String name, String title, int width, int height, boolean world) {
@@ -35,8 +40,13 @@ public class MapInfo {
 	}
 	
 	public void setName(String name) {
-		this.name = name;
-		this.title = "Map of "+name;
+		if (name == null) {
+			this.name = name;
+		} else {
+			this.name = name;
+			this.title = "Map of "+name;			
+		}
+		manager.getMap(this);
 	}
 	
 	/**
@@ -47,6 +57,10 @@ public class MapInfo {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getTitle() {
