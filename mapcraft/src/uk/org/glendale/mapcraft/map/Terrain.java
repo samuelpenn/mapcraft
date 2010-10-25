@@ -1,11 +1,14 @@
 package uk.org.glendale.mapcraft.map;
 
-public class Terrain {
-	private int			id;
-	private String		name;
-	private String		title;
-	private String		image;
-	
+/**
+ * Represents a type of terrain. Terrain is the bottom layer of the hex map,
+ * and denotes the basic land type. This is generally either water (sea or ocean)
+ * or a vegetation type if on land. 
+ * 
+ * @author Samuel Penn
+ *
+ */
+public class Terrain extends Tile {
 	private int			altitude;
 	private int			climate;
 	private int			water;
@@ -13,25 +16,14 @@ public class Terrain {
 	private int			vegetation;
 	
 	public Terrain(int id, String name, String title, String image, int altitude) {
-		this.id = id;
-		this.name = name;
-		this.title = title;
-		this.image = image;
+		super(id, name, title, image);
 		this.altitude = altitude;
 	}
 	
-	public int getId() {
-		return id;
+	public String getPrefix() {
+		return "/terrain/";
 	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public String getImage() {
-		return image;
-	}
-	
+
 	/**
 	 * Gets the typical altitude of this terrain type. Zero is sea
 	 * <ul>

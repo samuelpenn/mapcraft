@@ -45,7 +45,7 @@ public class Import {
 		AppManager		app = new AppManager();
 		MapManager		manager = new MapManager(app.getDatabaseConnection());
 		
-		MapInfo			info = manager.getMap("test");
+		MapInfo			info = manager.getMap("test2");
 		MapData			data = new MapData(info, app.getDatabaseConnection());
 		Map				map = new Map(info, data);
 
@@ -62,6 +62,7 @@ public class Import {
 				Terrain		t = tiles.getTerrain(x, y);
 				String		terrainName = t.getName();
 				int			terrainId = -1;
+				int			featureId = -1;
 				
 				if (mapping.get(terrainName) == null) {
 					System.out.println(terrainName);
@@ -74,30 +75,24 @@ public class Import {
 				
 				Terrain		f = tiles.getFeature(x, y);
 				if (f.getName().equals("lowhills")) {
-					terrainId = info.getTerrain("temperate.moors").getId();					
+					featureId = info.getFeature("hills.low").getId();
 				} else if (f.getName().equals("highhills")) {
-					terrainId = info.getTerrain("temperate.hills").getId();
+					featureId = info.getFeature("hills.high").getId();
 				} else if (f.getName().equals("foothills")) {
-					terrainId = info.getTerrain("temperate.hills").getId();					
+					featureId = info.getFeature("mountains.low").getId();
 				} else if (f.getName().equals("lowmnts")) {
-					if (terrainId == 10) {
-						terrainId = info.getTerrain("alpine.forest").getId();
-					} else {
-						terrainId = info.getTerrain("alpine.montane").getId();
-					}					
+					featureId = info.getFeature("mountains.medium").getId();
 				} else if (f.getName().equals("highmnts")) {
-					if (terrainId == 10) {
-						terrainId = info.getTerrain("alpine.forest").getId();
-					} else {
-						terrainId = info.getTerrain("alpine.montane").getId();
-					}
+					featureId = info.getFeature("mountains.high").getId();
 				} else if (f.getName().equals("marsh")) {
-					
+					featureId = info.getFeature("wetlands").getId();
 				} else if (f.getName().equals("ice")) {
-					terrainId = info.getTerrain("arctic.snow").getId();
+					featureId = info.getFeature("ice").getId();
 				}
 				
+				
 				map.setTerrain(x, y, terrainId);
+				map.setFeature(x, y, featureId);
 			}
 		}
 		map.saveAll();

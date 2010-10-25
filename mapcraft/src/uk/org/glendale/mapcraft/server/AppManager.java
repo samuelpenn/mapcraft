@@ -111,7 +111,7 @@ public class AppManager implements ServletContextListener {
 		
 		MapManager		manager = new MapManager(app.getDatabaseConnection());
 		
-		MapInfo			info = manager.getMap("test");
+		MapInfo			info = manager.getMap("test2");
 		MapData			data = new MapData(info, app.getDatabaseConnection());
 		Map				map = new Map(info, data);
 		

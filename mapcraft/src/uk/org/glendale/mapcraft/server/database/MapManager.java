@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import uk.org.glendale.mapcraft.map.Feature;
 import uk.org.glendale.mapcraft.map.Terrain;
 import uk.org.glendale.mapcraft.server.AppManager;
 import uk.org.glendale.mapcraft.server.MapInfo;
@@ -90,6 +91,17 @@ public class MapManager {
 			info.addTerrain(new Terrain(id, name, title, image, 0));
 		}
 		rs.close();
+
+		rs = stmnt.executeQuery("SELECT * from "+info.getName()+"_feature");
+		while (rs.next()) {
+			int		id = rs.getInt("id");
+			String	name = rs.getString("name");
+			String	title = rs.getString("title");
+			String	image = rs.getString("image");
+			
+			info.addFeature(new Feature(id, name, title, image));
+		}
+		rs.close();
 	}
 	
 	/**
@@ -121,7 +133,16 @@ public class MapManager {
 		Statement		stmnt = cx.createStatement();
 		
 		stmnt.executeUpdate("CREATE TABLE "+prefix+"_terrain (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, PRIMARY KEY(id))");
-		stmnt.executeUpdate("CREATE TABLE "+prefix+"_map (x INT NOT NULL, y INT NOT NULL, terrain_id INT NOT NULL, PRIMARY KEY(x, y))");
+		stmnt.executeUpdate("CREATE TABLE "+prefix+"_feature (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, PRIMARY KEY(id))");
+		stmnt.executeUpdate("CREATE TABLE "+prefix+"_map (x INT NOT NULL, y INT NOT NULL, terrain_id INT NOT NULL, feature_id INT DEFAULT 0, PRIMARY KEY(x, y))");
+		
+		addFeature(prefix, "hills.low", "Low hills", "lowhills");
+		addFeature(prefix, "hills.high", "High hills", "highhills");
+		addFeature(prefix, "mountains.low", "Low mountains", "lowmnts");
+		addFeature(prefix, "mountains.medium", "Medium mountains", "medmnts");
+		addFeature(prefix, "mountains.high", "High mountains", "highmnts");
+		addFeature(prefix, "wetlands", "Wetlands", "wetlands");
+		addFeature(prefix, "ice", "Ice", "ice");
 		
 		addTerrain(prefix, "water.sea", "Sea", "sea");
 		addTerrain(prefix, "temperate.grassland", "Grassland", "grass");
@@ -132,9 +153,18 @@ public class MapManager {
 		addTerrain(prefix, "temperate.crops", "Farmland", "cropland");
 		
 		refresh();
-		fillMap(getMap(prefix), 1);
+		fillMap(getMap(prefix), 1, 0);
 	}
-	
+
+	/**
+	 * Add a terrain type into the map database.
+	 * 
+	 * @param prefix
+	 * @param name
+	 * @param title
+	 * @param image
+	 * @throws SQLException
+	 */
 	private void addTerrain(String prefix, String name, String title, String image) throws SQLException {
 		PreparedStatement	ps = cx.prepareStatement("INSERT INTO "+prefix+"_terrain (name, image, title) VALUES(?,?,?)");
 		
@@ -145,11 +175,21 @@ public class MapManager {
 		ps.execute();
 	}
 	
-	private void fillMap(MapInfo map, int terrainId) throws SQLException {
+	private void addFeature(String prefix, String name, String title, String image) throws SQLException {
+		PreparedStatement	ps = cx.prepareStatement("INSERT INTO "+prefix+"_feature (name, image, title) VALUES(?,?,?)");
+		
+		ps.setString(1, name);
+		ps.setString(2, image);
+		ps.setString(3, title);
+		
+		ps.execute();		
+	}
+	
+	private void fillMap(MapInfo map, int terrainId, int featureId) throws SQLException {
 		MapData		data = new MapData(map, cx);
 		for (int y=0; y < map.getHeight(); y+=40) {
 			for (int x=0; x < map.getWidth(); x+=32) {
-				data.setTerrain(x, y, terrainId);
+				data.setTile(x, y, terrainId, featureId);
 			}
 		}
 	}
@@ -173,7 +213,9 @@ public class MapManager {
 		AppManager		app = new AppManager();
 		
 		MapManager		manager = new MapManager(app.getDatabaseConnection());
-		manager.createMap("eorthe", "World of Eorthe", 8000, 4000, true);
-		System.out.println(manager.getMap("eorthe").getTitle());
+		//manager.createMap("eorthe", "World of Eorthe", 8000, 4000, true);
+		//System.out.println(manager.getMap("eorthe").getTitle());
+		manager.createMap("test2", "Two layer test", 1000, 1000, true);
+		System.out.println(manager.getMap("test2").getTitle());
 	}
 }

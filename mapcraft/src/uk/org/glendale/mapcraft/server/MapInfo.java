@@ -5,6 +5,7 @@ import java.util.Hashtable;
 
 import javax.faces.bean.*;
 
+import uk.org.glendale.mapcraft.map.Feature;
 import uk.org.glendale.mapcraft.map.Terrain;
 import uk.org.glendale.mapcraft.server.database.MapManager;
 
@@ -24,6 +25,7 @@ public class MapInfo {
 	private boolean	world;
 	
 	private Hashtable<Integer,Terrain>	terrain = new Hashtable<Integer,Terrain>();
+	private Hashtable<Integer,Feature>	feature = new Hashtable<Integer,Feature>();
 	
 	private MapManager	manager = null;
 	
@@ -116,6 +118,23 @@ public class MapInfo {
 		for (Terrain t : terrain.values()) {
 			if (t.getName().equals(name)) {
 				return t;
+			}
+		}
+		return null;
+	}
+	
+	public void addFeature(Feature f) {
+		feature.put(f.getId(), f);
+	}
+	
+	public Feature getFeature(int id) {
+		return feature.get(id);
+	}
+
+	public Feature getFeature(String name) {
+		for (Feature f : feature.values()) {
+			if (f.getName().equals(name)) {
+				return f;
 			}
 		}
 		return null;

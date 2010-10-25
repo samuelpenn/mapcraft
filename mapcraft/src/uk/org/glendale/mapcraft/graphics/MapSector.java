@@ -9,6 +9,7 @@ import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.mapcraft.map.Map;
 import uk.org.glendale.mapcraft.map.Sector;
 import uk.org.glendale.mapcraft.map.Terrain;
+import uk.org.glendale.mapcraft.map.Tile;
 
 
 /**
@@ -47,8 +48,8 @@ public class MapSector {
 		image.save(file);
 	}
 	
-	private Image getIcon(Terrain terrain) {
-		File			file = new File(imageFolder.getAbsolutePath()+"/"+terrain.getImage()+".png");
+	private Image getIcon(Tile terrain) {
+		File			file = new File(imageFolder.getAbsolutePath()+terrain.getPrefix()+terrain.getImage()+".png");
 		SimpleImage		si = new SimpleImage(file);
 		
 		return si.getImage();
@@ -77,6 +78,11 @@ public class MapSector {
 				try {
 					Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
 					image.paint(i, (x-orgX)*49, (y-orgY)*54+(x%2)*27, 65, 65);
+					
+					if (map.getFeature(x, y) > 0) {
+						i = getIcon(map.getInfo().getFeature(map.getFeature(x, y)));
+						image.paint(i, (x-orgX)*49, (y-orgY)*54+(x%2)*27, 65, 65);
+					}
 				} catch (Throwable e) {
 				}
 			}
@@ -84,6 +90,11 @@ public class MapSector {
 				try {
 					Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
 					image.paint(i, (x-orgX)*49, (y-orgY)*54+(x%2)*27, 65, 65);
+
+					if (map.getFeature(x, y) > 0) {
+						i = getIcon(map.getInfo().getFeature(map.getFeature(x, y)));
+						image.paint(i, (x-orgX)*49, (y-orgY)*54+(x%2)*27, 65, 65);
+					}
 				} catch (Throwable e) {
 				}
 			}

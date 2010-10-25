@@ -78,4 +78,14 @@ public class Map {
 		s.setTerrain(x, y, terrainId);
 	}
 	
+	public int getFeature(int x, int y) {
+		Sector	s = getSector(x, y);
+		return s.getFeature(x, y);		
+	}
+	
+	public void setFeature(int x, int y, int featureId) {
+		Sector s = getSector(x, y);
+		s.setFeature(x, y, featureId);
+	}
+	
 }

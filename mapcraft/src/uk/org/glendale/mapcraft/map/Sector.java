@@ -1,5 +1,12 @@
 package uk.org.glendale.mapcraft.map;
 
+/**
+ * Represents an area of the map 32x40 tiles in size.
+ * Top left coordinate is 0,0, bottom right is 31,39.
+ * 
+ * @author Samuel Penn
+ *
+ */
 public class Sector {
 	public static final int WIDTH = 32;
 	public static final int HEIGHT = 40;
@@ -12,6 +19,7 @@ public class Sector {
 	// Array of terrain data, [X][Y].
 	private boolean[][]	changed;
 	private int[][]		terrain;
+	private int[][]		feature;
 	
 	public Sector(int originX, int originY) {
 		this.originX = originX;
@@ -19,10 +27,12 @@ public class Sector {
 		
 		changed = new boolean[WIDTH][HEIGHT];
 		terrain = new int[WIDTH][HEIGHT];
+		feature = new int[WIDTH][HEIGHT];
 		// Mark terrain as unset.
 		for (int x=0; x < WIDTH; x++) {
 			for (int y=0; y < HEIGHT; y++) {
 				terrain[x][y] = -1;
+				feature[x][y] = -1;
 				changed[x][y] = false;
 			}
 		}
@@ -56,8 +66,12 @@ public class Sector {
 	 * 
 	 * @return		Array of terrain data.
 	 */
-	public int[][]	getTerrainData() {
+	public int[][] getTerrainData() {
 		return terrain;
+	}
+	
+	public int[][] getFeatureData() {
+		return feature;
 	}
 	
 	/**
@@ -66,10 +80,12 @@ public class Sector {
 	 * that doing this clears the isDirty flag.
 	 * 
 	 * @param terrain	Array of terrain data.
+	 * @param feature	Array of feature data.
 	 */
-	public void setTerrainData(int[][] terrain) {
+	public void setMapData(int[][] terrain, int[][] feature) {
 		this.lastUsed = System.currentTimeMillis();
 		this.terrain = terrain;
+		this.feature = feature;
 		this.dirty = false;
 	}
 	
@@ -95,11 +111,28 @@ public class Sector {
 		return terrain[0][0];
 	}
 	
+	public int getFeature(int x, int y) {
+		this.lastUsed = System.currentTimeMillis();
+		x %= WIDTH; y %= HEIGHT;
+		int		t = feature[x][y];
+		if (t > -1) {
+			return t;
+		}
+		// Look for sub-sector value.
+		x -= x%8; y-= y%10;
+		if (feature[x][y] > -1) return feature[x][y];
+		// Return sector value.
+		return feature[0][0];
+	}
+	
 	public void setTerrain(int x, int y, int terrainId) {
 		this.lastUsed = System.currentTimeMillis();
 		x %= WIDTH; y %= HEIGHT;
 		int		old = terrain[x][y];
 		terrain[x][y] = terrainId;
+		if (feature[x][y] == -1) {
+			feature[x][y] = 0;
+		}
 		changed[x][y] = true;
 		dirty = true;
 		
@@ -110,6 +143,7 @@ public class Sector {
 				for (int yy=0; yy < 40; yy+=10) {
 					if (terrain[xx][yy] == -1) {
 						terrain[xx][yy] = old;
+						feature[xx][yy] = feature[x][y];
 						changed[xx][yy] = true;
 					}
 				}
@@ -119,6 +153,38 @@ public class Sector {
 				for (int yy=y; yy < y+10; yy++) {
 					if (terrain[xx][yy] == -1) {
 						terrain[xx][yy] = old;
+						feature[xx][yy] = feature[x][y];
+						changed[xx][yy] = true;
+					}
+				}
+			}
+		}
+	}
+
+	public void setFeature(int x, int y, int featureId) {
+		this.lastUsed = System.currentTimeMillis();
+		x %= WIDTH; y %= HEIGHT;
+		int		old = feature[x][y];
+		feature[x][y] = featureId;
+		changed[x][y] = true;
+		dirty = true;
+		
+		if (x==0 && y==0) {
+			// Need to modify any sub-sectors to inherit the old
+			// value if they are still inheriting this value.
+			for (int xx=0; xx < 32; xx+=8) {
+				for (int yy=0; yy < 40; yy+=10) {
+					if (feature[xx][yy] == -1) {
+						feature[xx][yy] = old;
+						changed[xx][yy] = true;
+					}
+				}
+			}
+		} else if (x%8 == 0 && y%10 ==0) {
+			for (int xx=x; xx < x+8; xx++) {
+				for (int yy=y; yy < y+10; yy++) {
+					if (feature[xx][yy] == -1) {
+						feature[xx][yy] = old;
 						changed[xx][yy] = true;
 					}
 				}
