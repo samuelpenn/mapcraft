@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import uk.org.glendale.mapcraft.map.Sector;
-import uk.org.glendale.mapcraft.server.MapInfo;
 
 /**
  * Implementation of the persisted map data. Each map consists of tiles,
@@ -31,14 +30,12 @@ import uk.org.glendale.mapcraft.server.MapInfo;
  * @author Samuel Penn
  */
 public class MapData {
-	private MapInfo			info;
 	private Connection		cx;
 	private String			prefix;	
 	
-	public MapData(MapInfo info, Connection cx) throws SQLException {
-		this.info = info;
+	public MapData(String prefix, Connection cx) throws SQLException {
 		this.cx = cx;
-		this.prefix = info.getName();
+		this.prefix = prefix;
 		
 		prepareStatements();
 	}
@@ -49,12 +46,12 @@ public class MapData {
 	
 	private void prepareStatements() throws SQLException {
 		deleteTerrain = cx.prepareStatement("DELETE FROM "+prefix+"_map WHERE x=? AND y=?");
-		insertTerrain = cx.prepareStatement("INSERT INTO "+prefix+"_map VALUES(?, ?, ?, ?)");
+		insertTerrain = cx.prepareStatement("INSERT INTO "+prefix+"_map VALUES(?, ?, ?, ?, ?)");
 		
-		selectSector = cx.prepareStatement("SELECT x, y, terrain_id, feature_id FROM "+prefix+"_map WHERE x >= ? AND x < ? AND y >= ? AND y < ?");
+		selectSector = cx.prepareStatement("SELECT x, y, terrain_id, feature_id, area_id FROM "+prefix+"_map WHERE x >= ? AND x < ? AND y >= ? AND y < ?");
 	}
 	
-	public void setTile(int x, int y, int terrainId, int featureId) throws SQLException {
+	public void setTile(int x, int y, int terrainId, int featureId, int areaId) throws SQLException {
 		deleteTerrain.clearParameters();
 		deleteTerrain.setInt(1, x);
 		deleteTerrain.setInt(2, y);
@@ -65,6 +62,7 @@ public class MapData {
 		insertTerrain.setInt(2, y);
 		insertTerrain.setInt(3, terrainId);
 		insertTerrain.setInt(4, featureId);
+		insertTerrain.setInt(5, areaId);
 		insertTerrain.executeUpdate();
 	}
 	
@@ -89,13 +87,15 @@ public class MapData {
 
 		int[][]		terrainData = sector.getTerrainData();
 		int[][]		featureData = sector.getFeatureData();
+		int[][]		areaData = sector.getAreaData();
 		while (rs.next()) {
 			int		x = rs.getInt(1);
 			int		y = rs.getInt(2);
 			terrainData[x%Sector.WIDTH][y%Sector.HEIGHT] = rs.getInt(3);
 			featureData[x%Sector.WIDTH][y%Sector.HEIGHT] = rs.getInt(4);
+			areaData[x%Sector.WIDTH][y%Sector.HEIGHT] = rs.getInt(5);
 		}
-		sector.setMapData(terrainData, featureData);
+		sector.setMapData(terrainData, featureData, areaData);
 		
 		return sector;
 	}
@@ -111,7 +111,7 @@ public class MapData {
 		for (int x=0; x < Sector.WIDTH; x++) {
 			for (int y=0; y < Sector.HEIGHT; y++) {
 				if (sector.isDirty(x, y)) {
-					setTile(x+ox, y+oy, sector.getTerrain(x, y), sector.getFeature(x, y));
+					setTile(x+ox, y+oy, sector.getTerrain(x, y), sector.getFeature(x, y), sector.getArea(x, y));
 				}
 			}
 		}

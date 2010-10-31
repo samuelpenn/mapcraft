@@ -1,11 +1,17 @@
 package uk.org.glendale.mapcraft.map;
 
 /**
- * Represents an area of the map 32x40 tiles in size.
- * Top left coordinate is 0,0, bottom right is 31,39.
+ * Represents an area of the map 32x40 tiles in size. Top left coordinate
+ * is 0,0, bottom right is 31,39.
+ * 
+ * Because Sectors are always part of a larger map, coordinates are
+ * accepted as either the map coordinate or the sector coordinate,
+ * i.e. all coordinates have x%32 and y%40 applied to them before use.
+ * 
+ * A Sector has no concept of persistence, but methods to set/read all
+ * the data in a single block are provided for the database layer to use.
  * 
  * @author Samuel Penn
- *
  */
 public class Sector {
 	public static final int WIDTH = 32;
@@ -20,7 +26,14 @@ public class Sector {
 	private boolean[][]	changed;
 	private int[][]		terrain;
 	private int[][]		feature;
+	private int[][]		area;
 	
+	/**
+	 * Create a new blank sector with the given origin.
+	 * 
+	 * @param originX
+	 * @param originY
+	 */
 	public Sector(int originX, int originY) {
 		this.originX = originX;
 		this.originY = originY;
@@ -28,11 +41,13 @@ public class Sector {
 		changed = new boolean[WIDTH][HEIGHT];
 		terrain = new int[WIDTH][HEIGHT];
 		feature = new int[WIDTH][HEIGHT];
+		area = new int[WIDTH][HEIGHT];
 		// Mark terrain as unset.
 		for (int x=0; x < WIDTH; x++) {
 			for (int y=0; y < HEIGHT; y++) {
 				terrain[x][y] = -1;
 				feature[x][y] = -1;
+				area[x][y] = -1;
 				changed[x][y] = false;
 			}
 		}
@@ -55,6 +70,14 @@ public class Sector {
 		return dirty;
 	}
 	
+	/**
+	 * Has a given tile been changed since it was last read from
+	 * the database?
+	 * 
+	 * @param x		X coordinate to check.
+	 * @param y		Y coordinate to check.
+	 * @return		True iff some aspect of the tile has been changed. 
+	 */
 	public boolean isDirty(int x, int y) {
 		return changed[x][y];
 	}
@@ -74,6 +97,10 @@ public class Sector {
 		return feature;
 	}
 	
+	public int[][] getAreaData() {
+		return area;
+	}
+	
 	/**
 	 * Sets the terrain data to the passed array. Used for purposes
 	 * of reading/writing the whole data set to the database. Note
@@ -82,10 +109,11 @@ public class Sector {
 	 * @param terrain	Array of terrain data.
 	 * @param feature	Array of feature data.
 	 */
-	public void setMapData(int[][] terrain, int[][] feature) {
+	public void setMapData(int[][] terrain, int[][] feature, int[][] area) {
 		this.lastUsed = System.currentTimeMillis();
 		this.terrain = terrain;
 		this.feature = feature;
+		this.area = area;
 		this.dirty = false;
 	}
 	
@@ -124,15 +152,31 @@ public class Sector {
 		// Return sector value.
 		return feature[0][0];
 	}
-	
-	public void setTerrain(int x, int y, int terrainId) {
+
+	public int getArea(int x, int y) {
 		this.lastUsed = System.currentTimeMillis();
 		x %= WIDTH; y %= HEIGHT;
-		int		old = terrain[x][y];
-		terrain[x][y] = terrainId;
-		if (feature[x][y] == -1) {
-			feature[x][y] = 0;
+		int		t = area[x][y];
+		if (t > -1) {
+			return t;
 		}
+		// Look for sub-sector value.
+		x -= x%8; y-= y%10;
+		if (area[x][y] > -1) return feature[x][y];
+		// Return sector value.
+		return area[0][0];
+	}
+	
+	public void setTile(int x, int y, int terrainId, int featureId, int areaId) {
+		this.lastUsed = System.currentTimeMillis();
+		x %= WIDTH; y %= HEIGHT;
+		int		oldTerrain = terrain[x][y];
+		int		oldFeature = feature[x][y];
+		int		oldArea = area[x][y];
+		
+		terrain[x][y] = terrainId;
+		feature[x][y] = featureId;
+		area[x][y] = areaId;
 		changed[x][y] = true;
 		dirty = true;
 		
@@ -142,8 +186,9 @@ public class Sector {
 			for (int xx=0; xx < 32; xx+=8) {
 				for (int yy=0; yy < 40; yy+=10) {
 					if (terrain[xx][yy] == -1) {
-						terrain[xx][yy] = old;
-						feature[xx][yy] = feature[x][y];
+						terrain[xx][yy] = oldTerrain;
+						feature[xx][yy] = oldFeature;
+						area[xx][yy] = oldArea;
 						changed[xx][yy] = true;
 					}
 				}
@@ -152,43 +197,26 @@ public class Sector {
 			for (int xx=x; xx < x+8; xx++) {
 				for (int yy=y; yy < y+10; yy++) {
 					if (terrain[xx][yy] == -1) {
-						terrain[xx][yy] = old;
-						feature[xx][yy] = feature[x][y];
+						terrain[xx][yy] = oldTerrain;
+						feature[xx][yy] = oldFeature;
+						area[xx][yy] = oldArea;
 						changed[xx][yy] = true;
 					}
 				}
 			}
 		}
+		
+	}
+	
+	public void setTerrain(int x, int y, int terrainId) {
+		setTile(x, y, terrainId, getFeature(x, y), getArea(x, y));
 	}
 
 	public void setFeature(int x, int y, int featureId) {
-		this.lastUsed = System.currentTimeMillis();
-		x %= WIDTH; y %= HEIGHT;
-		int		old = feature[x][y];
-		feature[x][y] = featureId;
-		changed[x][y] = true;
-		dirty = true;
-		
-		if (x==0 && y==0) {
-			// Need to modify any sub-sectors to inherit the old
-			// value if they are still inheriting this value.
-			for (int xx=0; xx < 32; xx+=8) {
-				for (int yy=0; yy < 40; yy+=10) {
-					if (feature[xx][yy] == -1) {
-						feature[xx][yy] = old;
-						changed[xx][yy] = true;
-					}
-				}
-			}
-		} else if (x%8 == 0 && y%10 ==0) {
-			for (int xx=x; xx < x+8; xx++) {
-				for (int yy=y; yy < y+10; yy++) {
-					if (feature[xx][yy] == -1) {
-						feature[xx][yy] = old;
-						changed[xx][yy] = true;
-					}
-				}
-			}
-		}
+		setTile(x, y, getTerrain(x, y), featureId, getArea(x, y));
+	}
+	
+	public void setNamedArea(int x, int y, int areaId) {
+		setTile(x, y, getTerrain(x, y), getFeature(x, y), areaId);
 	}
 }

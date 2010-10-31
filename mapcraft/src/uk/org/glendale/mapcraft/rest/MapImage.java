@@ -22,8 +22,8 @@ import javax.servlet.http.*;
 import uk.org.glendale.mapcraft.graphics.MapSector;
 import uk.org.glendale.mapcraft.map.Map;
 import uk.org.glendale.mapcraft.server.AppManager;
-import uk.org.glendale.mapcraft.server.MapInfo;
 import uk.org.glendale.mapcraft.server.database.MapData;
+import uk.org.glendale.mapcraft.server.database.MapInfo;
 import uk.org.glendale.mapcraft.server.database.MapManager;
 
 import javax.ws.rs.*;
@@ -68,13 +68,13 @@ public class MapImage {
 						@QueryParam("w") @DefaultValue("32") int width, 
 						@QueryParam("h") @DefaultValue("40") int height,
 						@QueryParam("s") @DefaultValue("8") int scale,
-						@QueryParam("b") @DefaultValue("false") boolean bleed) throws SQLException, IOException {
+						@QueryParam("b") @DefaultValue("false") boolean bleed,
+						@QueryParam("f") @DefaultValue("false") boolean force) throws SQLException, IOException {
 		
 		MapManager		manager = new MapManager(AppManager.getInstance().getDatabaseConnection());
 		
-		MapInfo			info = manager.getMap(mapName);
-		MapData			data = new MapData(info, AppManager.getInstance().getDatabaseConnection());
-		Map				map = new Map(info, data);
+		Map				map = manager.getMap(mapName);
+		MapInfo			info = map.getInfo();
 		
 		if (x < 0 || y < 0 || width < 0 || height < 0) {
 			throw new IllegalArgumentException("Cannot specify negative coordinates");
@@ -91,7 +91,7 @@ public class MapImage {
 		String		filename = String.format("%s-%d-%d-%d-%d-%d%s.jpg", mapName, x, y, width, height, scale, bleed?"b":"");
 		File		image = new File(root+"/images/cache/"+filename);
 		
-		if (!image.exists()) {
+		if (force || !image.exists()) {
 			MapSector	imageMap = new MapSector(map, new File(root+"/images/map/style/colour"));
 			imageMap.setBleeding(bleed);
 			imageMap.drawMap(x, y, width, height);

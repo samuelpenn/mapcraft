@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.faces.bean.*;
 
+import uk.org.glendale.mapcraft.server.database.MapInfo;
 import uk.org.glendale.mapcraft.server.database.MapManager;
 
 /**

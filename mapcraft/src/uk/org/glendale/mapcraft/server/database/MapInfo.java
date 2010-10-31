@@ -1,13 +1,18 @@
-package uk.org.glendale.mapcraft.server;
+package uk.org.glendale.mapcraft.server.database;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
 
 import javax.faces.bean.*;
 
+import uk.org.glendale.mapcraft.MapEntityException;
+import uk.org.glendale.mapcraft.map.NamedArea;
 import uk.org.glendale.mapcraft.map.Feature;
 import uk.org.glendale.mapcraft.map.Terrain;
-import uk.org.glendale.mapcraft.server.database.MapManager;
+import uk.org.glendale.mapcraft.server.AppManager;
 
 /**
  * Keeps track of metadata about a map.
@@ -17,7 +22,7 @@ import uk.org.glendale.mapcraft.server.database.MapManager;
  */
 @ManagedBean @RequestScoped
 public class MapInfo {
-	private String	name;
+	private String	prefix;
 	private String	title;
 	
 	private int		width;
@@ -26,6 +31,7 @@ public class MapInfo {
 	
 	private Hashtable<Integer,Terrain>	terrain = new Hashtable<Integer,Terrain>();
 	private Hashtable<Integer,Feature>	feature = new Hashtable<Integer,Feature>();
+	private Hashtable<Integer,NamedArea>		area = new Hashtable<Integer,NamedArea>();
 	
 	private MapManager	manager = null;
 	
@@ -34,8 +40,9 @@ public class MapInfo {
 		manager = new MapManager(AppManager.getInstance().getDatabaseConnection());
 	}
 	
-	public MapInfo(String name, String title, int width, int height, boolean world) {
-		this.name = name;
+	public MapInfo(MapManager manager, String name, String title, int width, int height, boolean world) throws SQLException {
+		this.manager = manager;
+		this.prefix = name;
 		this.title = title;
 		this.width = width;
 		this.height = height;
@@ -43,9 +50,9 @@ public class MapInfo {
 	
 	public void setName(String name) {
 		if (name == null) {
-			this.name = name;
+			this.prefix = name;
 		} else {
-			this.name = name;
+			this.prefix = name;
 			this.title = "Map of "+name;			
 		}
 		manager.getMap(this);
@@ -58,7 +65,7 @@ public class MapInfo {
 	 * @return		Name for the map.
 	 */
 	public String getName() {
-		return name;
+		return prefix;
 	}
 	
 	public void setTitle(String title) {
@@ -138,5 +145,76 @@ public class MapInfo {
 			}
 		}
 		return null;
+	}
+	
+	public void addNamedArea(NamedArea a) {
+		area.put(a.getId(), a);
+	}
+	
+	public NamedArea getNamedArea(int id) {
+		return area.get(id);
+	}
+	
+	public NamedArea getNamedArea(String name) {
+		for (NamedArea a : area.values()) {
+			if (a.getName().equals(name)) {
+				return a;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Add a new named area to the map and store it in the database.
+	 * 
+	 * @param name
+	 * @param title
+	 * @param parentId
+	 * @throws SQLException 
+	 * @throws MapEntityException 
+	 */
+	public void addNamedArea(String name, String title, int parentId) throws SQLException, MapEntityException {
+		Connection			cx = manager.getConnection();
+		ResultSet			rs = null;
+		PreparedStatement	select = null;
+		PreparedStatement	insert = null;
+		
+		try {
+			select = cx.prepareStatement("SELECT id FROM "+prefix+"_area WHERE name=?");
+			select.clearParameters();
+			select.setString(1, name);
+			
+			rs = select.executeQuery();
+			if (rs.next()) {
+				throw new MapEntityException("NamedArea", name, "NamedArea already exists");
+			}
+			rs.close();
+			select.close();
+
+			insert = cx.prepareStatement("INSERT INTO "+prefix+"_area (name, title, parent_id) VALUES(?,?,?)", 
+										 PreparedStatement.RETURN_GENERATED_KEYS);
+			insert.clearParameters();
+			insert.setString(1, name);
+			insert.setString(2, title);
+			insert.setInt(3, parentId);
+			insert.executeUpdate();
+			rs = insert.getGeneratedKeys();
+			if (rs.next()) {
+				int	 id = rs.getInt(1);
+				addNamedArea(new NamedArea(id, name, title, parentId));
+			}
+			rs.close();
+			System.out.println(area.size());
+		} finally {
+			if (rs != null && !rs.isClosed()) {
+				rs.close();
+			}
+			if (select != null && !select.isClosed()) {
+				select.close();
+			}
+			if (insert != null && !insert.isClosed()) {
+				insert.close();
+			}
+		}
 	}
 }

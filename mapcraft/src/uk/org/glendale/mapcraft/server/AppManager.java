@@ -19,6 +19,7 @@ import uk.org.glendale.mapcraft.graphics.MapSector;
 import uk.org.glendale.mapcraft.map.Map;
 import uk.org.glendale.mapcraft.map.Sector;
 import uk.org.glendale.mapcraft.server.database.MapData;
+import uk.org.glendale.mapcraft.server.database.MapInfo;
 import uk.org.glendale.mapcraft.server.database.MapManager;
 
 public class AppManager implements ServletContextListener {
@@ -111,9 +112,7 @@ public class AppManager implements ServletContextListener {
 		
 		MapManager		manager = new MapManager(app.getDatabaseConnection());
 		
-		MapInfo			info = manager.getMap("test2");
-		MapData			data = new MapData(info, app.getDatabaseConnection());
-		Map				map = new Map(info, data);
+		Map			map = manager.getMap("test2");
 		
 		//map.setTerrain(10, 10, 2);
 		//map.setTerrain(11, 10, 2);
