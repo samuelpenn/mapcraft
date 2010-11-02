@@ -110,6 +110,7 @@ public class Import {
 				int	areaId = info.getNamedArea(tiles.getArea(x, y).getUri()).getId();
 				for (int xx=0; xx < scale; xx++) {
 					for (int yy=0; yy < scale; yy++) {
+						//map.setTile(x*scale + xx, y*scale + yy, terrainId, featureId, areaId);
 						map.setTerrain(x*scale + xx, y*scale + yy, terrainId);
 						map.setFeature(x*scale + xx, y*scale + yy, featureId);	
 						map.setNamedArea(x*scale + xx, y*scale + yy, areaId);

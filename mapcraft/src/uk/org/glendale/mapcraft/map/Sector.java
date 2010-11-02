@@ -1,5 +1,7 @@
 package uk.org.glendale.mapcraft.map;
 
+import java.util.Hashtable;
+
 /**
  * Represents an area of the map 32x40 tiles in size. Top left coordinate
  * is 0,0, bottom right is 31,39.
@@ -27,6 +29,9 @@ public class Sector {
 	private int[][]		terrain;
 	private int[][]		feature;
 	private int[][]		area;
+	
+	// List of Things in this sector
+	private Hashtable<Integer,Thing>	things = new Hashtable<Integer,Thing>();
 	
 	/**
 	 * Create a new blank sector with the given origin.
@@ -219,4 +224,6 @@ public class Sector {
 	public void setNamedArea(int x, int y, int areaId) {
 		setTile(x, y, getTerrain(x, y), getFeature(x, y), areaId);
 	}
+	
+	
 }

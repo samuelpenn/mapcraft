@@ -97,6 +97,8 @@ public class MapImage {
 			imageMap.drawMap(x, y, width, height);
 			imageMap.save(image);
 		}
+		
+		manager.disconnect();
 		return image;
 	}	
 }
