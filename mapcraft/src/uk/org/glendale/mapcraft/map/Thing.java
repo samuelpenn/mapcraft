@@ -13,50 +13,14 @@ package uk.org.glendale.mapcraft.map;
  * 
  * @author Samuel Penn
  */
-public class Thing {
-	private int		id;
-	private String	name;
-	private String	title;
-	private int		x;
-	private int		y;
-	private int		sx;
-	private int		sy;
+public class Thing extends Tile {
 	
-	public Thing(int id, String name, String title, int x, int y, int sx, int sy) {
-		this.id = id;
-		this.name = name;
-		this.title = title;
-		this.x = x;
-		this.y = y;
-		this.sx = sx;
-		this.sy = sy;
+	public Thing(int id, String name, String title, String image) {
+		super(id, name, title, image);
 	}
-	
-	public int getId() {
-		return id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public String getTitle() {
-		return title;
-	}
-	
-	public int getX() {
-		return x;
-	}
-	
-	public int getY() {
-		return y;
-	}
-	
-	public int getSubX() {
-		return sx;
-	}
-	
-	public int getSubY() {
-		return sy;
+
+	@Override
+	public String getPrefix() {
+		return "/things/";
 	}
 }

@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Hashtable;
 
+import uk.org.glendale.mapcraft.map.NamedPlace;
 import uk.org.glendale.mapcraft.map.Sector;
 
 /**
@@ -43,12 +45,14 @@ public class MapData {
 	private PreparedStatement   deleteTerrain;
 	private PreparedStatement	insertTerrain;
 	private PreparedStatement	selectSector;
+	private PreparedStatement	selectPlaces;
 	
 	private void prepareStatements() throws SQLException {
 		deleteTerrain = cx.prepareStatement("DELETE FROM "+prefix+"_map WHERE x=? AND y=?");
 		insertTerrain = cx.prepareStatement("INSERT INTO "+prefix+"_map VALUES(?, ?, ?, ?, ?)");
 		
 		selectSector = cx.prepareStatement("SELECT x, y, terrain_id, feature_id, area_id FROM "+prefix+"_map WHERE x >= ? AND x < ? AND y >= ? AND y < ?");
+		selectPlaces = cx.prepareStatement("SELECT id, thing_id, name, x, y, sx, sy FROM "+prefix+"_things WHERE x >= ? AND x < ? AND y >= ? AND y < ?");
 	}
 	
 	public void setTile(int x, int y, int terrainId, int featureId, int areaId) throws SQLException {
@@ -95,7 +99,29 @@ public class MapData {
 			featureData[x%Sector.WIDTH][y%Sector.HEIGHT] = rs.getInt(4);
 			areaData[x%Sector.WIDTH][y%Sector.HEIGHT] = rs.getInt(5);
 		}
-		sector.setMapData(terrainData, featureData, areaData);
+		rs.close();
+		
+		Hashtable<Integer,NamedPlace> places = new Hashtable<Integer,NamedPlace>();
+		selectPlaces.clearParameters();
+		selectPlaces.setInt(1, origX);
+		selectPlaces.setInt(2, origX+Sector.WIDTH);
+		selectPlaces.setInt(3, origY);
+		selectPlaces.setInt(4, origY+Sector.HEIGHT);
+		rs = selectPlaces.executeQuery();
+		while (rs.next()) {
+			int		id = rs.getInt(1);
+			int		thingId = rs.getInt(2);
+			String	name = rs.getString(3);
+			int		x = rs.getInt(4);
+			int		y = rs.getInt(5);
+			int		sx = rs.getInt(6);
+			int		sy = rs.getInt(7);
+			places.put(id, new NamedPlace(id, thingId, name, x, y, sx, sy));
+			System.out.println("Adding ["+name+"] to sector");
+		}
+		rs.close();
+		
+		sector.setMapData(terrainData, featureData, areaData, places);
 		
 		return sector;
 	}

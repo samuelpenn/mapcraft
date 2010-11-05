@@ -12,6 +12,7 @@ import uk.org.glendale.mapcraft.map.Map;
 import uk.org.glendale.mapcraft.map.NamedArea;
 import uk.org.glendale.mapcraft.map.Feature;
 import uk.org.glendale.mapcraft.map.Terrain;
+import uk.org.glendale.mapcraft.map.Thing;
 import uk.org.glendale.mapcraft.server.AppManager;
 
 /**
@@ -133,6 +134,18 @@ public class MapManager {
 			info.addNamedArea(new NamedArea(id, name, title, parentId));
 		}
 		rs.close();
+
+		// Read list of things.
+		rs = stmnt.executeQuery("SELECT * from "+info.getName()+"_thing");
+		while (rs.next()) {
+			int		id = rs.getInt("id");
+			String	name = rs.getString("name");
+			String	title = rs.getString("title");
+			String	image = rs.getString("image");
+			
+			info.addThing(new Thing(id, name, title, image));
+		}
+		rs.close();
 	}
 	
 	/**
@@ -175,6 +188,7 @@ public class MapManager {
 		stmnt.executeUpdate("DROP TABLE IF EXISTS "+name+"_terrain");
 		stmnt.executeUpdate("DROP TABLE IF EXISTS "+name+"_feature");
 		stmnt.executeUpdate("DROP TABLE IF EXISTS "+name+"_area");
+		stmnt.executeUpdate("DROP TABLE IF EXISTS "+name+"_thing");
 		stmnt.executeUpdate("DROP TABLE IF EXISTS "+name+"_map");
 		
 		refresh();
@@ -185,7 +199,10 @@ public class MapManager {
 		
 		stmnt.executeUpdate("CREATE TABLE "+prefix+"_terrain (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, PRIMARY KEY(id))");
 		stmnt.executeUpdate("CREATE TABLE "+prefix+"_feature (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, PRIMARY KEY(id))");
+		stmnt.executeUpdate("CREATE TABLE "+prefix+"_thing (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, PRIMARY KEY(id))");
 		stmnt.executeUpdate("CREATE TABLE "+prefix+"_area (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(64) NOT NULL, parent_id INT DEFAULT 0, PRIMARY KEY(id))");
+		
+		stmnt.executeUpdate("CREATE TABLE "+prefix+"_things (id INT NOT NULL AUTO_INCREMENT, thing_id int NOT NULL, name VARCHAR(32) NOT NULL, x INT NOT NULL, y INT NOT NULL, sx INT NOT NULL, sy INT NOT NULL, PRIMARY KEY(id))");
 		stmnt.executeUpdate("CREATE TABLE "+prefix+"_map (x INT NOT NULL, y INT NOT NULL, terrain_id INT NOT NULL, feature_id INT DEFAULT 0, area_id INT DEFAULT 0, PRIMARY KEY(x, y))");
 		
 		addFeature(prefix, "hills.low", "Low hills", "lowhills");
@@ -210,6 +227,17 @@ public class MapManager {
 		addTerrain(prefix, "subtropical.desert", "Desert", "desert");
 		addTerrain(prefix, "boreal.forest", "Boreal forest", "boreal_forest");
 		addTerrain(prefix, "arctic.snow", "Snow", "snow");
+		
+		addThing(prefix, "settlement.village", "Village", "village");
+		addThing(prefix, "settlement.town", "Town", "town");
+		addThing(prefix, "settlement.city", "City", "city");
+		addThing(prefix, "settlement.largecity", "Large city", "large-city");
+		addThing(prefix, "castle.keep", "Keep", "keep");
+		addThing(prefix, "castle.castle", "Castle", "castle");
+		addThing(prefix, "misc.ruins", "Ruins", "ruins");
+		addThing(prefix, "misc.mines", "Mines", "mines");
+		addThing(prefix, "misc.label", "Label", "label");
+		addThing(prefix, "misc.peak", "Peak", "peak");
 		
 		addArea(prefix, "Unnamed", "unnamed", 0);
 		
@@ -252,6 +280,16 @@ public class MapManager {
 		ps.setString(1, name);
 		ps.setString(2, title);
 		ps.setInt(3, parentId);
+		
+		ps.execute();				
+	}
+
+	private void addThing(String prefix, String name, String title, String image) throws SQLException {
+		PreparedStatement	ps = cx.prepareStatement("INSERT INTO "+prefix+"_thing (name, title, image) VALUES(?,?,?)");
+		
+		ps.setString(1, name);
+		ps.setString(2, title);
+		ps.setString(3, image);
 		
 		ps.execute();				
 	}

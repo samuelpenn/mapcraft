@@ -15,9 +15,7 @@ public class Map {
 	private MapInfo		info;
 	private MapData		data;
 	private Hashtable<SectorCoord,Sector>	sectorCache = new Hashtable<SectorCoord,Sector>();
-	
-
-	
+		
 	public Map(MapInfo info, MapData data) {
 		if (info == null || data == null) {
 			throw new IllegalArgumentException("Both map info and data must be non-null");
@@ -122,6 +120,11 @@ public class Map {
 	public void setNamedArea(int x, int y, int areaId) {
 		Sector s = getSector(x, y);
 		s.setNamedArea(x, y, areaId);
+	}
+	
+	public void addNamedPlace(NamedPlace place) {
+		Sector	s = getSector(place.getX(), place.getY());
+		s.addPlace(place);
 	}
 	
 }

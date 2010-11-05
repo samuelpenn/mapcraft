@@ -9,6 +9,7 @@ package uk.org.glendale.mapcraft.server.tools;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 import uk.org.glendale.mapcraft.map.Map;
@@ -16,8 +17,10 @@ import uk.org.glendale.mapcraft.server.AppManager;
 import uk.org.glendale.mapcraft.server.database.MapData;
 import uk.org.glendale.mapcraft.server.database.MapInfo;
 import uk.org.glendale.mapcraft.server.database.MapManager;
+import net.sourceforge.mapcraft.map.TerrainSet;
 import net.sourceforge.mapcraft.map.elements.Area;
 import net.sourceforge.mapcraft.map.elements.Terrain;
+import net.sourceforge.mapcraft.map.elements.Thing;
 import net.sourceforge.mapcraft.map.interfaces.ITileSet;
 
 /**
@@ -64,9 +67,10 @@ public class Import {
 		for (int a=0; a < xmlMap.getAreaSet().size(); a++) {
 			Area area = xmlMap.getAreaSet().getArea(a+1);
 			System.out.println(area.getUri());
-			info.addNamedArea(area.getUri(), area.getName(), 0);
-		}
-		
+			if (info.getNamedArea(area.getUri()) == null) {
+				info.addNamedArea(area.getUri(), area.getName(), 0);
+			}
+		}		
 		
 		if (scale < 5 || scale%5 != 0) {
 			throw new IllegalArgumentException("Imported map has unsupported scale "+scale);
@@ -80,7 +84,7 @@ public class Import {
 				String		terrainName = t.getName();
 				int			terrainId = -1;
 				int			featureId = 0;
-				
+								
 				if (mapping.get(terrainName) == null) {
 					System.out.println(terrainName);
 					continue;
@@ -107,7 +111,11 @@ public class Import {
 					featureId = info.getFeature("ice").getId();
 				}
 				
-				int	areaId = info.getNamedArea(tiles.getArea(x, y).getUri()).getId();
+				Area	area = tiles.getArea(x, y);
+				int		areaId = 0;
+				if (area != null) {
+					areaId = info.getNamedArea(area.getUri()).getId();
+				}
 				for (int xx=0; xx < scale; xx++) {
 					for (int yy=0; yy < scale; yy++) {
 						//map.setTile(x*scale + xx, y*scale + yy, terrainId, featureId, areaId);
@@ -118,6 +126,23 @@ public class Import {
 				}
 			}
 		}
+		for (Thing xmlThing : tiles.getThings()) {
+			String 	name = xmlThing.getName();
+			String 	type = xmlMap.getThingSet().getTerrain(xmlThing.getType()).getName();
+			
+			uk.org.glendale.mapcraft.map.Thing	thing = info.getThing(type);
+			if (thing == null) {
+				System.out.println("Unable to find thing ["+type+"]");
+				break;
+			}
+			
+			// The XMLThing will have an X/Y that is tile coordinate * 100.
+			int		x = xmlThing.getX() * scale;
+			int		y = xmlThing.getY() * scale;
+			
+			info.createNamedPlace(thing, name, x/100, y/100, x%100, y%100);
+		}
+
 		map.saveAll();
 	}
 }

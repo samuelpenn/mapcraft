@@ -141,7 +141,7 @@ public class AppManager implements ServletContextListener {
 		//map.saveAll();
 		MapSector		imageMap = new MapSector(map, new File("/home/sam/src/mapcraft/mapcraft/WebContent/webapp/images/map/style/colour"));
 		imageMap.setBleeding(true);
-		imageMap.drawMap(0, 0, Sector.WIDTH, Sector.HEIGHT);
+		imageMap.drawMap(128, 200, Sector.WIDTH, Sector.HEIGHT);
 		imageMap.save(new File("/home/sam/hexmap.jpg"));
 	}
 	

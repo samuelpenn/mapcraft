@@ -1,6 +1,8 @@
 package uk.org.glendale.mapcraft.map;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Represents an area of the map 32x40 tiles in size. Top left coordinate
@@ -12,6 +14,10 @@ import java.util.Hashtable;
  * 
  * A Sector has no concept of persistence, but methods to set/read all
  * the data in a single block are provided for the database layer to use.
+ * 
+ * Note that a Sector's view on things is very low level. It stores the
+ * ids of terrain and features, but not the actual class types. This is
+ * to keep the in-memory foot print fast and light.
  * 
  * @author Samuel Penn
  */
@@ -31,7 +37,7 @@ public class Sector {
 	private int[][]		area;
 	
 	// List of Things in this sector
-	private Hashtable<Integer,Thing>	things = new Hashtable<Integer,Thing>();
+	private Hashtable<Integer,NamedPlace>	places = new Hashtable<Integer,NamedPlace>();
 	
 	/**
 	 * Create a new blank sector with the given origin.
@@ -106,6 +112,10 @@ public class Sector {
 		return area;
 	}
 	
+	public Hashtable<Integer,NamedPlace> getPlaceData() {
+		return places;
+	}
+	
 	/**
 	 * Sets the terrain data to the passed array. Used for purposes
 	 * of reading/writing the whole data set to the database. Note
@@ -114,11 +124,12 @@ public class Sector {
 	 * @param terrain	Array of terrain data.
 	 * @param feature	Array of feature data.
 	 */
-	public void setMapData(int[][] terrain, int[][] feature, int[][] area) {
+	public void setMapData(int[][] terrain, int[][] feature, int[][] area, Hashtable<Integer,NamedPlace> places) {
 		this.lastUsed = System.currentTimeMillis();
 		this.terrain = terrain;
 		this.feature = feature;
 		this.area = area;
+		this.places = places;
 		this.dirty = false;
 	}
 	
@@ -144,6 +155,13 @@ public class Sector {
 		return terrain[0][0];
 	}
 	
+	/**
+	 * Gets the feature at the given coordinates.
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public int getFeature(int x, int y) {
 		this.lastUsed = System.currentTimeMillis();
 		x %= WIDTH; y %= HEIGHT;
@@ -225,5 +243,42 @@ public class Sector {
 		setTile(x, y, getTerrain(x, y), getFeature(x, y), areaId);
 	}
 	
+	/**
+	 * Add a Thing to the list of things in this sector. A thing is a
+	 * place such as a town or castle.
+	 * 
+	 * @param thing		Thing to be added.
+	 */
+	public void addPlace(NamedPlace place) {
+		places.put(place.getId(), place);
+	}
 	
+	/**
+	 * Gets the Thing identified by its unique id.
+	 * 
+	 * @param id		Id of Thing to retrieve.
+	 * @return			Thing if found, null otherwise.
+	 */
+	public NamedPlace getPlace(int id) {
+		return places.get(id);
+	}
+	
+	/**
+	 * Gets a list of all the Things present on the given tile.
+	 * 
+	 * @param x			X coordinate of tile.
+	 * @param y			Y coordiante of tile.
+	 * @return			List of things, may be empty.
+	 */
+	public List<NamedPlace> getPlaces(int x, int y) {
+		List<NamedPlace>	foundPlaces = new ArrayList<NamedPlace>();
+		
+		for (NamedPlace place : places.values()) {
+			if (place.getX()%WIDTH == x%WIDTH && place.getY()%HEIGHT == y%HEIGHT) {
+				foundPlaces.add(place);
+			}
+		}
+		
+		return foundPlaces;
+	}
 }
