@@ -11,13 +11,20 @@ package uk.org.glendale.mapcraft.map;
 public class Terrain extends Tile {
 	private int			altitude;
 	private int			climate;
-	private int			water;
-	private int			forest;
-	private int			vegetation;
+	private String		colour;
 	
 	public Terrain(int id, String name, String title, String image, int altitude) {
 		super(id, name, title, image);
 		this.altitude = altitude;
+	}
+	
+	public Terrain(int id, String name, String title, String image, int water, int woods, int hills, int fertility, String colour) {
+		super(id, name, title, image, water, woods, hills, fertility);
+		this.colour = colour;
+	}
+	
+	public String getColour() {
+		return colour;
 	}
 	
 	public String getPrefix() {

@@ -2,6 +2,8 @@ package uk.org.glendale.mapcraft.map;
 
 import java.sql.SQLException;
 import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import uk.org.glendale.mapcraft.server.database.MapData;
 import uk.org.glendale.mapcraft.server.database.MapInfo;
@@ -15,6 +17,8 @@ public class Map {
 	private MapInfo		info;
 	private MapData		data;
 	private Hashtable<SectorCoord,Sector>	sectorCache = new Hashtable<SectorCoord,Sector>();
+	
+	private static Logger		log = Logger.getLogger("uk.org.glendale.mapcraft.map.Map");
 		
 	public Map(MapInfo info, MapData data) {
 		if (info == null || data == null) {
@@ -30,6 +34,47 @@ public class Map {
 	
 	public MapData getData() {
 		return data;
+	}
+	
+	private void shrinkCache() {
+		Sector		oldestDirty = null;
+		Sector		oldestClean = null;
+		
+		long		autoCleanTime = System.currentTimeMillis() - 60000;
+		
+		if (sectorCache.size() < 128) {
+			// Cache is small, don't bother cleaning it.
+			return;
+		}
+		for (Sector s : sectorCache.values()) {
+			if (s.isDirty()) {
+				if (oldestDirty == null) {
+					oldestDirty = s;
+				} else if (oldestDirty.getLastUsedTime() > s.getLastUsedTime()) {
+					oldestDirty = s;
+				}
+			} else {
+				if (s.getLastUsedTime() < autoCleanTime) {
+					sectorCache.remove(s.getCoord());
+				} else if (oldestClean == null) {
+					oldestClean = s;
+				} else if (oldestClean.getLastUsedTime() > s.getLastUsedTime()){
+					oldestClean = s;
+				}
+			}
+		}
+		if (sectorCache.size() > 128) {
+			if (oldestClean != null) {
+				sectorCache.remove(oldestClean.getCoord());
+			} else if (oldestDirty != null) {
+				try {
+					data.writeSector(oldestDirty);
+					sectorCache.remove(oldestDirty.getCoord());
+				} catch (SQLException e) {
+					log.log(Level.SEVERE, "Unable to write sector", e);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -48,6 +93,8 @@ public class Map {
 		
 		if (s == null) {
 			try {
+				shrinkCache();
+				//log.info("Reading sector ["+c.getX()+","+c.getY()+"] cache size ["+sectorCache.size()+"]");
 				s = data.readSector(c.getX(), c.getY());
 			} catch (SQLException e) {
 				e.printStackTrace();

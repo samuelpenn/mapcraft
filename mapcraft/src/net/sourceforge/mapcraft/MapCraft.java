@@ -424,7 +424,8 @@ public class MapCraft implements ActionListener {
     main(String args[]) {
         MapCraft        map = null;
         Options         options = new Options(args);
-        String          mapfile = null;
+        String          mapfile = "/home/sam/src/forge/mapcraft/mapcraft/maps/island.map";
+
         Properties      properties = new Properties();
         
         if (options.isOption("-help")) {
@@ -436,7 +437,7 @@ public class MapCraft implements ActionListener {
             Map.main(args);
             System.exit(0);
         }
-
+        
         if (options.isOption("-rundir")) {
             properties.setProperty("path.run", options.getString("-rundir"));
             properties.setProperty("path.images",
@@ -445,6 +446,9 @@ public class MapCraft implements ActionListener {
             properties.setProperty("path.run", System.getProperty("user.dir"));
             properties.setProperty("path.images", "");
         }
+
+        properties.setProperty("path.run", "/home/sam/src/mapcraft/mapcraft/application");
+        properties.setProperty("path.images", "/home/sam/src/mapcraft/mapcraft/application/images");
 
         if (options.isOption("-create")) {
             String      name = options.getString("-create");

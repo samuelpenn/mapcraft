@@ -49,12 +49,12 @@ public class Import {
 		AppManager		app = new AppManager();
 		MapManager		manager = new MapManager(app.getDatabaseConnection());
 
-		Map				map = manager.getMap("test2");
+		Map				map = manager.getMap("eorthe");
 		MapInfo			info = map.getInfo();
 
 		// Old style XML map to export from
 		String		xmlPath = "application/maps/island.map";
-		xmlPath = "/home/sam/rpg/habisfern/encyclopedia/src/maps/euressa.map";
+		xmlPath = "/home/sam/rpg/habisfern/encyclopedia/src/maps/eorthe.map";
 		
 		net.sourceforge.mapcraft.map.Map	xmlMap = new net.sourceforge.mapcraft.map.Map(xmlPath);
 		
@@ -79,11 +79,15 @@ public class Import {
 		System.out.println("Scale: "+scale);
 		
 		for (int y=0; y < tiles.getMapHeight(); y++) {
+			if (y%1 == 0) {
+				System.out.print("\nY: "+y+"/"+tiles.getMapHeight());
+			}
 			for (int x=0; x < tiles.getMapWidth(); x++) {
 				Terrain		t = tiles.getTerrain(x, y);
 				String		terrainName = t.getName();
 				int			terrainId = -1;
 				int			featureId = 0;
+				
 								
 				if (mapping.get(terrainName) == null) {
 					System.out.println(terrainName);
@@ -93,6 +97,17 @@ public class Import {
 					continue;
 				}
 				terrainId = info.getTerrain(mapping.get(terrainName)).getId();
+
+				switch (terrainId) {
+				case 0: case 1: case 2:
+					System.out.print(".");
+					break;
+				default:
+					System.out.print("#");
+				}
+				if (terrainId < 3) {
+					continue;
+				}
 				
 				Terrain		f = tiles.getFeature(x, y);
 				if (f.getName().equals("lowhills")) {
@@ -117,7 +132,13 @@ public class Import {
 					areaId = info.getNamedArea(area.getUri()).getId();
 				}
 				for (int xx=0; xx < scale; xx++) {
+					if ((x*scale + xx) > map.getInfo().getWidth()) {
+						break;
+					}
 					for (int yy=0; yy < scale; yy++) {
+						if ((y*scale + yy) > map.getInfo().getHeight()) {
+							break;
+						}
 						//map.setTile(x*scale + xx, y*scale + yy, terrainId, featureId, areaId);
 						map.setTerrain(x*scale + xx, y*scale + yy, terrainId);
 						map.setFeature(x*scale + xx, y*scale + yy, featureId);	
@@ -126,7 +147,11 @@ public class Import {
 				}
 			}
 		}
+		System.out.println("Done tiles");
 		for (Thing xmlThing : tiles.getThings()) {
+			if (xmlThing == null) {
+				continue;
+			}
 			String 	name = xmlThing.getName();
 			String 	type = xmlMap.getThingSet().getTerrain(xmlThing.getType()).getName();
 			
@@ -142,7 +167,8 @@ public class Import {
 			
 			info.createNamedPlace(thing, name, x/100, y/100, x%100, y%100);
 		}
-
+		System.out.println("Saving");
 		map.saveAll();
+		System.out.println("Done!");
 	}
 }

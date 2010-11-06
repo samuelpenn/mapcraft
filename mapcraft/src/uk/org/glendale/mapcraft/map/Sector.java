@@ -64,6 +64,10 @@ public class Sector {
 		}
 	}
 	
+	public SectorCoord getCoord() {
+		return new SectorCoord(originX, originY);
+	}
+	
 	public int getOriginX() {
 		return originX;
 	}
@@ -79,6 +83,10 @@ public class Sector {
 	 */
 	public boolean isDirty() {
 		return dirty;
+	}
+	
+	public long getLastUsedTime() {
+		return lastUsed;
 	}
 	
 	/**

@@ -27,7 +27,15 @@ public class MapSector {
 	private Map			map = null;
 	private boolean		bleeding = false;
 	SimpleImage			image;
-	private double		scale = 1.00; 
+	private double		scale = 1.00;
+	
+	public enum Scale {
+		LARGE,   // Normal
+		MEDIUM,  // Individual tiles
+		SMALL,   // 4 tiles
+		XSMALL,  // Sub-sector
+		XXSMALL, // Sector
+	}
 	
 	public MapSector(Map map, File imageFolder) {
 		this.map = map;
@@ -69,8 +77,17 @@ public class MapSector {
 		drawMap(sector.getOriginX(), sector.getOriginY(), sector.WIDTH, sector.HEIGHT);
 	}
 
+	/**
+	 * Draw a map over the given area at full scale.
+	 * 
+	 * @param orgX
+	 * @param orgY
+	 * @param width
+	 * @param height
+	 * @throws IOException
+	 */
 	public void drawMap(int orgX, int orgY, int width, int height) throws IOException {
-		image = new SimpleImage(width*49+25, height*54+54, "#FFFFFF");
+		image = new SimpleImage((int)(scale*(width*49+25)), (int)(scale * (height*54+54)), "#FFFFFF");
 
 		// Always start on an even column.
 		orgX -= orgX%2;
@@ -89,12 +106,14 @@ public class MapSector {
 			// Even columns.
 			for (int x=orgX-(bleeding?2:0); x < orgX+width+(bleeding?2:0); x+=2) {
 				try {
+					int		px = (int)(scale * ((x-orgX)*49));
+					int		py = (int)(scale * ((y-orgY)*54+(x%2)*27));
 					Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
-					image.paint(i, (x-orgX)*49, (y-orgY)*54+(x%2)*27, 65, 65);
+					image.paint(i, px, py, (int)(scale*65), (int)(scale*65));
 					
 					if (map.getFeature(x, y) > 0) {
 						i = getIcon(map.getInfo().getFeature(map.getFeature(x, y)));
-						image.paint(i, (x-orgX)*49, (y-orgY)*54+(x%2)*27, 65, 65);
+						image.paint(i, px, py, (int)(scale*65), (int)(scale*65));
 					}
 				} catch (Throwable e) {
 				}
@@ -103,11 +122,13 @@ public class MapSector {
 			for (int x=orgX+1-(bleeding?2:0); x < orgX+width+(bleeding?2:0); x+=2) {
 				try {
 					Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
-					image.paint(i, (x-orgX)*49, (y-orgY)*54+(x%2)*27, 65, 65);
+					int		px = (int)(scale * ((x-orgX)*49));
+					int		py = (int)(scale * ((y-orgY)*54+(x%2)*27));
+					image.paint(i, px, py, (int)(scale*65), (int)(scale*65));
 
 					if (map.getFeature(x, y) > 0) {
 						i = getIcon(map.getInfo().getFeature(map.getFeature(x, y)));
-						image.paint(i, (x-orgX)*49, (y-orgY)*54+(x%2)*27, 65, 65);
+						image.paint(i, px, py, (int)(scale*65), (int)(scale*65));
 					}
 				} catch (Throwable e) {
 				}
@@ -122,40 +143,49 @@ public class MapSector {
 				Image	i = getIcon(map.getInfo().getThing(place.getThingId()));
 				System.out.println(place.getX()-orgX);
 				System.out.println(place.getY()-orgY);
-				image.paint(i, (place.getX()-orgX)*50, (place.getY()-orgY)*54+(place.getX()%2)*27, 65, 65);
+				int		px = (int)(scale * ((place.getX()-orgX)*49));
+				int		py = (int)(scale * ((place.getY()-orgY)*54+(place.getX()%2)*27));
+				image.paint(i, px, py, (int)(scale*65), (int)(scale*65));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void drawSector(Map map) throws IOException {
-		SimpleImage		image = new SimpleImage(Sector.WIDTH*49+25, Sector.HEIGHT*54+54, "#FFFFFF");
-		
-		String[]		icons = { "", "sea", "grass", "hills", "woods" };
-
-		for (int y=0; y < Sector.HEIGHT; y++) {
-			for (int x=0; x < Sector.WIDTH; x+=2) {
-				Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
-				try {
-					image.paint(i, x*49, y*54+(x%2)*27, 65, 65);
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			for (int x=1; x < Sector.WIDTH; x+=2) {
-				Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
-				try {
-					image.paint(i, x*49, y*54+(x%2)*27, 65, 65);
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		image.save(new File("/home/sam/hexmap.jpg"));		
+	/**
+	 * Draw an overview map which uses flat tiles to represent multiple hexes.
+	 * 
+	 * @param size
+	 * @throws IOException
+	 */
+	public void drawOverviewMap(int size) throws IOException {
+		drawOverviewMap(0, 0, map.getInfo().getWidth(), map.getInfo().getHeight(), size, Scale.XXSMALL);
 	}
+	
+	public void drawOverviewMap(int orgX, int orgY, int width, int height, int size, Scale scale) throws IOException {
+		int		sectorWidth = size * 4;
+		int		sectorHeight = size * 5;
+		
+		
+		
+		image = new SimpleImage(sectorWidth * width / Sector.WIDTH, 
+								sectorHeight * height / Sector.HEIGHT, "#FFFFFF");
+
+		for (int y=orgY; y < orgY+height; y+= Sector.HEIGHT) {
+			if (y%10 == 0) System.out.println(y);
+			for (int x=orgX; x < orgX+width; x+=Sector.WIDTH) {
+				try {
+					int		px = ((x-orgX) * sectorWidth) / Sector.WIDTH;
+					int		py = ((y-orgY) * sectorHeight) / Sector.HEIGHT;
+					Terrain	t = map.getInfo().getTerrain(map.getTerrain(x, y));
+					Image	i = image.createImage(sectorWidth, sectorHeight, t.getColour());
+					image.paint(i, px, py, sectorWidth, sectorHeight);					
+				} catch (Throwable e) {
+				}
+			}
+		}		
+	}
+
 	
 	public static void main(String[] args) throws Exception {
 		//makeHex(64);

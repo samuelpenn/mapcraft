@@ -130,7 +130,7 @@ public class AppManager implements ServletContextListener {
 		
 		MapManager		manager = new MapManager(app.getDatabaseConnection());
 		
-		Map			map = manager.getMap("test2");
+		Map			map = manager.getMap("eorthe");
 		
 		//map.setTerrain(10, 10, 2);
 		//map.setTerrain(11, 10, 2);
@@ -141,7 +141,9 @@ public class AppManager implements ServletContextListener {
 		//map.saveAll();
 		MapSector		imageMap = new MapSector(map, new File("/home/sam/src/mapcraft/mapcraft/WebContent/webapp/images/map/style/colour"));
 		imageMap.setBleeding(true);
-		imageMap.drawMap(128, 200, Sector.WIDTH, Sector.HEIGHT);
+		imageMap.setScale(1.0);
+		//imageMap.drawMap(128, 200, Sector.WIDTH, Sector.HEIGHT);
+		imageMap.drawOverviewMap(3200, 600, 1280, 1000, 1, MapSector.Scale.XXSMALL);
 		imageMap.save(new File("/home/sam/hexmap.jpg"));
 	}
 	

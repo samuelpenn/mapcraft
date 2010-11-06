@@ -106,8 +106,13 @@ public class MapManager {
 			String	name = rs.getString("name");
 			String	title = rs.getString("title");
 			String	image = rs.getString("image");
+			int		water = rs.getInt("water");
+			int		woods = rs.getInt("woods");
+			int		hills = rs.getInt("hills");
+			int		fertility = rs.getInt("fertility");
+			String	colour = rs.getString("colour");
 			
-			info.addTerrain(new Terrain(id, name, title, image, 0));
+			info.addTerrain(new Terrain(id, name, title, image, water, woods, hills, fertility, colour));
 		}
 		rs.close();
 
@@ -189,6 +194,7 @@ public class MapManager {
 		stmnt.executeUpdate("DROP TABLE IF EXISTS "+name+"_feature");
 		stmnt.executeUpdate("DROP TABLE IF EXISTS "+name+"_area");
 		stmnt.executeUpdate("DROP TABLE IF EXISTS "+name+"_thing");
+		stmnt.executeUpdate("DROP TABLE IF EXISTS "+name+"_things");
 		stmnt.executeUpdate("DROP TABLE IF EXISTS "+name+"_map");
 		
 		refresh();
@@ -197,36 +203,46 @@ public class MapManager {
 	private void createTables(String prefix) throws SQLException {
 		Statement		stmnt = cx.createStatement();
 		
-		stmnt.executeUpdate("CREATE TABLE "+prefix+"_terrain (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, PRIMARY KEY(id))");
-		stmnt.executeUpdate("CREATE TABLE "+prefix+"_feature (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, PRIMARY KEY(id))");
+		stmnt.executeUpdate("CREATE TABLE "+prefix+"_terrain (id INT NOT NULL AUTO_INCREMENT, "+
+				"name VARCHAR(32) NOT NULL, title VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, "+
+				"water INT DEFAULT 0, woods INT DEFAULT 0, hills INT DEFAULT 0, fertility INT DEFAULT 0, "+
+				"colour VARCHAR(6) DEFAULT '000000', "+
+				"PRIMARY KEY(id))");
+		stmnt.executeUpdate("CREATE TABLE "+prefix+"_feature (id INT NOT NULL AUTO_INCREMENT, "+
+				"name VARCHAR(32) NOT NULL, title VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, "+
+				"water INT DEFAULT 0, woods INT DEFAULT 0, hills INT DEFAULT 0, fertility INT DEFAULT 0, "+
+				"PRIMARY KEY(id))");
+		
 		stmnt.executeUpdate("CREATE TABLE "+prefix+"_thing (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, PRIMARY KEY(id))");
 		stmnt.executeUpdate("CREATE TABLE "+prefix+"_area (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(64) NOT NULL, parent_id INT DEFAULT 0, PRIMARY KEY(id))");
 		
 		stmnt.executeUpdate("CREATE TABLE "+prefix+"_things (id INT NOT NULL AUTO_INCREMENT, thing_id int NOT NULL, name VARCHAR(32) NOT NULL, x INT NOT NULL, y INT NOT NULL, sx INT NOT NULL, sy INT NOT NULL, PRIMARY KEY(id))");
-		stmnt.executeUpdate("CREATE TABLE "+prefix+"_map (x INT NOT NULL, y INT NOT NULL, terrain_id INT NOT NULL, feature_id INT DEFAULT 0, area_id INT DEFAULT 0, PRIMARY KEY(x, y))");
+
+		stmnt.executeUpdate("CREATE TABLE "+prefix+"_map (x INT NOT NULL, y INT NOT NULL, "+
+				"terrain_id INT NOT NULL, feature_id INT DEFAULT 0, area_id INT DEFAULT 0, "+
+				"PRIMARY KEY(x, y))");
 		
-		addFeature(prefix, "hills.low", "Low hills", "lowhills");
-		addFeature(prefix, "hills.high", "High hills", "highhills");
-		addFeature(prefix, "mountains.low", "Low mountains", "lowmnts");
-		addFeature(prefix, "mountains.medium", "Medium mountains", "medmnts");
-		addFeature(prefix, "mountains.high", "High mountains", "highmnts");
-		addFeature(prefix, "wetlands", "Wetlands", "wetlands");
-		addFeature(prefix, "ice", "Ice", "ice");
+		addFeature(prefix, "hills.low", "Low hills", "lowhills", 0, 0, 15, 0);
+		addFeature(prefix, "hills.high", "High hills", "highhills", 0, 0, 30, 0);
+		addFeature(prefix, "mountains.low", "Low mountains", "lowmnts", 0, 0, 50, 0);
+		addFeature(prefix, "mountains.medium", "Medium mountains", "medmnts", 0, 0, 75, 0);
+		addFeature(prefix, "mountains.high", "High mountains", "highmnts", 0, 0, 90, 0);
+		addFeature(prefix, "wetlands", "Wetlands", "wetlands", 25, 0, 0, 0);
+		addFeature(prefix, "ice", "Ice", "ice", 0, 0, 0, 0);
 		
-		addTerrain(prefix, "water.ocean", "Ocean", "ocean");
-		addTerrain(prefix, "water.sea", "Sea", "sea");
-		addTerrain(prefix, "temperate.grassland", "Grassland", "grass");
-		addTerrain(prefix, "temperate.crops", "Cropland", "cropland");
-		addTerrain(prefix, "temperate.woodland", "Light woodland", "woods");
-		addTerrain(prefix, "temperate.mixed", "Mixed woodland", "mixed_forest");
-		addTerrain(prefix, "temperate.coniferous", "Coniferous woodland", "coniferous");
-		addTerrain(prefix, "temperate.moors", "Moorland", "moors");
-		addTerrain(prefix, "temperate.heath", "Heathland", "heath");
-		addTerrain(prefix, "temperate.crops", "Farmland", "cropland");
-		addTerrain(prefix, "subtropical.grassland", "Dry grassland", "dry");
-		addTerrain(prefix, "subtropical.desert", "Desert", "desert");
-		addTerrain(prefix, "boreal.forest", "Boreal forest", "boreal_forest");
-		addTerrain(prefix, "arctic.snow", "Snow", "snow");
+		addTerrain(prefix, "water.ocean", "Ocean", "ocean", 100, 0, 0, 0, "9999FF");
+		addTerrain(prefix, "water.sea", "Sea", "sea", 100, 0, 0, 0, "AAAAFF");
+		addTerrain(prefix, "temperate.grassland", "Grassland", "grass", 0, 10, 0, 75, "99FF99");
+		addTerrain(prefix, "temperate.crops", "Cropland", "cropland", 0, 5, 0, 90, "BBFFBB");
+		addTerrain(prefix, "temperate.woodland", "Light woodland", "woods", 0, 30, 0, 75, "77DD77");
+		addTerrain(prefix, "temperate.mixed", "Mixed woodland", "mixed_forest", 0, 60, 0, 75, "449944");
+		addTerrain(prefix, "temperate.coniferous", "Coniferous woodland", "coniferous", 0, 60, 0, 75, "449944");
+		addTerrain(prefix, "temperate.moors", "Moorland", "moors", 0, 10, 10, 55, "99AA99");
+		addTerrain(prefix, "temperate.heath", "Heathland", "heath", 0, 10, 10, 55, "99AA99");
+		addTerrain(prefix, "subtropical.grassland", "Dry grassland", "dry", 0, 5, 0, 20, "77CCAA");
+		addTerrain(prefix, "subtropical.desert", "Desert", "desert", 0, 0, 0, 5, "88FFFF");
+		addTerrain(prefix, "boreal.forest", "Boreal forest", "boreal_forest", 0, 60, 0, 75, "AAEEAA");
+		addTerrain(prefix, "arctic.snow", "Snow", "snow", 0, 0, 0, 0, "FFFFFF");
 		
 		addThing(prefix, "settlement.village", "Village", "village");
 		addThing(prefix, "settlement.town", "Town", "town");
@@ -254,23 +270,31 @@ public class MapManager {
 	 * @param image
 	 * @throws SQLException
 	 */
-	private void addTerrain(String prefix, String name, String title, String image) throws SQLException {
-		PreparedStatement	ps = cx.prepareStatement("INSERT INTO "+prefix+"_terrain (name, image, title) VALUES(?,?,?)");
+	private void addTerrain(String prefix, String name, String title, String image, int water, int woods, int hills, int fertility, String colour) throws SQLException {
+		PreparedStatement	ps = cx.prepareStatement("INSERT INTO "+prefix+"_terrain (name, image, title, water, woods, hills, fertility, colour) VALUES(?,?,?,?,?,?,?,?)");
 		
 		ps.setString(1, name);
 		ps.setString(2, image);
 		ps.setString(3, title);
+		ps.setInt(4, water);
+		ps.setInt(5, woods);
+		ps.setInt(6, hills);
+		ps.setInt(7, fertility);
+		ps.setString(8, colour);
 		
 		ps.execute();
 	}
 	
-	private void addFeature(String prefix, String name, String title, String image) throws SQLException {
-		PreparedStatement	ps = cx.prepareStatement("INSERT INTO "+prefix+"_feature (name, image, title) VALUES(?,?,?)");
+	private void addFeature(String prefix, String name, String title, String image, int water, int woods, int hills, int fertility) throws SQLException {
+		PreparedStatement	ps = cx.prepareStatement("INSERT INTO "+prefix+"_feature (name, image, title, water, woods, hills, fertility) VALUES(?,?,?,?,?,?,?)");
 		
 		ps.setString(1, name);
 		ps.setString(2, image);
 		ps.setString(3, title);
-		
+		ps.setInt(4, water);
+		ps.setInt(5, woods);
+		ps.setInt(6, hills);
+		ps.setInt(7, fertility);
 		ps.execute();		
 	}
 	
@@ -338,10 +362,11 @@ public class MapManager {
 			System.out.println("No database");
 		}
 		
-		//manager.createMap("eorthe", "World of Eorthe", 8000, 4000, true);
+		manager.deleteMap("eorthe");
+		manager.createMap("eorthe", "World of Eorthe", 8000, 4000, true);
 		//System.out.println(manager.getMap("eorthe").getTitle());
-		manager.deleteMap("test2");
-		manager.createMap("test2", "Two layer test", 1000, 1000, true);
-		System.out.println(manager.getMap("test2").getInfo().getTitle());
+		//manager.deleteMap("test2");
+		//manager.createMap("test2", "Two layer test", 1000, 1000, true);
+		System.out.println(manager.getMap("eorthe").getInfo().getTitle());
 	}
 }

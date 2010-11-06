@@ -232,7 +232,8 @@ public class MapViewer extends JPanel {
                     tileOffset = 0;
                 }
             } catch (Exception e) {
-                error("Cannot load properties from file ["+file+"]");
+                error("Cannot load properties from file ["+file+"] ("+e.getMessage()+")");
+                e.printStackTrace();
                 throw e;
             }
         }
