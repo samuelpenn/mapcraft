@@ -56,7 +56,7 @@ public class MapManager {
 	
 	private void validateName(String name) throws IllegalArgumentException {
 		if (name == null || name.length() == 0 || name.length() > 16 || !name.matches("[a-zA-Z0-9]+")) {
-			throw new IllegalArgumentException("Illegal map name");
+			throw new IllegalArgumentException("Illegal map name ["+name+"]");
 		}
 	}
 	

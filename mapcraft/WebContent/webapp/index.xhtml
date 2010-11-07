@@ -30,7 +30,12 @@
 
 		<ul>
 			<c:forEach var="map" items="${serverInfo.maps}">
-				<li><a href="mapinfo.xhtml?name=${map.name}">${map.title}</a></li>
+				<!-- <li><a href="mapinfo.xhtml?name=${map.name}">${map.title}</a></li> -->
+				<li>
+					<h:link outcome="mapinfo" value="${map.title}">
+						<f:param name="name" value="${map.name}"/>
+					</h:link>
+				</li>
 			</c:forEach>
 		</ul>
 		

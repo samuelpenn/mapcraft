@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.faces.bean.*;
 
+import uk.org.glendale.mapcraft.map.Map;
 import uk.org.glendale.mapcraft.server.database.MapInfo;
 import uk.org.glendale.mapcraft.server.database.MapManager;
 
@@ -15,12 +16,21 @@ import uk.org.glendale.mapcraft.server.database.MapManager;
  * @author Samuel Penn
  *
  */
-@ManagedBean(name="serverInfo")
+@ManagedBean(name="serverInfo") @SessionScoped
 public class ServerInfo {
 	private MapManager	manager = null;
+	private String		mapName = null;
 	
 	public ServerInfo() throws SQLException {
 		manager = new MapManager(AppManager.getInstance().getDatabaseConnection());
+	}
+	
+	public void setCurrentMap(String name) {
+		mapName = name;
+	}
+	
+	public String getCurrentMap() {
+		return mapName;
 	}
 	
 	/**
@@ -48,5 +58,25 @@ public class ServerInfo {
 	
 	public MapInfo[] getMaps() {
 		return manager.getMaps();
+	}
+	
+	public Map getMap(String name) {
+		try {
+			return manager.getMap(name);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Map getMap() {
+		try {
+			return manager.getMap(mapName);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

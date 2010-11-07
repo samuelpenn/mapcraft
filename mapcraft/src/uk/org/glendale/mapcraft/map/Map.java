@@ -5,6 +5,9 @@ import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import uk.org.glendale.mapcraft.server.database.MapData;
 import uk.org.glendale.mapcraft.server.database.MapInfo;
 
@@ -13,6 +16,7 @@ import uk.org.glendale.mapcraft.server.database.MapInfo;
  * 
  * @author Samuel Penn
  */
+@ManagedBean @SessionScoped
 public class Map {
 	private MapInfo		info;
 	private MapData		data;
@@ -26,6 +30,14 @@ public class Map {
 		}
 		this.info = info;
 		this.data = data;
+	}
+	
+	public String getName() {
+		return info.getName();
+	}
+	
+	public String getTitle() {
+		return info.getTitle();
 	}
 	
 	public MapInfo getInfo() {

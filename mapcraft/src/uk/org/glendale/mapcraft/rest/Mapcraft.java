@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import uk.org.glendale.mapcraft.map.Map;
+
 
 /**
  * JAX-RS management application.
@@ -16,6 +18,7 @@ public class Mapcraft extends Application {
 		Set<Class<?>> s = new HashSet<Class<?>>();
 		s.add(MapInfo.class);
 		s.add(MapImage.class);
+		s.add(Map.class);
 		s.add(Test.class);
 		return s;
 	}

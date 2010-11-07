@@ -10,35 +10,19 @@
       xmlns:c="http://java.sun.com/jsp/jstl/core">
       
 	<f:metadata>
-		<f:viewParam name="name" value="#{serverInfo.currentMap}"/>
+		<f:viewParam name="name" value="#{mapInfo.name}"/>
+		<f:viewParam name="title" value="#{mapInfo.title}"/>
 	</f:metadata>
 
 	<h:head>
 		<title>Mapcraft</title>
 	</h:head>
 	
-	<h:body>
-		<h1>${serverInfo.map.title}</h1>
-
-		<table>
-			<tr>
-				<th>Map Id</th>
-				<td>${serverInfo.map.name}</td>
-			</tr>
-			<tr>
-				<th>Map Title</th>
-				<td>${serverInfo.map.title}</td>
-			</tr>
-			<tr>
-				<th>Width</th>
-				<td>${serverInfo.map.info.width}</td>
-			</tr>
-			<tr>
-				<th>Height</th>
-				<td>${serverInfo.map.info.height}</td>
-			</tr>
-		</table>
-		
-		<h:link outcome="map">View Map</h:link>
+	<h:body>	
+		<ui:composition template="map-template.xhtml">
+			<ui:define name="title">
+				${serverInfo.map.title}
+			</ui:define>
+		</ui:composition>		
 	</h:body>
 </html>
