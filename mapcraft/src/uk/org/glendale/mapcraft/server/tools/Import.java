@@ -54,7 +54,7 @@ public class Import {
 
 		// Old style XML map to export from
 		String		xmlPath = "application/maps/island.map";
-		xmlPath = "/home/sam/rpg/habisfern/encyclopedia/src/maps/eorthe.map";
+		xmlPath = "/home/sam/rpg/habisfern/encyclopedia/src/maps/weidany.map";
 		
 		net.sourceforge.mapcraft.map.Map	xmlMap = new net.sourceforge.mapcraft.map.Map(xmlPath);
 		
@@ -72,6 +72,8 @@ public class Import {
 			}
 		}		
 		
+		xOffset = 3424 + xOffset * parentScale/5;
+		yOffset = 640 + yOffset * parentScale/5;
 		if (scale < 5 || scale%5 != 0) {
 			throw new IllegalArgumentException("Imported map has unsupported scale "+scale);
 		}
@@ -106,7 +108,7 @@ public class Import {
 					System.out.print("#");
 				}
 				if (terrainId < 3) {
-					continue;
+					//continue;
 				}
 				
 				Terrain		f = tiles.getFeature(x, y);
@@ -140,9 +142,9 @@ public class Import {
 							break;
 						}
 						//map.setTile(x*scale + xx, y*scale + yy, terrainId, featureId, areaId);
-						map.setTerrain(x*scale + xx, y*scale + yy, terrainId);
-						map.setFeature(x*scale + xx, y*scale + yy, featureId);	
-						map.setNamedArea(x*scale + xx, y*scale + yy, areaId);
+						map.setTerrain(xOffset + x*scale + xx, yOffset + y*scale + yy, terrainId);
+						map.setFeature(xOffset + x*scale + xx, yOffset + y*scale + yy, featureId);	
+						map.setNamedArea(xOffset + x*scale + xx, yOffset + y*scale + yy, areaId);
 					}
 				}
 			}
@@ -165,7 +167,7 @@ public class Import {
 			int		x = xmlThing.getX() * scale;
 			int		y = xmlThing.getY() * scale;
 			
-			info.createNamedPlace(thing, name, x/100, y/100, x%100, y%100);
+			info.createNamedPlace(thing, name, xOffset + x/100, yOffset + y/100, x%100, y%100);
 		}
 		System.out.println("Saving");
 		map.saveAll();

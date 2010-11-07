@@ -311,9 +311,8 @@ public class MapInfo {
 				NamedPlace	place = new NamedPlace(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getInt(4), rs.getInt(5), rs.getInt(6), rs.getInt(7));
 				places.add(place);
 			}
-			rs.close();
 		} finally {
-			if (rs != null && !rs.isClosed()) {
+			if (rs != null) {
 				rs.close();
 			}
 		}
