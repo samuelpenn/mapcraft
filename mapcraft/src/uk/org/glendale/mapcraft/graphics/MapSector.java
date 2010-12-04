@@ -6,11 +6,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.mapcraft.map.Map;
+import uk.org.glendale.mapcraft.map.NamedArea;
 import uk.org.glendale.mapcraft.map.NamedPlace;
+import uk.org.glendale.mapcraft.map.Rectangle;
 import uk.org.glendale.mapcraft.map.Sector;
 import uk.org.glendale.mapcraft.map.Terrain;
 import uk.org.glendale.mapcraft.map.Tile;
@@ -30,6 +34,9 @@ public class MapSector {
 	SimpleImage			image;
 	private double		zoom = 1.00;
 	private Scale		scale = Scale.STANDARD;
+	private boolean		hideAsGrey = false;
+	
+	private Set<Integer>	allowedAreas = null;
 	
 	public enum Scale {
 		STANDARD,   // Normal
@@ -59,12 +66,44 @@ public class MapSector {
 	
 	/**
 	 * Set the scale of the map to be drawn. This controls the level of
-	 * detail, and defaults to LARGE.
+	 * detail, and defaults to STANDARD.
 	 * 
 	 * @param scale		Scale to use when drawing map.
 	 */
 	public void setScale(Scale scale) {
 		this.scale = scale;
+	}
+	
+	/**
+	 * Sets the scale of the map based on the current scale, and the size
+	 * of the area to be drawn. If the area is too big, then the scale will
+	 * be increased to keep the image size down.
+	 * 
+	 * @param dimension		Maximum size of the map, either width or height.
+	 */
+	private void setScale(int dimension) {
+		
+		// Note there are no break statements in the following.
+		switch (scale) {
+		case STANDARD:
+			if (dimension > 40) {
+				scale = Scale.COMPACT;
+			}
+		case COMPACT:
+			if (dimension > 200) {
+				scale = Scale.LARGE;
+			}
+		case LARGE:
+			if (dimension > 800) {
+				scale = Scale.SUBSECTOR;
+			}
+		case SUBSECTOR:
+			if (dimension > 1600) {
+				scale = Scale.SECTOR;
+			}
+		case SECTOR:
+			break;
+		}
 	}
 	
 	public void setZoom(double zoom) {
@@ -83,6 +122,16 @@ public class MapSector {
 		SimpleImage		si = new SimpleImage(file);
 		
 		return si.getImage();
+	}
+	
+	private Image getGreyIcon() {
+		File			file = new File(imageFolder.getAbsolutePath()+"/effects/grey.png");
+		if (!file.exists()) {
+			System.out.println(file.getAbsolutePath());
+		}
+		SimpleImage		si = new SimpleImage(file);
+		
+		return si.getImage();		
 	}
 	
 	public void drawMap(Sector sector) throws IOException {
@@ -117,9 +166,17 @@ public class MapSector {
 		for (int y=orgY-(bleeding?1:0); y < orgY+height+(bleeding?1:0); y++) {
 			// Even columns.
 			for (int x=orgX-(bleeding?2:0); x < orgX+width+(bleeding?2:0); x+=2) {
+				boolean		isGrey = false;
+				int		px = (int)(zoom * ((x-orgX)*49));
+				int		py = (int)(zoom * ((y-orgY)*54+(x%2)*27));
+
+				if (allowedAreas != null && !allowedAreas.contains(map.getArea(x, y))) {
+					if (hideAsGrey && map.getInfo().getTerrain(map.getTerrain(x, y)).getWater() < 100) {
+						image.paint(getGreyIcon(), px, py, (int)(zoom*65), (int)(zoom*65));
+					}
+					continue;
+				}
 				try {
-					int		px = (int)(zoom * ((x-orgX)*49));
-					int		py = (int)(zoom * ((y-orgY)*54+(x%2)*27));
 					Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
 					image.paint(i, px, py, (int)(zoom*65), (int)(zoom*65));
 					
@@ -132,10 +189,17 @@ public class MapSector {
 			}
 			// Odd columns (which can overlap higher, even, columns.
 			for (int x=orgX+1-(bleeding?2:0); x < orgX+width+(bleeding?2:0); x+=2) {
+				boolean		isGrey = false;
+				int		px = (int)(zoom * ((x-orgX)*49));
+				int		py = (int)(zoom * ((y-orgY)*54+(x%2)*27));
+				if (allowedAreas != null && !allowedAreas.contains(map.getArea(x, y))) {
+					if (hideAsGrey && map.getInfo().getTerrain(map.getTerrain(x, y)).getWater() < 100) {
+						image.paint(getGreyIcon(), px, py, (int)(zoom*65), (int)(zoom*65));
+					}
+					continue;
+				}
 				try {
 					Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
-					int		px = (int)(zoom * ((x-orgX)*49));
-					int		py = (int)(zoom * ((y-orgY)*54+(x%2)*27));
 					image.paint(i, px, py, (int)(zoom*65), (int)(zoom*65));
 
 					if (map.getFeature(x, y) > 0) {
@@ -152,6 +216,9 @@ public class MapSector {
 			
 			for (NamedPlace place : places) {
 				System.out.println(place.getName()+" ("+place.getX()+","+place.getY()+")");
+				if (allowedAreas != null && !allowedAreas.contains(map.getArea(place.getX(), place.getY()))) {
+					continue;
+				}
 				Image	i = getIcon(map.getInfo().getThing(place.getThingId()));
 				int		px = (int)(zoom * ((place.getX()-orgX)*49));
 				int		py = (int)(zoom * ((place.getY()-orgY)*54+(place.getX()%2)*27));
@@ -162,6 +229,25 @@ public class MapSector {
 			e.printStackTrace();
 		}
 	}
+	
+	public void drawMap(NamedArea area) throws IOException {
+		Rectangle	bounds = map.getInfo().getNamedAreaBounds(area);
+		
+		allowedAreas = new HashSet<Integer>();
+		allowedAreas.add(area.getId());
+		for (NamedArea a : map.getInfo().getChildAreas(area)) {
+			allowedAreas.add(a.getId());
+		}
+		int		maxDimension = Math.max(bounds.getWidth(), bounds.getHeight());
+		//setScale(maxDimension);
+		
+		hideAsGrey = true;
+		if (scale == Scale.STANDARD) {
+			drawMap(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+		} else {
+			drawOverviewMap(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+		}
+	}
 
 	/**
 	 * Draw an overview map which uses flat tiles to represent multiple hexes.
@@ -170,12 +256,12 @@ public class MapSector {
 	 * @throws IOException
 	 */
 	public void drawOverviewMap(int size) throws IOException {
-		drawOverviewMap(0, 0, map.getInfo().getWidth(), map.getInfo().getHeight(), size);
+		drawOverviewMap(0, 0, map.getInfo().getWidth(), map.getInfo().getHeight());
 	}
 	
-	public void drawOverviewMap(int orgX, int orgY, int width, int height, int size) throws IOException {
-		int		pixelWidth = size * 4;
-		int		pixelHeight = size * 5;
+	public void drawOverviewMap(int orgX, int orgY, int width, int height) throws IOException {
+		int		pixelWidth = 4;
+		int		pixelHeight = 5;
 		int		xStep = 1;
 		int		yStep = 1;
 		

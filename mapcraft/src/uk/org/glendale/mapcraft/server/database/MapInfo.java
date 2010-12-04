@@ -14,6 +14,7 @@ import uk.org.glendale.mapcraft.MapEntityException;
 import uk.org.glendale.mapcraft.map.NamedArea;
 import uk.org.glendale.mapcraft.map.Feature;
 import uk.org.glendale.mapcraft.map.NamedPlace;
+import uk.org.glendale.mapcraft.map.Rectangle;
 import uk.org.glendale.mapcraft.map.Terrain;
 import uk.org.glendale.mapcraft.map.Thing;
 import uk.org.glendale.mapcraft.server.AppManager;
@@ -161,14 +162,25 @@ public class MapInfo {
 		return areas.get(id);
 	}
 	
-	public NamedArea getNamedArea(String name) {
+	public NamedArea getNamedArea(String name) throws MapEntityException {
 		for (NamedArea a : areas.values()) {
 			if (a.getName().equals(name)) {
 				return a;
 			}
 		}
-		System.out.println("Unable to find area ["+name+"]");
-		return null;
+		throw new MapEntityException("NamedArea", name, "Unable to find named area");
+	}
+	
+	public List<NamedArea> getChildAreas(NamedArea area) {
+		ArrayList<NamedArea> children = new ArrayList<NamedArea>();
+		
+		for (NamedArea a : areas.values()) {
+			if (a.getParentId() == area.getId()) {
+				children.add(a);
+				children.addAll(getChildAreas(a));
+			}
+		}
+		return children;
 	}
 	
 	/**
@@ -225,6 +237,43 @@ public class MapInfo {
 				insert.close();
 			}
 		}
+	}
+	
+	public Rectangle getNamedAreaBounds(NamedArea area) {
+		Rectangle bounds;
+		
+		Connection			cx = manager.getConnection();
+		ResultSet			rs = null;
+		PreparedStatement	select = null;
+		
+		try {
+			select = cx.prepareStatement("SELECT min(x) as west, max(x) as east, min(y) as north, max(y) as south FROM "+
+										 prefix+"_map WHERE area_id=? OR area_id IN (SELECT id FROM "+prefix+"_area WHERE "+
+										 "parent_id=?)");
+			select.clearParameters();
+			select.setInt(1, area.getId());
+			select.setInt(2, area.getId());
+			
+			rs = select.executeQuery();
+			
+			if (rs.next()) {
+				int		north = rs.getInt("north");
+				int		west = rs.getInt("west");
+				int		east = rs.getInt("east");
+				int		south = rs.getInt("south");
+				
+				// TODO: This is wrong, due to optimisations. Eastern or Southern tile
+				// may be the only tile in a sector, so actually covers the whole sector.
+				bounds = new Rectangle(west, north, east-west, south-north);
+			} else {
+				return null;
+			}
+			rs.close();
+		} catch (SQLException e) {
+			return null;
+		}
+		
+		return bounds;
 	}
 	
 	public void addThing(Thing thing) {

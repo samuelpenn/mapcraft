@@ -19,8 +19,11 @@ import java.sql.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import uk.org.glendale.mapcraft.MapEntityException;
 import uk.org.glendale.mapcraft.graphics.MapSector;
+import uk.org.glendale.mapcraft.graphics.MapSector.Scale;
 import uk.org.glendale.mapcraft.map.Map;
+import uk.org.glendale.mapcraft.map.NamedArea;
 import uk.org.glendale.mapcraft.server.AppManager;
 import uk.org.glendale.mapcraft.server.database.MapData;
 import uk.org.glendale.mapcraft.server.database.MapInfo;
@@ -33,13 +36,59 @@ import javax.ws.rs.core.MediaType;
  * 
  * Servlet which returns a map.
  * 
- * Url: /mapcraft/map/mapname?x=0&y=0&w=32&h=40&s=8
+ * Url: /mapcraft/rest/map/{mapname}?x=0&y=0&w=32&h=40&s=8
  * 
  * @author Samuel Penn
  */
 @Path("/map/{mapname}")
 public class MapImage {
 	
+	/**
+	 * Gets an image for the given named area. A single image of the whole area
+	 * will be returned.
+	 * 
+	 * @param mapName
+	 * @param areaName
+	 * @return
+	 */
+	@GET
+	@Path("/area/{areaname}")
+	@Produces("image/jpeg")
+	public File getImageOfArea(@PathParam("mapname") String mapName,
+								 @PathParam("areaname") String areaName,
+								 @QueryParam("border") @DefaultValue("1") int borderSize,
+								 @QueryParam("scale") @DefaultValue("STANDARD") Scale scale,
+								 @QueryParam("bleed") @DefaultValue("false") boolean bleed,
+								 @QueryParam("force") @DefaultValue("false") boolean force) throws SQLException, MapEntityException, IOException {
+
+		MapManager		manager = new MapManager(AppManager.getInstance().getDatabaseConnection());
+		
+		Map				map = manager.getMap(mapName);
+		MapInfo			info = map.getInfo();
+		
+		if (borderSize < 0) {
+			throw new IllegalArgumentException("Cannot specify negative coordinates");
+		}
+		
+		NamedArea	area = info.getNamedArea(areaName);
+		
+		String		root = AppManager.getInstance().getRootPath();
+		String		filename = String.format("%s-%s.jpg", mapName, areaName);
+		File		image = new File(root+"/images/cache/"+filename);
+		
+		if (force || !image.exists()) {
+			MapSector	imageMap = new MapSector(map, new File(root+"/images/map/style/colour"));
+			
+			imageMap.setScale(scale);
+			
+			imageMap.setBleeding(bleed);
+			imageMap.drawMap(area);
+			imageMap.save(image);
+		}
+		
+		manager.disconnect();
+		return image;
+	}
 	
 	/**
 	 * Gets an image for the given part of the specified map. The map coordinates
