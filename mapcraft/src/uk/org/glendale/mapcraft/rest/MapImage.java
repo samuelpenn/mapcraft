@@ -82,7 +82,7 @@ public class MapImage {
 			imageMap.setScale(scale);
 			
 			imageMap.setBleeding(bleed);
-			imageMap.drawMap(area);
+			imageMap.drawMap(area, borderSize);
 			imageMap.save(image);
 		}
 		

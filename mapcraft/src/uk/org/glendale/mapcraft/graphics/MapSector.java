@@ -166,7 +166,6 @@ public class MapSector {
 		for (int y=orgY-(bleeding?1:0); y < orgY+height+(bleeding?1:0); y++) {
 			// Even columns.
 			for (int x=orgX-(bleeding?2:0); x < orgX+width+(bleeding?2:0); x+=2) {
-				boolean		isGrey = false;
 				int		px = (int)(zoom * ((x-orgX)*49));
 				int		py = (int)(zoom * ((y-orgY)*54+(x%2)*27));
 
@@ -189,7 +188,6 @@ public class MapSector {
 			}
 			// Odd columns (which can overlap higher, even, columns.
 			for (int x=orgX+1-(bleeding?2:0); x < orgX+width+(bleeding?2:0); x+=2) {
-				boolean		isGrey = false;
 				int		px = (int)(zoom * ((x-orgX)*49));
 				int		py = (int)(zoom * ((y-orgY)*54+(x%2)*27));
 				if (allowedAreas != null && !allowedAreas.contains(map.getArea(x, y))) {
@@ -230,7 +228,7 @@ public class MapSector {
 		}
 	}
 	
-	public void drawMap(NamedArea area) throws IOException {
+	public void drawMap(NamedArea area, int borderSize) throws IOException {
 		Rectangle	bounds = map.getInfo().getNamedAreaBounds(area);
 		
 		allowedAreas = new HashSet<Integer>();
@@ -239,13 +237,15 @@ public class MapSector {
 			allowedAreas.add(a.getId());
 		}
 		int		maxDimension = Math.max(bounds.getWidth(), bounds.getHeight());
-		//setScale(maxDimension);
+		setScale(maxDimension + borderSize*2);
 		
 		hideAsGrey = true;
 		if (scale == Scale.STANDARD) {
-			drawMap(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+			drawMap(bounds.getX()-borderSize, bounds.getY()-borderSize, 
+					bounds.getWidth()+borderSize*2, bounds.getHeight()+borderSize*2);
 		} else {
-			drawOverviewMap(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+			drawOverviewMap(bounds.getX()-borderSize, bounds.getY()-borderSize,
+							bounds.getWidth()+borderSize*2, bounds.getHeight()+borderSize*2);
 		}
 	}
 
@@ -301,13 +301,22 @@ public class MapSector {
 				try {
 					int		px = ((x-orgX) * pixelWidth) / xStep;
 					int		py = ((y-orgY) * pixelHeight) / yStep;
+					if (allowedAreas != null && !allowedAreas.contains(map.getArea(x, y))) {
+						if (map.getInfo().getTerrain(map.getTerrain(x, y)).getWater() < 100) {
+							if (hideAsGrey) {
+								Image	i = SimpleImage.createImage(pixelWidth, pixelHeight, "#E0E0E0");
+								image.paint(i, px, py, pixelWidth, pixelHeight);
+							}
+							continue;
+						}
+					}
 					Terrain	t = map.getInfo().getTerrain(map.getTerrain(x, y));
-					Image	i = image.createImage(pixelWidth, pixelHeight, t.getColour());
+					Image	i = SimpleImage.createImage(pixelWidth, pixelHeight, t.getColour());
 					image.paint(i, px, py, pixelWidth, pixelHeight);					
 				} catch (Throwable e) {
 				}
 			}
-		}		
+		}
 	}
 
 	
