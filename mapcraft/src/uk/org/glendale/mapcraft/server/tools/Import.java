@@ -155,6 +155,8 @@ public class Import {
 				continue;
 			}
 			String 	name = xmlThing.getName();
+			String 	title = xmlThing.getDescription();
+			short	importance = (short)xmlThing.getImportance();
 			String 	type = xmlMap.getThingSet().getTerrain(xmlThing.getType()).getName();
 			
 			uk.org.glendale.mapcraft.map.Thing	thing = info.getThing(type);
@@ -167,7 +169,7 @@ public class Import {
 			int		x = xmlThing.getX() * scale;
 			int		y = xmlThing.getY() * scale;
 			
-			info.createNamedPlace(thing, name, xOffset + x/100, yOffset + y/100, x%100, y%100);
+			info.createNamedPlace(thing, name, title, importance, xOffset + x/100, yOffset + y/100, x%100, y%100);
 		}
 		System.out.println("Saving");
 		map.saveAll();

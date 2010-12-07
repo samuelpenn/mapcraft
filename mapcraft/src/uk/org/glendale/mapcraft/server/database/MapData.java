@@ -52,7 +52,7 @@ public class MapData {
 		insertTerrain = cx.prepareStatement("INSERT INTO "+prefix+"_map VALUES(?, ?, ?, ?, ?)");
 		
 		selectSector = cx.prepareStatement("SELECT x, y, terrain_id, feature_id, area_id FROM "+prefix+"_map WHERE x >= ? AND x < ? AND y >= ? AND y < ?");
-		selectPlaces = cx.prepareStatement("SELECT id, thing_id, name, x, y, sx, sy FROM "+prefix+"_things WHERE x >= ? AND x < ? AND y >= ? AND y < ?");
+		selectPlaces = cx.prepareStatement("SELECT id, thing_id, name, title, importance, x, y, sx, sy FROM "+prefix+"_things WHERE x >= ? AND x < ? AND y >= ? AND y < ?");
 	}
 	
 	public void setTile(int x, int y, int terrainId, int featureId, int areaId) throws SQLException {
@@ -112,11 +112,13 @@ public class MapData {
 			int		id = rs.getInt(1);
 			int		thingId = rs.getInt(2);
 			String	name = rs.getString(3);
-			int		x = rs.getInt(4);
-			int		y = rs.getInt(5);
-			int		sx = rs.getInt(6);
-			int		sy = rs.getInt(7);
-			places.put(id, new NamedPlace(id, thingId, name, x, y, sx, sy));
+			String	title = rs.getString(4);
+			short	importance = rs.getShort(5);
+			int		x = rs.getInt(6);
+			int		y = rs.getInt(7);
+			int		sx = rs.getInt(8);
+			int		sy = rs.getInt(9);
+			places.put(id, new NamedPlace(id, thingId, name, title, importance, x, y, sx, sy));
 			System.out.println("Adding ["+name+"] to sector");
 		}
 		rs.close();

@@ -14,9 +14,20 @@ package uk.org.glendale.mapcraft.map;
  * @author Samuel Penn
  */
 public class Thing extends Tile {
+	private	short	importance = 0;
 	
-	public Thing(int id, String name, String title, String image) {
+	public Thing(int id, String name, String title, String image, short importance) {
 		super(id, name, title, image);
+		this.importance = importance;
+	}
+	
+	/**
+	 * Gets the default importance for this type of thing.
+	 * 
+	 * @return	Importance, 0-3.
+	 */
+	public short getImportance() {
+		return importance;
 	}
 
 	@Override

@@ -306,14 +306,14 @@ public class MapInfo {
 	 * @throws SQLException
 	 * @throws MapEntityException
 	 */
-	public NamedPlace createNamedPlace(Thing thing, String name, int x, int y, int sx, int sy) throws SQLException, MapEntityException {
+	public NamedPlace createNamedPlace(Thing thing, String name, String title, short importance, int x, int y, int sx, int sy) throws SQLException, MapEntityException {
 		Connection			cx = manager.getConnection();
 		ResultSet			rs = null;
 		PreparedStatement	insert = null;
 		NamedPlace			place = null;
 		
 		try {
-			insert = cx.prepareStatement("INSERT INTO "+prefix+"_things (thing_id, name, x, y, sx, sy) VALUES(?,?,?,?,?,?)", 
+			insert = cx.prepareStatement("INSERT INTO "+prefix+"_things (thing_id, name, x, y, sx, sy, title, importance) VALUES(?,?,?,?,?,?,?,?)", 
 										 PreparedStatement.RETURN_GENERATED_KEYS);
 			insert.clearParameters();
 			insert.setInt(1, thing.getId());
@@ -322,11 +322,13 @@ public class MapInfo {
 			insert.setInt(4, y);
 			insert.setInt(5, sx);
 			insert.setInt(6, sy);
+			insert.setString(7, title);
+			insert.setShort(8, importance);
 			insert.executeUpdate();
 			rs = insert.getGeneratedKeys();
 			if (rs.next()) {
 				int	 id = rs.getInt(1);
-				place = new NamedPlace(id, thing.getId(), name, x, y, sx, sy);
+				place = new NamedPlace(id, thing.getId(), name, title, importance, x, y, sx, sy);
 			}
 			rs.close();
 			System.out.println(areas.size());
@@ -348,7 +350,7 @@ public class MapInfo {
 		List<NamedPlace>	places = new ArrayList<NamedPlace>();
 		
 		try {
-			select = cx.prepareStatement("SELECT id, thing_id, name, x, y, sx, sy FROM "+prefix+"_things WHERE x >= ? AND x <= ? AND y >= ? AND y <= ?");
+			select = cx.prepareStatement("SELECT id, thing_id, name, title, importance, x, y, sx, sy FROM "+prefix+"_things WHERE x >= ? AND x <= ? AND y >= ? AND y <= ?");
 			select.clearParameters();
 			select.setInt(1, west);
 			select.setInt(2, east);
@@ -357,7 +359,8 @@ public class MapInfo {
 			
 			rs = select.executeQuery();
 			while (rs.next()) {
-				NamedPlace	place = new NamedPlace(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getInt(4), rs.getInt(5), rs.getInt(6), rs.getInt(7));
+				NamedPlace	place = new NamedPlace(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getString(4), 
+							rs.getShort(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9));
 				places.add(place);
 			}
 		} finally {

@@ -95,7 +95,14 @@ public class MapManager {
 		}
 	}
 	
-	
+	/**
+	 * Reads all the global metadata for the specified map. This provides information
+	 * about the terrain types, features and things available to be used on the map.
+	 * The MapInfo object is populated with this information.
+	 * 
+	 * @param info		MapInfo object to be updated.
+	 * @throws SQLException
+	 */
 	private void readTerrain(MapInfo info) throws SQLException {
 		Statement	stmnt = cx.createStatement();
 
@@ -147,8 +154,9 @@ public class MapManager {
 			String	name = rs.getString("name");
 			String	title = rs.getString("title");
 			String	image = rs.getString("image");
+			short	importance = rs.getShort("importance");
 			
-			info.addThing(new Thing(id, name, title, image));
+			info.addThing(new Thing(id, name, title, image, importance));
 		}
 		rs.close();
 	}
@@ -213,10 +221,13 @@ public class MapManager {
 				"water INT DEFAULT 0, woods INT DEFAULT 0, hills INT DEFAULT 0, fertility INT DEFAULT 0, "+
 				"PRIMARY KEY(id))");
 		
-		stmnt.executeUpdate("CREATE TABLE "+prefix+"_thing (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, PRIMARY KEY(id))");
+		stmnt.executeUpdate("CREATE TABLE "+prefix+"_thing (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(32) NOT NULL, image VARCHAR(16) NOT NULL, importance SMALLINT DEFAULT 1, PRIMARY KEY(id))");
 		stmnt.executeUpdate("CREATE TABLE "+prefix+"_area (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, title VARCHAR(64) NOT NULL, parent_id INT DEFAULT 0, PRIMARY KEY(id))");
 		
-		stmnt.executeUpdate("CREATE TABLE "+prefix+"_things (id INT NOT NULL AUTO_INCREMENT, thing_id int NOT NULL, name VARCHAR(32) NOT NULL, x INT NOT NULL, y INT NOT NULL, sx INT NOT NULL, sy INT NOT NULL, PRIMARY KEY(id))");
+		stmnt.executeUpdate("CREATE TABLE "+prefix+"_things (id INT NOT NULL AUTO_INCREMENT, thing_id int NOT NULL, "+
+				"name VARCHAR(32) NOT NULL, title VARCHAR(64) NOT NULL, importance SMALLINT DEFAULT 1, "+
+				"x INT NOT NULL, y INT NOT NULL, sx INT NOT NULL, sy INT NOT NULL, "+
+				"PRIMARY KEY(id))");
 
 		stmnt.executeUpdate("CREATE TABLE "+prefix+"_map (x INT NOT NULL, y INT NOT NULL, "+
 				"terrain_id INT NOT NULL, feature_id INT DEFAULT 0, area_id INT DEFAULT 0, "+
@@ -244,16 +255,16 @@ public class MapManager {
 		addTerrain(prefix, "boreal.forest", "Boreal forest", "boreal_forest", 0, 60, 0, 75, "AAEEAA");
 		addTerrain(prefix, "arctic.snow", "Snow", "snow", 0, 0, 0, 0, "FFFFFF");
 		
-		addThing(prefix, "settlement.village", "Village", "village");
-		addThing(prefix, "settlement.town", "Town", "town");
-		addThing(prefix, "settlement.city", "City", "city");
-		addThing(prefix, "settlement.largecity", "Large city", "large-city");
-		addThing(prefix, "castle.keep", "Keep", "keep");
-		addThing(prefix, "castle.castle", "Castle", "castle");
-		addThing(prefix, "misc.ruins", "Ruins", "ruins");
-		addThing(prefix, "misc.mines", "Mines", "mines");
-		addThing(prefix, "misc.label", "Label", "label");
-		addThing(prefix, "misc.peak", "Peak", "peak");
+		addThing(prefix, "settlement.village", "Village", "village", (short)0);
+		addThing(prefix, "settlement.town", "Town", "town", (short)1);
+		addThing(prefix, "settlement.city", "City", "city", (short)2);
+		addThing(prefix, "settlement.largecity", "Large city", "large-city", (short)3);
+		addThing(prefix, "castle.keep", "Keep", "keep", (short)1);
+		addThing(prefix, "castle.castle", "Castle", "castle", (short)2);
+		addThing(prefix, "misc.ruins", "Ruins", "ruins", (short)0);
+		addThing(prefix, "misc.mines", "Mines", "mines", (short)0);
+		addThing(prefix, "misc.label", "Label", "label", (short)1);
+		addThing(prefix, "misc.peak", "Peak", "peak", (short)1);
 		
 		addArea(prefix, "Unnamed", "unnamed", 0);
 		
@@ -308,12 +319,13 @@ public class MapManager {
 		ps.execute();				
 	}
 
-	private void addThing(String prefix, String name, String title, String image) throws SQLException {
-		PreparedStatement	ps = cx.prepareStatement("INSERT INTO "+prefix+"_thing (name, title, image) VALUES(?,?,?)");
+	private void addThing(String prefix, String name, String title, String image, short importance) throws SQLException {
+		PreparedStatement	ps = cx.prepareStatement("INSERT INTO "+prefix+"_thing (name, title, image, importance) VALUES(?,?,?,?)");
 		
 		ps.setString(1, name);
 		ps.setString(2, title);
 		ps.setString(3, image);
+		ps.setShort(4, importance);
 		
 		ps.execute();				
 	}
@@ -362,8 +374,8 @@ public class MapManager {
 			System.out.println("No database");
 		}
 		
-		manager.deleteMap("eorthe");
-		manager.createMap("eorthe", "World of Eorthe", 8000, 4000, true);
+		//manager.deleteMap("eorthe");
+		//manager.createMap("eorthe", "World of Eorthe", 8000, 4000, true);
 		//System.out.println(manager.getMap("eorthe").getTitle());
 		//manager.deleteMap("test2");
 		//manager.createMap("test2", "Two layer test", 1000, 1000, true);
