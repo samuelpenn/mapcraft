@@ -171,11 +171,20 @@ public class MapInfo {
 		throw new MapEntityException("NamedArea", name, "Unable to find named area");
 	}
 	
+	public List<NamedArea> getNamedAreas() {
+		ArrayList<NamedArea> children = new ArrayList<NamedArea>();
+		
+		for (NamedArea a : areas.values()) {
+			children.add(a);
+		}
+		return children;		
+	}
+	
 	public List<NamedArea> getChildAreas(NamedArea area) {
 		ArrayList<NamedArea> children = new ArrayList<NamedArea>();
 		
 		for (NamedArea a : areas.values()) {
-			if (a.getParentId() == area.getId()) {
+			if (area == null || a.getParentId() == area.getId()) {
 				children.add(a);
 				children.addAll(getChildAreas(a));
 			}

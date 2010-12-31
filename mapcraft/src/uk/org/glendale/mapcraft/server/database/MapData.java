@@ -46,6 +46,7 @@ public class MapData {
 	private PreparedStatement	insertTerrain;
 	private PreparedStatement	selectSector;
 	private PreparedStatement	selectPlaces;
+	private PreparedStatement   selectTile;
 	
 	private void prepareStatements() throws SQLException {
 		deleteTerrain = cx.prepareStatement("DELETE FROM "+prefix+"_map WHERE x=? AND y=?");
@@ -53,6 +54,7 @@ public class MapData {
 		
 		selectSector = cx.prepareStatement("SELECT x, y, terrain_id, feature_id, area_id FROM "+prefix+"_map WHERE x >= ? AND x < ? AND y >= ? AND y < ?");
 		selectPlaces = cx.prepareStatement("SELECT id, thing_id, name, title, importance, x, y, sx, sy FROM "+prefix+"_things WHERE x >= ? AND x < ? AND y >= ? AND y < ?");
+		selectTile = cx.prepareStatement("SELECT x, y, terrain_id, feature_id, area_id FROM "+prefix+"_map WHERE x=? AND y=?");
 	}
 	
 	public void setTile(int x, int y, int terrainId, int featureId, int areaId) throws SQLException {
@@ -68,6 +70,54 @@ public class MapData {
 		insertTerrain.setInt(4, featureId);
 		insertTerrain.setInt(5, areaId);
 		insertTerrain.executeUpdate();
+	}
+	
+	/**
+	 * Gets the specified tile without any caching. Should be used when tiles are
+	 * being read sparsely in a way that makes the caching mechanism detrimental.
+	 * If the specified tile hasn't been defined, then the sub-sector or sector
+	 * equivalent will be returned instead. In this case, the x/y coordinate of
+	 * the tile will be that of the tile actually returned.
+	 * 
+	 * @param x		X coordinate of tile to be read.
+	 * @param y		Y coordinate of tile to be read.
+	 *
+	 * @return
+	 * @throws SQLException
+	 */
+	public MapTile getTile(int x, int y) throws SQLException {
+		MapTile		tile = null;
+		
+		selectTile.clearParameters();
+		selectTile.setInt(1, x);
+		selectTile.setInt(2, y);
+		
+		ResultSet	rs = null;
+		
+		try {
+			rs = selectTile.executeQuery();
+			if (!rs.next()) {
+				// No exact tile, look for sub-sector.
+				selectTile.setInt(1, x - x%8);
+				selectTile.setInt(2, y - y%10);
+				rs = selectTile.executeQuery();
+				if (!rs.next()) {
+					// No sub-sector, look for sector.
+					selectTile.setInt(1, x - x%32);
+					selectTile.setInt(2, y - y%40);
+					rs = selectTile.executeQuery();
+					if (!rs.next()) {
+						return tile;
+					}
+				}
+			}
+			tile = new MapTile(rs.getInt("x"), rs.getInt("y"), rs.getInt("terrain_id"), rs.getInt("feature_id"), rs.getInt("area_id"));
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+		}
+		return tile;
 	}
 	
 	/**

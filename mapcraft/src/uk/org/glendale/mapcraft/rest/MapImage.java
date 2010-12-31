@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Samuel Penn, sam@glendale.org.uk
+ * Copyright (C) 2010 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,11 +13,7 @@
 package uk.org.glendale.mapcraft.rest;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.sql.*;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
 
 import uk.org.glendale.mapcraft.MapEntityException;
 import uk.org.glendale.mapcraft.graphics.MapSector;
@@ -25,12 +21,10 @@ import uk.org.glendale.mapcraft.graphics.MapSector.Scale;
 import uk.org.glendale.mapcraft.map.Map;
 import uk.org.glendale.mapcraft.map.NamedArea;
 import uk.org.glendale.mapcraft.server.AppManager;
-import uk.org.glendale.mapcraft.server.database.MapData;
 import uk.org.glendale.mapcraft.server.database.MapInfo;
 import uk.org.glendale.mapcraft.server.database.MapManager;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 
 /**
  * 
@@ -43,12 +37,46 @@ import javax.ws.rs.core.MediaType;
 @Path("/map/{mapname}")
 public class MapImage {
 	
+	@GET
+	@Path("/world")
+	@Produces("image/jpeg")
+	public File getImageOfWorld(@PathParam("mapname") String mapName,
+								@QueryParam("force") @DefaultValue("false") boolean force) throws SQLException, IOException {
+		
+		MapManager		manager = new MapManager(AppManager.getInstance().getDatabaseConnection());
+		
+		Map				map = manager.getMap(mapName);
+		MapInfo			info = map.getInfo();
+				
+		String		root = AppManager.getInstance().getRootPath();
+		String		filename = String.format("%s-world.jpg", mapName);
+		File		image = new File(root+"/images/cache/"+filename);
+		
+		if (force || !image.exists()) {
+			MapSector	imageMap = new MapSector(map, new File(root+"/images/map/style/colour"));
+			
+			imageMap.setScale(Scale.SECTOR);
+			
+			imageMap.drawOverviewMap(1);
+			imageMap.save(image);
+		}
+		
+		manager.disconnect();
+		return image;
+	}
+	
 	/**
 	 * Gets an image for the given named area. A single image of the whole area
-	 * will be returned.
+	 * will be returned. Normally, only tiles within the named area will be
+	 * drawn, and tiles outside of it will be shaded showing only a land/water
+	 * difference.
 	 * 
-	 * @param mapName
-	 * @param areaName
+	 * @param mapName		Name of map to draw.
+	 * @param areaName		URI of Named Area to display.
+	 * @param borderSize	Size of border in tiles. Defaults to 1.
+	 * @param scale			Scale to be used.
+	 * @param bleed			If true, draw the full rectangle, otherwise leave tiles outside the area blank.
+	 * @param force			Force a redraw of the map, ignoring the cache.
 	 * @return
 	 */
 	@GET

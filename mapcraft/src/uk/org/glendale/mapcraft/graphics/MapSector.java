@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ import uk.org.glendale.mapcraft.map.Rectangle;
 import uk.org.glendale.mapcraft.map.Sector;
 import uk.org.glendale.mapcraft.map.Terrain;
 import uk.org.glendale.mapcraft.map.Tile;
+import uk.org.glendale.mapcraft.server.database.MapTile;
 
 
 /**
@@ -258,32 +260,38 @@ public class MapSector {
 	public void drawOverviewMap(int size) throws IOException {
 		drawOverviewMap(0, 0, map.getInfo().getWidth(), map.getInfo().getHeight());
 	}
-	
+		
 	public void drawOverviewMap(int orgX, int orgY, int width, int height) throws IOException {
 		int		pixelWidth = 4;
 		int		pixelHeight = 5;
 		int		xStep = 1;
 		int		yStep = 1;
+		int		minImportance = 3;
 		
 		switch (scale) {
 		case STANDARD:
+			minImportance = 1;
 			break;
 		case COMPACT:
+			minImportance = 2;
 			pixelWidth = 4;
 			pixelHeight = 5;
 			break;
 		case LARGE:
+			minImportance = 3;
 			pixelWidth = 10;
 			pixelHeight = 11;
 			xStep = yStep = 4;
 			break;
 		case SUBSECTOR:
+			minImportance = 4;
 			pixelWidth = 4;
 			pixelHeight = 5;
 			xStep = 8;
 			yStep = 10;
 			break;
 		case SECTOR:
+			minImportance = 5;
 			pixelWidth = 4;
 			pixelHeight = 5;
 			xStep = 32;
@@ -294,6 +302,9 @@ public class MapSector {
 		
 		image = new SimpleImage(pixelWidth * width / xStep, 
 								pixelHeight * height / yStep, "#FFFFFF");
+		
+		Hashtable<String,Image> colourTiles = new Hashtable<String,Image>();
+		colourTiles.put("#E0E0E0", SimpleImage.createImage(pixelWidth, pixelHeight, "#E0E0E0"));
 
 		for (int y=orgY; y < orgY+height; y+= yStep) {
 			if (y%10 == 0) System.out.println(y);
@@ -301,21 +312,49 @@ public class MapSector {
 				try {
 					int		px = ((x-orgX) * pixelWidth) / xStep;
 					int		py = ((y-orgY) * pixelHeight) / yStep;
-					if (allowedAreas != null && !allowedAreas.contains(map.getArea(x, y))) {
-						if (map.getInfo().getTerrain(map.getTerrain(x, y)).getWater() < 100) {
+					
+					MapTile	tile = map.getData().getTile(x, y);
+					
+					if (allowedAreas != null && !allowedAreas.contains(tile.getAreaId())) {
+						if (map.getInfo().getTerrain(tile.getTerrainId()).getWater() < 100) {
 							if (hideAsGrey) {
-								Image	i = SimpleImage.createImage(pixelWidth, pixelHeight, "#E0E0E0");
-								image.paint(i, px, py, pixelWidth, pixelHeight);
+								image.paint(colourTiles.get("#E0E0E0"), px, py, pixelWidth, pixelHeight);
 							}
 							continue;
 						}
 					}
-					Terrain	t = map.getInfo().getTerrain(map.getTerrain(x, y));
-					Image	i = SimpleImage.createImage(pixelWidth, pixelHeight, t.getColour());
+					Terrain	t = map.getInfo().getTerrain(tile.getTerrainId());
+					Image	i = colourTiles.get(t.getColour());
+					if (i == null) {
+						i = SimpleImage.createImage(pixelWidth, pixelHeight, t.getColour());
+						colourTiles.put(t.getColour(), i);
+					}
 					image.paint(i, px, py, pixelWidth, pixelHeight);					
 				} catch (Throwable e) {
 				}
 			}
+		}
+
+		try {
+			List<NamedPlace> places = map.getInfo().getNamedPlaces(orgX, orgY, orgX+width, orgY+height);
+			
+			for (NamedPlace place : places) {
+				if (place.getImportance() < minImportance) {
+					continue;
+				}
+				int		px = ((place.getX()-orgX) * pixelWidth) / xStep;
+				int		py = ((place.getY()-orgY) * pixelHeight) / yStep;
+				
+				System.out.println(place.getName()+" ("+place.getX()+","+place.getY()+")");
+				if (allowedAreas != null && !allowedAreas.contains(map.getArea(place.getX(), place.getY()))) {
+					continue;
+				}
+				Image	i = getIcon(map.getInfo().getThing(place.getThingId()));
+				image.circle(px, py, 5, "#000000");
+				image.text(px, py, place.getTitle(), Font.PLAIN, 12, "#000000");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
