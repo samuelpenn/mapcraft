@@ -14,31 +14,53 @@
 	</f:metadata>
 
 	<h:head>
-		<title>Mapcraft</title>
+		<title>${serverInfo.map.title}</title>
 	</h:head>
-	
-	<h:body>
-		<h1>${serverInfo.map.title}</h1>
 
-		<table>
-			<tr>
-				<th>Map Id</th>
-				<td>${serverInfo.map.name}</td>
-			</tr>
-			<tr>
-				<th>Map Title</th>
-				<td>${serverInfo.map.title}</td>
-			</tr>
-			<tr>
-				<th>Width</th>
-				<td>${serverInfo.map.info.width}</td>
-			</tr>
-			<tr>
-				<th>Height</th>
-				<td>${serverInfo.map.info.height}</td>
-			</tr>
-		</table>
-		
-		<h:link outcome="map">View Map</h:link>
+	<h:body>
+		<ui:composition template="templates/main.xhtml">
+			<ui:define name="title">
+				${serverInfo.map.title}
+			</ui:define>
+			
+			<ui:define name="body">
+				<h4>Overview</h4>
+
+				<table id="mapOverview">
+					<tr>
+						<th>Map Id</th>
+						<td>${serverInfo.map.name}</td>
+					</tr>
+					<tr>
+						<th>Map Title</th>
+						<td>${serverInfo.map.title}</td>
+					</tr>
+					<tr>
+						<th>Width</th>
+						<td>
+							<h:outputText value="${serverInfo.map.info.width}">
+								<f:convertNumber type="number" />
+							</h:outputText>
+						</td>
+					</tr>
+					<tr>
+						<th>Height</th>
+						<td>
+							<h:outputText value="${serverInfo.map.info.height}">
+								<f:convertNumber type="number" />
+							</h:outputText>
+						</td>
+					</tr>
+				</table>
+				<h:link outcome="map">View Map</h:link>
+				
+				<h4>Named Areas</h4>
+				
+				<c:forEach var="area" items="${serverInfo.map.info.namedAreas}">
+					<h:outputLink value="/mapcraft/rest/map/${serverInfo.map.name}/area/${area.name}">${area.title}</h:outputLink>, 
+				</c:forEach>
+			</ui:define>
+		</ui:composition>		
 	</h:body>
+	
 </html>

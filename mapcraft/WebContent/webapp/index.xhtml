@@ -14,39 +14,31 @@
 	</h:head>
 	
 	<h:body>
-		<h1>Mapcraft</h1>
-		
-		<p>
-			<!--
-				Uses uk.org.glendale.mapcraft.server.ServerInfo
-				This is defined as a @ManagedBean in the class definition. 
-			-->
-			Just a test page for <b>${serverInfo.serverName}</b>
-		</p>
-		
-		<h4>List of Maps</h4>
-		
-		<!-- Should use ui:repeat, but doesn't work -->
-
-		<ul>
-			<c:forEach var="map" items="${serverInfo.maps}">
-				<!-- <li><a href="mapinfo.xhtml?name=${map.name}">${map.title}</a></li> -->
-				<li>
-					<h:link outcome="mapinfo" value="${map.title}">
-						<f:param name="name" value="${map.name}"/>
-					</h:link>
-				</li>
-			</c:forEach>
-		</ul>
-		
-				
-		<h:form>
-			<h:inputText id="mapId" value="">
-			</h:inputText>
+		<ui:composition template="templates/main.xhtml">
+			<ui:define name="title">
+				${serverInfo.serverName}
+			</ui:define>
 			
-			<h:commandButton id="submit" value="Submit" action="/mapcraft/rest/test"/>
-		
-		
-		</h:form>
+			<ui:define name="body">
+				<h4>Available Maps</h4>
+				<ul>
+					<!-- Should use ui:repeat, but doesn't work -->
+					<c:forEach var="map" items="${serverInfo.maps}">
+						<li>
+							<h:link outcome="mapinfo" value="${map.title}">
+								<f:param name="name" value="${map.name}"/>
+							</h:link>
+						</li>
+					</c:forEach>
+				</ul>
+
+				<h:form>
+					<h:inputText id="mapId" value="">
+					</h:inputText>
+					
+					<h:commandButton id="submit" value="Submit" action="/mapcraft/rest/test"/>
+				</h:form>
+			</ui:define>
+		</ui:composition>		
 	</h:body>
 </html>

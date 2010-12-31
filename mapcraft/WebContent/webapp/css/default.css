@@ -1,0 +1,26 @@
+div#header {
+	background-color: green;
+	border: 0px;
+	padding: 0.5em;
+}
+
+div#header h1 {
+	color: white;
+	padding: 0px;
+	margin: 0px;
+}
+
+table#mapOverview {
+}
+
+table#mapOverview th {
+	text-align: left;
+	background-color: green;
+	color: white;
+	font-weight: bold;
+	padding-right: 1em;
+}
+
+table#mapOverview td {
+	text-align: left;
+}
