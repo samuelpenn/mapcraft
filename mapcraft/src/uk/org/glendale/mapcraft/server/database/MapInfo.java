@@ -5,10 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
 import javax.faces.bean.*;
+
+import org.apache.commons.collections.list.TreeList;
 
 import uk.org.glendale.mapcraft.MapEntityException;
 import uk.org.glendale.mapcraft.map.NamedArea;
@@ -171,15 +174,19 @@ public class MapInfo {
 		throw new MapEntityException("NamedArea", name, "Unable to find named area");
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<NamedArea> getNamedAreas() {
 		ArrayList<NamedArea> children = new ArrayList<NamedArea>();
 		
 		for (NamedArea a : areas.values()) {
 			children.add(a);
 		}
+		Collections.sort(children);
+
 		return children;		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<NamedArea> getChildAreas(NamedArea area) {
 		ArrayList<NamedArea> children = new ArrayList<NamedArea>();
 		
@@ -189,6 +196,9 @@ public class MapInfo {
 				children.addAll(getChildAreas(a));
 			}
 		}
+		
+		Collections.sort(children);
+		
 		return children;
 	}
 	

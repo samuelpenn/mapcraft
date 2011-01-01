@@ -16,6 +16,8 @@
 	<h:head>
 		<title>${serverInfo.map.title}</title>
 	</h:head>
+	
+	 
 
 	<h:body>
 		<ui:composition template="templates/main.xhtml">
@@ -23,21 +25,29 @@
 				${serverInfo.map.title}
 			</ui:define>
 			
+			<ui:define name="scripts">
+				<h:outputScript library="js" name="jquery.js" />
+				<h:outputScript library="js" name="mapinfo.js" />
+			</ui:define>
+			
 			<ui:define name="body">
 				<h4>Overview</h4>
+				
+				<h:graphicImage url="rest/map/${serverInfo.map.name}/world" width="640" alt="Map of World" 
+								style="float:right" id="worldmap"/>
 
 				<table id="mapOverview">
 					<tr>
 						<th>Map Id</th>
-						<td>${serverInfo.map.name}</td>
+						<td id="mapName">${serverInfo.map.name}</td>
 					</tr>
 					<tr>
 						<th>Map Title</th>
-						<td>${serverInfo.map.title}</td>
+						<td id="mapTitle">${serverInfo.map.title}</td>
 					</tr>
 					<tr>
 						<th>Width</th>
-						<td>
+						<td id="mapWidth">
 							<h:outputText value="${serverInfo.map.info.width}">
 								<f:convertNumber type="number" />
 							</h:outputText>
@@ -45,7 +55,7 @@
 					</tr>
 					<tr>
 						<th>Height</th>
-						<td>
+						<td id="mapHeight">
 							<h:outputText value="${serverInfo.map.info.height}">
 								<f:convertNumber type="number" />
 							</h:outputText>

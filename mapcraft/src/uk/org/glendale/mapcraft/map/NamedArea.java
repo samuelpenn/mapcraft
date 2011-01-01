@@ -24,5 +24,4 @@ public class NamedArea extends Tile {
 	public int getParentId() {
 		return parentId;
 	}
-
 }

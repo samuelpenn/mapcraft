@@ -6,7 +6,7 @@ package uk.org.glendale.mapcraft.map;
  * 
  * @author Samuel Penn
  */
-public abstract class Tile {
+public abstract class Tile implements Comparable {
 	private int			id;
 	private String		name;
 	private String		title;
@@ -94,4 +94,16 @@ public abstract class Tile {
 	}
 	
 	public abstract String getPrefix();
+	
+	public int compareTo(Object o) {
+		if (o instanceof Tile) {
+			Tile	t = (Tile)o;
+			if (t.getTitle().equals(title)) {
+				return getName().compareTo(t.getName());
+			} else {
+				return getTitle().compareTo(t.getTitle());
+			}
+		}
+		return name.compareTo(o.toString());
+	}
 }

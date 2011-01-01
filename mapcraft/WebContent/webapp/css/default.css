@@ -24,3 +24,7 @@ table#mapOverview th {
 table#mapOverview td {
 	text-align: left;
 }
+
+.red {
+	background-color: red;
+}
