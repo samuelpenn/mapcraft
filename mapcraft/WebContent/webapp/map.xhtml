@@ -10,8 +10,10 @@
       xmlns:c="http://java.sun.com/jsp/jstl/core">
       
 	<f:metadata>
-		<f:viewParam name="name" value="#{mapInfo.name}"/>
-		<f:viewParam name="title" value="#{mapInfo.title}"/>
+		<f:viewParam name="name" value="#{mapView.name}"/>
+		<f:viewParam name="x" value="#{mapView.x}"/>
+		<f:viewParam name="y" value="#{mapView.y}"/>
+		<f:viewParam name="name" value="#{serverInfo.currentMap}"/>
 	</f:metadata>
 
 	<h:head>
@@ -19,10 +21,28 @@
 	</h:head>
 	
 	<h:body>
-		<ui:composition template="map-template.xhtml">
+		<ui:composition template="templates/map.xhtml">
 			<ui:define name="title">
 				${serverInfo.map.title}
 			</ui:define>
+
+			<ui:define name="scripts">
+				<h:outputScript library="js" name="jquery.js" />
+				<h:outputScript library="js" name="jquery-ui.js" />
+				<h:outputScript library="js" name="map.js" />
+			</ui:define>
+			
+			<ui:define name="data">
+				<form>
+					<input name="name" id="name" type="hidden" value="#{mapView.name}"/>
+					<input name="x" id="x" type="hidden" value="#{mapView.x}"/>
+					<input name="y" id="y" type="hidden" value="#{mapView.y}"/>
+				</form>
+			</ui:define>
+						
+			<ui:define name="body">
+			</ui:define>
+			
 		</ui:composition>		
 	</h:body>
 </html>

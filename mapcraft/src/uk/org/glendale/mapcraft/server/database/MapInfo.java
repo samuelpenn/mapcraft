@@ -258,8 +258,19 @@ public class MapInfo {
 		}
 	}
 	
+	/**
+	 * Gets the bounding box for the given named area. If the area
+	 * is not found on the map, then an empty rectangle is returned.
+	 * 
+	 * @param area		Area to find the bounds for.
+	 * @return			Rectangle describing the area.
+	 */
 	public Rectangle getNamedAreaBounds(NamedArea area) {
 		Rectangle bounds;
+		
+		if (area == null) {
+			throw new IllegalArgumentException("Cannot get bounds of null area");
+		}
 		
 		Connection			cx = manager.getConnection();
 		ResultSet			rs = null;
@@ -285,7 +296,7 @@ public class MapInfo {
 				// may be the only tile in a sector, so actually covers the whole sector.
 				bounds = new Rectangle(west, north, east-west, south-north);
 			} else {
-				return null;
+				return new Rectangle(0, 0, 0, 0);
 			}
 			rs.close();
 		} catch (SQLException e) {

@@ -3,12 +3,16 @@ package uk.org.glendale.mapcraft.graphics;
 import java.awt.Font;
 import java.awt.Image;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import uk.org.glendale.graphics.SimpleImage;
@@ -34,11 +38,16 @@ public class MapSector {
 	private Map			map = null;
 	private boolean		bleeding = false;
 	SimpleImage			image;
-	private double		zoom = 1.00;
 	private Scale		scale = Scale.STANDARD;
 	private boolean		hideAsGrey = false;
 	
 	private Set<Integer>	allowedAreas = null;
+	
+	private int			iconWidth = 0;
+	private int			iconHeight = 0;
+	private int			tileWidth = 0;
+	private int			tileHeight = 0;
+	private int			tileHalfHeight = 0;
 	
 	public enum Scale {
 		STANDARD,   // Normal
@@ -51,6 +60,23 @@ public class MapSector {
 	public MapSector(Map map, File imageFolder) {
 		this.map = map;
 		this.imageFolder = imageFolder;
+		
+		Properties	properties = new Properties();
+		try {
+			properties.load(new FileInputStream(new File(imageFolder.getAbsolutePath()+"/icons.properties")));
+			
+			iconWidth = Integer.parseInt(properties.getProperty("icon.width", "65"));
+			iconHeight = Integer.parseInt(properties.getProperty("icon.height", "65"));
+			tileWidth = Integer.parseInt(properties.getProperty("tile.width", "49"));
+			tileHeight = Integer.parseInt(properties.getProperty("tile.height", "54"));
+			tileHalfHeight = tileHeight/2;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -108,10 +134,6 @@ public class MapSector {
 		}
 	}
 	
-	public void setZoom(double zoom) {
-		this.zoom = zoom;
-	}
-	
 	public void save(File file) throws IOException {
 		image.save(file);
 	}
@@ -150,7 +172,7 @@ public class MapSector {
 	 * @throws IOException
 	 */
 	public void drawMap(int orgX, int orgY, int width, int height) throws IOException {
-		image = new SimpleImage((int)(zoom*(width*49+25)), (int)(zoom * (height*54+54)), "#FFFFFF");
+		image = new SimpleImage(width*tileWidth+(bleeding?0:tileWidth/2), height*tileHeight+tileHeight, "#FFFFFF");
 
 		// Always start on an even column.
 		orgX -= orgX%2;
@@ -168,43 +190,43 @@ public class MapSector {
 		for (int y=orgY-(bleeding?1:0); y < orgY+height+(bleeding?1:0); y++) {
 			// Even columns.
 			for (int x=orgX-(bleeding?2:0); x < orgX+width+(bleeding?2:0); x+=2) {
-				int		px = (int)(zoom * ((x-orgX)*49));
-				int		py = (int)(zoom * ((y-orgY)*54+(x%2)*27));
+				int		px = (x-orgX)*tileWidth;
+				int		py = (y-orgY)*tileHeight+(x%2)*tileHalfHeight;
 
 				if (allowedAreas != null && !allowedAreas.contains(map.getArea(x, y))) {
 					if (hideAsGrey && map.getInfo().getTerrain(map.getTerrain(x, y)).getWater() < 100) {
-						image.paint(getGreyIcon(), px, py, (int)(zoom*65), (int)(zoom*65));
+						image.paint(getGreyIcon(), px, py, iconWidth, iconWidth);
 					}
 					continue;
 				}
 				try {
 					Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
-					image.paint(i, px, py, (int)(zoom*65), (int)(zoom*65));
+					image.paint(i, px, py, iconWidth, iconHeight);
 					
 					if (map.getFeature(x, y) > 0) {
 						i = getIcon(map.getInfo().getFeature(map.getFeature(x, y)));
-						image.paint(i, px, py, (int)(zoom*65), (int)(zoom*65));
+						image.paint(i, px, py, iconWidth, iconHeight);
 					}
 				} catch (Throwable e) {
 				}
 			}
 			// Odd columns (which can overlap higher, even, columns.
 			for (int x=orgX+1-(bleeding?2:0); x < orgX+width+(bleeding?2:0); x+=2) {
-				int		px = (int)(zoom * ((x-orgX)*49));
-				int		py = (int)(zoom * ((y-orgY)*54+(x%2)*27));
+				int		px = (x-orgX)*tileWidth;
+				int		py = (y-orgY)*tileHeight+(x%2)*tileHalfHeight;
 				if (allowedAreas != null && !allowedAreas.contains(map.getArea(x, y))) {
 					if (hideAsGrey && map.getInfo().getTerrain(map.getTerrain(x, y)).getWater() < 100) {
-						image.paint(getGreyIcon(), px, py, (int)(zoom*65), (int)(zoom*65));
+						image.paint(getGreyIcon(), px, py, iconWidth, iconHeight);
 					}
 					continue;
 				}
 				try {
 					Image	i = getIcon(map.getInfo().getTerrain(map.getTerrain(x, y)));
-					image.paint(i, px, py, (int)(zoom*65), (int)(zoom*65));
+					image.paint(i, px, py, iconWidth, iconHeight);
 
 					if (map.getFeature(x, y) > 0) {
 						i = getIcon(map.getInfo().getFeature(map.getFeature(x, y)));
-						image.paint(i, px, py, (int)(zoom*65), (int)(zoom*65));
+						image.paint(i, px, py, iconWidth, iconHeight);
 					}
 				} catch (Throwable e) {
 				}
@@ -220,10 +242,10 @@ public class MapSector {
 					continue;
 				}
 				Image	i = getIcon(map.getInfo().getThing(place.getThingId()));
-				int		px = (int)(zoom * ((place.getX()-orgX)*49));
-				int		py = (int)(zoom * ((place.getY()-orgY)*54+(place.getX()%2)*27));
-				image.paint(i, px, py, (int)(zoom*65), (int)(zoom*65));
-				image.text(px-40, py+80, place.getName(), Font.PLAIN, 16, "#000000");
+				int		px = (place.getX()-orgX)*tileWidth;
+				int		py = (place.getY()-orgY)*tileHeight+(place.getX()%2)*tileHalfHeight;
+				image.paint(i, px, py, tileWidth, tileHeight);
+				image.text(px-20, py+80, place.getName(), Font.PLAIN, 16, "#000000");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

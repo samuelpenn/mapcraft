@@ -8,15 +8,16 @@
       
 	<head>
 		<title><ui:insert name="title">Placeholder title</ui:insert></title>
-		<link href="../css/default.css" rel="stylesheet" media="screen"/>
+		<link href="css/default.css" rel="stylesheet" media="screen"/>
+		<ui:insert name="scripts"></ui:insert>
 	</head>
 
 	<body>
-		<div id="header">
-			<h1><ui:insert name="title">Placeholder title</ui:insert></h1>
+		<div id="data">
+			<ui:insert name="data"></ui:insert>
 		</div>
 		
-		<div id="map">
+		<div id="map" style="overflow: hidden">
 			<ui:insert name="body">Placeholder body</ui:insert>
 		</div>
 	</body>	

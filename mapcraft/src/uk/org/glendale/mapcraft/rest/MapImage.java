@@ -36,6 +36,7 @@ import javax.ws.rs.*;
  */
 @Path("/map/{mapname}")
 public class MapImage {
+	private String		style = "colour_32";
 	
 	@GET
 	@Path("/world")
@@ -53,7 +54,7 @@ public class MapImage {
 		File		image = new File(root+"/images/cache/"+filename);
 		
 		if (force || !image.exists()) {
-			MapSector	imageMap = new MapSector(map, new File(root+"/images/map/style/colour"));
+			MapSector	imageMap = new MapSector(map, new File(root+"/images/map/style/"+style));
 			
 			imageMap.setScale(Scale.SECTOR);
 			
@@ -105,7 +106,7 @@ public class MapImage {
 		File		image = new File(root+"/images/cache/"+filename);
 		
 		if (force || !image.exists()) {
-			MapSector	imageMap = new MapSector(map, new File(root+"/images/map/style/colour"));
+			MapSector	imageMap = new MapSector(map, new File(root+"/images/map/style/"+style));
 			
 			imageMap.setScale(scale);
 			
@@ -169,7 +170,7 @@ public class MapImage {
 		File		image = new File(root+"/images/cache/"+filename);
 		
 		if (force || !image.exists()) {
-			MapSector	imageMap = new MapSector(map, new File(root+"/images/map/style/colour"));
+			MapSector	imageMap = new MapSector(map, new File(root+"/images/map/style/"+style));
 			imageMap.setBleeding(bleed);
 			imageMap.drawMap(x, y, width, height);
 			imageMap.save(image);

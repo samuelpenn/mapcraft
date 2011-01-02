@@ -28,3 +28,11 @@ table#mapOverview td {
 .red {
 	background-color: red;
 }
+
+div#map {
+	position: absolute;
+	top: -1000px;
+	left: -1000px;
+	width: 3000px;
+	height: 3000px;
+}

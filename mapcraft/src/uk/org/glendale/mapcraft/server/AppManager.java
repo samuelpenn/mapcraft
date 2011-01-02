@@ -139,13 +139,13 @@ public class AppManager implements ServletContextListener {
 		//System.out.println(map.getTerrain(10,11));
 		//System.out.println(map.getTerrain(10,12));
 		//map.saveAll();
-		MapSector		imageMap = new MapSector(map, new File("/home/sam/src/mapcraft/mapcraft/WebContent/webapp/images/map/style/colour"));
+		MapSector		imageMap = new MapSector(map, new File("/home/sam/src/mapcraft/mapcraft/WebContent/webapp/images/map/style/colour_32"));
 		//imageMap.setBleeding(true);
 		//imageMap.setZoom(1.0);
-		imageMap.setScale(MapSector.Scale.SECTOR);
-		//imageMap.drawMap(3424, 640, 128, 160);
+		//imageMap.setScale(MapSector.Scale.SECTOR);
+		imageMap.drawMap(3812, 986, 32, 40);
 		//imageMap.drawOverviewMap(3424, 640, 960, 600, 1);
-		imageMap.drawOverviewMap(1);
+		//imageMap.drawOverviewMap(1);
 		imageMap.save(new File("/home/sam/hexmap.jpg"));
 	}
 	
