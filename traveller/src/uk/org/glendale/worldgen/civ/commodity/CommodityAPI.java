@@ -21,6 +21,16 @@ public class CommodityAPI {
 		factory = new CommodityFactory();
 	}
 	
+	/**
+	 * Produce goods from a planet's resource. Returns a list of goods which
+	 * can be added to the planet's goods list. There are no side effects to
+	 * this method - it only works out what needs to be done, but doesn't
+	 * actually persist any changes itself.
+	 * 
+	 * @param planet		Planet to produce goods for.
+	 * @param resource		Resource to calculate.
+	 * @return				List of goods and quantities.
+	 */
 	public List<TradeGood> produceFromResource(Planet planet, Resource resource) {
 		Commodity	base = resource.getCommodity();
 		int			density = resource.getDensity();
