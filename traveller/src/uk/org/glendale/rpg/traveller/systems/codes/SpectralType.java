@@ -26,15 +26,25 @@ package uk.org.glendale.rpg.traveller.systems.codes;
  * @author Samuel Penn
  */
 public enum SpectralType  {
+	// < 700K (infrared), sub-brown dwarfs
 	Y9, Y8, Y7, Y6, Y5, Y4, Y3, Y2, Y1, Y0,
+	// 700 - 1,300 K (infrared), methane dwarfs
 	T9, T8, T7, T6, T5, T4, T3, T2, T1, T0,
+	// 1,300 - 2,000 K (dark red), dwarfs
 	L9, L8, L7, L6, L5, L4, L3, L2, L1, L0,
+	// 2,000 - 3,700 K (red)
 	M9, M8, M7, M6, M5, M4, M3, M2, M1, M0,
+	// 3,700 - 5,200 K (orange)
 	K9, K8, K7, K6, K5, K4, K3, K2, K1, K0,
+	// 5,200 - 6000 K (yellow) 
 	G9, G8, G7, G6, G5, G4, G3, G2, G1, G0,
+	// 6,000 - 7,500 K (yellowish white)
 	F9, F8, F7, F6, F5, F4, F3, F2, F1, F0,
+	// 7,500 - 10,000 K (white)
 	A9, A8, A7, A6, A5, A4, A3, A2, A1, A0,
+	// 10,000 - 30,000 K (blue to blue white)
 	B9, B8, B7, B6, B5, B4, B3, B2, B1, B0,
+	// > 33,000 K (white)
 	O9, O8, O7, O6, O5, O4, O3, O2, O1, O0,
 	// White Dwarfs
 	D9, D8, D7, D6, D5, D4, D3, D2, D1, D0,

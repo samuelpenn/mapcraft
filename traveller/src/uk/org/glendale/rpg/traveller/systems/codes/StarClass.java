@@ -182,7 +182,7 @@ public enum StarClass {
 			}
 			break;
 		case II:
-			// Large giant stars
+			// Large (bright) giant stars
 			switch (Die.d6(2)) {
 			case 2: case 3: case 4: case 5:
 			case 6: case 7: case 8: case 9:
