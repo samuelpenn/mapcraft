@@ -25,10 +25,52 @@
             <population>Medium</population>
             <population>Large</population>
         </select>
+        <select code="H3">
+            <population>None</population>
+            <population>Tiny</population>
+            <population>Small</population>
+            <population>Medium</population>
+        </select>
+        <select code="H4">
+            <population>None</population>
+            <population>None</population>
+            <population>None</population>
+            <population>Tiny</population>
+            <population>Tiny</population>
+            <population>Small</population>
+            <population>Small</population>
+            <population>Medium</population>
+        </select>
+        <select code="H5">
+            <population>None</population>
+            <population>None</population>
+            <population>None</population>
+            <population>Tiny</population>
+            <population>Tiny</population>
+            <population>Small</population>
+        </select>
     </worlds>
 
-    <civilisation name="Nomadic Tribes">
-        <population>Small Small Medium</population>
-        <facility name="Nomadic Tribes"/>
+    <civilisation name="Primitive Nomads">
+        <population>Tiny</population>
+        <population>Small</population>
+        <government>Anarchy</government>
+        <techLevel>0</techLevel>
+        <codes>Ag Ni Po</codes>
+        <facility name="Nomadic Tribes" rating="100"/>
+        <facility name="Primitive Hunters" rating="50"/>
+        <facility name="Primitive Gatherers" rating="50"/>
+    </civilisation>
+
+    <civilisation name="Primitive Settlements">
+        <population>Tiny</population>
+        <population>Small</population>
+        <population>Small</population>
+        <government>Anarchy</government>
+        <techLevel>0</techLevel>
+        <codes>Ag Ni Po</codes>
+        <facility name="Nomadic Tribes" rating="100"/>
+        <facility name="Primitive Hunters" rating="50"/>
+        <facility name="Primitive Farmers" rating="75"/>
     </civilisation>
 </civilisations>

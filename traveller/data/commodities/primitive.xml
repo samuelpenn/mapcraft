@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<!-- TL 0 (Stone Age) Commodities -->
+<commodities>
+    <commodity name="Neolithic Goods" parent="Tools">
+        <source>Ag</source><image>pottery</image>
+        <cost>10</cost><law>6</law><tech>0</tech>
+        <pr>1</pr><cr>7</cr>
+        <codes>To HoTl PR</codes>
+    </commodity>
+
+    <commodity name="Stone Tools" parent="Neolithic Goods">
+        <source>Ag</source><image>tools</image>
+        <cost>10</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>4</pr><cr>6</cr>
+        <codes>To HoTl Tp P0</codes>
+    </commodity>
+
+    <commodity name="Neolithic Pottery" parent="Neolithic Goods">
+        <source>Ag</source><image>pottery</image>
+        <cost>10</cost><law>6</law><tech>0</tech>
+        <pr>7</pr><cr>7</cr>
+        <codes>To HoTl HoCk P0</codes>
+    </commodity>
+
+    <commodity name="Stone Weapons" parent="Neolithic Goods">
+        <source>Ag</source><image>tools</image>
+        <cost>10</cost><volume>1</volume>
+        <law>4</law><tech>0</tech>
+        <pr>4</pr><cr>7</cr>
+        <codes>To WpnH Tp P0</codes>
+    </commodity>
+
+    <commodity name="Neolithic Artwork" parent="Neolithic Goods">
+        <source>Ag</source><image>textiles</image>
+        <cost>10</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>5</pr><cr>8</cr>
+        <codes>Lu HoLu Fr Lq P1</codes>
+    </commodity>
+
+    <commodity name="Neolithic Textiles" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>15</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>4</pr><cr>5</cr>
+        <codes>HoTx Tp</codes>
+    </commodity>
+
+</commodities>

@@ -162,8 +162,20 @@ CREATE TABLE facility (id int auto_increment not null, name varchar(64), type va
                        codes varchar(64) not null,
                        PRIMARY KEY(id), UNIQUE KEY(name)) ENGINE=INNODB;
 
+CREATE TABLE facility_requirements (facility_id int not null, code varchar(12) not null, value int not null,
+    FOREIGN KEY (facility_id) REFERENCES facility(id)) ENGINE=INNODB;
+
+CREATE TABLE facility_inputs (facility_id int not null, code varchar(12) not null, value int not null,
+    FOREIGN KEY (facility_id) REFERENCES facility(id)) ENGINE=INNODB;
+
+CREATE TABLE facility_outputs (facility_id int not null, commodity_id int not null, value int not null,
+    FOREIGN KEY (facility_id) REFERENCES facility(id),
+    FOREIGN KEY (commodity_id) REFERENCES commodity(id)) ENGINE=INNODB;
+
 CREATE TABLE facilities (facility_id int not null, planet_id int not null, size int not null,
                          UNIQUE KEY (facility_id, planet_id)) ENGINE=INNODB;
+                         
+
 
 # Standard residential facilities
 INSERT INTO facility VALUES(0, 'Primitive',        'Residential', 'res_primitive',  0,  1, 2, '', '', '');

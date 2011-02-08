@@ -1,25 +1,59 @@
 <?xml version="1.0"?>
 
 <facilities>
-    <facility name="Nomadic Tribes" type="Residential">
-        <image>primitive/tribealnomads</image>
+    <facility name="Primitive Tribes" type="Residential">
+        <image>primitive/tribalnomads</image>
         <tech>0</tech>
         <requirements>
-            <required type="FoHu" value="100"/>
-            <required type="FoGa" value="100"/>
+            <required type="Fo" value="100"/>
             <required type="OrSi" value="10"/>
+            <required type="ClCv" value="25"/>
         </requirements>
-        <map out="Animal Skins"/>
-        <map out="Stone Tools"/>
-        <map out="Stone Weapons"/>
+
+        <map in="To" value="100"/>
+        <map in="HoLu" value="25"/>
+
+        <map out="Neolithic Goods" value="25"/>
     </facility>
 
-    <facility name="Primitive Hunters">
+    <facility name="Primitive Settlements" type="Residential">
+        <image>primitive/tribalsettlements</image>
+        <tech>0</tech>
+        <requirements>
+            <required type="Fo" value="100"/>
+            <required type="OrSi" value="10"/>
+            <required type="ClCv" value="25"/>
+            <required type="BldL" value="25"/>
+        </requirements>
+
+        <map in="To" value="100"/>
+        <map in="HoLu" value="50"/>
+
+        <map out="Neolithic Goods" value="100"/>
+    </facility>
+
+    <facility name="Primitive Hunters" type="Agriculture">
         <image>primitive/hunters</image>
         <tech>0<tech>
-        <requirements/>
 
-        <map in="FoHu" out="Animal Skins"/>
-        <map in="FoHu" out="Meat"/>
+        <process code="FoHu" value="100"/>
     </facility>
+
+    <facility name="Primitive Gatherers" type="Agriculture">
+        <image>primitive/gatherers</image>
+        <tech>0</tech>
+
+        <process code="FoGa" value="100"/>
+        <process code="OrSi" value="10"/>
+    </facility>
+
+    <facility name="Primitive Farmers" type="Agriculture">
+        <image>primitive/farmers</image>
+        <tech>0</tech>
+
+        <process code="FoAg" value="75"/>
+        <process code="FoGa" value="25"/>
+        <process code="FoHd" value="25"/>
+        <process code="OrSi" value="10"/>
+        <process code="BldL" value="25"/>
 </facilities>

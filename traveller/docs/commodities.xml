@@ -433,13 +433,13 @@
     <commodity name="Meat (Small Mammal)" parent="Mammals">
         <source>Ag</source><image>food</image>
         <cost>50</cost><pr>7</pr><cr>9</cr>
-        <codes>Fo FoMe Pe P0 V0</codes>
+        <codes>Fo FoMe Pe P0 V0 VL</codes>
     </commodity>
 
     <commodity name="Meat (Medium Mammal)" parent="Mammals">
         <source>Ag</source><image>food</image>
         <cost>50</cost><pr>7</pr><cr>9</cr>
-        <codes>Fo FoMe Pe P0 V1</codes>
+        <codes>Fo FoMe Pe P0 V1 VL</codes>
     </commodity>
 
     <commodity name="Meat (Large Mammal)" parent="Mammals">
@@ -450,7 +450,7 @@
 
     <commodity name="Furs" parent="Mammals">
         <source>Ag</source><image>furs</image>
-        <cost>20</cost><pr>9</pr><cr>10</cr>
+        <cost>20</cost><pr>9</pr><cr>11</cr>
         <codes>Cl ClCv P2</codes>
     </commodity>
 
@@ -460,7 +460,7 @@
         <source>Ag</source><image>textiles</image>
         <cost>10</cost><volume>1</volume>
         <law>6</law><tech>0</tech>
-        <pr>8</pr><cr>9</cr>
+        <pr>8</pr><cr>10</cr>
         <codes>Cl ClCv Tp P2</codes>
     </commodity>
 
@@ -477,7 +477,7 @@
         <cost>10</cost><volume>1</volume>
         <law>6</law><tech>0</tech>
         <pr>4</pr><cr>7</cr>
-        <codes>WpnH Tp</codes>
+        <codes>To WpnH Tp</codes>
     </commodity>
 
     <commodity name="Neolithic Artwork" parent="Luxuries">
