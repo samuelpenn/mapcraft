@@ -1,0 +1,91 @@
+body {
+	background-color: white;
+	color: black;
+	margin: 0px;
+	padding: 0px;
+}
+
+div.header {
+	background-color: #000044;
+	margin: 0px;
+}
+
+div.header h1 {
+	color: #FFFF88;
+	margin: 0px;
+}
+
+div.header p {
+	margin: 0px;
+	margin-left: 1em;
+	color: white;
+}
+
+div.links {
+	padding-top: 1em;
+	float: left;
+	width: 96px;
+}
+
+div.links a {
+	border: none;
+	margin: 0.5em;
+}
+
+div.body {
+	margin-left: 108px;
+}
+
+div.body ul {
+	list-style-type: none;
+}
+
+div.body ul img {
+	padding-right: 1em;
+}
+
+div.body ul p {
+	margin-left: 0px;
+}
+
+h2 {
+	border-bottom: 2px solid #000044;
+}
+
+p {
+}
+
+table.statistics {
+	margin-left: 1em;
+}
+
+table.statistics th {
+	background-color: #000044;
+	color: white;
+	text-align: left;
+}
+
+table.statistics td {
+	text-align: left;
+	border: 1px solid #000044;
+}
+
+
+table.mainPlanet {
+	width: 100%;
+}
+
+table.mainPlanet th {
+	text-align: left;
+	font-weight: bold;
+	background-color: #662222;
+	color: white;
+}
+
+table.mainPlanet td {
+	text-align: left;
+}
+
+.mainPanel {
+	vertical-align: top;
+}

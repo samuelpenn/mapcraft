@@ -1,0 +1,126 @@
+/*
+ * Copyright (C) 2007 Samuel Penn, sam@glendale.org.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation version 2.
+ * See the file COPYING.
+ *
+ * $Revision: 1.2 $
+ * $Date: 2007/01/01 11:04:14 $
+ */
+
+div#header {
+	background-color: #4a68ea;
+	padding: 3px;
+}
+
+div#header p {
+	margin: 0px;
+	padding 1px;
+	font-weight: bold;
+}
+
+h1 {
+	margin: 0px;
+	padding: 0px;
+	color: white;
+	border-bottom: 2pt solid #070874;
+}
+
+div#trade table {
+	
+}
+
+div#trade table th {
+	align: left;
+	background-color: black;
+	color: white;
+}
+
+div#map {
+	background-color: black;
+}
+
+div#map img {
+	position: relative;
+	vertical-align: center;
+}
+
+div#stars {
+	margin: 0px;
+	padding: 0px;
+	margin-top: 10px;
+}
+
+table#tabs {
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+}
+
+table#tabs tr {
+	margin: 0px;
+	padding: 0px;
+}
+
+table#tabs td {
+	margin: 0px;
+	padding: 0px;
+	height: 96;
+	min-width: 128;
+	text-align: center;
+	vertical-align: center;
+	margin-right: 10px;
+	border-bottom: 3px solid #4a68ea;
+	border-spacing: 5px 0px;
+	background-color: white;
+}
+
+table#tabs td.selected {
+	background-color: black;
+	border: 3px solid #4a68ea;
+	border-bottom: 3px solid white;
+	max-width: 96;
+}
+
+table#tabs td.unselected {
+	border: 1px solid #4a68ea;
+	border-bottom: 3px solid #4a68ea;
+	background-color: black;
+	max-width: 96;
+}
+
+div#planets {
+	margin-top: 0px;
+	padding-top: 0px;
+	border: 1px solid #4a68ea;
+	border-left: 3px solid #4a68ea;
+	border-top: none;
+	padding-left: 5px;
+}
+
+div#planets h2 {
+	margin: 0px;
+	padding: 0px;
+}
+
+div#planets p {
+	margin: 0px;
+	padding: 0px;
+}
+
+div#planets h3 {
+	color: black;
+	background-color: #7a98ff;
+}
+
+div#planets div.moon {
+	margin-left: 50px;
+}
+
+div#planets div.moon h4 {
+	color: black;
+	background-color: #a0d0ff;
+}
+
