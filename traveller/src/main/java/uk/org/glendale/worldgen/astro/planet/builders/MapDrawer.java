@@ -74,11 +74,7 @@ public class MapDrawer {
 			for (int y=0; y < height; y++) {
 				String		name = map[y][x].getRGB(heightMap[y][x]);
 				Image		i = getImage(name, scale);
-            	try {
-					image.paint(i, x*scale, y*scale, scale, scale);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
+				image.paint(i, x*scale, y*scale, scale, scale);
 			}
 		}
 		

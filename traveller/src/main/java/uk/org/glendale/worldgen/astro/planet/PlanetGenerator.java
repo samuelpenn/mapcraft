@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2011 Samuel Penn, sam@glendale.org.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; version 2.
+ * See the file COPYING.
+ */
 package uk.org.glendale.worldgen.astro.planet;
 
 import java.util.ArrayList;
@@ -34,12 +42,29 @@ public class PlanetGenerator {
 	private EntityManager	entityManager;
 	private PlanetBuilder	builder = null;
 	
+	/**
+	 * Create a new PlanetGenerator for a given star in a star system.
+	 * 
+	 * @param entityManager		Persistence manager.
+	 * @param system			Star system that planets are being generated in.
+	 * @param star				Star in that system that is the primary for these planets.
+	 */
 	public PlanetGenerator(EntityManager entityManager, StarSystem system, Star star) {
 		this.entityManager = entityManager;
 		this.system = system;
 		this.star = star;
 	}
 	
+	/**
+	 * Generate a single planet at the given distance with the specified
+	 * name. The type of planet is randomly determined based on the 
+	 * orbital characteristics (mostly temperature).
+	 * 
+	 * @param name			Full name of this planet, including suffixes.
+	 * @param position		Orbital position of planet, where 1 is the first orbit.
+	 * @param distance		Distance of the planet in Mkm.
+	 * @return				Newly generated planet.
+	 */
 	public Planet generatePlanet(String name, int position, int distance) {
 		Temperature		orbitTemperature = StarAPI.getOrbitTemperature(star, distance);
 		
