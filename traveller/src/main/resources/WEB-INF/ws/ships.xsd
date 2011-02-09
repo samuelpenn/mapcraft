@@ -1,0 +1,30 @@
+<?xml version="1.0"? encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:wg="http://glendale.org.uk/worldgen/ws"
+        elementFormDefault="qualified"
+        targetNamespace="http://mycompany.com/hr/schemas">
+
+    <xs:element name="ShipInfoRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="id" type="wg:IdType"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:complexType name="IdType">
+        <xs:sequence>
+            <xs:element name="id" type="xs:integer"/>
+        </xs:sequence>                                                        
+    </xs:complexType>
+
+    <xs:complexType name="ShipType">
+        <xs:sequence>
+            <xs:element name="id" type="xs:integer"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="systemId" type="xs:integer"/>                     
+            <xs:element name="planetId" type="xs:integer"/>                     
+        </xs:sequence>                                                            
+    </xs:complexType>
+</xs:schema>
