@@ -1,0 +1,538 @@
+<?xml version="1.0"?>
+
+<commodities>
+    <commodity name="Minerals">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>100</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>7</pr><cr>8</cr>
+        <codes>Or</codes>
+    </commodity>
+
+    <commodity name="Food">
+        <source>Ag</source>
+        <image>food</image>
+        <cost>25</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>5</pr><cr>5</cr>
+        <codes>Fo</codes>
+    </commodity>
+
+    <commodity name="Textiles">
+        <source>Ag</source>
+        <image>textiles</image>
+        <cost>35</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>5</pr><cr>5</cr>
+        <codes>Cl</codes>
+    </commodity>
+
+    <commodity name="Luxuries">
+        <source>Ag</source>
+        <image>luxuries</image>
+        <cost>1000</cost>
+        <volume>1</volume>
+        <law>5</law>
+        <tech>0</tech>
+        <pr>10</pr><cr>9</cr>
+        <codes>Lu</codes>
+    </commodity>
+
+    <commodity name="Alloys">
+        <source>In</source>
+        <image>alloys</image>
+        <cost>500</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>2</tech>
+        <pr>9</pr><cr>9</cr>
+        <codes>Ma In</codes>
+    </commodity>
+
+    <commodity name="Machinery">
+        <source>In</source>
+        <image>machinery</image>
+        <cost>1500</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>5</tech>
+        <pr>10</pr><cr>10</cr>
+        <codes>Ma In Tl</codes>
+    </commodity>
+
+    <commodity name="Tools">
+        <source>In</source>
+        <image>tools</image>
+        <cost>500</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>10</pr><cr>10</cr>
+        <codes>Ma In Tl</codes>
+    </commodity>
+
+    <commodity name="Computers">
+        <source>In</source>
+        <image>computers</image>
+        <cost>5000</cost>
+        <volume>1</volume>
+        <law>5</law>
+        <tech>7</tech>
+        <pr>11</pr><cr>11</cr>
+        <codes>Ma In TL</codes>
+    </commodity>
+
+    <commodity name="Consumer Goods">
+        <source>In</source>
+        <image>consumer</image>
+        <cost>300</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>1</tech>
+        <pr>9</pr><cr>9</cr>
+    </commodity>
+
+
+    <commodity name="Ferric Ore" parent="Minerals">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>150</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>1</tech>
+        <pr>8</pr>
+        <cr>9</cr>
+        <codes>Or Me</codes>
+    </commodity>
+
+    <commodity name="Rare Metals" parent="Ferric Ore">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>800</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>1</tech>
+        <pr>10</pr>
+        <cr>11</cr>
+        <codes>Or Me</codes>
+    </commodity>
+
+    <commodity name="Heavy Metals" parent="Ferric Ore">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>350</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>1</tech>
+        <pr>9</pr>
+        <cr>10</cr>
+        <codes>Or Me</codes>
+    </commodity>
+
+    <commodity name="Radioactives" parent="Ferric Ore">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>700</cost>
+        <volume>1</volume>
+        <law>1</law>
+        <tech>1</tech>
+        <pr>12</pr>
+        <cr>13</cr>
+        <codes>Or Hz</codes>
+    </commodity>
+
+    <commodity name="Silicate Ore" parent="Minerals">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>50</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>7</pr>
+        <cr>8</cr>
+        <codes>Or</codes>
+	</commodity>
+
+    <commodity name="Silicate Crystals" parent="Silicate Ore">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>250</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>9</pr>
+        <cr>11</cr>
+        <codes>Or</codes>
+    </commodity>
+
+    <commodity name="Carbonic Ore" parent="Minerals">
+        <source>Mi</source>
+        <image>mineral</image>
+        <cost>100</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>7</pr>
+        <cr>8</cr>
+        <codes>Or</codes>
+    </commodity>
+
+    <commodity name="Water" parent="Minerals">
+        <source>Mi</source>
+        <image>water</image>
+        <cost>10</cost>
+        <volume>1</volume>
+        <law>6</law>
+        <tech>0</tech>
+        <pr>2</pr>
+        <cr>4</cr>
+        <codes>Or OrAq De Vi Re In Ag</codes>
+    </commodity>
+
+    <commodity name="Inert Gases" parent="Minerals">
+        <source>Mi</source><image>air</image>
+        <cost>3</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Or OrAu Va Re</codes>
+    </commodity>
+
+    <commodity name="Organic Gases" parent="Inert Gases">
+        <source>Mi</source><image>air</image>
+        <cost>30</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Or OrAu In</codes>
+    </commodity>
+
+    <commodity name="Exotic Gases" parent="Inert Gases">
+        <source>Mi</source><image>air</image>
+        <cost>200</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Or OrAu In</codes>
+    </commodity>
+
+    <commodity name="Corrosive Gases" parent="Inert Gases">
+        <source>Mi</source><image>air</image>
+        <cost>200</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Or OrAu Hz In</codes>
+    </commodity>
+
+    <commodity name="Corrosive Chemicals" parent="Water">
+        <source>Mi</source><image>air</image>
+        <cost>1200</cost><volume>1</volume>
+        <law>6</law><tech>5</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Or OrAq Hz In Mi</codes>
+    </commodity>
+
+    <commodity name="Oxygen" parent="Inert Gases">
+        <source>Mi</source><image>air</image>
+        <cost>5</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>2</pr><cr>5</cr>
+        <codes>Or OrAu Va Vi Re</codes>
+    </commodity>
+
+    <commodity name="Hydrogen" parent="Inert gases">
+        <source>Mi</source><image>air</image>
+        <cost>8</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>2</pr><cr>5</cr>
+        <codes>Or OrAu Sp</codes>
+        <description>
+            Light gas, used as a fuel in starship drives.
+        </description>
+    </commodity>
+
+
+    <commodity name="Deuterium" parent="Water">
+        <source>In</source>
+        <image>water</image>
+        <cost>100</cost>
+        <volume>1</volume>
+        <law>4</law>
+        <tech>7</tech>
+        <pr>7</pr><cr>10</cr>
+        <codes>Or OrAq In Tt Ta Tu</codes>
+        <description>
+            Isotope of Hydrogen, used in nuclear fission.
+        </description>
+    </commodity>
+
+    <commodity name="Helium 3" parent="Minerals">
+        <source>In</source>
+        <image>water</image>
+        <cost>1000</cost>
+        <volume>1</volume>
+        <law>3</law>
+        <tech>7</tech>
+        <pr>9</pr><cr>12</cr>
+        <codes>Or OrAu In Tt Ta Tu</codes>
+        <description>
+            Isotope of Helium, used in nuclear fusion.
+        </description>
+    </commodity>
+
+    <!-- Organic Resources etc -->
+
+    <commodity name="Base Organics" parent="Food">
+        <source>Ag</source><image>food</image>
+        <cost>4</cost><volume>1</volume>
+        <law>6</law><tech>8</tech>
+        <pr>4</pr><cr>5</cr>
+        <codes>Fo FoOr Lq Pe</codes>
+        <description>
+            Base organic matter that is the precursor to life. May
+            be used as a basis for food after extensive processing.
+        </description>
+    </commodity>
+
+    <commodity name="Simple Organics" parent="Food">
+        <source>Ag</source><image>food</image>
+        <cost>7</cost><volume>1</volume>
+        <law>6</law><tech>8</tech>
+        <pr>4</pr><cr>5</cr>
+        <codes>Fo FoOr Lq Pe</codes>
+        <description>
+            Earliest single celled life, may be used as a basis for
+            food after extensive processing.
+        </description>
+    </commodity>
+
+    <commodity name="Algae" parent="Food">
+        <source>Ag</source><image>algae</image>
+        <cost>12</cost><volume>1</volume>
+        <law>6</law><tech>6</tech>
+        <pr>5</pr><cr>6</cr>
+        <codes>Fo FoOr Lq Pe</codes>
+        <description>
+            Simple food product, found on undeveloped worlds.
+        </description>
+    </commodity>
+
+    <commodity name="Plankton" parent="Food">
+        <source>Ag</source><image>plankton</image>
+        <cost>15</cost><volume>1</volume>
+        <law>6</law><tech>6</tech>
+        <pr>4</pr><cr>6</cr>
+        <codes>Fo FoOr Lq Pe</codes>
+        <description>
+            Simple food product.
+        </description>
+    </commodity>
+
+    <commodity name="Simple Marine" parent="food">
+        <source>Ag</source><image>simplemarine</image>
+        <cost>18</cost><volume>1</volume>
+        <law>6</law><tech>6</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Fo FoFi Lq Pe</codes>
+        <description>
+            Simple soft bodied marine creatures, including sponges
+            and jellies.
+        </description>
+    </commodity>
+
+    <commodity name="Crustaceans" parent="food">
+        <source>Ag</source><image>crustacean</image>
+        <cost>21</cost><volume>1</volume>
+        <law>6</law><tech>6</tech>
+        <pr>5</pr><cr>8</cr>
+        <codes>Fo FoFi FoMe Pe</codes>
+        <description>
+            Hard shelled marine animals.
+        </description>
+    </commodity>
+
+    <commodity name="Fish" parent="food">
+        <source>Ag</source><image>fish</image>
+        <cost>21</cost><volume>1</volume>
+        <law>6</law><tech>6</tech>
+        <pr>5</pr><cr>9</cr>
+        <codes>Fo FoFi FoMe Pe VR</codes>
+        <description>
+            Vertabrate marine animals.
+        </description>
+    </commodity>
+
+    <commodity name="Kelp" parent="food">
+        <source>Ag</source><image>seaweed</image>
+        <cost>11</cost><volume>1</volume>
+        <law>6</law><tech>6</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Fo FoFi Lq Pe</codes>
+        <description>
+            Marine plant life.
+        </description>
+    </commodity>
+
+    <commodity name="Moss" parent="food">
+        <source>Ag</source><image>moss</image>
+        <cost>11</cost><volume>1</volume>
+        <law>6</law><tech>3</tech>
+        <pr>6</pr><cr>7</cr>
+        <codes>Fo FoGa Lq Pe</codes>
+        <description>
+            Mosses and lichens, basic land plants. Low quality
+            food product available on simple worlds.
+        </description>
+    </commodity>
+
+    <commodity name="Fungi" parent="food">
+        <source>Ag</source><image>fungi</image>
+        <cost>14</cost><volume>1</volume>
+        <law>6</law><tech>3</tech>
+        <pr>6</pr><cr>7</cr>
+        <codes>Fo FoGa Lq Pe</codes>
+        <description>
+            Fungus based food products.
+        </description>
+    </commodity>
+
+    <commodity name="Ferns" parent="food">
+        <source>Ag</source><image>ferns</image>
+        <cost>17</cost><pr>5</pr><cr>7</cr>
+        <codes>Fo FoGa FoAg Pe</codes>
+    </commodity>
+
+    <commodity name="Wood">
+        <source>Ag</source><image>wood</image>
+        <cost>22</cost><pr>8</pr><cr>10</cr>
+        <codes>BldL</codes>
+    </commodity>
+
+    <commodity name="Animals" parent="food">
+        <source>Ag</source><image>animals</image>
+        <cost>100</cost><pr>10</pr><cr>10</cr>
+        <codes>Fo FoMe</codes>
+    </commodity>
+
+    <commodity name="Insects" parent="Animals">
+        <source>Ag</source><image>insects</image>
+        <cost>14</cost><pr>6</pr><cr>7</cr>
+        <codes>Fo FoMe Lq Pe FoGa</codes>
+    </commodity>
+
+    <commodity name="Mammals" parent="Animals">
+        <source>Ag</source><image>mammals</image>
+        <cost>50</cost><pr>7</pr><cr>9</cr>
+        <codes>Fo FoMe Pe FoHu FoHd PR VR</codes>
+    </commodity>
+
+    <commodity name="Meat (Small Mammal)" parent="Mammals">
+        <source>Ag</source><image>food</image>
+        <cost>50</cost><pr>7</pr><cr>9</cr>
+        <codes>Fo FoMe Pe P0 V0</codes>
+    </commodity>
+
+    <commodity name="Meat (Medium Mammal)" parent="Mammals">
+        <source>Ag</source><image>food</image>
+        <cost>50</cost><pr>7</pr><cr>9</cr>
+        <codes>Fo FoMe Pe P0 V1</codes>
+    </commodity>
+
+    <commodity name="Meat (Large Mammal)" parent="Mammals">
+        <source>Ag</source><image>food</image>
+        <cost>50</cost><pr>7</pr><cr>9</cr>
+        <codes>Fo FoMe Pe P0 V2</codes>
+    </commodity>
+
+    <commodity name="Furs" parent="Mammals">
+        <source>Ag</source><image>furs</image>
+        <cost>20</cost><pr>9</pr><cr>10</cr>
+        <codes>Cl ClCv P2</codes>
+    </commodity>
+
+    <!-- TL 0 (Stone Age) Commodities -->
+
+    <commodity name="Animal Skins" parent="Mammals">
+        <source>Ag</source><image>textiles</image>
+        <cost>10</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>8</pr><cr>9</cr>
+        <codes>Cl ClCv Tp P2</codes>
+    </commodity>
+
+    <commodity name="Stone Tools" parent="Tools">
+        <source>Ag</source><image>textiles</image>
+        <cost>10</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>4</pr><cr>6</cr>
+        <codes>To HoTl Tp</codes>
+    </commodity>
+
+    <commodity name="Stone Weapons" parent="Tools">
+        <source>Ag</source><image>textiles</image>
+        <cost>10</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>4</pr><cr>7</cr>
+        <codes>WpnH Tp</codes>
+    </commodity>
+
+    <commodity name="Neolithic Artwork" parent="Luxuries">
+        <source>Ag</source><image>textiles</image>
+        <cost>10</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>5</pr><cr>8</cr>
+        <codes>Lu HoLu Fr Lq</codes>
+    </commodity>
+
+    <commodity name="Primitive Textiles" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>15</cost><volume>1</volume>
+        <law>6</law><tech>1</tech>
+        <pr>4</pr><cr>5</cr>
+        <codes>Cl ClCv Tp</codes>
+    </commodity>
+
+    <commodity name="Simple Textiles" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>15</cost><volume>1</volume>
+        <law>6</law><tech>2</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Cl ClCv Tp Tm</codes>
+    </commodity>
+
+    <commodity name="Pre-Industrial Textiles" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>20</cost><volume>1</volume>
+        <law>6</law><tech>4</tech>
+        <pr>5</pr><cr>8</cr>
+        <codes>Cl ClCv Tp Tm</codes>
+    </commodity>
+
+    <commodity name="Industrial Textiles" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>25</cost><volume>1</volume>
+        <law>6</law><tech>5</tech>
+        <pr>5</pr><cr>8</cr>
+        <codes>Cl ClCv Tp Tm Ti</codes>
+    </commodity>
+
+    <commodity name="Machined Textiles" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>25</cost><volume>1</volume>
+        <law>6</law><tech>6</tech>
+        <pr>6</pr><cr>9</cr>
+        <codes>Cl ClCv Tp Tm Ti</codes>
+    </commodity>
+
+    <commodity name="Consumer Textiles" parent="Textiles">
+        <source>Ag</source><image>textiles</image>
+        <cost>30</cost><volume>1</volume>
+        <law>6</law><tech>7</tech>
+        <pr>6</pr><cr>9</cr>
+        <codes>Cl ClCv Tp Tm Ti Tt</codes>
+    </commodity>
+</commodities>
