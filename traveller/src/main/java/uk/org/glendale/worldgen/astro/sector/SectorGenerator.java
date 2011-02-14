@@ -29,32 +29,39 @@ import uk.org.glendale.worldgen.text.Names;
  * @author Samuel Penn
  */
 public class SectorGenerator {
-	private EntityManager		entityManager;
-	
+	private EntityManager entityManager;
+
 	/**
 	 * Instantiate a new SectorGenerator with a JPA EntityManager.
 	 * 
-	 * @param entityManager		Persistence manager.
+	 * @param entityManager
+	 *            Persistence manager.
 	 */
 	public SectorGenerator(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
 
 	/**
-	 * Create an empty sector which has no star systems defined.
-	 * X and Y coordinate must be unique, and so must the name.
+	 * Create an empty sector which has no star systems defined. X and Y
+	 * coordinate must be unique, and so must the name.
 	 * 
-	 * @param name			Unique name for the sector.
-	 * @param x				X coordinate for the sector.
-	 * @param y				Y coordinate for the sector.
-	 * @param codes			Codes, if any.
-	 * @param allegiance	Allegiance, if any.
+	 * @param name
+	 *            Unique name for the sector.
+	 * @param x
+	 *            X coordinate for the sector.
+	 * @param y
+	 *            Y coordinate for the sector.
+	 * @param codes
+	 *            Codes, if any.
+	 * @param allegiance
+	 *            Allegiance, if any.
 	 * @return
 	 */
-	public Sector createEmptySector(String name, int x, int y, String codes, String allegiance) {
-		Sector		sector = new Sector(name, x, y, codes, allegiance);
-		
-		EntityTransaction		transaction = entityManager.getTransaction();
+	public Sector createEmptySector(String name, int x, int y, String codes,
+			String allegiance) {
+		Sector sector = new Sector(name, x, y, codes, allegiance);
+
+		EntityTransaction transaction = entityManager.getTransaction();
 		try {
 			transaction.begin();
 			entityManager.persist(sector);
@@ -65,37 +72,39 @@ public class SectorGenerator {
 
 		return sector;
 	}
-	
+
 	/**
-	 * Deletes an existing sector. All star systems and planets within
-	 * the sector are removed first.
+	 * Deletes an existing sector. All star systems and planets within the
+	 * sector are removed first.
 	 * 
-	 * @param sector	Sector to be deleted.
+	 * @param sector
+	 *            Sector to be deleted.
 	 */
 	public void deleteSector(Sector sector) {
 		clearSector(sector);
-		EntityTransaction	transaction = entityManager.getTransaction();
+		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		entityManager.remove(sector);
 		transaction.commit();
 	}
-	
+
 	/**
-	 * Delete all star systems and associated data from the sector.
-	 * Leaves the sector itself as intact, but empty.
+	 * Delete all star systems and associated data from the sector. Leaves the
+	 * sector itself as intact, but empty.
 	 * 
-	 * @param sector		Sector to clear.
+	 * @param sector
+	 *            Sector to clear.
 	 */
 	public void clearSector(Sector sector) {
-		StarSystemFactory	factory = new StarSystemFactory(entityManager);
-		PlanetFactory		pfactory = new PlanetFactory(entityManager);
-		List<StarSystem>	systems = factory.getStarSystemsInSector(sector);
+		StarSystemFactory factory = new StarSystemFactory(entityManager);
+		PlanetFactory pfactory = new PlanetFactory(entityManager);
+		List<StarSystem> systems = factory.getStarSystemsInSector(sector);
 
-		EntityTransaction	transaction = entityManager.getTransaction();
+		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		for (StarSystem system : systems) {
 			System.out.println(system.getName());
-			List<Planet>	planets = pfactory.getPlanets(system);
+			List<Planet> planets = pfactory.getPlanets(system);
 			for (Planet planet : planets) {
 				entityManager.remove(planet);
 			}
@@ -103,19 +112,22 @@ public class SectorGenerator {
 		}
 		transaction.commit();
 	}
-	
+
 	/**
-	 * Fill an empty sector with random star systems. The chance of any
-	 * parsec having a star system is determined by the percentage defined.
+	 * Fill an empty sector with random star systems. The chance of any parsec
+	 * having a star system is determined by the percentage defined.
 	 * 
-	 * @param sector		Sector to fill. Should be empty.
-	 * @param names			Name generator to use to create system names.
-	 * @param percentChance	Percentage change each hex has a system.
+	 * @param sector
+	 *            Sector to fill. Should be empty.
+	 * @param names
+	 *            Name generator to use to create system names.
+	 * @param percentChance
+	 *            Percentage change each hex has a system.
 	 * 
-	 * @return				Count of number of systems added.
+	 * @return Count of number of systems added.
 	 */
 	public int fillRandomSector(Sector sector, Names names, int percentChance) {
-		int		count = 0;
+		int count = 0;
 		if (sector == null) {
 			throw new IllegalArgumentException("Sector must be defined.");
 		}
@@ -123,30 +135,35 @@ public class SectorGenerator {
 			throw new IllegalArgumentException("Names must be defined");
 		}
 		if (percentChance < 0 || percentChance > 100) {
-			throw new IllegalArgumentException("Percentage chance must be between 0% and 100%");
+			throw new IllegalArgumentException(
+					"Percentage chance must be between 0% and 100%");
 		}
 		if (sector.getId() < 1) {
 			throw new IllegalStateException("Sector does not have a valid id");
 		}
-		
-		StarSystemGenerator		systemGenerator = new StarSystemGenerator(entityManager);
-		
-		EntityTransaction	transaction = entityManager.getTransaction();
+
+		StarSystemGenerator systemGenerator = new StarSystemGenerator(
+				entityManager);
+
+		EntityTransaction transaction = entityManager.getTransaction();
 		try {
 			transaction.begin();
-			for (int x=1; x <= Sector.WIDTH; x++) {
-				for (int y=1; y <= Sector.HEIGHT; y++) {
-					if (x > 8 || y > 10) continue;
+			for (int x = 1; x <= Sector.WIDTH; x++) {
+				for (int y = 1; y <= Sector.HEIGHT; y++) {
+					if (x > 8 || y > 10)
+						continue;
 					if (Die.d100() <= percentChance) {
-						systemGenerator.createStarSystem(sector, names.getPlanetName(), x, y);
+						systemGenerator.createStarSystem(sector,
+								names.getPlanetName(), x, y);
 					}
 				}
 			}
 			transaction.commit();
 		} catch (Throwable e) {
+			e.printStackTrace();
 			transaction.rollback();
 		}
-			
+
 		return count;
 	}
 }

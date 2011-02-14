@@ -21,7 +21,7 @@ import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.MapImage;
 import uk.org.glendale.worldgen.astro.planet.Planet;
-import uk.org.glendale.worldgen.astro.planet.builders.ice.Europan;
+import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
 import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.civ.commodity.Commodity;
 import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
@@ -93,6 +93,15 @@ public abstract class PlanetBuilder {
 	}
 
 	/**
+	 * Gets the star that is being used by this builder.
+	 * 
+	 * @return Star that is being used.
+	 */
+	public Star getStar() {
+		return star;
+	}
+
+	/**
 	 * Sets the planet that is to be generated. The planet will be modified
 	 * according to the rules for the given type of builder. Astronomical
 	 * statistics, such as orbital distance, will not be touched.
@@ -109,6 +118,15 @@ public abstract class PlanetBuilder {
 		planet.setPressure(AtmospherePressure.None);
 
 		planet.setLifeType(LifeType.None);
+	}
+
+	/**
+	 * Gets the planet that this builder is building.
+	 * 
+	 * @return Planet that is in use.
+	 */
+	public Planet getPlanet() {
+		return planet;
 	}
 
 	/**
@@ -750,7 +768,7 @@ public abstract class PlanetBuilder {
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(GraphicsEnvironment.isHeadless());
-		PlanetBuilder barren = new Europan();
+		PlanetBuilder barren = new Hermian();
 		barren.setPlanet(new Planet());
 		barren.generate();
 		System.exit(0);
