@@ -46,29 +46,7 @@ public class PlanetDescription {
 	private PlanetBuilder builder = null;
 	private Planet planet = null;
 
-	// Base package where the text properties can be found.
-	private static final String TEXT_BASE = "uk.org.glendale.rpg.worldgen.astro.planets.builders.";
-	// List of each of the text files we need to load.
-	private static final String[] TEXT_BUNDLES = { "descriptions", "asteroids",
-			"belts", "dwarfs", "jovian" };
-
-	private static Properties phrases = null;
-
-	/**
-	 * Automatically load the list of random phrases from the resource bundles.
-	 * The text is now split into multiple bundles, to make writing it easier.
-	 */
-	static {
-		phrases = new Properties();
-		/*
-		 * for (String bundleName : TEXT_BUNDLES) { ResourceBundle bundle =
-		 * ResourceBundle.getBundle(TEXT_BASE + bundleName);
-		 * 
-		 * Enumeration keys = bundle.getKeys(); while (keys.hasMoreElements()) {
-		 * String key = (String) keys.nextElement(); phrases.setProperty(key,
-		 * bundle.getString(key)); } }
-		 */
-	}
+	private Properties phrases = null;
 
 	/**
 	 * Get the phrase for the given key from the resource bundle. Some keys will
@@ -79,7 +57,7 @@ public class PlanetDescription {
 	 *            Key to use to find a phrase.
 	 * @return The selected phrase, or null if none found.
 	 */
-	private static String getPhrase(String key) {
+	private String getPhrase(String key) {
 		String text = null;
 
 		text = phrases.getProperty(key);
@@ -116,7 +94,7 @@ public class PlanetDescription {
 			while (e.hasMoreElements()) {
 				String key = e.nextElement();
 				String value = bundle.getString(key);
-				if (phrases.getProperty(key) != null) {
+				if (phrases.getProperty(key) == null) {
 					phrases.setProperty(key, value);
 				}
 			}
@@ -346,7 +324,7 @@ public class PlanetDescription {
 		if (Die.d100() > percentChance)
 			return;
 
-		String text = PlanetDescription.getPhrase(key);
+		String text = getPhrase(key);
 		if (text == null)
 			return;
 
