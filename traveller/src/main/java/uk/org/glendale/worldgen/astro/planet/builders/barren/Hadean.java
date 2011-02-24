@@ -8,11 +8,13 @@
  */
 package uk.org.glendale.worldgen.astro.planet.builders.barren;
 
+import static uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature.HeavilyCratered;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.BarrenWorld;
+import uk.org.glendale.worldgen.astro.planet.builders.Tile;
 
 /**
  * A Hadean world is a small barren planet close to its parent star which has
@@ -49,7 +51,17 @@ public class Hadean extends BarrenWorld {
 
 	@Override
 	public void generateMap() {
-		setCraterNumbers(100);
+		base = new Tile("Sea", "#303030", false);
+		crust = new Tile("Crust", "#504030", false);
+		mountains = new Tile("Mountains", "#100000", false);
+		crater = new Tile("Crater", "#303030", false);
+
+		setNumberOfContinents(25);
+		setCraterNumbers(1000);
+		setCraterSize(10);
+		if (planet.hasFeatureCode(HeavilyCratered)) {
+			setCraterNumbers(1000 + Die.d100(2));
+		}
 		super.generateMap();
 	}
 

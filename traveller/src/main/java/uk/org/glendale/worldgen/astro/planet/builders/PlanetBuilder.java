@@ -26,7 +26,6 @@ import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.civ.commodity.Commodity;
 import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
 import uk.org.glendale.worldgen.server.AppManager;
-import uk.org.glendale.worldgen.text.PlanetDescription;
 
 /**
  * Abstract planet building class. Provides the basic framework for constructing
@@ -51,6 +50,7 @@ public abstract class PlanetBuilder {
 
 	private String fractalColour = null;
 	private int hydrographics = 0;
+	private int numberOfContinents = 9;
 
 	protected CommodityFactory commodityFactory;
 
@@ -203,7 +203,7 @@ public abstract class PlanetBuilder {
 
 	public void generateDescription() {
 		validate();
-		PlanetDescription description = new PlanetDescription(planet);
+		PlanetDescription description = new PlanetDescription(this);
 		planet.setDescription(description.getFullDescription());
 	}
 
@@ -612,8 +612,18 @@ public abstract class PlanetBuilder {
 		return stretched;
 	}
 
+	/**
+	 * Sets the number of continental shelves that are used to create the basic
+	 * surface of the world. Defaults to 9 if not set. Used by addContinents.
+	 * 
+	 * @param number
+	 *            Number of continents to use in world creation.
+	 */
+	protected final void setNumberOfContinents(int number) {
+		this.numberOfContinents = number;
+	}
+
 	protected void addContinents(Tile base, Tile shelf, Tile mountains) {
-		int num = 9;
 		if (hydrographics == 0) {
 			hydrographics = 20 + Die.d20(3);
 		}
@@ -636,6 +646,7 @@ public abstract class PlanetBuilder {
 			}
 		}
 
+		int num = numberOfContinents;
 		while (num > 0) {
 			int x = Die.rollZero(TILE_WIDTH);
 			int y = Die.rollZero(TILE_HEIGHT);

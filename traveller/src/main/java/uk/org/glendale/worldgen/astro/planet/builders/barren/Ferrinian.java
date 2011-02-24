@@ -8,11 +8,14 @@
  */
 package uk.org.glendale.worldgen.astro.planet.builders.barren;
 
+import static uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature.GiantCrater;
+import static uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature.HeavilyCratered;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.BarrenWorld;
+import uk.org.glendale.worldgen.astro.planet.builders.Tile;
 
 /**
  * A Ferrinian world is a small barren planet close to its parent star. They are
@@ -42,6 +45,17 @@ public class Ferrinian extends BarrenWorld {
 			planet.addTradeCode(TradeCode.H3);
 		}
 
+		switch (Die.d6()) {
+		case 1:
+		case 2:
+		case 3:
+			planet.addFeature(HeavilyCratered);
+			break;
+		case 6:
+			planet.addFeature(GiantCrater);
+			break;
+		}
+
 		generateMap();
 		generateResources();
 		generateDescription();
@@ -49,7 +63,16 @@ public class Ferrinian extends BarrenWorld {
 
 	@Override
 	public void generateMap() {
-		setCraterNumbers(200);
+		base = new Tile("Sea", "#706050", false);
+		crust = new Tile("Crust", "#907060", false);
+		mountains = new Tile("Mountains", "#C0B0B0", false);
+		crater = new Tile("Crater", "#807060", false);
+
+		setNumberOfContinents(5);
+		setCraterNumbers(500);
+		if (planet.hasFeatureCode(HeavilyCratered)) {
+			setCraterNumbers(500 + Die.d100(5));
+		}
 		super.generateMap();
 	}
 

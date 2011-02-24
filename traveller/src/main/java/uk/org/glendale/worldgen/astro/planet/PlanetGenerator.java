@@ -17,6 +17,7 @@ import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Ferrinian;
+import uk.org.glendale.worldgen.astro.planet.builders.barren.Hadean;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
 import uk.org.glendale.worldgen.astro.planet.builders.gaian.Gaian;
 import uk.org.glendale.worldgen.astro.planet.builders.jovian.CryoJovian;
@@ -88,8 +89,13 @@ public class PlanetGenerator {
 			case 1:
 				builder = new Hermian();
 				break;
-			default:
+			case 2:
+			case 3:
+			case 4:
 				builder = new Ferrinian();
+				break;
+			default:
+				builder = new Hadean();
 				break;
 			}
 			break;

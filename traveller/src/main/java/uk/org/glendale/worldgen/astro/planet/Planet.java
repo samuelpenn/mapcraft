@@ -253,6 +253,12 @@ public class Planet {
 		return isMoon;
 	}
 
+	/**
+	 * Gets the planet type according to the PCL. This is used to classify a
+	 * planet according to its size, geological and ecological features.
+	 * 
+	 * @return Planetary type.
+	 */
 	public PlanetType getType() {
 		return type;
 	}
@@ -291,6 +297,14 @@ public class Planet {
 		}
 	}
 
+	/**
+	 * Gets the atmospheric pressure of this planet. Together with the
+	 * atmosphere type, this can be used to determine the properties of the
+	 * world's atmosphere. Pressure ranges from Vacuum through to Super Dense.
+	 * Pressures of Thin, Standard and Dense are reasonable for human worlds.
+	 * 
+	 * @return Atmospheric pressure.
+	 */
 	public AtmospherePressure getPressure() {
 		return pressure;
 	}
@@ -466,6 +480,10 @@ public class Planet {
 
 	public Set<PlanetFeature> getFeatureCodes() {
 		return featureCodes;
+	}
+
+	public boolean hasFeatureCode(PlanetFeature code) {
+		return featureCodes.contains(code);
 	}
 
 	public void addFeature(PlanetFeature code) {

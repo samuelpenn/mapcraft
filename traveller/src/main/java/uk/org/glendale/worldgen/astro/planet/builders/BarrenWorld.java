@@ -24,10 +24,12 @@ public abstract class BarrenWorld extends PlanetBuilder {
 	protected Tile base = new Tile("Sea", "#606060", false);
 	protected Tile crust = new Tile("Crust", "#909090", false);
 	protected Tile mountains = new Tile("Mountains", "#B0B0B0", false);
+	protected Tile crater = new Tile("Crater", "#656060", false);
 
 	private int numCraters = 150;
 	private int craterSize = 25;
 	private int minCraterSize = 0;
+	private int craterSharpness = 2;
 
 	public BarrenWorld() {
 	}
@@ -38,7 +40,7 @@ public abstract class BarrenWorld extends PlanetBuilder {
 	 * @param numCraters
 	 *            Number of craters.
 	 */
-	protected void setCraterNumbers(int numCraters) {
+	protected final void setCraterNumbers(int numCraters) {
 		this.numCraters = numCraters;
 	}
 
@@ -48,7 +50,7 @@ public abstract class BarrenWorld extends PlanetBuilder {
 	 * @param craterSize
 	 *            Size of craters.
 	 */
-	protected void setCraterSize(int craterSize) {
+	protected final void setCraterSize(int craterSize) {
 		this.craterSize = craterSize;
 	}
 
@@ -61,8 +63,12 @@ public abstract class BarrenWorld extends PlanetBuilder {
 	 * @param minCraterSize
 	 *            Minimum crater size.
 	 */
-	protected void setCraterMinSize(int minCraterSize) {
+	protected final void setCraterMinSize(int minCraterSize) {
 		this.minCraterSize = minCraterSize;
+	}
+
+	protected final void setCraterSharpness(int craterSharpness) {
+		this.craterSharpness = craterSharpness;
 	}
 
 	@Override
@@ -125,7 +131,6 @@ public abstract class BarrenWorld extends PlanetBuilder {
 	}
 
 	private void addCraters() {
-		Tile crater = new Tile("Crater", "#656060", false);
 		for (int c = 0; c < numCraters; c++) {
 			// We don't want a crater right on the poles.
 			int y = Die.rollZero((int) (MAP_HEIGHT * 0.9))
@@ -146,7 +151,11 @@ public abstract class BarrenWorld extends PlanetBuilder {
 					if (xx < 0 || xx >= MAP_WIDTH) {
 						continue;
 					}
-					if (Math.hypot(x - xx, y - yy) < (r + Die.die(r)) / 2) {
+					if (map[yy][xx] == base && Die.d6() < 4) {
+						continue;
+					}
+					int rr = r / 2 + Die.die(r) / craterSharpness;
+					if (Math.hypot(x - xx, y - yy) < rr) {
 						if (map[yy][xx] != crater
 								&& map[yy][xx] != OUT_OF_BOUNDS) {
 							heightMap[yy][xx] -= r;

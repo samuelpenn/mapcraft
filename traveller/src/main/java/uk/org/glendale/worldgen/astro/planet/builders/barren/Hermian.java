@@ -10,11 +10,13 @@ package uk.org.glendale.worldgen.astro.planet.builders.barren;
 
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
+import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.BarrenWorld;
+import uk.org.glendale.worldgen.astro.planet.builders.Tile;
 
 /**
  * Hermian worlds are similar to Mercury. They are hot, barren rock worlds close
@@ -53,6 +55,23 @@ public class Hermian extends BarrenWorld {
 			planet.addTradeCode(TradeCode.H3);
 		}
 
+		switch (Die.d6(2)) {
+		case 2:
+			planet.addFeature(PlanetFeature.Dust);
+			break;
+		case 6:
+		case 7:
+		case 8:
+			planet.addFeature(PlanetFeature.HeavilyCratered);
+			break;
+		case 10:
+			planet.addFeature(PlanetFeature.GiantCrater);
+			break;
+		case 12:
+			planet.addFeature(PlanetFeature.Smooth);
+			break;
+		}
+
 		generateMap();
 		generateResources();
 		generateDescription();
@@ -60,7 +79,32 @@ public class Hermian extends BarrenWorld {
 
 	@Override
 	public void generateMap() {
-		setCraterNumbers(300);
+		base = new Tile("Sea", "#908070", false);
+		crust = new Tile("Crust", "#A09080", false);
+		mountains = new Tile("Mountains", "#C0B0B0", false);
+		crater = new Tile("Crater", "#887767", false);
+
+		if (planet.hasFeatureCode(PlanetFeature.Dust)) {
+			base = new Tile("Sea", "#A08070", false);
+			crust = new Tile("Crust", "#A09080", false);
+			crater = new Tile("Crater", "#987767", false);
+			setCraterMinSize(20);
+		}
+
+		setNumberOfContinents(15);
+		setCraterSharpness(3);
+		setCraterSize(25);
+
+		if (planet.hasFeatureCode(PlanetFeature.HeavilyCratered)) {
+			setCraterNumbers(600 + Die.d100(3));
+		} else if (planet.hasFeatureCode(PlanetFeature.Smooth)) {
+			setCraterNumbers(50 + Die.d100());
+		} else if (planet.hasFeatureCode(PlanetFeature.GiantCrater)) {
+			setCraterNumbers(100 + Die.d100());
+		} else {
+			setCraterNumbers(300 + Die.d100(2));
+		}
+
 		super.generateMap();
 	}
 
