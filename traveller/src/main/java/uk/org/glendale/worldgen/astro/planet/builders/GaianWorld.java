@@ -1,29 +1,30 @@
+/*
+ * Copyright (C) 2011 Samuel Penn, sam@glendale.org.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; version 2.
+ * See the file COPYING.
+ */
 package uk.org.glendale.worldgen.astro.planet.builders;
 
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
-import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.utils.Die;
-import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
- * Barren worlds are rocky worlds with little or no atmosphere, no
- * surface water and no life. They may potentially be rich in mineral
- * resources, but have little else going for them.
+ * Gaian worlds tend to be rich in life.
  * 
  * @author Samuel Penn
  */
 public abstract class GaianWorld extends PlanetBuilder {
-	protected Tile	sea = new Tile("Sea", "#4444aa", true);
-	protected Tile	land = new Tile("Land", "#aaaa44", false);
-	protected Tile	mountains = new Tile("Mountains", "#B0B0B0", false);
-	
-	
+	protected Tile sea = new Tile("Sea", "#4444aa", true);
+	protected Tile land = new Tile("Land", "#aaaa44", false);
+	protected Tile mountains = new Tile("Mountains", "#B0B0B0", false);
+
 	public GaianWorld() {
 	}
-	
-	
 
 	@Override
 	public void generate() {
@@ -42,21 +43,21 @@ public abstract class GaianWorld extends PlanetBuilder {
 		}
 		addContinents(sea, land, mountains);
 		addEcology();
-		
+
 		// Increase resolution to maximum.
 		map = scaleMap(map, TILE_SIZE);
-		
+
 		if (AppManager.getStretchMap()) {
 			map = stretchMap(map);
 		}
 		getImage();
 	}
-	
+
 	protected abstract void addEcology();
-	
+
 	/**
-	 * Add resources based on the ecology. This is based pretty much
-	 * on the LifeType of the world. 
+	 * Add resources based on the ecology. This is based pretty much on the
+	 * LifeType of the world.
 	 */
 	protected void addEcologicalResources() {
 		switch (planet.getLifeType()) {
@@ -119,5 +120,5 @@ public abstract class GaianWorld extends PlanetBuilder {
 			break;
 		}
 	}
-	
+
 }

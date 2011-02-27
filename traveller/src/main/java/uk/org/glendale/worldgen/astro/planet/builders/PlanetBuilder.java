@@ -623,6 +623,13 @@ public abstract class PlanetBuilder {
 		this.numberOfContinents = number;
 	}
 
+	/**
+	 * Defines the basic surface features.
+	 * 
+	 * @param base
+	 * @param shelf
+	 * @param mountains
+	 */
 	protected void addContinents(Tile base, Tile shelf, Tile mountains) {
 		if (hydrographics == 0) {
 			hydrographics = 20 + Die.d20(3);
