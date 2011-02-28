@@ -215,8 +215,11 @@ public abstract class PlanetBuilder {
 	public static final int TILE_WIDTH = MAP_WIDTH / TILE_SIZE;
 	public static final int TILE_HEIGHT = MAP_HEIGHT / TILE_SIZE;
 
+	/** Detailed surface map of the world */
 	protected Tile[][] map = null;
+	/** Low res surface map of the world */
 	protected Tile[][] tileMap = null;
+	/** High res fractal height map of the world */
 	protected int[][] heightMap = null;
 
 	public static final Tile OUT_OF_BOUNDS = new Tile("OOB", "#000000", false);
@@ -613,6 +616,52 @@ public abstract class PlanetBuilder {
 	}
 
 	/**
+	 * Gets a count of the number of neighbours which are water.
+	 * 
+	 * @param map
+	 *            Map to examine.
+	 * @param x
+	 *            X coordinate of tile to check neighbours of.
+	 * @param y
+	 *            Y coordinate of tile to check neighbours of.
+	 * @return Number of neighbours with water, 0-4.
+	 */
+	protected int getWaterCount(Tile[][] map, int x, int y) {
+		int count = 0;
+
+		count += getTile(map, y - 1, x).isWater() ? 1 : 0;
+		count += getTile(map, y + 1, x).isWater() ? 1 : 0;
+		count += getTile(map, y, x + 1).isWater() ? 1 : 0;
+		count += getTile(map, y, x - 1).isWater() ? 1 : 0;
+
+		return count;
+	}
+
+	protected int getLandCount(Tile[][] map, int x, int y) {
+		int count = 0;
+		Tile t = null;
+
+		t = getTile(map, y - 1, x);
+		if (t != OUT_OF_BOUNDS && !t.isWater()) {
+			count++;
+		}
+		t = getTile(map, y + 1, x);
+		if (t != OUT_OF_BOUNDS && !t.isWater()) {
+			count++;
+		}
+		t = getTile(map, y, x - 1);
+		if (t != OUT_OF_BOUNDS && !t.isWater()) {
+			count++;
+		}
+		t = getTile(map, y, x + 1);
+		if (t != OUT_OF_BOUNDS && !t.isWater()) {
+			count++;
+		}
+
+		return count;
+	}
+
+	/**
 	 * Sets the number of continental shelves that are used to create the basic
 	 * surface of the world. Defaults to 9 if not set. Used by addContinents.
 	 * 
@@ -736,7 +785,8 @@ public abstract class PlanetBuilder {
 			surfaceMap.setData(image.save().toByteArray());
 			planet.addImage(surfaceMap);
 
-			image.save(new File("/home/sam/tmp/maps/" + planet.getType()
+			System.out.println("Saving image for " + getPlanetType());
+			image.save(new File("/home/sam/tmp/maps/" + getPlanetType()
 					+ ".jpg"));
 
 			if (AppManager.getDrawGlobe()) {

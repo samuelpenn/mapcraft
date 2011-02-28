@@ -27,4 +27,10 @@ public class EoArean extends WetWorld {
 		return PlanetType.EoArean;
 	}
 
+	@Override
+	public void generate() {
+		// TODO Auto-generated method stub
+		setHydrographics(planet.getHydrographics());
+		generateMap();
+	}
 }
