@@ -11,6 +11,12 @@
  */
 package uk.org.glendale.rpg.traveller.systems.codes;
 
+/**
+ * Defines the available planetary types.
+ * 
+ * @author Samuel Penn
+ * @formatter:off
+ */
 public enum PlanetType {
 	Undefined(Category.Belt, 0.0, 0), 
 	AsteroidBelt(Category.Belt, 0.0, 0),
@@ -64,6 +70,7 @@ public enum PlanetType {
 	ArchaeoGaian(Category.Terrestrial, 5.5, 6500, "gaian"),
 	Gaian(Category.Terrestrial, 5.5, 6500, "gaian"),
 	GaianTundral(Category.Terrestrial, 5.5, 6200, "gaian"), 
+	GaianXenic(Category.Terrestrial, 5.5, 6200, "gaian"),
 	PostGaian(Category.Terrestrial, 5.5, 6500, "gaian"),
 	
 	// Chlorine worlds
@@ -89,6 +96,7 @@ public enum PlanetType {
 	Arean(Category.Terrestrial, 4.5, 3500),
 	AreanXenic(Category.Terrestrial, 4.5, 3500),   // Hot Arean
 	Cytherean(Category.Terrestrial, 5.5, 6200),    // Venus
+	PelaCytherean(Category.Terrestrial, 5.5, 6200), // Venus with ocean
 	Phosphorian(Category.Terrestrial, 5.5, 6200),  // Cloudless Venus
 	JaniLithic(Category.Terrestrial, 5.5, 5500),   // Dry, hot, atmosphere.
 	Pelagic(Category.Terrestrial, 6.0, 7000),
