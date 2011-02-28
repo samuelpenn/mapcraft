@@ -9,7 +9,7 @@ import org.hibernate.Session;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
 import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
-import uk.org.glendale.worldgen.astro.planet.builders.barren.Hadean;
+import uk.org.glendale.worldgen.astro.planet.builders.arean.EoArean;
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorFactory;
 import uk.org.glendale.worldgen.astro.sector.SectorGenerator;
@@ -42,9 +42,9 @@ public class Hibernate {
 
 		EntityManager em = appManager.getEntityManager();
 		PlanetFactory pf = new PlanetFactory(em);
-		Planet p = pf.getPlanet(601534);
+		Planet p = pf.getPlanet(601536);
 		System.out.println(GraphicsEnvironment.isHeadless());
-		PlanetBuilder barren = new Hadean();
+		PlanetBuilder barren = new EoArean();
 		StarSystemFactory ssf = new StarSystemFactory(em);
 		barren.setEntityManager(em);
 		barren.setStar(ssf.getStarSystem(40389).getStars().get(0));
