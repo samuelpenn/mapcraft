@@ -80,10 +80,18 @@ public class MapDrawer {
 
 		if (fractalMap != null) {
 			System.out.println("Fractal!");
+			int min = 1000, max = 0;
 			for (int x = 0; x < width * scale; x++) {
 				for (int y = 0; y < height * scale; y++) {
 					if (!map[y][x].isWater()) {
-						String h = Integer.toHexString(fractalMap[y][x] / 5);
+						int f = fractalMap[y][x];
+						if (f < min)
+							min = f;
+						if (f > max)
+							max = f;
+
+						String h = Integer.toHexString((100 - f) / 2);
+
 						if (h.length() < 2)
 							h = "0" + h;
 						String colour = fractalTint + h;
@@ -92,6 +100,7 @@ public class MapDrawer {
 					}
 				}
 			}
+			System.out.println("Range: " + min + " to " + max);
 		}
 
 		return image;

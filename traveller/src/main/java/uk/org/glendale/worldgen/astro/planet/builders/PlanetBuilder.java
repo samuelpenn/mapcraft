@@ -438,7 +438,7 @@ public abstract class PlanetBuilder {
 		return height + w;
 	}
 
-	protected Tile getTile(Tile[][] map, int y, int x) {
+	protected final Tile getTile(Tile[][] map, int y, int x) {
 		if (y < 0)
 			y = 0;
 		if (y > map.length - 1)
@@ -452,6 +452,23 @@ public abstract class PlanetBuilder {
 		// if (x >= getEast(y)) x = getWest(y);
 
 		return map[y][x];
+	}
+
+	protected final void setTile(Tile[][] map, int y, int x, Tile tile) {
+		if (y < 0)
+			y = 0;
+		if (y > map.length - 1)
+			y = map.length - 1;
+
+		if (x < 0)
+			x += map[0].length;
+		if (x >= map[0].length)
+			x -= map[0].length;
+		// if (x < getWest(y)) x = getEast(y)-1;
+		// if (x >= getEast(y)) x = getWest(y);
+		if (map[y][x] != OUT_OF_BOUNDS) {
+			map[y][x] = tile;
+		}
 	}
 
 	protected int getTileHeight(int[][] map, int y, int x) {
@@ -468,6 +485,36 @@ public abstract class PlanetBuilder {
 		// if (x >= getEast(y)) x = getWest(y);
 
 		return map[y][x];
+	}
+
+	protected void setHeight(int x, int y, int h) {
+		if (fractalMap != null) {
+			if (x < 0) {
+				x += MAP_WIDTH;
+			}
+			if (x >= MAP_WIDTH) {
+				x -= MAP_WIDTH;
+			}
+			if (h < 0) {
+				h = 0;
+			}
+			if (h > 100) {
+				h = 100;
+			}
+			fractalMap[y][x] = h;
+		}
+	}
+
+	protected void setHeight(int x, int y, double h) {
+		if (fractalMap != null) {
+			if (x < 0) {
+				x += MAP_WIDTH;
+			}
+			if (x >= MAP_WIDTH) {
+				x -= MAP_WIDTH;
+			}
+			fractalMap[y][x] *= h;
+		}
 	}
 
 	/**

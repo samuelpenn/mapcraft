@@ -8,7 +8,11 @@
  */
 package uk.org.glendale.worldgen.astro.planet.builders;
 
-import uk.org.glendale.rpg.utils.Die;
+import static java.lang.Math.sqrt;
+import static uk.org.glendale.rpg.utils.Die.d100;
+import static uk.org.glendale.rpg.utils.Die.d4;
+import static uk.org.glendale.rpg.utils.Die.d6;
+import static uk.org.glendale.rpg.utils.Die.rollZero;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
@@ -83,7 +87,7 @@ public abstract class WetWorld extends PlanetBuilder {
 			for (int y = 0; y < MAP_HEIGHT; y++) {
 				for (int x = 0; x < MAP_WIDTH; x++) {
 					if (!map[y][x].isWater() && map[y][x] != OUT_OF_BOUNDS) {
-						if (Die.d6() <= getWaterCount(map, x, y)) {
+						if (d6() <= getWaterCount(map, x, y)) {
 							map[y][x] = sea;
 							waterCount++;
 							if (waterCount >= desiredWater) {
@@ -114,12 +118,12 @@ public abstract class WetWorld extends PlanetBuilder {
 						 * { map[y][x] = seabed; landCount++; if (landCount >=
 						 * desiredLand) { break addLandLoops; } }
 						 */
-						if (getLandCount(map, x, y) > 0 && Die.d4() == 1) {
+						if (getLandCount(map, x, y) > 0 && d4() == 1) {
 							map[y][x] = seabed;
 							if (landCount++ >= desiredLand) {
 								break addLandLoops;
 							}
-						} else if (Die.d100(3) <= 5) {
+						} else if (d100(3) <= 5) {
 							map[y][x] = seabed;
 							if (landCount++ >= desiredLand) {
 								break addLandLoops;
@@ -172,8 +176,52 @@ public abstract class WetWorld extends PlanetBuilder {
 		this.finalHydrographics = ending;
 	}
 
+	private int numberCraters = 100;
+	private int minCraterSize = 10;
+	private int maxCraterSize = 20;
+
+	private void addCraters() {
+		for (int c = 0; c < numberCraters; c++) {
+			int x = rollZero(MAP_WIDTH);
+			int y = rollZero(MAP_HEIGHT / 2) + MAP_HEIGHT / 4;
+
+			int r = rollZero(maxCraterSize - minCraterSize) + minCraterSize;
+
+			int h = fractalMap[y][x] - 20;
+			boolean isWater = false;
+
+			for (int xx = x - r; xx < x + r; xx++) {
+				for (int yy = y - r; yy < y + r; yy++) {
+					int d = (int) sqrt((xx - x) * (xx - x) + (yy - y)
+							* (yy - y));
+					if (d + d4() < r * 0.9) {
+						setHeight(xx, yy, 0.6);
+						if (getTile(map, yy, xx).isWater()) {
+							System.out.println("Water!");
+							isWater = true;
+						}
+					} else if (d < r) {
+						setHeight(xx, yy, 0.8);
+					}
+				}
+			}
+			if (isWater) {
+				System.out.println("Is Water!!!");
+				for (int xx = x - r; xx < x + r; xx++) {
+					for (int yy = y - r; yy < y + r; yy++) {
+						if (Math.sqrt((xx - x) * (xx - x) + (yy - y) * (yy - y))
+								+ d4() < r) {
+							setTile(map, yy, xx, sea);
+						}
+					}
+				}
+
+			}
+		}
+	}
+
 	@Override
-	public void generateMap() {
+	public final void generateMap() {
 		if (!AppManager.getDrawMap()) {
 			// If map drawing is disabled, don't do it.
 			return;
@@ -183,6 +231,7 @@ public abstract class WetWorld extends PlanetBuilder {
 		addContinents(sea, land, mountains);
 		// Increase resolution to maximum.
 		map = scaleMap(map, TILE_SIZE);
+		addCraters();
 		addWater();
 
 		if (AppManager.getStretchMap()) {
@@ -192,9 +241,5 @@ public abstract class WetWorld extends PlanetBuilder {
 	}
 
 	@Override
-	public void generateResources() {
-		// TODO Auto-generated method stub
-
-	}
-
+	public abstract void generateResources();
 }
