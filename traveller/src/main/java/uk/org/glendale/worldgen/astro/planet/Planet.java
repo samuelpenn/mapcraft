@@ -356,6 +356,17 @@ public class Planet {
 		return dayLength;
 	}
 
+	/**
+	 * Gets the length of day as a pretty formatted string. The period is given
+	 * in days, hours, minutes and seconds, where a 'day' is taken to be 24
+	 * hours. Units are only given if needed, and accuracy is dropped for very
+	 * long days (e.g., minutes are only listed for periods less than 10 days,
+	 * hours for periods less than 100 days etc).
+	 * 
+	 * Returned string will be something like "5d 7h 23m".
+	 * 
+	 * @return Formatted day length.
+	 */
 	public String getDayLengthAsString() {
 		String day = "";
 		int d = dayLength;
@@ -364,14 +375,17 @@ public class Planet {
 			day += (d / 86400) + "d ";
 			d = d % 86400;
 		}
+		// Only show hours is less than 100 days.
 		if (d > 3600 && dayLength < (86400 * 100)) {
 			day += (d / 3600) + "h ";
 			d = d % 3600;
 		}
+		// Only show minutes if less than 10 days.
 		if (d > 60 && dayLength < (86400 * 10)) {
 			day += (d / 60) + "m ";
 			d = d % 60;
 		}
+		// Only show seconds if less than 12 hours.
 		if (d > 0 && dayLength < (43200)) {
 			day += d + "s";
 		}
@@ -379,6 +393,13 @@ public class Planet {
 		return day.trim();
 	}
 
+	/**
+	 * Sets the length of day for this planet. The day length is always set in
+	 * seconds.
+	 * 
+	 * @param dayLength
+	 *            Length of day in seconds.
+	 */
 	public void setDayLength(int dayLength) {
 		if (dayLength < 1) {
 			throw new IllegalArgumentException("Day length must be positive");

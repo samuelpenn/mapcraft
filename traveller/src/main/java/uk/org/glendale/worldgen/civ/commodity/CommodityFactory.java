@@ -62,6 +62,13 @@ public class CommodityFactory {
 		return em.find(Commodity.class, id);
 	}
 
+	/**
+	 * Gets a named commodity.
+	 * 
+	 * @param name
+	 *            Name of the commodity to retrieve.
+	 * @return Found commodity, or null.
+	 */
 	public Commodity getCommodity(String name) {
 		Query q = em.createQuery("from Commodity where name = :n");
 		q.setParameter("n", name);
@@ -72,6 +79,14 @@ public class CommodityFactory {
 		}
 	}
 
+	/**
+	 * Gets all the children of the specified commodity. Only direct children of
+	 * the commodity are returned.
+	 * 
+	 * @param parent
+	 *            Parent to find children of.
+	 * @return List of all children. May be empty.
+	 */
 	public List<Commodity> getChildren(Commodity parent) {
 		Query q = em.createQuery("from Commodity where parent = :c");
 		q.setParameter("c", parent);
@@ -146,7 +161,7 @@ public class CommodityFactory {
 	public static void main(String[] args) throws Exception {
 		CommodityFactory factory = new CommodityFactory();
 		factory.createCommodities(new File(
-				"src/main/resources/WEB-INF/classes/commodities.xml"));
+				"src/main/resources/commodities/organic.xml"));
 
 		Commodity c = factory.getCommodity(1);
 
