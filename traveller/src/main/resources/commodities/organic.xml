@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<commodities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xmlns:w="http://glendale.org.uk/mapcraft/worldgen"
+			 xsi:schemaLocation="commodities.xsd">
+	
+    <commodity name="Protobionts" parent="Food">
+        <source>Ag</source><image>organics</image>
+        <cost>7</cost><tech>8</tech>
+        <pr>4</pr><cr>5</cr>
+        <codes>Fo FoOr Lq Pe</codes>
+        <description>
+            Abiotically produced organic molecules. May have a simple
+            cell-like membrane structure, and be capable of simple
+            self-replication.
+        </description>
+    </commodity>
+    
+    <commodity name="Prokaryotes" parent="Food">
+    	<source>Ag</source><image>organics</image>
+    	<cost>5</cost><tech>8</tech>
+    	<codes>Fo FoOr Lq Pe</codes>
+    	<description>
+    		Simple organisms which lack a cell nucleus, though may have a
+    		simple cell structure. They are the simplest living things, 
+    		evolved from protobionts.
+    	</description>
+    </commodity>
+    
+    <commodity name="Cyanobacteria" parent="Food">
+    	<source>Ag</source><image>algae</image>
+    	<cost>9</cost><tech>7</tech>
+    	<pr>4</pr><cr>5</cr>
+    	<codes>Fo FoOr Lq Pe</codes>
+    	<description>
+    		A phylum of bacteria also known as blue-green algae that
+    		uses photosynthesis to generate oxygen. They have simple
+    		cell structures and are often precursors to true algae.
+    	</description>
+    </commodity>
+
+    <commodity name="Algae" parent="Food">
+        <source>Ag</source><image>algae</image>
+        <cost>12</cost><tech>6</tech>
+        <pr>5</pr><cr>6</cr>
+        <codes>Fo FoOr Lq Pe</codes>
+        <description>
+            Multicellular eukaryotic life, ranging from simple clusters of
+            cells to huge kelp forests. Found in the seas of most life
+            bearing worlds. Also known as seaweed.
+        </description>
+    </commodity>
+    
+    <commodity name="Cnidarians" parent="Food">
+    	<source>Ag</source><image>jelly</image>
+    	<cost>25</cost><tech>1</tech>
+    	<pr>7</pr><cr>8</cr>
+    	<codes>Fo FoFi Lq Pe</codes>
+    	<description>
+    		Simple sea creatures such as jellies, sea ameneonies and hydras.
+    	</description>
+    </commodity>
+    
+    <commodity name="Echinoderms" parent="Food">
+    	<source>Ag</source><image>starfish</image>
+    	<cost>50</cost><tech>1</tech>
+    	<pr>7</pr><pr>8</pr>
+    	<codes>Fo FoFi Pe</codes>
+    	<description>
+    		Bony sea creatures such as starfish.
+    	</description>
+    </commodity>
+
+    <commodity name="Arthropods" parent="Food">
+    	<source>Ag</source><image>arthropods</image>
+    	<cost>75</cost><tech>1</tech>
+    	<pr>7</pr><pr>8</pr>
+    	<codes>Fo FoFi Pe</codes>
+    	<description>
+    		Sea dwelling crustaceans.
+    	</description>
+    </commodity>
+    
+
+</commodities>

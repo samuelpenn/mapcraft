@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<commodities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xmlns:w="http://glendale.org.uk/mapcraft/worldgen"
+			 xsi:schemaLocation="commodities.xsd">
+
+    <group name="Base">
+        <commodity name="Minerals" image="mineral">
+            <cost volume="1">100</cost>     
+            <production tech="0" law="6" pr="7" cr="8"/> 
+            <codes source="Mi">Or</codes>
+        </commodity>
+    </group>
+
+    <group name="Metallic Ores">
+        <commodity name="Ferric Ore" parent="Minerals">
+            <cost volume="1">150</cost>
+            <production tech="1" law="6" pr="8" cr="9"/>
+            <codes source="Mi">Or Me</codes>
+        </commodity>
+
+        <commodity name="Rare Metals" parent="Ferric Ore">
+            <cost volume="1">750</cost>
+            <production tech="4" law="6" pr="10" cr="10"/>
+            <codes source="Mi">Or Me</codes>
+        </commodity>
+
+        <commodity name="Precious Metals" parent="Ferric Ore">
+            <cost volume="1">1500</cost>
+            <production tech="1" law="6" pr="10" cr="11"/>
+            <codes source="Mi">Or Me</codes>
+        </commodity>
+
+        <commodity name="Heavy Metals" parent="Ferric Ore">
+            <cost volume="1">350</cost>
+            <production tech="2" law="6" pr="9" cr="10"/>
+            <codes source="Mi">Or Me</codes>
+        </commodity>
+
+        <commodity name="Radioactives" parent="Ferric Ore">
+            <cost volume="1">700</cost>
+            <production tech="2" law="1" pr="12" cr="13"/>
+            <codes source="Mi">Or Hz</codes>
+        </commodity>
+    </group>
+
+
+    <commodity name="Minerals">
+        <source>Mi</source><image>mineral</image>
+        <cost>100</cost>
+        <pr>10</pr><cr>10</cr>
+        <codes>Or</codes>
+    </commodity>
+    
+    <commodity name="Ferric Ore" parent="Minerals">
+        <source>Mi</source><image>mineral</image>
+        <cost>150</cost><tech>2</tech>
+        <pr>8</pr><cr>9</cr>
+        <codes>Or Me</codes>
+    </commodity>
+
+    <commodity name="Rare Metals" parent="Ferric Ore">
+        <source>Mi</source><image>mineral</image>
+        <cost>800</cost><tech>2</tech>
+        <pr>10</pr><cr>11</cr>
+        <codes>Or Me In</codes>
+    </commodity>
+
+    <commodity name="Heavy Metals" parent="Ferric Ore">
+        <source>Mi</source><image>mineral</image>
+        <cost>350</cost><tech>2</tech>
+        <pr>9</pr><cr>10</cr>
+        <codes>Or Me In</codes>
+    </commodity>
+
+    <commodity name="Radioactives" parent="Ferric Ore">
+        <source>Mi</source><image>mineral</image>
+        <cost>700</cost><law>1</law><tech>1</tech>
+        <pr>12</pr><cr>13</cr>
+        <codes>Or Hz In</codes>
+    </commodity>
+
+    <commodity name="Silicate Ore" parent="Minerals">
+        <source>Mi</source><image>mineral</image>
+        <cost>50</cost>
+        <pr>7</pr><cr>8</cr>
+        <codes>Or</codes>
+	</commodity>
+
+    <commodity name="Silicate Crystals" parent="Silicate Ore">
+        <source>Mi</source><image>mineral</image>
+        <cost>250</cost>
+        <pr>9</pr><cr>11</cr>
+        <codes>Or</codes>
+    </commodity>
+
+    <commodity name="Carbonic Ore" parent="Minerals">
+        <source>Mi</source><image>mineral</image>
+        <cost>100</cost>
+        <pr>7</pr><cr>8</cr>
+        <codes>Or</codes>
+    </commodity>
+
+    <commodity name="Water" parent="Minerals">
+        <source>Mi</source><image>water</image>
+        <cost>10</cost>
+        <pr>2</pr><cr>4</cr>
+        <codes>Or OrAq De Vi Re In Ag</codes>
+    </commodity>
+
+    <commodity name="Inert Gases" parent="Minerals">
+        <source>Mi</source><image>air</image>
+        <cost>3</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Or OrAu Va Re</codes>
+    </commodity>
+
+    <commodity name="Organic Gases" parent="Inert Gases">
+        <source>Mi</source><image>air</image>
+        <cost>30</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Or OrAu In</codes>
+    </commodity>
+
+    <commodity name="Exotic Gases" parent="Inert Gases">
+        <source>Mi</source><image>air</image>
+        <cost>200</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Or OrAu In</codes>
+    </commodity>
+
+    <commodity name="Corrosive Gases" parent="Inert Gases">
+        <source>Mi</source><image>air</image>
+        <cost>200</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Or OrAu Hz In</codes>
+    </commodity>
+
+    <commodity name="Corrosive Chemicals" parent="Water">
+        <source>Mi</source><image>air</image>
+        <cost>1200</cost><volume>1</volume>
+        <law>6</law><tech>5</tech>
+        <pr>5</pr><cr>7</cr>
+        <codes>Or OrAq Hz In Mi</codes>
+    </commodity>
+
+    <commodity name="Oxygen" parent="Inert Gases">
+        <source>Mi</source><image>air</image>
+        <cost>5</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>2</pr><cr>5</cr>
+        <codes>Or OrAu Va Vi Re</codes>
+    </commodity>
+
+    <commodity name="Hydrogen" parent="Inert gases">
+        <source>Mi</source><image>air</image>
+        <cost>8</cost><volume>1</volume>
+        <law>6</law><tech>0</tech>
+        <pr>2</pr><cr>5</cr>
+        <codes>Or OrAu Sp</codes>
+        <description>
+            Light gas, used as a fuel in starship drives.
+        </description>
+    </commodity>
+
+
+    <commodity name="Deuterium" parent="Water">
+        <source>In</source><image>water</image>
+        <cost>100</cost><law>3</law><tech>7</tech>
+        <pr>7</pr><cr>10</cr>
+        <codes>Or OrAq In Tt Ta Tu</codes>
+        <description>
+            Isotope of Hydrogen, used in nuclear fission.
+        </description>
+    </commodity>
+
+    <commodity name="Helium 3" parent="Minerals">
+        <source>In</source><image>water</image>
+        <cost>1000</cost><law>3</law><tech>7</tech>
+        <pr>9</pr><cr>12</cr>
+        <codes>Or OrAu In Tt Ta Tu</codes>
+        <description>
+            Isotope of Helium, used in nuclear fusion.
+        </description>
+    </commodity>
+
+
+</commodities>

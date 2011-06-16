@@ -77,8 +77,8 @@ public class Commodity {
 	@Column(name = "code")
 	private Set<CommodityCode> codes = EnumSet.noneOf(CommodityCode.class);
 
-	@Column(name = "codes")
-	private String c = "";
+	// @Column(name = "codes")
+	// private String c = "";
 
 	/**
 	 * Set up a commodity with default values.

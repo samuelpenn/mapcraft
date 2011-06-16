@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+		   xmlns:w="http://glendale.org.uk/mapcraft/worldgen">
+		   
+    <xs:element name="commodities">
+    	<xs:complexType>
+    		<xs:sequence>
+    			<xs:element name="commodity" type="commodityType" maxOccurs="unbounded"/>
+    		</xs:sequence>
+    	</xs:complexType>
+    </xs:element>
+    
+    <xs:complexType name="commodityType">
+    	<xs:sequence>
+    		<xs:element name="source" type="xs:string"/>
+    		<xs:element name="image" type="xs:string"/>
+    		<xs:element name="cost" type="xs:integer"/>
+    		<xs:element name="volume" type="xs:integer" minOccurs="0"/>
+    		<xs:element name="law" minOccurs="0" default="6">
+    			<xs:simpleType>
+    				<xs:restriction base="xs:integer">
+    					<xs:minInclusive value="0"/>
+    					<xs:maxInclusive value="6"/>
+    				</xs:restriction>
+    			</xs:simpleType>
+    		</xs:element>
+    		<xs:element name="tech" minOccurs="0" default="0">
+    			<xs:simpleType>
+    				<xs:restriction base="xs:integer">
+    					<xs:minInclusive value="0"/>
+    					<xs:maxInclusive value="20"/>
+    				</xs:restriction>
+    			</xs:simpleType>
+    		</xs:element>
+    		<xs:element name="pr" type="xs:integer"/>
+    		<xs:element name="cr" type="xs:integer"/>
+    		<xs:element name="codes">
+    			<xs:simpleType>
+    				<xs:restriction base="xs:string">
+    					<xs:pattern value="[A-Z][a-zA-Z]{1,3}[0-9]?( [A-Z][A-Za-z]{1,3}[0-9]?)*"/>
+    				</xs:restriction>
+    			</xs:simpleType>
+    		</xs:element>
+    		<xs:element name="description" type="xs:string" minOccurs="0"/>
+    	</xs:sequence>
+    	<xs:attribute name="name" type="xs:string"/>
+    	<xs:attribute name="parent" type="xs:string" use="optional"/>
+    </xs:complexType>
+</xs:schema>

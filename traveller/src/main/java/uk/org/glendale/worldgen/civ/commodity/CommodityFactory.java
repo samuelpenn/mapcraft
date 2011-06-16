@@ -97,63 +97,110 @@ public class CommodityFactory {
 		}
 	}
 
+	/**
+	 * Gets the value of the named attribute on this node. If the node has no
+	 * such attribute, or it is empty, then null is returned.
+	 * 
+	 * @param node
+	 *            Node to get attribute from.
+	 * @param name
+	 *            Name of attribute to read.
+	 * @return Value of attribute, or null.
+	 */
+	private String getAttribute(Node node, String name) {
+		String value = "";
+
+		if (node.getAttributes() != null) {
+			Node n = node.getAttributes().getNamedItem(name);
+			if (n != null) {
+				value = n.getNodeValue();
+				if (value != null && value.length() == 0) {
+					value = null;
+				}
+			}
+		}
+		return value;
+	}
+
+	private int getInteger(Node node, String name) {
+		int value = 0;
+		String v = getAttribute(node, name);
+		if (v != null) {
+			try {
+				value = Integer.parseInt(v);
+			} catch (NumberFormatException e) {
+				// Ignore.
+			}
+		}
+		return value;
+	}
+
+	private void createCommodity(Node node) {
+		Commodity commodity = new Commodity();
+		String name = getAttribute(node, "name");
+		String parent = getAttribute(node, "parent");
+		String image = name.toLowerCase().replaceAll(" ", "_");
+
+		if (name == null || name.length() == 0 || getCommodity(name) != null) {
+			return;
+		}
+		if (parent != null) {
+			commodity.setParent(getCommodity(parent));
+		} else {
+			commodity.setParent(null);
+		}
+
+		// Defaults
+		commodity.setName(name);
+		commodity.setImagePath(image);
+		NodeList params = node.getChildNodes();
+		System.out.println(name);
+		for (int j = 0; j < params.getLength(); j++) {
+			Node p = params.item(j);
+			if (p.getNodeType() == Node.ELEMENT_NODE) {
+				String pName = p.getNodeName();
+				String value = p.getTextContent().trim();
+
+				if (pName.equals("cost")) {
+					commodity.setCost(Integer.parseInt(value));
+					commodity.setVolume(getInteger(p, "volume"));
+				} else if (pName.equals("production")) {
+					commodity.setLawLevel(getInteger(p, "law"));
+					commodity.setTechLevel(getInteger(p, "tech"));
+					commodity.setProductionRating(getInteger(p, "pr"));
+					commodity.setConsumptionRating(getInteger(p, "cr"));
+				} else if (pName.equals("codes")) {
+					commodity.setSource(Source
+							.valueOf(getAttribute(p, "source")));
+					String[] codes = value.split(" ");
+					for (String c : codes) {
+						System.out.println("[" + c + "]");
+						commodity.addCode(CommodityCode.valueOf(c));
+					}
+				}
+			}
+		}
+		em.persist(commodity);
+
+	}
+
 	private void createCommodities(File file)
 			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilder db = DocumentBuilderFactory.newInstance()
 				.newDocumentBuilder();
 		Document document = db.parse(file);
-		NodeList list = document.getElementsByTagName("commodity");
+		NodeList groups = document.getElementsByTagName("group");
 
 		EntityTransaction transaction = em.getTransaction();
 		transaction.begin();
 
-		for (int i = 0; i < list.getLength(); i++) {
-			Node node = list.item(i);
-			Commodity commodity = new Commodity();
-			String name = node.getAttributes().getNamedItem("name")
-					.getNodeValue();
-
-			if (getCommodity(name) != null) {
-				continue;
+		for (int i = 0; i < groups.getLength(); i++) {
+			Node group = groups.item(i);
+			NodeList list = group.getChildNodes();
+			for (int j = 0; j < list.getLength(); j++) {
+				Node node = list.item(j);
+				createCommodity(node);
 			}
-
-			// Defaults
-			commodity.setName(name);
-			commodity.setImagePath(name.toLowerCase().replaceAll(" ", ""));
-			NodeList params = node.getChildNodes();
-			System.out.println(name);
-			for (int j = 0; j < params.getLength(); j++) {
-				Node p = params.item(j);
-				if (p.getNodeType() == Node.ELEMENT_NODE) {
-					String pName = p.getNodeName();
-					String value = p.getTextContent().trim();
-					System.out.println("  " + pName + ": " + value);
-					if (pName.equals("source")) {
-						commodity.setSource(Source.valueOf(value));
-					} else if (pName.equals("image")) {
-						commodity.setImagePath(value);
-					} else if (pName.equals("cost")) {
-						commodity.setCost(Integer.parseInt(value));
-					} else if (pName.equals("volume")) {
-						commodity.setVolume(Integer.parseInt(value));
-					} else if (pName.equals("law")) {
-						commodity.setLawLevel(Integer.parseInt(value));
-					} else if (pName.equals("tech")) {
-						commodity.setTechLevel(Integer.parseInt(value));
-					} else if (pName.equals("pr")) {
-						commodity.setProductionRating(Integer.parseInt(value));
-					} else if (pName.equals("cr")) {
-						commodity.setConsumptionRating(Integer.parseInt(value));
-					} else if (pName.equals("codes")) {
-						String[] codes = value.split(" ");
-						for (String c : codes) {
-							System.out.println("[" + c + "]");
-							commodity.addCode(CommodityCode.valueOf(c));
-						}
-					}
-				}
-			}
-			em.persist(commodity);
 		}
 		transaction.commit();
 	}
@@ -161,9 +208,9 @@ public class CommodityFactory {
 	public static void main(String[] args) throws Exception {
 		CommodityFactory factory = new CommodityFactory();
 		factory.createCommodities(new File(
-				"src/main/resources/commodities/organic.xml"));
+				"src/main/resources/commodities/minerals.xml"));
 
-		Commodity c = factory.getCommodity(1);
+		Commodity c = factory.getCommodity("Minerals");
 
 		System.out.println(c.getName() + " (" + c.getSource() + ")");
 		while (c.getParent() != null) {
