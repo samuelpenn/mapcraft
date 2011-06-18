@@ -135,7 +135,7 @@ public class CommodityFactory {
 		return value;
 	}
 
-	private void createCommodity(Node node) {
+	private void createCommodity(Node node, String baseDir) {
 		Commodity commodity = new Commodity();
 		String name = getAttribute(node, "name");
 		String parent = getAttribute(node, "parent");
@@ -152,7 +152,7 @@ public class CommodityFactory {
 
 		// Defaults
 		commodity.setName(name);
-		commodity.setImagePath(image);
+		commodity.setImagePath(baseDir + "/" + image);
 		NodeList params = node.getChildNodes();
 		System.out.println(name);
 		for (int j = 0; j < params.getLength(); j++) {
@@ -196,10 +196,11 @@ public class CommodityFactory {
 
 		for (int i = 0; i < groups.getLength(); i++) {
 			Node group = groups.item(i);
+			String baseDir = getAttribute(group, "base");
 			NodeList list = group.getChildNodes();
 			for (int j = 0; j < list.getLength(); j++) {
 				Node node = list.item(j);
-				createCommodity(node);
+				createCommodity(node, baseDir);
 			}
 		}
 		transaction.commit();
