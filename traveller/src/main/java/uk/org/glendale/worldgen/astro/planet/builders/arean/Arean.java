@@ -1,4 +1,12 @@
-package uk.org.glendale.worldgen.astro.planet.builders.rock;
+/*
+ * Copyright (C) 2011 Samuel Penn, sam@glendale.org.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; version 2.
+ * See the file COPYING.
+ */
+package uk.org.glendale.worldgen.astro.planet.builders.arean;
 
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
@@ -18,14 +26,15 @@ public class Arean extends BarrenWorld {
 	public PlanetType getPlanetType() {
 		return PlanetType.Arean;
 	}
-	
+
 	public void generate() {
 		if (planet == null) {
-			throw new IllegalStateException("Use setPlanet() to set the planet first");
+			throw new IllegalStateException(
+					"Use setPlanet() to set the planet first");
 		}
 		planet.setType(getPlanetType());
-		int		radius = getPlanetType().getRadius();
-		planet.setRadius(radius / 2 + Die.die(radius, 2)/2);
+		int radius = getPlanetType().getRadius();
+		planet.setRadius(radius / 2 + Die.die(radius, 2) / 2);
 		planet.addTradeCode(TradeCode.Ba);
 		planet.addTradeCode(TradeCode.H3);
 		if (planet.getRadius() > 4000) {
@@ -47,15 +56,15 @@ public class Arean extends BarrenWorld {
 		generateResources();
 		generateDescription();
 	}
-	
+
 	public void generateMap() {
 		setCraterMinSize(10);
 		setCraterNumbers(50);
-		
+
 		base = new Tile("Base", "#774444", false);
 		crust = new Tile("Crust", "#aa8888", false);
 		mountains = new Tile("Mountains", "#aa9988", false);
-		
+
 		super.generateMap();
 	}
 
@@ -70,12 +79,12 @@ public class Arean extends BarrenWorld {
 		if (Die.d4() == 1) {
 			addResource("Radioactives", Die.d6(2));
 		}
-		int		water = Die.d10(2);
+		int water = Die.d10(2);
 		addResource("Water", water);
 		if (water > 5) {
 			planet.addTradeCode(TradeCode.Ic);
 		}
-		int	gases = 0;
+		int gases = 0;
 		switch (planet.getPressure()) {
 		case Trace:
 			gases = Die.d4();

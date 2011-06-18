@@ -16,13 +16,16 @@ import javax.persistence.EntityManager;
 import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
+import uk.org.glendale.worldgen.astro.planet.builders.arean.Arean;
+import uk.org.glendale.worldgen.astro.planet.builders.arean.EoArean;
+import uk.org.glendale.worldgen.astro.planet.builders.arean.MesoArean;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Ferrinian;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Hadean;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
 import uk.org.glendale.worldgen.astro.planet.builders.gaian.Gaian;
 import uk.org.glendale.worldgen.astro.planet.builders.jovian.CryoJovian;
 import uk.org.glendale.worldgen.astro.planet.builders.jovian.EuJovian;
-import uk.org.glendale.worldgen.astro.planet.builders.rock.Arean;
+import uk.org.glendale.worldgen.astro.planet.builders.jovian.SubJovian;
 import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.star.StarAPI;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
@@ -122,10 +125,18 @@ public class PlanetGenerator {
 			builder = new Gaian();
 			break;
 		case Cool:
-			switch (Die.d6()) {
+			switch (Die.d10()) {
 			case 1:
 			case 2:
 				builder = new Gaian();
+				break;
+			case 3:
+			case 4:
+				builder = new EoArean();
+				break;
+			case 5:
+			case 6:
+				builder = new MesoArean();
 				break;
 			default:
 				builder = new Arean();
@@ -137,7 +148,14 @@ public class PlanetGenerator {
 			break;
 		case VeryCold:
 			// Jupiter, Saturn
-			builder = new EuJovian();
+			switch (Die.d4()) {
+			case 1:
+				builder = new EuJovian();
+				break;
+			default:
+				builder = new SubJovian();
+				break;
+			}
 			break;
 		case ExtremelyCold:
 			// Uranus, Neptune.

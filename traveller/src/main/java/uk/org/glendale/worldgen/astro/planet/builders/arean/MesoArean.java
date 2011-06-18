@@ -88,7 +88,7 @@ public final class MesoArean extends WetWorld {
 				addResource("Algae", Die.d4(4));
 				addResource("Cnidarians", Die.d6(2));
 				addResource("Echinoderms", Die.d6(3));
-				addResource("Arthropods", Die.d4(2));
+				addResource("Marine Arthropods", Die.d4(2));
 				break;
 			}
 			break;
@@ -96,7 +96,7 @@ public final class MesoArean extends WetWorld {
 			addResource("Algae", Die.d6(3));
 			addResource("Cnidarians", Die.d6(2));
 			addResource("Echinoderms", Die.d6(3));
-			addResource("Arthropods", 5 + Die.d6(3));
+			addResource("Marine Arthropods", 5 + Die.d6(3));
 			addResource("Fish", 20 + Die.d10(3));
 			if (Die.d4() == 1) {
 				addResource("Lichen", Die.d4());
@@ -106,7 +106,7 @@ public final class MesoArean extends WetWorld {
 			addResource("Algae", Die.d6(2));
 			addResource("Cnidarians", Die.d4(2));
 			addResource("Echinoderms", Die.d4(3));
-			addResource("Arthropods", 5 + Die.d6(2));
+			addResource("Marine Arthropods", 5 + Die.d6(2));
 			addResource("Fish", 30 + Die.d10(3));
 			switch (Die.d4()) {
 			case 1:

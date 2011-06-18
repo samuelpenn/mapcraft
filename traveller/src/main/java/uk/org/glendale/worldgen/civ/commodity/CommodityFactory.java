@@ -109,7 +109,7 @@ public class CommodityFactory {
 	 * @return Value of attribute, or null.
 	 */
 	private String getAttribute(Node node, String name) {
-		String value = "";
+		String value = null;
 
 		if (node.getAttributes() != null) {
 			Node n = node.getAttributes().getNamedItem(name);
@@ -140,11 +140,11 @@ public class CommodityFactory {
 		Commodity commodity = new Commodity();
 		String name = getAttribute(node, "name");
 		String parent = getAttribute(node, "parent");
-		String image = name.toLowerCase().replaceAll(" ", "_");
 
 		if (name == null || name.length() == 0 || getCommodity(name) != null) {
 			return;
 		}
+		String image = name.toLowerCase().replaceAll(" ", "_");
 		if (parent != null) {
 			commodity.setParent(getCommodity(parent));
 		} else {
@@ -153,7 +153,7 @@ public class CommodityFactory {
 
 		// Defaults
 		commodity.setName(name);
-		commodity.setImagePath(baseDir + "/" + image);
+		commodity.setImagePath(baseDir + image);
 		NodeList params = node.getChildNodes();
 		System.out.println(name);
 		for (int j = 0; j < params.getLength(); j++) {
@@ -198,6 +198,11 @@ public class CommodityFactory {
 		for (int i = 0; i < groups.getLength(); i++) {
 			Node group = groups.item(i);
 			String baseDir = getAttribute(group, "base");
+			if (baseDir == null) {
+				baseDir = "";
+			} else if (!baseDir.endsWith("/")) {
+				baseDir += "/";
+			}
 			NodeList list = group.getChildNodes();
 			for (int j = 0; j < list.getLength(); j++) {
 				Node node = list.item(j);
@@ -209,8 +214,9 @@ public class CommodityFactory {
 
 	public static void main(String[] args) throws Exception {
 		CommodityFactory factory = new CommodityFactory();
-		factory.createCommodities(new File(
-				"src/main/resources/commodities/minerals.xml"));
+		String base = "src/main/resources/commodities/";
+		factory.createCommodities(new File(base + "minerals.xml"));
+		factory.createCommodities(new File(base + "organic.xml"));
 
 		Commodity c = factory.getCommodity("Minerals");
 

@@ -12,21 +12,19 @@ import java.util.ArrayList;
 
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
-import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.JovianWorld;
 import uk.org.glendale.worldgen.astro.planet.builders.Tile;
 
 /**
- * A cold gas giant world, similar to Neptune or Uranus.
+ * A Saturn like world. These are smaller and lighter than EuJovian worlds.
  * 
  * @author Samuel Penn
  */
-public class CryoJovian extends JovianWorld {
-
+public class SubJovian extends JovianWorld {
 	public PlanetType getPlanetType() {
-		return PlanetType.CryoJovian;
+		return PlanetType.SubJovian;
 	}
 
 	@Override
@@ -37,48 +35,40 @@ public class CryoJovian extends JovianWorld {
 		planet.setRadius(radius / 2 + Die.die(radius, 2) / 2);
 		planet.setDayLength(2000 + Die.d100() * 1000 + Die.die(10000));
 		planet.setAxialTilt(Die.d10());
-		if (planet.getAxialTilt() == 10) {
-			planet.setAxialTilt(Die.d10(3));
-		}
-		if (planet.getAxialTilt() == 30) {
-			planet.setAxialTilt(Die.d20(3));
-		}
 		planet.addTradeCode(TradeCode.H5);
 
 		// Does this world have rings? Most Jovian worlds seem to.
 		switch (Die.d6(3)) {
 		case 3:
-			planet.addFeature(PlanetFeature.BrightIceRings);
+			planet.addFeature(PlanetFeature.ExtensiveIceRings);
 			break;
 		case 4:
+			planet.addFeature(PlanetFeature.BrightIceRings);
+			break;
 		case 5:
+		case 6:
 			planet.addFeature(PlanetFeature.IceRings);
 			break;
-		case 6:
 		case 7:
 		case 8:
 		case 9:
+		case 10:
 			planet.addFeature(PlanetFeature.FaintIceRings);
 			break;
+		case 14:
 		case 15:
 		case 16:
 		case 17:
-			planet.addFeature(PlanetFeature.PartialIceRings);
-			break;
 		case 18:
-			planet.addFeature(PlanetFeature.ExtensiveIceRings);
+			planet.addFeature(PlanetFeature.PartialIceRings);
 			break;
 		}
 
 		tiles = new ArrayList<Tile>();
-		tiles.add(new Tile("Dark", "#008899", false));
-		tiles.add(new Tile("Light", "#0099bb", false));
-		tiles.add(new Tile("White", "#55ddff", false));
-		if (Die.d2() == 1) {
-			tiles.add(new Tile("Banding", "#0077aa", false));
-		} else {
-			tiles.add(new Tile("Banding", "#00aa77", false));
-		}
+		tiles.add(new Tile("Dark", "#bbbb99", false));
+		tiles.add(new Tile("Light", "#dddddd", false));
+		tiles.add(new Tile("White", "#f0f0f0", false));
+		tiles.add(new Tile("Yellow", "#aaaa77", false));
 
 		// setFractalColour("#ffffff");
 
@@ -95,15 +85,13 @@ public class CryoJovian extends JovianWorld {
 		return tiles.get((y / 2) % 2 + 1);
 	}
 
+	/**
+	 * Generate resources for Jupiter like worlds.
+	 */
 	public void generateResources() {
-		addResource("Hydrogen", 40 + Die.d20(2));
-		addResource("Inert Gases", 30 + Die.d20(2));
-		addResource("Exotic Gases", 20 + Die.d12(2));
-		if (Die.d3() == 1) {
-			addResource("Organic Gases", 10 + Die.d6());
-		}
-		if (planet.getTemperature().isHotterThan(Temperature.UltraCold)) {
-			addResource("Water", Die.d10(3));
-		}
+		addResource("Hydrogen", 60 + Die.d20(2));
+		addResource("Helium 3", 10 + Die.d8(2));
+		addResource("Oxygen", Die.d4(2));
+		addResource("Water", Die.d4(2));
 	}
 }
