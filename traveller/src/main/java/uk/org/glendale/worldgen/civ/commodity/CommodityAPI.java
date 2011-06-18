@@ -86,7 +86,6 @@ public class CommodityAPI {
 		}
 		if (base.hasCode(CommodityCode.VR)) {
 			for (Commodity child : children) {
-				double modifier = 0.0;
 				int level = 0;
 				if (child.hasCode(CommodityCode.V0)) {
 					level = 0;
@@ -136,7 +135,6 @@ public class CommodityAPI {
 	}
 
 	public static void main(String[] args) {
-		CommodityFactory commodityFactory = new CommodityFactory();
 		PlanetFactory planetFactory = new PlanetFactory();
 
 		Planet planet = planetFactory.getPlanet(601524);

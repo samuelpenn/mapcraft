@@ -87,6 +87,7 @@ public class CommodityFactory {
 	 *            Parent to find children of.
 	 * @return List of all children. May be empty.
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Commodity> getChildren(Commodity parent) {
 		Query q = em.createQuery("from Commodity where parent = :c");
 		q.setParameter("c", parent);
