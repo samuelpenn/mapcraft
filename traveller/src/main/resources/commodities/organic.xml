@@ -60,7 +60,7 @@
     
 	    <commodity name="Cnidarians" parent="Food">
 	    	<cost volume="1">25</cost>
-	    	<production tech="1" law="6" pr="7" cr="8"/>
+	    	<production tech="1" law="6" pr="4" cr="5"/>
 	    	<codes source="Ag">Fo FoFi Lq Pe</codes>
 	    	<description>
 	    		Simple sea creatures such as jellies, sea ameneonies and hydras.
@@ -69,7 +69,7 @@
     
 	    <commodity name="Echinoderms" parent="Food">
 	    	<cost volume="1">50</cost>
-	    	<production tech="1" law="6" pr="7" cr="8"/>
+	    	<production tech="1" law="6" pr="6" cr="7"/>
 	    	<codes source="Ag">Fo FoFi Pe</codes>
 	    	<description>
 	    		Bony sea creatures such as starfish.
@@ -84,5 +84,95 @@
 	    		Sea dwelling crustaceans.
 	    	</description>
 	    </commodity>
+
+        <commodity name="Fish" parent="Food">
+            <cost volume="1">90</cost>
+            <production tech="1" law="6" pr="7" cr="8"/>
+            <codes source="Ag">Fo FoFi Pe</codes>
+            <description>
+                Sea dwelling vertebrates.
+            </description>
+        </commodity>
+
+        <commodity name="Moss" parent="Food">
+            <cost volume="1">10</cost>
+            <production tech="6" law="6" pr="5" cr="5"/>
+            <codes source="Ag">Fo Pe Po</codes>
+            <description>
+                Simple land plants.
+            </description>
+        </commodity>
+
+        <commodity name="Fungi" parent="Food">
+            <cost volume="1">30</cost>
+            <production tech="0" law="6" pr="5" cr="6"/>
+            <codes source="Ag">Fo Pe Po</codes>
+            <description>
+                Spore based land life.
+            </description>
+        </commodity>
+        
+        <commodity name="Ferns" parent="Food">
+            <cost volume="1">50</cost>
+            <production tech="0" law="6" pr="6" cr="7">
+                <output mode="Ag">Vegetables</output>
+            </production>
+            <codes source="Ag">Pe</codes>
+            <description>
+                Any form of land planet which has neither flowers now woody
+                stems. They are considered more primitive than other plants.
+            </description>
+        </commodity>
+
+        <commodity name="Trees" parent="Food">
+            <cost volume="1">60</cost>
+            <production tech="0" law="6" pr="6" cr="7">
+                <output mode="Ag">Vegetables</output>
+                <output mode="Ag">Fruit</output>
+                <output mode="AgFa">Wood</output>
+            </production>
+            <codes source="Ag">PR</codes>
+            <description>
+                Any of a broad classification of woody plants.
+            </description>
+        </commodity>
+
+        <commodity name="Grasses" parent="Food">
+            <cost volume="1">60</cost>
+            <production tech="0" law="6" pr="6" cr="7">
+                <output mode="AgFa">Grain</output>
+            </production>
+            <codes source="Ag">Pe</codes>
+            <description>
+                A type of planet.
+            </description>
+        </commodity>
+
+        <commodity name="Vegetables" parent="Food">
+            <cost volume="1">50</cost>
+            <production tech="0" law="6" pr="6" cr="7"/>
+            <codes source="Ag">Fo Pe</codes>
+            <description>
+                Edible vegetable matter.
+            </description>
+        </commodity>
+
+        <commodity name="Fruit" parent="Food">
+            <cost volume="1">75</cost>
+            <production tech="0" law="6" pr="6" cr="7"/>
+            <codes source="Ag">Fo Pe</codes>
+            <description>
+                Edible seed bearing fruits.
+            </description>
+        </commodity>
+
+        <commodity name="Grain" parent="Food">
+            <cost volume="1">40</cost>
+            <production tech="0" law="6" pr="6" cr="7"/>
+            <codes source="Ag">Fo Pe</codes>
+            <description>
+                Edible seed bearing fruits.
+            </description>
+        </commodity>
     </group>
 </commodities>
