@@ -155,6 +155,17 @@ CREATE TABLE commodity_codes (commodity_id int not null, code varchar(8) not nul
     FOREIGN KEY(commodity_id) REFERENCES commodity(id)
     ON DELETE CASCADE ON UPDATE CASCADE)
     ENGINE=INNODB;
+    
+CREATE TABLE commodity_map (
+    id INT AUTO_INCREMENT NOT NULL,
+    commodity_id INT NOT NULL, mode VARCHAR(32) NOT NULL,
+    output_id INT NOT NULL, efficiency INT NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(commodity_id) REFERENCES commodity(id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(output_id) REFERENCES commodity(id)
+    ON DELETE CASCADE ON UPDATE CASCADE)
+    ENGINE=INNODB; 
 
 CREATE TABLE facility (id int auto_increment not null, name varchar(64), type varchar(16), image varchar(48),
                        techLevel int default 0, capacity int default 0,

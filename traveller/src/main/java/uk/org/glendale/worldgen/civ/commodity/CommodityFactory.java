@@ -136,6 +136,15 @@ public class CommodityFactory {
 		return value;
 	}
 
+	/**
+	 * Create a new commodity if it doesn't already exist. Writes commodity into
+	 * the database.
+	 * 
+	 * @param node
+	 *            XML node that defines the commodity.
+	 * @param baseDir
+	 *            Base directory where images are located.
+	 */
 	private void createCommodity(Node node, String baseDir) {
 		Commodity commodity = new Commodity();
 		String name = getAttribute(node, "name");
@@ -185,6 +194,15 @@ public class CommodityFactory {
 
 	}
 
+	/**
+	 * Create commodities from the XML file provided.
+	 * 
+	 * @param file
+	 *            File containing commodity definitions.
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 */
 	private void createCommodities(File file)
 			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilder db = DocumentBuilderFactory.newInstance()
@@ -212,12 +230,77 @@ public class CommodityFactory {
 		transaction.commit();
 	}
 
+	private void createMappings(Node node) {
+		NodeList children = node.getChildNodes();
+
+		for (int i = 0; i < children.getLength(); i++) {
+			Node n = children.item(i);
+			if (n.getNodeName().equals("production")) {
+				NodeList outputs = n.getChildNodes();
+				if (outputs != null && outputs.getLength() > 0) {
+					for (int j = 0; j < outputs.getLength(); j++) {
+						Node o = outputs.item(j);
+						if (o.getNodeName().equals("output")) {
+							String value = o.getTextContent().trim();
+							System.out.println(getAttribute(node, "name")
+									+ ": " + value);
+							if (getCommodity(value) == null) {
+								continue;
+							}
+							String mode = getAttribute(o, "mode");
+							int efficiency = getInteger(o, "efficiency");
+							if (mode == null) {
+								continue;
+							}
+							if (efficiency < 1) {
+								efficiency = 100;
+							}
+							CommodityMap map = new CommodityMap(
+									getCommodity(getAttribute(node, "name")),
+									getCommodity(value), mode);
+							em.persist(map);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void createMappings(File file) throws SAXException, IOException,
+			ParserConfigurationException {
+		DocumentBuilder db = DocumentBuilderFactory.newInstance()
+				.newDocumentBuilder();
+		Document document = db.parse(file);
+		NodeList groups = document.getElementsByTagName("group");
+
+		EntityTransaction transaction = em.getTransaction();
+
+		for (int i = 0; i < groups.getLength(); i++) {
+			Node group = groups.item(i);
+			NodeList list = group.getChildNodes();
+			for (int j = 0; j < list.getLength(); j++) {
+				transaction.begin();
+				Node node = list.item(j);
+				createMappings(node);
+				transaction.commit();
+			}
+		}
+	}
+
 	public static void main(String[] args) throws Exception {
 		CommodityFactory factory = new CommodityFactory();
 		String base = "src/main/resources/commodities/";
-		factory.createCommodities(new File(base + "minerals.xml"));
-		factory.createCommodities(new File(base + "organic.xml"));
 
+		String[] files = { "minerals.xml", "organic.xml" };
+
+		// Requires two passes to build everything. This allows mappings
+		// to refer to future commodities.
+		for (String file : files) {
+			factory.createCommodities(new File(base + file));
+		}
+		for (String file : files) {
+			factory.createMappings(new File(base + file));
+		}
 		Commodity c = factory.getCommodity("Minerals");
 
 		System.out.println(c.getName() + " (" + c.getSource() + ")");
