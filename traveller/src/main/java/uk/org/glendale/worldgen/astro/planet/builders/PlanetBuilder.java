@@ -842,6 +842,7 @@ public abstract class PlanetBuilder {
 				globeMap.setData(drawer.getWorldGlobe(2).save().toByteArray());
 				planet.addImage(globeMap);
 			}
+			System.out.println("Done");
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

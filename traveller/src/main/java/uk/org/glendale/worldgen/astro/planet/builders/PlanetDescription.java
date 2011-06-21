@@ -88,6 +88,7 @@ public class PlanetDescription {
 				bundle = ResourceBundle.getBundle(cls.getName());
 			} catch (MissingResourceException e) {
 				// If a bundle is missing, just skip to the next one.
+				cls = cls.getSuperclass();
 				continue;
 			}
 			Enumeration<String> e = bundle.getKeys();

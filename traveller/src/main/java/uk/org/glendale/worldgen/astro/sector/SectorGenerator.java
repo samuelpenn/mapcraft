@@ -145,23 +145,18 @@ public class SectorGenerator {
 		StarSystemGenerator systemGenerator = new StarSystemGenerator(
 				entityManager);
 
-		EntityTransaction transaction = entityManager.getTransaction();
 		try {
-			transaction.begin();
 			for (int x = 1; x <= Sector.WIDTH; x++) {
+				System.out.println("X: [" + x + "]");
 				for (int y = 1; y <= Sector.HEIGHT; y++) {
-					if (x > 8 || y > 10)
-						continue;
 					if (Die.d100() <= percentChance) {
 						systemGenerator.createStarSystem(sector,
 								names.getPlanetName(), x, y);
 					}
 				}
 			}
-			transaction.commit();
 		} catch (Throwable e) {
 			e.printStackTrace();
-			transaction.rollback();
 		}
 
 		return count;

@@ -98,6 +98,17 @@ public class CommodityFactory {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<CommodityMap> getMappings(Commodity commodity) {
+		Query q = em.createQuery("from CommodityMap where commodity = :c");
+		q.setParameter("c", commodity);
+		try {
+			return q.getResultList();
+		} catch (NoResultException e) {
+			return new ArrayList<CommodityMap>();
+		}
+	}
+
 	/**
 	 * Gets the value of the named attribute on this node. If the node has no
 	 * such attribute, or it is empty, then null is returned.

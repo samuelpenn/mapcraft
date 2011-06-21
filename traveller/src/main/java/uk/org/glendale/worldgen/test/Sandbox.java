@@ -40,7 +40,9 @@ public class Sandbox {
 		}
 		Sector sector = sf.getSector("Sandbox Core");
 		// sg.clearSector(sector);
-		sg.fillRandomSector(sector, new Names("names"), 50);
+		sg.fillRandomSector(sector, new Names("names"), 20);
+		app.getEntityManager().close();
+		System.out.println("Sector completed");
 	}
 
 }

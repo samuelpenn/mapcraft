@@ -95,7 +95,11 @@ CREATE TABLE planet (id int auto_increment not null, system_id int not null,
     FOREIGN KEY (system_id) REFERENCES system(id))
     ENGINE=INNODB;
 
+CREATE TABLE planet_features (planet_id int not null, code varchar(32) NOT NULL,
+    FOREIGN KEY (planet_id) REFERENCES planet(id)) ENGINE=INNODB;
 
+CREATE TABLE planet_codes (planet_id int not null, code varchar(32) NOT NULL,
+    FOREIGN KEY (planet_id) REFERENCES planet(id)) ENGINE=INNODB;
 
 create table glossary (id int auto_increment not null, uri varchar(64) not null, title varchar(128) not null,
     message text, primary key(id));

@@ -163,7 +163,7 @@ public class AppManager implements ServletContextListener {
 						+ ".database.name");
 
 				config.put("hibernate.archive.autodetection", "class, hbm");
-				config.put("hibernate.show_sql", "true");
+				config.put("hibernate.show_sql", "false");
 				config.put("hibernate.connection.url", "jdbc:mysql://"
 						+ hostname + "/" + database);
 				config.put("hibernate.connection.username", username);

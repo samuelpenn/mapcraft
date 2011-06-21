@@ -105,6 +105,7 @@ public class Hermian extends BarrenWorld {
 			setCraterNumbers(300 + Die.d100(2));
 		}
 
+		System.out.println(getPlanetType());
 		super.generateMap();
 	}
 

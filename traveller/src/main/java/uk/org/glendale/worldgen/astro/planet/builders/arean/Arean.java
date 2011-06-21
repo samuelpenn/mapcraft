@@ -65,6 +65,7 @@ public class Arean extends BarrenWorld {
 		crust = new Tile("Crust", "#aa8888", false);
 		mountains = new Tile("Mountains", "#aa9988", false);
 
+		System.out.println("This is Arean");
 		super.generateMap();
 	}
 

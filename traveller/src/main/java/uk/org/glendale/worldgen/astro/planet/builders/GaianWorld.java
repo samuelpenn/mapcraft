@@ -112,18 +112,18 @@ public abstract class GaianWorld extends PlanetBuilder {
 			}
 			break;
 		case ComplexLand:
-			addResource("Simple Marine", 10 + Die.d12(3));
-			addResource("Crustaceans", 10 + Die.d12(4));
+			addResource("Echinoderms", 10 + Die.d12(3));
+			addResource("Marine Arthropods", 10 + Die.d12(4));
 			addResource("Fish", 20 + Die.d20(3));
-			addResource("Wood", 10 + Die.d12(3));
-			addResource("Mammals", 10 + Die.d12(2));
+			addResource("Trees", 10 + Die.d12(3));
+			// addResource("Mammals", 10 + Die.d12(2));
 			break;
 		case Extensive:
-			addResource("Simple Marine", 10 + Die.d12(3));
-			addResource("Crustaceans", 10 + Die.d12(4));
+			addResource("Echinoderms", 10 + Die.d12(3));
+			addResource("Marine Arthropods", 10 + Die.d12(4));
 			addResource("Fish", 20 + Die.d20(3));
-			addResource("Wood", 25 + Die.d20(3));
-			addResource("Mammals", 20 + Die.d20(3));
+			addResource("Trees", 25 + Die.d20(3));
+			// addResource("Mammals", 20 + Die.d20(3));
 			break;
 		}
 	}
