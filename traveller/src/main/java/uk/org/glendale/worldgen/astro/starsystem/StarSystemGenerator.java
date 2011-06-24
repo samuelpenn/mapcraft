@@ -21,6 +21,7 @@ import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.star.StarAPI;
 import uk.org.glendale.worldgen.astro.star.StarGenerator;
+import uk.org.glendale.worldgen.server.AppManager;
 
 /**
  * Creates new star systems.
@@ -30,8 +31,39 @@ import uk.org.glendale.worldgen.astro.star.StarGenerator;
 public class StarSystemGenerator {
 	private EntityManager entityManager;
 
+	public StarSystemGenerator() {
+		this.entityManager = AppManager.getInstance().getEntityManager();
+	}
+
 	public StarSystemGenerator(EntityManager entityManager) {
 		this.entityManager = entityManager;
+	}
+
+	/**
+	 * Creates an empty star system with no stars or planets. Not generally used
+	 * except in testing.
+	 * 
+	 * @param sector
+	 *            Sector this system is in.
+	 * @param name
+	 *            Name of the system.
+	 * @param x
+	 *            X coordinate of the system.
+	 * @param y
+	 *            Y coordinate of the system.
+	 * @return New empty star system.
+	 */
+	public StarSystem createEmptySystem(Sector sector, String name, int x, int y) {
+		StarSystem system = new StarSystem(sector, name, x, y);
+		system.setAllegiance("Un");
+		system.setZone(Zone.Green);
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		entityManager.persist(system);
+		transaction.commit();
+
+		return system;
 	}
 
 	public StarSystem createStarSystem(Sector sector, String name, int x, int y) {

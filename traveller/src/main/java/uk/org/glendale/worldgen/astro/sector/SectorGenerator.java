@@ -19,6 +19,7 @@ import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystemFactory;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystemGenerator;
+import uk.org.glendale.worldgen.server.AppManager;
 import uk.org.glendale.worldgen.text.Names;
 
 /**
@@ -30,6 +31,13 @@ import uk.org.glendale.worldgen.text.Names;
  */
 public class SectorGenerator {
 	private EntityManager entityManager;
+
+	/**
+	 * Instantiate a new SectorGenerator with the default entity manager.
+	 */
+	public SectorGenerator() {
+		this.entityManager = AppManager.getInstance().getEntityManager();
+	}
 
 	/**
 	 * Instantiate a new SectorGenerator with a JPA EntityManager.

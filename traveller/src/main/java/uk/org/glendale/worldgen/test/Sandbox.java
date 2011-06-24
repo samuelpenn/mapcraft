@@ -14,7 +14,6 @@ import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorFactory;
 import uk.org.glendale.worldgen.astro.sector.SectorGenerator;
 import uk.org.glendale.worldgen.server.AppManager;
-import uk.org.glendale.worldgen.text.Names;
 
 /**
  * Create a sandbox universe for testing purposes.
@@ -40,7 +39,7 @@ public class Sandbox {
 		}
 		Sector sector = sf.getSector("Sandbox Core");
 		// sg.clearSector(sector);
-		sg.fillRandomSector(sector, new Names("names"), 20);
+		// sg.fillRandomSector(sector, new Names("names"), 20);
 		app.getEntityManager().close();
 		System.out.println("Sector completed");
 	}

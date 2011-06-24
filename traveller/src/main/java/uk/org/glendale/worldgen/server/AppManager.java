@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2011 Samuel Penn, sam@glendale.org.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; version 2.
+ * See the file COPYING.
+ */
 package uk.org.glendale.worldgen.server;
 
 import java.sql.Connection;
@@ -34,17 +42,21 @@ public class AppManager implements ServletContextListener {
 	private static Properties properties = new Properties();
 
 	private DataSource dataSource = null;
-	private String databaseClass = null;
 	private Connection connection = null;
 
 	private static String universe = null;
 	private static String rootPath = null;
 
-	private static boolean drawPlanetGlobe = false;
-	private static boolean stretchPlanetMap = false;
-
 	static {
-		ResourceBundle bundle = ResourceBundle.getBundle("worldgen");
+		try {
+			setConfig("worldgen");
+		} catch (Throwable e) {
+
+		}
+	}
+
+	public static void setConfig(final String bundleName) {
+		ResourceBundle bundle = ResourceBundle.getBundle(bundleName);
 
 		Enumeration<String> e = bundle.getKeys();
 		while (e.hasMoreElements()) {
@@ -56,11 +68,11 @@ public class AppManager implements ServletContextListener {
 		universe = properties.getProperty("universe");
 	}
 
-	public void setDataSource(DataSource dataSource) {
+	public void setDataSource(final DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 
-	private DataSource getDataSource(String name) {
+	private DataSource getDataSource(final String name) {
 		return dataSource;
 	}
 
@@ -261,6 +273,10 @@ public class AppManager implements ServletContextListener {
 
 		rootPath = arg0.getServletContext().getRealPath("");
 
+	}
+
+	public static String getUniverse() {
+		return universe;
 	}
 
 	public static String getRootPath() {
