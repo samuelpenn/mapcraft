@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2011 Samuel Penn, sam@glendale.org.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; version 2.
+ * See the file COPYING.
+ */
 package uk.org.glendale.worldgen.civ.commodity;
 
 import java.util.EnumSet;
@@ -83,7 +91,7 @@ public class Commodity {
 	/**
 	 * Set up a commodity with default values.
 	 */
-	Commodity() {
+	protected Commodity() {
 		source = Source.Mi;
 		consumption = production = 20;
 		volume = 1;

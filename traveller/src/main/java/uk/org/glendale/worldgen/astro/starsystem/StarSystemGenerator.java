@@ -50,6 +50,7 @@ public class StarSystemGenerator {
 		} catch (Throwable t) {
 			t.printStackTrace();
 			transaction.rollback();
+			system = null;
 		}
 
 		return system;
