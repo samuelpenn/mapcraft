@@ -4,6 +4,9 @@ DROP TABLE IF EXISTS trade;
 DROP TABLE IF EXISTS resources;
 DROP TABLE IF EXISTS log;
 DROP TABLE IF EXISTS ship;
+DROP TABLE IF EXISTS planet_features;
+DROP TABLE IF EXISTS planet_codes;
+DROP TABLE IF EXISTS planet_maps;
 DROP TABLE IF EXISTS planet;
 DROP TABLE IF EXISTS star;
 DROP TABLE IF EXISTS system;
@@ -15,13 +18,15 @@ DROP TABLE IF EXISTS map;
 DROP TABLE IF EXISTS globe;
 DROP TABLE IF EXISTS note;
 DROP TABLE IF EXISTS facility;
+DROP TABLE IF EXISTS commodity_codes;
+DROP TABLE IF EXISTS commodity_map;
 DROP TABLE IF EXISTS commodity;
 DROP TABLE IF EXISTS facilities;
 DROP TABLE IF EXISTS numbers;
 
-#
-# ALLEGIANCE
-#
+--
+-- ALLEGIANCE
+--
 CREATE TABLE allegiance(id int not null auto_increment, code varchar(4) not null,
     name varchar(240) not null,
     colour varchar(12) default '#777777',
@@ -39,17 +44,17 @@ INSERT INTO allegiance VALUES(0, 'KC', 'K''kree Client State', '#55FF55', NULL, 
 INSERT INTO allegiance VALUES(0, 'Hi', 'Hiver Federation', '#FFFF00', NULL, +1, 0, 0);
 INSERT INTO allegiance VALUES(0, 'Ju', 'Julian Protectorate', '#55FFFF', NULL, -1, -1, 0);
 
-#
-# SECTOR
-#
+--
+-- SECTOR
+--
 CREATE TABLE sector (id int auto_increment not null, name varchar(250) not null, 
     x int not null, y int not null, codes varchar(32) default '', 
     allegiance varchar(4) default 'Un',
     PRIMARY KEY(id)) ENGINE=INNODB;
 
-#
-# SYSTEM
-#
+--
+-- SYSTEM
+--
 CREATE TABLE system (id int auto_increment not null, sector_id int not null, 
     x int not null, y int not null, name varchar(250) not null, 
     allegiance varchar(4) default 'Un',
@@ -60,9 +65,9 @@ CREATE TABLE system (id int auto_increment not null, sector_id int not null,
     ENGINE=INNODB;
 
 					 
-#
-# STAR
-#
+--
+-- STAR
+--
 CREATE TABLE star (id int auto_increment not null, name varchar(250), 
     system_id int not null, parent_id int not null, 
     distance int not null, form varchar(16), 
@@ -71,9 +76,9 @@ CREATE TABLE star (id int auto_increment not null, name varchar(250),
     FOREIGN KEY (system_id) REFERENCES system(id))
     ENGINE=INNODB;
 
-#
-# PLANET
-#
+--
+-- PLANET
+--
 CREATE TABLE planet (id int auto_increment not null, system_id int not null, 
     parent_id int not null, moon boolean default false,
     name varchar(250), distance int not null, radius int not null, tilt int default 0,
@@ -115,13 +120,14 @@ create table globe (planet_id int not null, image longblob not null, primary key
 
 create table note (id int auto_increment not null, planet_id int not null, property varchar(16), message text, primary key(id));
 
-#
-# Radical stuff
-#
 
-#
-# TIME
-#
+--
+-- Radical stuff
+--
+
+--
+-- TIME
+--
 CREATE TABLE numbers (property VARCHAR(32) NOT NULL, value BIGINT not null);
 INSERT INTO numbers VALUES('time', 0);
 INSERT INTO numbers VALUES('realtime', 0);
@@ -169,8 +175,11 @@ CREATE TABLE commodity_map (
     ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(output_id) REFERENCES commodity(id)
     ON DELETE CASCADE ON UPDATE CASCADE)
-    ENGINE=INNODB; 
+    ENGINE=INNODB;
 
+-- EXIT
+    
+    
 CREATE TABLE facility (id int auto_increment not null, name varchar(64), type varchar(16), image varchar(48),
                        techLevel int default 0, capacity int default 0,
                        resource_id int default 0, inputs varchar(32) default '', outputs varchar(32) default '',
@@ -192,7 +201,7 @@ CREATE TABLE facilities (facility_id int not null, planet_id int not null, size 
                          
 
 
-# Standard residential facilities
+-- Standard residential facilities
 INSERT INTO facility VALUES(0, 'Primitive',        'Residential', 'res_primitive',  0,  1, 2, '', '', '');
 INSERT INTO facility VALUES(0, 'Iron Age',         'Residential', 'res_ironage',    2,  1, 2, '', '', '');
 INSERT INTO facility VALUES(0, 'Medieval',         'Residential', 'res_medieval',   3,  1, 2, '', '', '');
@@ -206,11 +215,11 @@ INSERT INTO facility VALUES(0, 'Imperium',         'Residential', 'res_imperium'
 INSERT INTO facility VALUES(0, 'High Imperium',    'Residential', 'res_high',      11,  1, 2, '', '', '');
 INSERT INTO facility VALUES(0, 'Advanced Imperium','Residential', 'res_advanced',  12,  1, 2, '', '', '');
 
-##
-# Primitive cultures (TL0 - TL1)
-#
+--
+-- Primitive cultures (TL0 - TL1)
+--
 
-# Residential
+-- Residential
 INSERT INTO facility VALUES(0, 'Tribal nomads',       'Residential', 'primitive/tribalnomads', 0, 1, 2,
                             'Fo;BldL,20;HoTl,30;HoCk,40;HoCl,20', 
                             'HoTl;HoCk;HoCl',
@@ -228,7 +237,7 @@ INSERT INTO facility VALUES(0, 'Tribal empires',      'Residential', 'primitive/
                             'HoTl;HoCK;HoCl', 
                             '');
 
-# Agriculture
+-- Agriculture
 INSERT INTO facility VALUES(0, 'Primitive gatherers', 'Agriculture', 'primitive/gatherers',   0,  1, 200,
                             '', 'BldL,25;FoGa;FoHd,25', '');
 INSERT INTO facility VALUES(0, 'Primitive hunters',   'Agriculture', 'primitive/hunters',   0,  1, 203,
@@ -239,11 +248,11 @@ INSERT INTO facility VALUES(0, 'Primitive farming',   'Agriculture', 'primitive/
 INSERT INTO facility VALUES(0, 'Primitive livestock', 'Agriculture', 'primitive/livestock',   0,  1, 203,
                             '', 'FoHu,25;FoHd,75', '');
 
-# Mines
+-- Mines
 INSERT INTO facility VALUES(0, 'Quarry', 'Mining', 'primitive/quarry',   0,  1, 1,
                             '', 'OrSi,25', '');
                             
-# Industry
+-- Industry
 INSERT INTO facility VALUES(0, 'Primitive craftsman', 'Industry', 'primitive/industry', 0, 1, 1,
                             'OrSi', 
                             'BldH;Tp;WpnH,25;HoCk,50', '');
@@ -251,9 +260,9 @@ INSERT INTO facility VALUES(0, 'Primitive handicraft', 'Industry', 'primitive/in
                             'FoMe', 
                             'ClCv', '');
 
-##
-# Medieval cultures (TL2 - TL4)
-#
+--
+-- Medieval cultures (TL2 - TL4)
+--
 INSERT INTO facility VALUES(0, 'Villages',     		  'Residential', 'medieval/villages', 2, 1, 2, '', '', '');
 INSERT INTO facility VALUES(0, 'Agricultural colony', 'Residential', 'medieval/colony',   3, 1, 2, '', '', '');
 
@@ -262,17 +271,17 @@ INSERT INTO facility VALUES(0, 'Neolithic settlements', 'Residential', 'res_prim
 
 
 
-# TL1 Cultures (Bronze age)
+-- TL1 Cultures (Bronze age)
 INSERT INTO facility VALUES(0, 'Bronze age rural',  'Residential', 'res_primitive',  1,  1, 0, '', '', '');
 INSERT INTO facility VALUES(0, 'Simple farming',    'Agriculture', 'agriculture',    1,  1, 200, '', '', '');
 INSERT INTO facility VALUES(0, 'Simple livestock',  'Agriculture', 'agriculture',    1,  1, 203, '', '', '');
 
-# TL2 Cultures (Iron age)
+-- TL2 Cultures (Iron age)
 INSERT INTO facility VALUES(0, 'Iron age rural',    'Residential', 'res_primitive',  1,  1, 0, '', '', '');
 INSERT INTO facility VALUES(0, 'Iron age cities',   'Residential', 'res_primitive',  1,  1, 0, '', '', '');
 INSERT INTO facility VALUES(0, 'Primitive mining',  'Mining',      'mi_iron',        2,  1, 1, '', '', '');
 
-# TL3 Cultures (Medieval)
+-- TL3 Cultures (Medieval)
 INSERT INTO facility VALUES(0, 'Medieval colony',      'Residential', 'res_medieval',      3,  0, 2, '', '', '');
 INSERT INTO facility VALUES(0, 'Medieval settlements', 'Residential', 'res_medieval',      3,  3, 2, '1501;3100', '', '');
 INSERT INTO facility VALUES(0, 'Medieval cities',      'Residential', 'res_medieval_city', 3,  7, 2, '1000;1501;3100', '', '');
@@ -281,13 +290,13 @@ INSERT INTO facility VALUES(0, 'Medieval farm steads', 'Agriculture', 'ag_mediev
 INSERT INTO facility VALUES(0, 'Medieval farming',     'Agriculture', 'ag_medieval',       3,  3, 2130, '2140,X', '', 'FC');
 INSERT INTO facility VALUES(0, 'Medieval husbandry',   'Agriculture', 'ag_medieval',       3,  3, 2400, '', '', 'FA');
 
-# Mining
+-- Mining
 INSERT INTO facility VALUES(0, 'LoTech Mines',     'Mining', 'mining',  4,  2, 1, '206,X', '', '');
 INSERT INTO facility VALUES(0, 'Industrial Mines', 'Mining', 'mining',  6,  4, 1, '6,X', '', '');
 INSERT INTO facility VALUES(0, 'HiTech Mines',     'Mining', 'mining',  8,  8, 1, '6,X;7,X', '', '');
 INSERT INTO facility VALUES(0, 'UltraTech Mines',  'Mining', 'mining', 10, 16, 1, '6,X;7,X', '', '');
 
-# Agriculture
+-- Agriculture
 INSERT INTO facility VALUES(0, 'Agriculture',      'Agriculture', 'agriculture',  3,   3, 200, '', '', '');
 INSERT INTO facility VALUES(0, 'Agriculture 5',    'Agriculture', 'agriculture',  5,   5, 200, '', '', '');
 INSERT INTO facility VALUES(0, 'Agriculture 7',    'Agriculture', 'agriculture',  7,  10, 200, '', '', '');
@@ -306,7 +315,7 @@ INSERT INTO facility VALUES(0, "Factory",    "Industry", "industry",        5,  
 
 
 
-# Basic goods
+-- Basic goods
 INSERT INTO commodity VALUES(1, 'Minerals', 'mineral',    'Mi', 0,  500, 1,  5, 5,  6, 3, 'Or');
 INSERT INTO commodity VALUES(2, 'Food', 'agricultural',   'Ag', 0,  250, 1,  5, 5,  6, 1, 'Fo Vi Pe');
 INSERT INTO commodity VALUES(3, 'Textiles', 'textiles',   'Ag', 0,  700, 1,  5, 5,  6, 1, 'Cl');
@@ -318,41 +327,41 @@ INSERT INTO commodity VALUES(8, 'Consumer goods', 'consumer', 'In', 0, 1000, 1, 
 
 
 
-# Silicate ores
+-- Silicate ores
 INSERT INTO commodity VALUES(1000, 'Silicate ore',  'silicate', 'Mi',    1,  50, 1, 7, 4, 6, 3, 'Or BldH OrSi');
 INSERT INTO commodity VALUES(1001, 'Krysite ore',   'silicate', 'Mi', 1000, 100, 1, 6, 2, 6, 8, 'Or In OrSi');
 INSERT INTO commodity VALUES(1002, 'Magnesite ore', 'silicate', 'Mi', 1000, 300,  1, 5, 2, 6, 8, 'Or In Hz OrSi');
 INSERT INTO commodity VALUES(1003, 'Ericate ore',   'silicate', 'Mi', 1000, 500, 1, 4, 0, 6,9, 'Or In Hz OrSi');
 
-# Carbonic ores
+-- Carbonic ores
 INSERT INTO commodity VALUES(1100, 'Carbonic ore',  'carbonic', 'Mi',    1, 100, 1, 6, 4, 6, 3, 'Or OrCa');
 INSERT INTO commodity VALUES(1101, 'Heliacate ore', 'carbonic', 'Mi', 1100, 200, 1, 5, 2, 6, 9, 'Or OrCa In');
 INSERT INTO commodity VALUES(1102, 'Acenite ore',   'carbonic', 'Mi', 1100, 500, 1, 4, 1, 6, 9, 'Or OrCa In Hz Sp');
 INSERT INTO commodity VALUES(1103, 'Pardenic ore',  'carbonic', 'Mi', 1100, 800, 1, 3, 0, 6, 10, 'Or OrCa In');
 
-# Ferric ores
+-- Ferric ores
 INSERT INTO commodity VALUES(1200, 'Ferric ore',    'ferric', 'Mi',    1,  150, 1, 5, 3, 6, 2, 'Or OrFe');
 INSERT INTO commodity VALUES(1201, 'Vardonnek ore', 'ferric', 'Mi', 1200,  300, 1, 4, 2, 6, 8, 'Or OrFe In');
 INSERT INTO commodity VALUES(1202, 'Larathic ore',  'ferric', 'Mi', 1200,  600, 1, 3, 1, 6, 9, 'Or OrFe In');
 INSERT INTO commodity VALUES(1203, 'Xithantite ore','ferric', 'Mi', 1200, 1200, 1, 2, 0, 6, 10, 'Or OrFe In');
 
-# Aquam ores
+-- Aquam ores
 INSERT INTO commodity VALUES(1300, 'Water',          'aquam', 'Mi',    1,  75, 1, 12, 3, 6, 6, 'Or OrAq In');
 INSERT INTO commodity VALUES(1301, 'Doric crystals', 'aquam', 'Mi', 1300, 250, 1,  5, 2, 6, 9, 'Or OrAq In Hz');
 INSERT INTO commodity VALUES(1302, 'Iskine crystals','aquam', 'Mi', 1300, 300, 1,  4, 1, 6, 8, 'Or OrAq In Ag');
 INSERT INTO commodity VALUES(1303, 'Oorcine ices',   'aquam', 'Mi', 1300, 600, 1,  3, 0, 6, 9, 'Or OrAq In Fr');
 
-# Auram ores
+-- Auram ores
 INSERT INTO commodity VALUES(1400, 'Air',            'auram', 'Mi',    1,  120, 1, 11, 3, 6, 6, 'Or OrAu In');
 INSERT INTO commodity VALUES(1401, 'Regiam gas',     'auram', 'Mi', 1400,  440, 1,  5, 2, 6, 7, 'Or OrAu In HZ');
 INSERT INTO commodity VALUES(1402, 'Tritanium gas',  'auram', 'Mi', 1400,  480, 1,  3, 1, 6, 9, 'Or OrAu In');
 INSERT INTO commodity VALUES(1403, 'Synthosium gas', 'auram', 'Mi', 1400, 1060, 1,  2, 0, 3, 10, 'Or OrAu Hz');
 
-# Other resources
+-- Other resources
 INSERT INTO commodity VALUES(1500, 'Petroleum',      'oil',   'Mi',    1,  200, 1, 6, 5, 6, 6, 'Or In');
 INSERT INTO commodity VALUES(1501, 'Wood',           'wood',  'Ag',    1,  100, 1, 7, 6, 6, 1, 'In Ag BldL');
 
-# Basic agricultural resources
+-- Basic agricultural resources
 INSERT INTO commodity VALUES(2000, 'Marine food',     'seafood',         'Ag', 2,    100, 1, 10,  7, 6, 1, 'Fo Vi Pe Tl');
 INSERT INTO commodity VALUES(2001, 'Primitive food',  'metazoa',         'Ag', 2000, 100, 1, 10,  7, 6, 1, 'Fo Vi FoOr Pe Tl');
 INSERT INTO commodity VALUES(2002, 'Base organics',   'base_organics',   'Ag', 2001,   5, 1, 4,  12, 6, 1, 'Fo Pe FoOr Lq');
@@ -427,10 +436,10 @@ INSERT INTO commodity VALUES(503, 'Agricultural robotics',  'machinery', 'In', 6
 INSERT INTO commodity VALUES(504, 'Advanced agribots',      'machinery', 'In', 6, 1000, 1, 4, 7, 6, 11, 'Ag Ma');
 
 
-# Requirements
+-- Requirements
 CREATE TABLE requirements (commodity_id INT NOT NULL, requires_id INT NOT NULL, number INT DEFAULT 1);
 
-# Measure of what a planet produces naturally. Mostly ores and agricultural produce.
+-- Measure of what a planet produces naturally. Mostly ores and agricultural produce.
 CREATE TABLE resources (id INT AUTO_INCREMENT NOT NULL, 
                         planet_id INT NOT NULL, commodity_id INT NOT NULL, density INT NOT NULL,
                         PRIMARY KEY(id),
@@ -450,16 +459,16 @@ CREATE TABLE trade (id INT AUTO_INCREMENT NOT NULL, planet_id INT NOT NULL,
                     
                     
                     
-#
-# SHIP TEST DATA
-#
-#insert into ship values(0, "Child of Adkynson", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-#insert into ship values(0, "Child of Free Enterprise", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-#insert into ship values(0, "Child of Boccob", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-#insert into ship values(0, "Child of Tax Havens", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-#insert into ship values(0, "Child of Greed", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-#insert into ship values(0, "Child of Liberty", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-#insert into ship values(0, "Child of Mathematics", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-#insert into ship values(0, "Child of Vacuum", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-#insert into ship values(0, "Child of the Stars", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
-#insert into ship values(0, "Child of Serendipity", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+--
+-- SHIP TEST DATA
+--
+--insert into ship values(0, "Child of Adkynson", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+--insert into ship values(0, "Child of Free Enterprise", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+--insert into ship values(0, "Child of Boccob", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+--insert into ship values(0, "Child of Tax Havens", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+--insert into ship values(0, "Child of Greed", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+--insert into ship values(0, "Child of Liberty", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+--insert into ship values(0, "Child of Mathematics", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+--insert into ship values(0, "Child of Vacuum", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+--insert into ship values(0, "Child of the Stars", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);
+--insert into ship values(0, "Child of Serendipity", "Adder", 14132, 174453, 0, "Docked", 100, 1, 30, 30, "Imperium", 0);

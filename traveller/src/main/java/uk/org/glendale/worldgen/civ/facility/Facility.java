@@ -16,7 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import uk.org.glendale.rpg.traveller.civilisation.trade.FacilityType;
 
 /**
  * A Facility describes one facet of a civilisation. They are central to the
@@ -124,11 +123,11 @@ public class Facility {
 		this.type = type;
 	}
 
-	public int getMinimumTechLevel() {
+	public int getTechLevel() {
 		return techLevel;
 	}
 
-	public void setMinimumTechLevel(int techLevel) {
+	public void setTechLevel(int techLevel) {
 		this.techLevel = techLevel;
 	}
 }

@@ -6,7 +6,7 @@
  * as published by the Free Software Foundation; version 2.
  * See the file COPYING.
  */
-package uk.org.glendale.rpg.traveller.civilisation.trade;
+package uk.org.glendale.worldgen.civ.facility;
 
 /**
  * The type of facility. This determines the behaviour of the

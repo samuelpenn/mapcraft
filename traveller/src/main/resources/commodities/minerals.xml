@@ -64,6 +64,12 @@
 	        <production tech="2" law="6" pr="7" cr="8"/>
 	        <codes source="Mi">Or</codes>
 	    </commodity>
+
+        <commodity name="Carbonic Crystals" parent="Carbonic Ore">
+            <cost volume="1">500</cost>
+            <production tech="2" law="6" pr="11" cr="11"/>
+            <codes source="Mi">Or</codes>
+        </commodity>
     </group>
     
     <group name="Other Chemicals" base="minerals">
@@ -84,6 +90,12 @@
 		    <production tech="4" law="6" pr="9" cr="11"/>
 		    <codes source="Mi">In</codes>
 		</commodity>
+
+        <commodity name="Organic Chemicals" parent="Water">
+            <cost volume="1">60</cost>
+            <production tech="4" law="6" pr="7" cr="10"/>
+            <codes source="Mi">In</codes>
+        </commodity>
 		
 		<commodity name="Exotic Gases" parent="Inert Gases">
 		    <cost volume="1">200</cost>

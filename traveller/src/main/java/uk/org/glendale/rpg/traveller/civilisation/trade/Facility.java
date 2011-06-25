@@ -13,6 +13,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
+import uk.org.glendale.worldgen.civ.facility.FacilityType;
 
 /**
  * Each civilised planet will have one or more facilities. These produce

@@ -9,6 +9,7 @@
 package uk.org.glendale.worldgen.civ.commodity;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,8 @@ public class CommodityFactory {
 
 	/**
 	 * Gets all the children of the specified commodity. Only direct children of
-	 * the commodity are returned.
+	 * the commodity are returned. If the parent is null, then all root items
+	 * will be returned.
 	 * 
 	 * @param parent
 	 *            Parent to find children of.
@@ -87,8 +89,15 @@ public class CommodityFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Commodity> getChildren(Commodity parent) {
-		Query q = em.createQuery("from Commodity where parent = :c");
-		q.setParameter("c", parent);
+		Query q;
+
+		if (parent == null) {
+			q = em.createQuery("from Commodity where parent is null");
+		} else {
+			q = em.createQuery("from Commodity where parent = :c");
+			q.setParameter("c", parent);
+		}
+
 		try {
 			return q.getResultList();
 		} catch (NoResultException e) {
@@ -164,6 +173,10 @@ public class CommodityFactory {
 		}
 		String image = name.toLowerCase().replaceAll(" ", "_");
 		if (parent != null) {
+			if (getCommodity(parent) == null) {
+				throw new IllegalArgumentException("Commodity [" + name
+						+ "] has unknown parent [" + parent + "]");
+			}
 			commodity.setParent(getCommodity(parent));
 		} else {
 			commodity.setParent(null);
@@ -173,7 +186,6 @@ public class CommodityFactory {
 		commodity.setName(name);
 		commodity.setImagePath(baseDir + image);
 		NodeList params = node.getChildNodes();
-		System.out.println(name);
 		for (int j = 0; j < params.getLength(); j++) {
 			Node p = params.item(j);
 			if (p.getNodeType() == Node.ELEMENT_NODE) {
@@ -293,6 +305,32 @@ public class CommodityFactory {
 				createMappings(node);
 				transaction.commit();
 			}
+		}
+	}
+
+	public void createAllCommodities(File base)
+			throws ParserConfigurationException, SAXException, IOException {
+		if (base.isDirectory()) {
+			// Add all files in the directory.
+			File[] files = base.listFiles(new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String name) {
+					return name.endsWith(".xml");
+				}
+			});
+
+			// Requires two passes to build everything. This allows mappings
+			// to refer to future commodities.
+			for (File file : files) {
+				createCommodities(file);
+			}
+			for (File file : files) {
+				createMappings(file);
+			}
+		} else {
+			// Just add a single file.
+			createCommodities(base);
+			createMappings(base);
 		}
 	}
 

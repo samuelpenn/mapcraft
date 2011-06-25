@@ -22,6 +22,7 @@ import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.star.Temperature;
 import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
 import uk.org.glendale.worldgen.civ.commodity.Source;
+import uk.org.glendale.worldgen.civ.facility.FacilityType;
 
 /**
  * Calculates trade requirements for a planet. Only applies to worlds with
