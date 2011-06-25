@@ -10,6 +10,7 @@ package uk.org.glendale.worldgen.astro.planet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 
@@ -25,6 +26,7 @@ import uk.org.glendale.worldgen.astro.planet.builders.gaian.Gaian;
 import uk.org.glendale.worldgen.astro.planet.builders.jovian.CryoJovian;
 import uk.org.glendale.worldgen.astro.planet.builders.jovian.EuJovian;
 import uk.org.glendale.worldgen.astro.planet.builders.jovian.SubJovian;
+import uk.org.glendale.worldgen.astro.sector.SectorCode;
 import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.star.StarAPI;
 import uk.org.glendale.worldgen.astro.star.Temperature;
@@ -184,9 +186,18 @@ public class PlanetGenerator {
 	 *            Planet to generate moons for.
 	 * @return List of moons that have been generated.
 	 */
-	public List<Planet> generateMoons(Planet planet) {
+	public List<Planet> generateMoons(Planet planet, Set<SectorCode> codes) {
 		List<Planet> moons = new ArrayList<Planet>();
 		PlanetBuilder[] builders = builder.getMoonBuilders();
+
+		// If this is a sparse sector, halve number of moons.
+		if (codes.contains(SectorCode.Sp) && builders.length > 1) {
+			PlanetBuilder[] nb = new PlanetBuilder[builders.length / 2];
+			for (int i = 0; i < nb.length; i++) {
+				nb[i] = builders[i];
+			}
+			builders = nb;
+		}
 
 		if (builders != null) {
 			String[] names = { "a", "b", "c", "d", "e", "f", "g", "h", "i",

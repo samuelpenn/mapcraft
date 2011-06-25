@@ -20,9 +20,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import uk.org.glendale.rpg.traveller.civilisation.trade.CommodityCode;
-import uk.org.glendale.rpg.traveller.civilisation.trade.Source;
 import uk.org.glendale.worldgen.astro.sector.Sector;
+import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
+import uk.org.glendale.worldgen.civ.commodity.Source;
 import uk.org.glendale.worldgen.server.AppManager;
 
 @ManagedBean

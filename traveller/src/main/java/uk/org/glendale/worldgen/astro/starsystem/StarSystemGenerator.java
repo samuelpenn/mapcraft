@@ -9,6 +9,7 @@
 package uk.org.glendale.worldgen.astro.starsystem;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -18,6 +19,7 @@ import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetGenerator;
 import uk.org.glendale.worldgen.astro.sector.Sector;
+import uk.org.glendale.worldgen.astro.sector.SectorCode;
 import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.star.StarAPI;
 import uk.org.glendale.worldgen.astro.star.StarGenerator;
@@ -76,7 +78,7 @@ public class StarSystemGenerator {
 			transaction.begin();
 			entityManager.persist(system);
 
-			generateStars(system);
+			generateStars(system, sector.getCodes());
 
 			transaction.commit();
 		} catch (Throwable t) {
@@ -97,7 +99,7 @@ public class StarSystemGenerator {
 	 * Multiple-star systems are kept deliberately rarer than reality for
 	 * reasons of simplicity.
 	 */
-	private void generateStars(StarSystem system) {
+	private void generateStars(StarSystem system, Set<SectorCode> codes) {
 		if (system == null) {
 			throw new IllegalArgumentException(
 					"Star system has not been defined");
@@ -117,6 +119,9 @@ public class StarSystemGenerator {
 		default:
 			numStars = 1;
 		}
+		if (codes.contains(SectorCode.Sp) && numStars > 1) {
+			numStars -= 1;
+		}
 
 		StarGenerator starGenerator = new StarGenerator(system, numStars > 1);
 		Star primary = starGenerator.generatePrimary();
@@ -134,7 +139,7 @@ public class StarSystemGenerator {
 		}
 
 		for (int s = 0; s < system.getStars().size(); s++) {
-			generatePlanets(system, s);
+			generatePlanets(system, s, codes);
 		}
 	}
 
@@ -186,11 +191,16 @@ public class StarSystemGenerator {
 	 * @param starIndex
 	 *            Star within the system.
 	 */
-	private void generatePlanets(StarSystem system, int starIndex) {
+	private void generatePlanets(StarSystem system, int starIndex,
+			Set<SectorCode> codes) {
 		Star star = system.getStars().get(starIndex);
 		int numPlanets = Die.d6(2) - starIndex * 3;
 		int increase = StarAPI.getInnerLimit(star) + Die.d6(2);
 		int distance = StarAPI.getInnerLimit(star) + Die.die(increase, 2);
+
+		if (codes.contains(SectorCode.Sp)) {
+			numPlanets /= 2;
+		}
 
 		PlanetGenerator planetGenerator = new PlanetGenerator(entityManager,
 				system, star);
@@ -202,7 +212,7 @@ public class StarSystemGenerator {
 			System.out.println("Persisted planet [" + planet.getId() + "] ["
 					+ planet.getName() + "]");
 
-			List<Planet> moons = planetGenerator.generateMoons(planet);
+			List<Planet> moons = planetGenerator.generateMoons(planet, codes);
 			for (Planet moon : moons) {
 				System.out.println("Persisting [" + moon.getName() + "]");
 				entityManager.persist(moon);

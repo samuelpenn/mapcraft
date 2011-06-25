@@ -28,9 +28,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
-import uk.org.glendale.rpg.traveller.civilisation.trade.CommodityCode;
-import uk.org.glendale.rpg.traveller.civilisation.trade.Source;
-
 /**
  * Represents a commodity. Commodities can be produced, consumed and traded.
  * Lists of commodities are actually represented as type TradeGood, which
@@ -133,7 +130,7 @@ public class Commodity {
 		return name;
 	}
 
-	void setName(String name) {
+	void setName(final String name) {
 		this.name = name;
 	}
 
@@ -146,7 +143,7 @@ public class Commodity {
 		return imagePath;
 	}
 
-	void setImagePath(String imagePath) {
+	void setImagePath(final String imagePath) {
 		this.imagePath = imagePath;
 	}
 
@@ -174,7 +171,7 @@ public class Commodity {
 		return cost;
 	}
 
-	void setCost(int cost) {
+	void setCost(final int cost) {
 		this.cost = cost;
 	}
 
@@ -205,11 +202,11 @@ public class Commodity {
 		return production;
 	}
 
-	long getProduction(long population) {
+	long getProduction(final long population) {
 		return (long) (population / Math.pow(10, production / 2.0));
 	}
 
-	void setProductionRating(int pr) {
+	void setProductionRating(final int pr) {
 		this.production = pr;
 	}
 
@@ -226,11 +223,11 @@ public class Commodity {
 		return consumption;
 	}
 
-	long getConsumption(long population) {
+	long getConsumption(final long population) {
 		return (long) (population / Math.pow(10, consumption / 2.0));
 	}
 
-	void setConsumptionRating(int cr) {
+	void setConsumptionRating(final int cr) {
 		this.consumption = cr;
 	}
 
@@ -245,8 +242,14 @@ public class Commodity {
 		return lawLevel;
 	}
 
-	void setLawLevel(int lawLevel) {
+	void setLawLevel(final int lawLevel) {
 		this.lawLevel = lawLevel;
+		if (this.lawLevel < 0) {
+			this.lawLevel = 0;
+		} else if (this.lawLevel > 6) {
+			this.lawLevel = 6;
+		}
+
 	}
 
 	/**
@@ -258,19 +261,22 @@ public class Commodity {
 		return techLevel;
 	}
 
-	void setTechLevel(int techLevel) {
+	void setTechLevel(final int techLevel) {
 		this.techLevel = techLevel;
+		if (this.techLevel < 0) {
+			this.techLevel = 0;
+		}
 	}
 
 	public Set<CommodityCode> getCodes() {
 		return codes;
 	}
 
-	void addCode(CommodityCode code) {
+	void addCode(final CommodityCode code) {
 		codes.add(code);
 	}
 
-	public boolean hasCode(CommodityCode code) {
+	public boolean hasCode(final CommodityCode code) {
 		return codes.contains(code);
 	}
 
