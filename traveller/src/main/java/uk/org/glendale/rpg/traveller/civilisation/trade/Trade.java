@@ -20,6 +20,8 @@ import uk.org.glendale.rpg.traveller.systems.StarSystem;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.star.Temperature;
+import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
+import uk.org.glendale.worldgen.civ.commodity.Source;
 
 /**
  * Calculates trade requirements for a planet. Only applies to worlds with

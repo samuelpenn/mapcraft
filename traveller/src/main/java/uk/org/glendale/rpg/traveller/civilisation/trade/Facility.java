@@ -12,6 +12,8 @@ import java.sql.*;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
+
 /**
  * Each civilised planet will have one or more facilities. These produce
  * and/or consume resources. Some represent residential areas, others

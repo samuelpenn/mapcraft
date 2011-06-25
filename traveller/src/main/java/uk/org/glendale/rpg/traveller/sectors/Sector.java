@@ -33,6 +33,7 @@ import uk.org.glendale.rpg.traveller.systems.StarSystem;
 import uk.org.glendale.rpg.traveller.systems.UWP;
 import uk.org.glendale.rpg.traveller.worlds.WorldBuilder;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.sector.SectorCode;
 
 /**
  * Defines a sector of space. A sector in the Traveller universe consists of

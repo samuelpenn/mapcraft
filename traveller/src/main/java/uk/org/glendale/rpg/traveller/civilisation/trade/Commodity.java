@@ -12,6 +12,9 @@ import java.util.*;
 
 import java.sql.*;
 
+import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
+import uk.org.glendale.worldgen.civ.commodity.Source;
+
 /**
  * Defines a commodity within the trade system.
  *

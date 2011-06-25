@@ -25,11 +25,20 @@ public class SectorTest {
 		Assert.assertEquals(0, sector.getId());
 		Assert.assertEquals("Unnamed", sector.getName());
 
-		sector = new Sector("Test", 1, 2, "Na", "Im");
+		sector = new Sector("Test", 1, 2, "Sp", "Im");
 		Assert.assertEquals("Test", sector.getName());
 		Assert.assertEquals(1, sector.getX());
 		Assert.assertEquals(2, sector.getY());
 		Assert.assertEquals("Im", sector.getAllegiance());
 		Assert.assertEquals("Test", sector.toString());
+		Assert.assertTrue(sector.hasCode(SectorCode.Sp));
+		Assert.assertFalse(sector.hasCode(SectorCode.Co));
+	}
+
+	@Test
+	public void testCodes() {
+		for (SectorCode c : SectorCode.values()) {
+			Assert.assertNotNull(c);
+		}
 	}
 }
