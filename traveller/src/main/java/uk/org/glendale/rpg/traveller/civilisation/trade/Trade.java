@@ -17,9 +17,9 @@ import uk.org.glendale.rpg.traveller.database.Constants;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
-import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.star.Temperature;
 
 /**
  * Calculates trade requirements for a planet. Only applies to worlds with

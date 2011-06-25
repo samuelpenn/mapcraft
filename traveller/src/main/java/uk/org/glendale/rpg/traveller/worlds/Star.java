@@ -11,7 +11,7 @@
  */
 package uk.org.glendale.rpg.traveller.worlds;
 
-import uk.org.glendale.rpg.traveller.systems.codes.SpectralType;
+import uk.org.glendale.worldgen.astro.star.SpectralType;
 
 /**
  * Generates a map for a barren world. Barren worlds are dry rock worlds

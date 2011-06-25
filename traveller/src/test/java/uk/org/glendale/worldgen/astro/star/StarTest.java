@@ -12,10 +12,11 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import uk.org.glendale.rpg.traveller.systems.codes.SpectralType;
-import uk.org.glendale.rpg.traveller.systems.codes.StarClass;
-import uk.org.glendale.rpg.traveller.systems.codes.StarForm;
-
+/**
+ * Test the Star entity, plus related enums.
+ * 
+ * @author Samuel Penn
+ */
 public class StarTest {
 	@Test
 	public void starTest() {
@@ -61,5 +62,67 @@ public class StarTest {
 	public void illegalNameTest() {
 		Star star = new Star();
 		star.setName("");
+	}
+
+	@Test
+	public void spectralTypeTest() {
+		for (SpectralType t : SpectralType.values()) {
+			Assert.assertNotNull(t);
+			Assert.assertTrue(t.getLifeTime() > 0);
+			Assert.assertTrue(t.getMass() > 0);
+			Assert.assertTrue(t.getSurfaceTemperature() > 0);
+			Assert.assertNotNull(t.getRGBColour());
+			Assert.assertTrue(t.getRGBColour().split(" ").length == 3);
+		}
+	}
+
+	@Test
+	public void starClassTest() {
+		for (StarClass c : StarClass.values()) {
+			Assert.assertNotNull(c.getSpectralType());
+			Assert.assertNotNull(c.getCompanionStar());
+			Assert.assertNotNull(c.getDescription());
+			Assert.assertTrue(c.getSize() > 0);
+			Assert.assertTrue(c.getRadius() > 0);
+		}
+
+		Assert.assertTrue(StarClass.VI.isSmallerThan(StarClass.II));
+		Assert.assertTrue(StarClass.III.isBiggerThan(StarClass.V));
+
+		Assert.assertFalse(StarClass.Ia.isSmallerThan(StarClass.IV));
+		Assert.assertFalse(StarClass.V.isBiggerThan(StarClass.Ib));
+
+		// Since the spectral type is random, try and make sure we
+		// follow all paths via brute force.
+		for (StarClass c : StarClass.values()) {
+			for (int i = 0; i < 1000; i++) {
+				Assert.assertNotNull(c.getSpectralType());
+			}
+		}
+	}
+
+	@Test
+	public void starFormTest() {
+		for (StarForm f : StarForm.values()) {
+			Assert.assertNotNull(f.name());
+		}
+	}
+
+	@Test
+	public void temperatureTest() {
+		for (Temperature t : Temperature.values()) {
+			Assert.assertNotNull(t.getHotter());
+			Assert.assertNotNull(t.getColder());
+			Assert.assertTrue(t.getBadness() >= 0);
+			Assert.assertTrue(t.getSuitability() >= 0);
+		}
+
+		Assert.assertTrue(Temperature.Cold.isColderThan(Temperature.Hot));
+		Assert.assertTrue(Temperature.VeryHot
+				.isHotterThan(Temperature.Standard));
+
+		Assert.assertFalse(Temperature.Cool.isColderThan(Temperature.UltraCold));
+		Assert.assertFalse(Temperature.Warm
+				.isHotterThan(Temperature.ExtremelyHot));
 	}
 }

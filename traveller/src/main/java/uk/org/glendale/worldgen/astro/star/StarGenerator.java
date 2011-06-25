@@ -8,9 +8,6 @@
  */
 package uk.org.glendale.worldgen.astro.star;
 
-import uk.org.glendale.rpg.traveller.systems.codes.SpectralType;
-import uk.org.glendale.rpg.traveller.systems.codes.StarClass;
-import uk.org.glendale.rpg.traveller.systems.codes.StarForm;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 

@@ -10,11 +10,11 @@ package uk.org.glendale.worldgen.astro.planet.builders.barren;
 
 import static uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature.HeavilyCratered;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
-import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.BarrenWorld;
 import uk.org.glendale.worldgen.astro.planet.builders.Tile;
+import uk.org.glendale.worldgen.astro.star.Temperature;
 
 /**
  * A Hadean world is a small barren planet close to its parent star which has

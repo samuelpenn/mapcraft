@@ -13,7 +13,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
 import uk.org.glendale.worldgen.astro.planet.builders.arean.Arean;
@@ -28,6 +27,7 @@ import uk.org.glendale.worldgen.astro.planet.builders.jovian.EuJovian;
 import uk.org.glendale.worldgen.astro.planet.builders.jovian.SubJovian;
 import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.star.StarAPI;
+import uk.org.glendale.worldgen.astro.star.Temperature;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 
 /**

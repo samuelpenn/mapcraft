@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import uk.org.glendale.worldgen.astro.sector.Sector;
+import uk.org.glendale.worldgen.astro.sector.SectorFactory;
 import uk.org.glendale.worldgen.astro.sector.SectorGenerator;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystemFactory;
@@ -76,5 +77,44 @@ public class StarGeneratorTest {
 		star = sg.generateTertiary();
 		Assert.assertEquals("Test Gamma", star.getName());
 		Assert.assertTrue(star.getDistance() > 0);
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testInvalid() {
+		Sector sector = new Sector();
+		StarSystem system = new StarSystem(sector, "Test", 1, 1);
+
+		StarGenerator sg = new StarGenerator(system, false);
+		sg.generateSecondary();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testInvalid2() {
+		Sector sector = new Sector();
+		StarSystem system = new StarSystem(sector, "Test", 1, 1);
+
+		StarGenerator sg = new StarGenerator(system, false);
+		sg.generateTertiary();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testInvalid3() {
+		SectorFactory secFac = new SectorFactory();
+		Sector sector = secFac.getSector("Test");
+
+		StarSystemGenerator sysGen = new StarSystemGenerator();
+		StarSystemFactory sysFac = new StarSystemFactory();
+
+		StarSystem system = sysGen.createEmptySystem(sector, "Test2", 2, 2);
+
+		StarGenerator sg = new StarGenerator(system, true);
+
+		Star star = sg.generatePrimary();
+
+		system = sysFac.getStarSystem(2);
+		system.addStar(star);
+		sysFac.persist(system);
+
+		star = sg.generateTertiary();
 	}
 }

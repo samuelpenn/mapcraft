@@ -3,10 +3,10 @@ package uk.org.glendale.rpg.traveller.systems;
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
-import uk.org.glendale.rpg.traveller.systems.codes.StarClass;
-import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.star.StarClass;
+import uk.org.glendale.worldgen.astro.star.Temperature;
 
 /**
  * Defines resources for a world, based on the world type. This class

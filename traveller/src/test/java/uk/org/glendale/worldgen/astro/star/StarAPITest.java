@@ -11,11 +11,6 @@ package uk.org.glendale.worldgen.astro.star;
 import org.junit.Assert;
 import org.junit.Test;
 
-import uk.org.glendale.rpg.traveller.systems.codes.SpectralType;
-import uk.org.glendale.rpg.traveller.systems.codes.StarClass;
-import uk.org.glendale.rpg.traveller.systems.codes.StarForm;
-import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
-
 public class StarAPITest {
 	@Test
 	public void starApiTest() {
@@ -42,6 +37,14 @@ public class StarAPITest {
 		Assert.assertTrue(period > 360);
 		Assert.assertTrue(period < 370);
 
-		Temperature t = StarAPI.getOrbitTemperature(star, 150);
+		Temperature last = null;
+		for (int i = 0; i < 10000; i += 10) {
+			Temperature t = StarAPI.getOrbitTemperature(star, i);
+			Assert.assertNotNull(t);
+			if (last != null) {
+				Assert.assertFalse(t.isHotterThan(last));
+			}
+			last = t;
+		}
 	}
 }

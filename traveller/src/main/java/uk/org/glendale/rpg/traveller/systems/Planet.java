@@ -27,6 +27,7 @@ import uk.org.glendale.rpg.traveller.database.*;
 import uk.org.glendale.rpg.traveller.glossary.GlossaryEntry;
 import uk.org.glendale.rpg.traveller.systems.codes.*;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.star.Temperature;
 
 /**
  * Define a single planet.

@@ -8,8 +8,6 @@
  */
 package uk.org.glendale.worldgen.astro.star;
 
-import uk.org.glendale.rpg.traveller.systems.codes.SpectralType;
-import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 
 public class StarAPI {
 	/**

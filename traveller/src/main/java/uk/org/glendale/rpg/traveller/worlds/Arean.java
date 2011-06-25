@@ -14,6 +14,7 @@ import java.io.File;
 import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.codes.*;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.star.Temperature;
 
 /**
  * Generate a map for Arean and EoArean worlds. These are often desert

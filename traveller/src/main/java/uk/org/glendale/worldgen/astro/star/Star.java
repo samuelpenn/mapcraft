@@ -19,9 +19,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import uk.org.glendale.rpg.traveller.systems.codes.SpectralType;
-import uk.org.glendale.rpg.traveller.systems.codes.StarClass;
-import uk.org.glendale.rpg.traveller.systems.codes.StarForm;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 
 /**

@@ -19,8 +19,8 @@ import java.io.File;
 import uk.org.glendale.rpg.traveller.systems.Planet;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
-import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.star.Temperature;
 
 /**
  * Generates a map for a barren world. Barren worlds are dry rock worlds

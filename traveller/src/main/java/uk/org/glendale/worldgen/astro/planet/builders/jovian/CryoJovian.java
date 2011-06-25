@@ -12,11 +12,11 @@ import java.util.ArrayList;
 
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
-import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.JovianWorld;
 import uk.org.glendale.worldgen.astro.planet.builders.Tile;
+import uk.org.glendale.worldgen.astro.star.Temperature;
 
 /**
  * A cold gas giant world, similar to Neptune or Uranus.

@@ -15,11 +15,11 @@ import java.sql.*;
 import java.util.*;
 
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
-import uk.org.glendale.rpg.traveller.systems.codes.SpectralType;
-import uk.org.glendale.rpg.traveller.systems.codes.StarClass;
-import uk.org.glendale.rpg.traveller.systems.codes.StarForm;
-import uk.org.glendale.rpg.traveller.systems.codes.Temperature;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.star.SpectralType;
+import uk.org.glendale.worldgen.astro.star.StarClass;
+import uk.org.glendale.worldgen.astro.star.StarForm;
+import uk.org.glendale.worldgen.astro.star.Temperature;
 
 /**
  * Define a single star.

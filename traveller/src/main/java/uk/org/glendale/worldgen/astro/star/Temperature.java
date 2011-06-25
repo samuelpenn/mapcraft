@@ -9,7 +9,7 @@
  * $Revision: 1.4 $
  * $Date: 2007/12/09 17:45:17 $
  */
-package uk.org.glendale.rpg.traveller.systems.codes;
+package uk.org.glendale.worldgen.astro.star;
 
 /**
  * Describes the surface temperature of the planet. Standard temperature is a
