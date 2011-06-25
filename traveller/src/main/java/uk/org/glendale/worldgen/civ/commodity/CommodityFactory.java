@@ -205,7 +205,6 @@ public class CommodityFactory {
 							.valueOf(getAttribute(p, "source")));
 					String[] codes = value.split(" ");
 					for (String c : codes) {
-						System.out.println("[" + c + "]");
 						commodity.addCode(CommodityCode.valueOf(c));
 					}
 				}
@@ -263,8 +262,6 @@ public class CommodityFactory {
 						Node o = outputs.item(j);
 						if (o.getNodeName().equals("output")) {
 							String value = o.getTextContent().trim();
-							System.out.println(getAttribute(node, "name")
-									+ ": " + value);
 							if (getCommodity(value) == null) {
 								continue;
 							}
@@ -308,7 +305,7 @@ public class CommodityFactory {
 		}
 	}
 
-	public void createAllCommodities(File base)
+	public void createAllCommodities(final File base)
 			throws ParserConfigurationException, SAXException, IOException {
 		if (base.isDirectory()) {
 			// Add all files in the directory.

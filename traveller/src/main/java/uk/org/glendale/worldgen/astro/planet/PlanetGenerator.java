@@ -31,6 +31,7 @@ import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.star.StarAPI;
 import uk.org.glendale.worldgen.astro.star.Temperature;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
+import uk.org.glendale.worldgen.server.AppManager;
 
 /**
  * Generates a random planet. The type of planet is based on the star and the
@@ -47,6 +48,12 @@ public class PlanetGenerator {
 	private Star star;
 	private EntityManager entityManager;
 	private PlanetBuilder builder = null;
+
+	public PlanetGenerator(final StarSystem system, final Star star) {
+		this.entityManager = AppManager.getInstance().getEntityManager();
+		this.system = system;
+		this.star = star;
+	}
 
 	/**
 	 * Create a new PlanetGenerator for a given star in a star system.
@@ -66,6 +73,49 @@ public class PlanetGenerator {
 	}
 
 	/**
+	 * Generate a specific single planet at the given distance with the
+	 * specified name. No checks are performed to see if the planet is being
+	 * created in an unsuitable location (such as an ice world close to a hot
+	 * star), and doing this may cause issues later on.
+	 * 
+	 * @param name
+	 *            Full name of this planet, including suffixes.
+	 * @param position
+	 *            Orbital position of planet, where 1 is the first orbit.
+	 * @param distance
+	 *            Distance of the planet in Mkm.
+	 * @param builder
+	 *            Type of planet to create.
+	 * @return Newly generated planet.
+	 */
+	public Planet generatePlanet(String name, int position, int distance,
+			PlanetBuilder builder) {
+		Temperature orbitTemperature = StarAPI.getOrbitTemperature(star,
+				distance);
+
+		if (name == null || name.trim().length() == 0) {
+			throw new IllegalArgumentException("Planet name cannot be empty");
+		}
+		if (position < 1) {
+			throw new IllegalArgumentException("Orbit position must be 1+");
+		}
+		if (distance < 1) {
+			throw new IllegalArgumentException("Planet distance must be 1+");
+		}
+
+		Planet planet = new Planet(system, star.getId(), false, name);
+		planet.setDistance(distance);
+		planet.setTemperature(orbitTemperature);
+
+		builder.setEntityManager(entityManager);
+		builder.setPlanet(planet);
+		builder.setStar(star);
+		builder.generate();
+
+		return planet;
+	}
+
+	/**
 	 * Generate a single planet at the given distance with the specified name.
 	 * The type of planet is randomly determined based on the orbital
 	 * characteristics (mostly temperature).
@@ -81,6 +131,16 @@ public class PlanetGenerator {
 	public Planet generatePlanet(String name, int position, int distance) {
 		Temperature orbitTemperature = StarAPI.getOrbitTemperature(star,
 				distance);
+
+		if (name == null || name.trim().length() == 0) {
+			throw new IllegalArgumentException("Planet name cannot be empty");
+		}
+		if (position < 1) {
+			throw new IllegalArgumentException("Orbit position must be 1+");
+		}
+		if (distance < 1) {
+			throw new IllegalArgumentException("Planet distance must be 1+");
+		}
 
 		Planet planet = new Planet(system, star.getId(), false, name);
 		planet.setDistance(distance);
@@ -190,16 +250,16 @@ public class PlanetGenerator {
 		List<Planet> moons = new ArrayList<Planet>();
 		PlanetBuilder[] builders = builder.getMoonBuilders();
 
-		// If this is a sparse sector, halve number of moons.
-		if (codes.contains(SectorCode.Sp) && builders.length > 1) {
-			PlanetBuilder[] nb = new PlanetBuilder[builders.length / 2];
-			for (int i = 0; i < nb.length; i++) {
-				nb[i] = builders[i];
-			}
-			builders = nb;
-		}
-
 		if (builders != null) {
+			// If this is a sparse sector, halve number of moons.
+			if (codes.contains(SectorCode.Sp) && builders.length > 1) {
+				PlanetBuilder[] nb = new PlanetBuilder[builders.length / 2];
+				for (int i = 0; i < nb.length; i++) {
+					nb[i] = builders[i];
+				}
+				builders = nb;
+			}
+
 			String[] names = { "a", "b", "c", "d", "e", "f", "g", "h", "i",
 					"j", "k", "l", "m", "n", "o", "p" };
 			int distance = builder.getFirstMoonDistance();

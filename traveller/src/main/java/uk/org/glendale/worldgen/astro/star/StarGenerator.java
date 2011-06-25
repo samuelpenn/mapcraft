@@ -27,6 +27,28 @@ public class StarGenerator {
 		this.multipleStars = multipleStars;
 	}
 
+	/**
+	 * Generate a specific type of star as the primary.
+	 * 
+	 * @param form
+	 *            Form of the star, normally 'Star'
+	 * @param classification
+	 *            The general size of the star.
+	 * @param type
+	 *            Spectral type.
+	 * @return
+	 */
+	public Star generatePrimary(StarForm form, StarClass classification,
+			SpectralType type) {
+		primary = new Star(system);
+		primary.setName(system.getName() + ((multipleStars) ? " Alpha" : ""));
+		primary.setForm(form);
+		primary.setClassification(classification);
+		primary.setSpectralType(type);
+
+		return primary;
+	}
+
 	public Star generatePrimary() {
 		primary = new Star(system);
 		primary.setName(system.getName() + ((multipleStars) ? " Alpha" : ""));

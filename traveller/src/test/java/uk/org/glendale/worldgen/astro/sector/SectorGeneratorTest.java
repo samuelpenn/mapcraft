@@ -8,13 +8,18 @@
  */
 package uk.org.glendale.worldgen.astro.sector;
 
-import java.net.MalformedURLException;
+import java.io.File;
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.Assert;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
+import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
 import uk.org.glendale.worldgen.server.AppManager;
 import uk.org.glendale.worldgen.server.SQLReader;
 import uk.org.glendale.worldgen.text.Names;
@@ -56,8 +61,24 @@ public class SectorGeneratorTest {
 
 	}
 
+	/**
+	 * Test generation of a whole sector. This is a very broad test, which will
+	 * test random parts of the code (depending on which worlds get created).
+	 * The sector created is about as sparse as we can make it, so that the test
+	 * runs quickly.
+	 * 
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 */
 	@Test
-	public void testGeneration() throws MalformedURLException {
+	public void testGeneration() throws ParserConfigurationException,
+			SAXException, IOException {
+		// First, make sure we have commodities.
+		CommodityFactory comFac = new CommodityFactory();
+		comFac.createAllCommodities(new File("src/main/resources/commodities"));
+
+		// Now, build the star systems.
 		SectorGenerator generator = new SectorGenerator();
 		SectorFactory factory = new SectorFactory();
 		Sector s = factory.getSector("Test");

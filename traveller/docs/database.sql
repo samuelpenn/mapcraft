@@ -176,6 +176,11 @@ CREATE TABLE commodity_map (
     FOREIGN KEY(output_id) REFERENCES commodity(id)
     ON DELETE CASCADE ON UPDATE CASCADE)
     ENGINE=INNODB;
+    
+CREATE TABLE resources (id INT AUTO_INCREMENT NOT NULL, 
+    planet_id INT NOT NULL, commodity_id INT NOT NULL, density INT NOT NULL,
+    PRIMARY KEY(id), UNIQUE KEY(planet_id, commodity_id)) 
+    ENGINE=INNODB;
 
 -- EXIT
     
