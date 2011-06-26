@@ -8,7 +8,9 @@
  */
 package uk.org.glendale.worldgen.civ.facility;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -21,9 +23,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
 
 /**
  * A Facility describes one facet of a civilisation. They are central to the
@@ -34,8 +35,9 @@ import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
  * 
  * @author Samuel Penn
  */
-@XmlRootElement
 @Entity
+@Table(name = "facility")
+@XmlRootElement
 public class Facility {
 	// Unique identifier used as primary key.
 	@Id
@@ -50,22 +52,17 @@ public class Facility {
 	private FacilityType		type;
 	@Column(name = "image")
 	private String				imagePath;
-	@Column(name = "techLevel")
-	private int					techLevel;
+
+	@ElementCollection(fetch = FetchType.EAGER)
+	@JoinTable(name = "facility_codes", joinColumns = @JoinColumn(name = "facility_id"))
+	@Enumerated(EnumType.STRING)
+	@Column(name = "code")
+	private Set<FacilityCode>	codes		= EnumSet
+													.noneOf(FacilityCode.class);
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@JoinTable(name = "facility_ops", joinColumns = @JoinColumn(name = "facility_id"))
-	@Enumerated(EnumType.STRING)
-	@Column(name = "code")
-	private Set<Operation>		operations		= EnumSet
-														.noneOf(Operation.class);
-
-	@ElementCollection(fetch = FetchType.EAGER)
-	@JoinTable(name = "facility_reqs", joinColumns = @JoinColumn(name = "facility_id"))
-	@Enumerated(EnumType.STRING)
-	@Column(name = "code")
-	private Set<CommodityCode>	requirements	= EnumSet
-														.noneOf(CommodityCode.class);
+	private List<Operation>		operations	= new ArrayList<Operation>();
 
 	/*
 	 * @MapKey(name="facility_id") @JoinTable(name="facility_requirements",
@@ -87,10 +84,10 @@ public class Facility {
 
 	}
 
-	public Facility(String name, FacilityType type, int techLevel) {
+	public Facility(String name, FacilityType type, String image) {
 		this.name = name;
 		this.type = type;
-		this.techLevel = techLevel;
+		this.imagePath = image;
 	}
 
 	/**
@@ -145,15 +142,42 @@ public class Facility {
 		this.type = type;
 	}
 
-	public int getTechLevel() {
-		return techLevel;
+	public void addOperation(String name) {
+		addOperation(name, 100);
 	}
 
-	public void setTechLevel(int techLevel) {
-		this.techLevel = techLevel;
+	public void addOperation(String name, int level) {
+		Operation o = new Operation(name, level);
+		if (!operations.contains(o)) {
+			operations.add(o);
+		} else {
+			// Operations equality does not check the level, so should replace
+			// an existing operation with one with a (possibly) different level.
+			operations.remove(o);
+			operations.add(o);
+		}
 	}
 
-	public void addOperation(Operation op) {
+	public boolean hasOperation(String name) {
+		return operations.contains(new Operation(name, 100));
+	}
 
+	public int getOperation(String name) {
+		for (Operation o : operations) {
+			if (o.getName().equals(name)) {
+				return o.getLevel();
+			}
+		}
+		return 0;
+	}
+
+	public void addCode(FacilityCode... args) {
+		for (FacilityCode code : args) {
+			codes.add(code);
+		}
+	}
+
+	public boolean hasCode(FacilityCode code) {
+		return codes.contains(code);
 	}
 }

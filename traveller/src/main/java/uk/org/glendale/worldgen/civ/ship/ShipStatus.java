@@ -16,14 +16,21 @@ package uk.org.glendale.worldgen.civ.ship;
  * @author Samuel Penn
  */
 public enum ShipStatus {
-	Virtual("Undefined"), Wreck("Wrecked"), Docked("Docked at station"), Jump(
-			"In Jump"), Orbit("Orbiting planet"), Planet("Landed on planet"), Flight(
-			"Orbiting star"), FlightIn("Moving out to Jump"), FlightOut(
-			"Moving towards planet");
+	//@formatter:off
+	Virtual("Undefined"), 
+	Wreck("Wrecked"),
+	Docked("Docked at station"), 
+	Jump("In Jump"), 
+	Orbit("Orbiting planet"), 
+	Planet("Landed on planet"), 
+	Flight("Orbiting star"), 
+	FlightIn("Moving out to Jump"), 
+	FlightOut("Moving towards planet");
+	//@formatter:on
 
-	private String description;
+	private String	description;
 
-	private ShipStatus(String description) {
+	private ShipStatus(final String description) {
 		this.description = description;
 	}
 

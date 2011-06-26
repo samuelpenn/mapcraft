@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+    Population types
+    
+    P0  1-9
+    P1  10-99
+    P2  100-999
+    P3  1,000 - 9,999
+    P4  10,000 - 99,999
+    etc
+
+ -->
+<facilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:w="http://glendale.org.uk/mapcraft/worldgen">
+
+    <group name="Primitive" base="primitive">
+        <facility name="Primitive Tribes" type="Residential">
+            <codes>T0 P3 P4 P5 H0 H1</codes>
+            <operation level="75">Ag</operation>
+            <operation level="50">AgAn</operation>
+            <operation level="5">MiSi</operation>
+        </facility>
+
+        <facility name="Tribal Nomads" type="Residential">
+            <codes>T0 T1 P3 P4 P5 P6 H0 H1</codes>
+            <operation level="75">Ag</operation>
+            <operation level="50">AgAn</operation>
+            <operation level="5">MiSi MiFe</operation>
+        </facility>
+    </group>
+             
+</facilities>

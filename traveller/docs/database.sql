@@ -17,6 +17,9 @@ DROP TABLE IF EXISTS glossary;
 DROP TABLE IF EXISTS map;
 DROP TABLE IF EXISTS globe;
 DROP TABLE IF EXISTS note;
+DROP TABLE IF EXISTS facility_reqs;
+DROP TABLE IF EXISTS facility_codes;
+DROP TABLE IF EXISTS facility_ops;
 DROP TABLE IF EXISTS facility;
 DROP TABLE IF EXISTS commodity_codes;
 DROP TABLE IF EXISTS commodity_map;
@@ -183,7 +186,31 @@ CREATE TABLE resources (id INT AUTO_INCREMENT NOT NULL,
     ENGINE=INNODB;
 
 
+CREATE TABLE facility (id INT AUTO_INCREMENT NOT NULL, 
+    name VARCHAR(64) NOT NULL, type VARCHAR(16), image VARCHAR(64), 
+    PRIMARY KEY (id), UNIQUE KEY(name))
+    ENGINE=INNODB;
     
+--CREATE TABLE facility_reqs (facility_id INT NOT NULL, 
+--    requirement VARCHAR(12) NOT NULL,
+--    level INT NOT NULL DEFAULT 100,
+--    FOREIGN KEY (facility_id) REFERENCES facility(id)
+--    ON DELETE CASCADE ON UPDATE CASCADE)
+--    ENGINE=INNODB;
+    
+CREATE TABLE facility_ops (facility_id INT NOT NULL,
+    operation VARCHAR(12) NOT NULL,
+    efficiency INT NOT NULL DEFAULT 100,
+    FOREIGN KEY (facility_id) REFERENCES facility(id)
+    ON DELETE CASCADE ON UPDATE CASCADE)
+    ENGINE=INNODB;
+    
+CREATE TABLE facility_codes (facility_id INT NOT NULL,
+    code VARCHAR(12) NOT NULL,
+    FOREIGN KEY (facility_id) REFERENCES facility(id)
+    ON DELETE CASCADE ON UPDATE CASCADE)
+    ENGINE=INNODB;
+
 -- EXIT
     
     

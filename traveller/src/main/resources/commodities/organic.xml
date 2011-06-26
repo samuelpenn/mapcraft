@@ -187,7 +187,13 @@
         <commodity name="Mammals" parent="Animals">
             <cost volume="1">500</cost>
             <production tech="0" law="6" pr="10" cr="11"/>
-            <codes source="Ag">Pe Fr FoHd FoHu</code>
+            <codes source="Ag">Pe Fr FoHd FoHu</codes>
+        </commodity>
+
+        <commodity name="Meat" parent="Food">
+            <cost volume="1">200</cost>
+            <production tech="0" law="6" pr="10" cr="11"/>
+            <codes source="Ag">Pe Fr AgHd AgHu</codes>
         </commodity>
     </group>
 </commodities>
