@@ -182,6 +182,8 @@ CREATE TABLE resources (id INT AUTO_INCREMENT NOT NULL,
     PRIMARY KEY(id), UNIQUE KEY(planet_id, commodity_id)) 
     ENGINE=INNODB;
 
+
+    
 -- EXIT
     
     

@@ -174,5 +174,20 @@
                 Edible seed bearing fruits.
             </description>
         </commodity>
+        
+        <commodity name="Animals">
+            <cost volume="1">500</cost>
+            <production tech="0" law="6" pr="8" cr="8"/>
+            <codes source="Ag">Pe</codes>
+            <description>
+                Parent holder for all types of land animals.
+            </description>
+        </commodity>
+        
+        <commodity name="Mammals" parent="Animals">
+            <cost volume="1">500</cost>
+            <production tech="0" law="6" pr="10" cr="11"/>
+            <codes source="Ag">Pe Fr FoHd FoHu</code>
+        </commodity>
     </group>
 </commodities>

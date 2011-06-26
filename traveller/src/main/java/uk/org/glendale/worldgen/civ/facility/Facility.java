@@ -8,14 +8,22 @@
  */
 package uk.org.glendale.worldgen.civ.facility;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
 
 /**
  * A Facility describes one facet of a civilisation. They are central to the
@@ -33,27 +41,31 @@ public class Facility {
 	@Id
 	@GeneratedValue
 	@Column(name = "id")
-	private int id;
+	private int					id;
 
 	@Column(name = "name")
-	private String name;
+	private String				name;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type")
-	private FacilityType type;
+	private FacilityType		type;
 	@Column(name = "image")
-	private String imagePath;
+	private String				imagePath;
 	@Column(name = "techLevel")
-	private int techLevel;
-	@Column(name = "capacity")
-	private int capacity;
-	@Column(name = "resource_id")
-	private int resourceId;
-	@Column(name = "inputs")
-	private String inputs;
-	@Column(name = "outputs")
-	private String outputs;
-	@Column(name = "codes")
-	private String codes;
+	private int					techLevel;
+
+	@ElementCollection(fetch = FetchType.EAGER)
+	@JoinTable(name = "facility_ops", joinColumns = @JoinColumn(name = "facility_id"))
+	@Enumerated(EnumType.STRING)
+	@Column(name = "code")
+	private Set<Operation>		operations		= EnumSet
+														.noneOf(Operation.class);
+
+	@ElementCollection(fetch = FetchType.EAGER)
+	@JoinTable(name = "facility_reqs", joinColumns = @JoinColumn(name = "facility_id"))
+	@Enumerated(EnumType.STRING)
+	@Column(name = "code")
+	private Set<CommodityCode>	requirements	= EnumSet
+														.noneOf(CommodityCode.class);
 
 	/*
 	 * @MapKey(name="facility_id") @JoinTable(name="facility_requirements",
@@ -70,6 +82,16 @@ public class Facility {
 	// @MapKeyColumn(name="facility_id")
 	// private Map<String, Integer> requirementList = new Hashtable<String,
 	// Integer>();
+
+	public Facility() {
+
+	}
+
+	public Facility(String name, FacilityType type, int techLevel) {
+		this.name = name;
+		this.type = type;
+		this.techLevel = techLevel;
+	}
 
 	/**
 	 * Gets the unique id of this type of facility.
@@ -129,5 +151,9 @@ public class Facility {
 
 	public void setTechLevel(int techLevel) {
 		this.techLevel = techLevel;
+	}
+
+	public void addOperation(Operation op) {
+
 	}
 }
