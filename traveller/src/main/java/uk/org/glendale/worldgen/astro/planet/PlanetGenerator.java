@@ -44,10 +44,10 @@ import uk.org.glendale.worldgen.server.AppManager;
  * @author Samuel Penn
  */
 public class PlanetGenerator {
-	private StarSystem system;
-	private Star star;
-	private EntityManager entityManager;
-	private PlanetBuilder builder = null;
+	private StarSystem		system;
+	private Star			star;
+	private EntityManager	entityManager;
+	private PlanetBuilder	builder	= null;
 
 	public PlanetGenerator(final StarSystem system, final Star star) {
 		this.entityManager = AppManager.getInstance().getEntityManager();
@@ -123,7 +123,7 @@ public class PlanetGenerator {
 	 * @param name
 	 *            Full name of this planet, including suffixes.
 	 * @param position
-	 *            Orbital position of planet, where 1 is the first orbit.
+	 *            Orbital position of planet, where 0 is the first orbit.
 	 * @param distance
 	 *            Distance of the planet in Mkm.
 	 * @return Newly generated planet.
@@ -135,7 +135,7 @@ public class PlanetGenerator {
 		if (name == null || name.trim().length() == 0) {
 			throw new IllegalArgumentException("Planet name cannot be empty");
 		}
-		if (position < 1) {
+		if (position < 0) {
 			throw new IllegalArgumentException("Orbit position must be 1+");
 		}
 		if (distance < 1) {

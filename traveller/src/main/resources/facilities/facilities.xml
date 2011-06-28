@@ -15,18 +15,19 @@
              xmlns:w="http://glendale.org.uk/mapcraft/worldgen">
 
     <group name="Primitive" base="primitive">
-        <facility name="Primitive Tribes" type="Residential">
+        <facility name="Hunter Gatherer" type="Agriculture">
             <codes>T0 P3 P4 P5 H0 H1</codes>
             <operation level="75">Ag</operation>
             <operation level="50">AgAn</operation>
             <operation level="5">MiSi</operation>
         </facility>
 
+        <facility name="Primitive Tribes" type="Residential">
+            <codes>T0 P3 P4 P5 H0 H1</codes>
+        </facility>
+
         <facility name="Tribal Nomads" type="Residential">
             <codes>T0 T1 P3 P4 P5 P6 H0 H1</codes>
-            <operation level="75">Ag</operation>
-            <operation level="50">AgAn</operation>
-            <operation level="5">MiSi MiFe</operation>
         </facility>
     </group>
              

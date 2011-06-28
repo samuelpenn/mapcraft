@@ -7,6 +7,11 @@ DROP TABLE IF EXISTS ship;
 DROP TABLE IF EXISTS planet_features;
 DROP TABLE IF EXISTS planet_codes;
 DROP TABLE IF EXISTS planet_maps;
+DROP TABLE IF EXISTS facility_reqs;
+DROP TABLE IF EXISTS facility_codes;
+DROP TABLE IF EXISTS facility_ops;
+DROP TABLE IF EXISTS facilities;
+DROP TABLE IF EXISTS facility;
 DROP TABLE IF EXISTS planet;
 DROP TABLE IF EXISTS star;
 DROP TABLE IF EXISTS system;
@@ -17,14 +22,9 @@ DROP TABLE IF EXISTS glossary;
 DROP TABLE IF EXISTS map;
 DROP TABLE IF EXISTS globe;
 DROP TABLE IF EXISTS note;
-DROP TABLE IF EXISTS facility_reqs;
-DROP TABLE IF EXISTS facility_codes;
-DROP TABLE IF EXISTS facility_ops;
-DROP TABLE IF EXISTS facility;
 DROP TABLE IF EXISTS commodity_codes;
 DROP TABLE IF EXISTS commodity_map;
 DROP TABLE IF EXISTS commodity;
-DROP TABLE IF EXISTS facilities;
 DROP TABLE IF EXISTS numbers;
 
 --
@@ -211,6 +211,14 @@ CREATE TABLE facility_codes (facility_id INT NOT NULL,
     ON DELETE CASCADE ON UPDATE CASCADE)
     ENGINE=INNODB;
 
+CREATE TABLE facilities (facility_id int not null, planet_id int not null, 
+    size int not null,
+    FOREIGN KEY (facility_id) REFERENCES facility(id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (planet_id) REFERENCES planet(id)
+    ON DELETE CASCADE ON UPDATE CASCADE)
+    ENGINE=INNODB;
+ 
 -- EXIT
     
     

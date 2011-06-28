@@ -8,12 +8,10 @@
  */
 package uk.org.glendale.worldgen.civ.commodity;
 
-import javax.persistence.Entity;
-
 /**
- * These codes describe types of goods which are shipped between worlds.
- * They present everything from how hard/easy a good is to produce, to the
- * level of demand for it, who wants it and how easy it is to transport.
+ * These codes describe types of goods which are shipped between worlds. They
+ * present everything from how hard/easy a good is to produce, to the level of
+ * demand for it, who wants it and how easy it is to transport.
  */
 public enum CommodityCode {
 	// Production
@@ -90,6 +88,8 @@ public enum CommodityCode {
 	ClLb("Labourer's clothing"),
 	ClLu("Luxury clothing"),
 	// Food
+	AgHd("Herd"),
+	AgHu("Hunting"),
 	FoMe("Meat"),
 	FoFi("Fish"),
 	FoGa("Gatherable"),
@@ -119,17 +119,17 @@ public enum CommodityCode {
 	// Other
 	V("Virtual"),
 	Uq("Unique");
-	
-	private String name = null;
-	
+
+	private String	name	= null;
+
 	CommodityCode() {
 		this.name = "Unnamed";
 	}
-	
+
 	CommodityCode(String name) {
 		this.name = name;
 	}
-	
+
 	public String getName() {
 		return name;
 	}

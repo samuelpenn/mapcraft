@@ -39,6 +39,7 @@ import uk.org.glendale.worldgen.astro.planet.MapImage.Projection;
 import uk.org.glendale.worldgen.astro.star.Temperature;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 import uk.org.glendale.worldgen.civ.commodity.Commodity;
+import uk.org.glendale.worldgen.civ.facility.Facility;
 
 @Entity
 @Table(name = "planet")
@@ -48,89 +49,94 @@ public class Planet {
 	@Id
 	@GeneratedValue
 	@Column(name = "id")
-	private int id;
+	private int					id;
 
 	// Persisted fields.
 	@Column(name = "name")
-	private String name;
+	private String				name;
 
 	// Astronomical data
 	@ManyToOne
 	@JoinColumn(name = "system_id", referencedColumnName = "id")
-	private StarSystem system;
+	private StarSystem			system;
 	@Column(name = "parent_id")
-	private int parentId;
+	private int					parentId;
 	@Column(name = "moon")
-	private boolean isMoon;
+	private boolean				isMoon;
 	@Column(name = "distance")
-	private int distance;
+	private int					distance;
 	@Column(name = "radius")
-	private int radius = 1000;
+	private int					radius			= 1000;
 
 	// Planet data
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type")
-	private PlanetType type = PlanetType.Undefined;
+	private PlanetType			type			= PlanetType.Undefined;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "atmosphere")
-	private AtmosphereType atmosphere = AtmosphereType.Vacuum;
+	private AtmosphereType		atmosphere		= AtmosphereType.Vacuum;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "pressure")
-	private AtmospherePressure pressure = AtmospherePressure.None;
+	private AtmospherePressure	pressure		= AtmospherePressure.None;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "life")
-	private LifeType lifeLevel = LifeType.None;
+	private LifeType			lifeLevel		= LifeType.None;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "temperature")
-	private Temperature temperature = Temperature.UltraCold;
+	private Temperature			temperature		= Temperature.UltraCold;
 	@Column(name = "hydrographics")
-	private int hydrographics;
+	private int					hydrographics;
 	@Column(name = "day")
-	private int dayLength = 86400;
+	private int					dayLength		= 86400;
 	@Column(name = "tilt")
-	private int axialTilt = 0;
+	private int					axialTilt		= 0;
 
 	// Civilisation data
 	@Column(name = "population")
-	private long population;
+	private long				population;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "starport")
-	private StarportType starport = StarportType.X;
+	private StarportType		starport		= StarportType.X;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "government")
-	private GovernmentType government = GovernmentType.Anarchy;
+	private GovernmentType		government		= GovernmentType.Anarchy;
 	@Column(name = "law")
-	private int lawLevel;
+	private int					lawLevel;
 	@Column(name = "tech")
-	private int techLevel;
+	private int					techLevel;
 	@Column(name = "description")
-	private String description;
+	private String				description;
 	@Column(name = "base")
-	private String baseType;
+	private String				baseType;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@JoinTable(name = "planet_codes", joinColumns = @JoinColumn(name = "planet_id"))
 	@Enumerated(EnumType.STRING)
 	@Column(name = "code")
-	private Set<TradeCode> tradeCodes = EnumSet.noneOf(TradeCode.class);
+	private Set<TradeCode>		tradeCodes		= EnumSet
+														.noneOf(TradeCode.class);
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@JoinTable(name = "planet_features", joinColumns = @JoinColumn(name = "planet_id"))
 	@Enumerated(EnumType.STRING)
 	@Column(name = "code")
-	private Set<PlanetFeature> featureCodes = EnumSet
-			.noneOf(PlanetFeature.class);
+	private Set<PlanetFeature>	featureCodes	= EnumSet
+														.noneOf(PlanetFeature.class);
 
 	@Column(name = "nextevent")
-	private long nextEvent;
+	private long				nextEvent;
 
 	@ElementCollection(fetch = FetchType.LAZY)
 	@JoinTable(name = "resources", joinColumns = @JoinColumn(name = "planet_id"))
-	private List<Resource> resources = new ArrayList<Resource>();
+	private List<Resource>		resources		= new ArrayList<Resource>();
 
 	@ElementCollection(fetch = FetchType.LAZY)
 	@JoinTable(name = "planet_maps", joinColumns = @JoinColumn(name = "planet_id"))
-	private List<MapImage> map = new ArrayList<MapImage>();
+	private List<MapImage>		map				= new ArrayList<MapImage>();
+
+	@ElementCollection(fetch = FetchType.LAZY)
+	@JoinTable(name = "facilities", joinColumns = @JoinColumn(name = "planet_id"))
+	private List<Installation>	facilities		= new ArrayList<Installation>();
 
 	public Planet() {
 
@@ -574,5 +580,33 @@ public class Planet {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Adds a facility to the planet. If the facility already exists, then it is
+	 * replaced. Adding a facility with a 0 size will remove any existing
+	 * facilities of the same kind.
+	 * 
+	 * @param facility
+	 *            Facility to add.
+	 * @param size
+	 *            Size of facility as percentage of optimum.
+	 */
+	public void addFacility(Facility facility, int size) {
+		if (facilities.contains(facility)) {
+			facilities.remove(facility);
+		}
+		if (size > 0) {
+			facilities.add(new Installation(facility, size));
+		}
+	}
+
+	/**
+	 * Gets the list of facilities that are available on this planet.
+	 * 
+	 * @return List of facilities.
+	 */
+	public List<Installation> getFacilities() {
+		return facilities;
 	}
 }
