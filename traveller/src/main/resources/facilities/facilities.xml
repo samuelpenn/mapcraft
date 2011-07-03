@@ -29,6 +29,11 @@
         <facility name="Tribal Nomads" type="Residential">
             <codes>T0 T1 P3 P4 P5 P6 H0 H1</codes>
         </facility>
+
+        <facility name="Primitive Mine" type="Mining">
+            <codes>T0 P3 P4 P5 P6 P7 P8 P9</codes>
+            <operation level="25">MiSi</operation>
+        </facility>
     </group>
              
 </facilities>
