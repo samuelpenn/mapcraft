@@ -8,21 +8,24 @@
  */
 package uk.org.glendale.worldgen.astro.planet;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 
 /**
  * Provide API for obtaining planet surface images.
  * 
  * @author Samuel Penn
  */
-@Path("/planetimage/{id}")
+@Controller
 public class PlanetImageAPI {
-	@GET
-	@Produces("image/jpeg")
-	public byte[] getImage(@PathParam("id") int id) {
+	//@GET	@Produces("image/jpeg")
+	@RequestMapping(value="/planetimage/{id}", method=RequestMethod.GET)
+	@ResponseBody
+	public byte[] getImage(@PathVariable("id") int id) {
 		PlanetFactory pf = new PlanetFactory();
 		Planet planet = pf.getPlanet(id);
 

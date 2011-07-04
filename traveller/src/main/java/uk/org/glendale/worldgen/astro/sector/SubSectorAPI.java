@@ -1,14 +1,29 @@
+/*
+ * Copyright (C) 2009 Samuel Penn, sam@glendale.org.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; version 2.
+ * See the file COPYING.
+ */
 package uk.org.glendale.worldgen.astro.sector;
 
 import java.io.File;
 import java.io.IOException;
 
-import javax.ws.rs.*;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.rpg.traveller.database.ObjectNotFoundException;
 import uk.org.glendale.rpg.traveller.map.SubSectorImage;
 import uk.org.glendale.worldgen.server.AppManager;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 
 /**
  * Provides REST API for accessing sub sector maps. A sub sector is
@@ -18,7 +33,7 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
-@Path("/subsector/{sectorId}/{subSector}")
+@Controller
 public class SubSectorAPI {
 	
 	/**
@@ -34,11 +49,13 @@ public class SubSectorAPI {
 	 * @param bleed			If true, draw outside hexes.
 	 * @return
 	 */
-	@GET
-	@Produces("image/jpeg")
-	public File getImage(@PathParam("sectorId") int sectorId, @PathParam("subSector") SubSector subSector, 
-			             @DefaultValue("32") @QueryParam("scale") int scale,
-			             @DefaultValue("false") @QueryParam("bleed") boolean bleed) {
+	//@GET
+	//@Produces("image/jpeg")
+	@RequestMapping(value="/subsector/{sectorId}/{subSector}", method=RequestMethod.GET)
+	@ResponseBody
+	public File getImage(@PathVariable("sectorId") int sectorId, @PathVariable("subSector") SubSector subSector, 
+			             @RequestParam(value="scale", defaultValue="32") int scale,
+			             @RequestParam(value="bleed", defaultValue="32") boolean bleed) {
 		
 		//SubSector subSector = SubSector.valueOf(sub.toUpperCase());
 		System.out.println(sectorId+": "+subSector);

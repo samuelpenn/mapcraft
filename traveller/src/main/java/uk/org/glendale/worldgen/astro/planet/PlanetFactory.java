@@ -10,7 +10,6 @@ package uk.org.glendale.worldgen.astro.planet;
 
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -25,7 +24,6 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
-@ManagedBean
 public class PlanetFactory {
 	EntityManager	em;
 	

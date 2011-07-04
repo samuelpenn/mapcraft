@@ -10,6 +10,7 @@ package uk.org.glendale.worldgen.civ.facility;
 
 import java.util.List;
 
+import uk.org.glendale.worldgen.astro.planet.Installation;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.Resource;
 import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
@@ -28,8 +29,24 @@ public class FacilityAPI {
 		commodityFactory = new CommodityFactory();
 	}
 
-	public void processPlanet(Planet planet) {
+	private void processMining(Planet planet, Installation installation) {
 		List<Resource> resources = planet.getResources();
+
+		for (Resource resource : resources) {
+			if (resource.getCommodity().hasCode(null)) {
+				
+			}
+		}
+	}
+
+	public void processPlanet(Planet planet) {
+		List<Installation> facilities = planet.getFacilities();
+
+		for (Installation i : facilities) {
+			if (i.getFacility().getType() == FacilityType.Mining) {
+				processMining(planet, i);
+			}
+		}
 	}
 
 }

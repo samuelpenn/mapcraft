@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
@@ -19,7 +19,7 @@ import uk.org.glendale.worldgen.astro.planet.Resource;
  * 
  * @author Samuel Penn
  */
-@Path("/commodity}")
+@Controller
 public class CommodityAPI {
 	private CommodityFactory factory = null;
 
@@ -27,10 +27,9 @@ public class CommodityAPI {
 		factory = new CommodityFactory();
 	}
 
-	@GET
-	@Path("{name}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Commodity getCommodity(@PathParam("name") String name) {
+	@RequestMapping(value="/commodity/{name}", method=RequestMethod.GET)
+	@ResponseBody
+	public Commodity getCommodity(@PathVariable("name") String name) {
 		return factory.getCommodity(name);
 	}
 

@@ -3,16 +3,16 @@ package uk.org.glendale.worldgen.server;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Provider;
+//import javax.ws.rs.ext.ContextResolver;
+//import javax.ws.rs.ext.MessageBodyWriter;
+//import javax.ws.rs.ext.Provider;
 import javax.xml.bind.JAXBContext;
 
-@Provider
-public class JsonProducer implements ContextResolver<JAXBContext> {
+//@Provider
+public class JsonProducer {//implements ContextResolver<JAXBContext> {
 	 private JAXBContext context;
 	 private Class[] types = {Foo.class};
-	 MessageBodyWriter w;
+	 //MessageBodyWriter w;
 
 
 	public JsonProducer() throws Exception {

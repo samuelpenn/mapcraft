@@ -8,7 +8,6 @@
  */
 package uk.org.glendale.worldgen.civ.facility;
 
-import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
@@ -16,7 +15,6 @@ import javax.persistence.Query;
 
 import uk.org.glendale.worldgen.server.AppManager;
 
-@ManagedBean
 public class FacilityFactory {
 	EntityManager	em;
 

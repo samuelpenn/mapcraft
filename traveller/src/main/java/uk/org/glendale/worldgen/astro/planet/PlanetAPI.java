@@ -8,24 +8,23 @@
  */
 package uk.org.glendale.worldgen.astro.planet;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.org.glendale.worldgen.server.AppManager;
 
-@Path("/planet/{id}")
+@Controller
 public class PlanetAPI {
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Planet getPlanet(@PathParam("id") int id) {
+	@RequestMapping(value="/planet/{id}", method=RequestMethod.GET)
+	@ResponseBody
+	public Planet getPlanet(@PathVariable("id") int id) {
 		AppManager app = AppManager.getInstance();
 
 		PlanetFactory pf = new PlanetFactory();
 
 		return pf.getPlanet(id);
-
 	}
 }

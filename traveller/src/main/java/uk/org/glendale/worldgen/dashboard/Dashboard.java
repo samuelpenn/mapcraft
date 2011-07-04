@@ -2,10 +2,6 @@ package uk.org.glendale.worldgen.dashboard;
 
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.event.ValueChangeEvent;
-
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorFactory;
 import uk.org.glendale.worldgen.astro.sector.SubSector;
@@ -19,8 +15,6 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
-@ManagedBean(name="dashboard")
-@SessionScoped
 public class Dashboard {
 	private		AppManager	app = AppManager.getInstance();
 	
@@ -36,10 +30,11 @@ public class Dashboard {
 	public String getTitle() {
 		return title;
 	}
-	
+	/*
 	public void selectedSector(ValueChangeEvent event) {
 		setSelectedSector((String)event.getNewValue());
 	}
+	*/
 	
 	public String getSelectedSector() {
 		if (selectedSector == null) {
