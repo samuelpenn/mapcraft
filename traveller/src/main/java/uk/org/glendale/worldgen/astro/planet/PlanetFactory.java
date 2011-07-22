@@ -11,10 +11,13 @@ package uk.org.glendale.worldgen.astro.planet;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 import uk.org.glendale.worldgen.server.AppManager;
@@ -24,7 +27,9 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
+@Repository
 public class PlanetFactory {
+	//@PersistenceContext
 	EntityManager	em;
 	
 	public PlanetFactory(EntityManager hibernateEntityManager) {
@@ -32,7 +37,7 @@ public class PlanetFactory {
 	}
 	
 	public PlanetFactory() {
-		em = AppManager.getInstance().getEntityManager();
+		//em = AppManager.getInstance().getEntityManager();
 	}
 	
 	/**

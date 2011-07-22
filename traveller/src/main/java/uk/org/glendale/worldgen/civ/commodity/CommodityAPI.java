@@ -19,7 +19,7 @@ import uk.org.glendale.worldgen.astro.planet.Resource;
  * 
  * @author Samuel Penn
  */
-@Controller
+//@Controller
 public class CommodityAPI {
 	private CommodityFactory factory = null;
 

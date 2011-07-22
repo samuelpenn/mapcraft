@@ -10,6 +10,12 @@ package uk.org.glendale.worldgen.test;
 
 import java.util.List;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorFactory;
 import uk.org.glendale.worldgen.astro.sector.SectorGenerator;
@@ -21,13 +27,24 @@ import uk.org.glendale.worldgen.server.AppManager;
  * @author Samuel Penn
  */
 public class Sandbox {
+	//@Autowired
+	private SectorFactory		sectorFactory;
+	
 	private static void sandbox() {
 
 	}
 
 	public static void main(String[] args) throws Exception {
-		AppManager app = new AppManager();
+		ApplicationContext context;
+		
+		
+		context = new ClassPathXmlApplicationContext("applicationContext.xml");
+		System.out.println(context.containsBean("sectorFactory"));
+		SectorFactory sf = (SectorFactory)context.getBean("sectorFactory");
+		sf.getAllSectors();
 
+		/*
+		AppManager app = new AppManager();
 		SectorGenerator sg = new SectorGenerator(app.getEntityManager());
 		SectorFactory sf = new SectorFactory(app.getEntityManager());
 
@@ -42,6 +59,8 @@ public class Sandbox {
 		// sg.fillRandomSector(sector, new Names("names"), 20);
 		app.getEntityManager().close();
 		System.out.println("Sector completed");
+		*/
 	}
+
 
 }

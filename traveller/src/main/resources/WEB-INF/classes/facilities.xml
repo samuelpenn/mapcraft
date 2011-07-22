@@ -26,7 +26,7 @@
 
     <facility name="Primitive Hunters">
         <image>primitive/hunters</image>
-        <tech>0<tech>
+        <tech>0</tech>
         <requirements/>
 
         <map in="FoHu" out="Animal Skins"/>

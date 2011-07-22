@@ -1,16 +1,53 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-    "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-<web-app>
-
-    <display-name>Traveller</display-name>
+	<display-name>WorldGen</display-name>
     <description>
-	    	Web interface to Traveller data.
+    	Web interface to Traveller data.
     </description>
-    
+	
+	<context-param>
+    	<param-name>contextConfigLocation</param-name>
+    	<param-value>
+			/WEB-INF/spring/worldgen-security.xml
+			/WEB-INF/spring/worldgen-config.xml
+		</param-value>
+   	</context-param>
+   	
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<servlet>
+		<servlet-name>worldgen</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>worldgen</servlet-name>
+		<url-pattern>*.jsp</url-pattern>
+		<url-pattern>/index.jsp</url-pattern>
+	</servlet-mapping>
+	
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+	
+	
     <resource-ref>
     	<description>DB Connection Pooling</description>
         <res-ref-name>Traveller</res-ref-name>
@@ -21,7 +58,8 @@
     <session-config>
    		<session-timeout>60</session-timeout> <!-- Minutes -->
    	</session-config>
-    
+
+<!--     
     <servlet>
    		<servlet-name>Information Getter</servlet-name>
    		<servlet-class>uk.org.glendale.rpg.traveller.servlets.GetInfo</servlet-class>
@@ -72,9 +110,6 @@
    		<servlet-class>uk.org.glendale.rpg.traveller.servlets.Commodities</servlet-class>
    	</servlet>
    	
-   	<!--
-   	
-   	-->
    	<servlet>
    		<servlet-name>Jersey Web Application</servlet-name>
    		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
@@ -154,5 +189,5 @@
 	        uk.org.glendale.worldgen.server.AppManager
         </listener-class>
     </listener>	
-    	
+-->    	
 </web-app>
