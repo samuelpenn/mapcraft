@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<!--
+	Facility Definitions.
+	
+	A facility describes some aspect of civilisation. It may be the entire
+	culture, or it may be mines, farms or heavy industry. Every world with
+	a population will have a cultural 'facility', such as 'Feudal Kingdoms'
+	or 'Orbital Arcologies'.
+	
+	
+ -->
+<facilities>
+    <facility name="Nomadic Tribes" type="Residential">
+        <image>primitive/tribalnomads</image>
+        <tech>0</tech>
+        <requirements>
+            <required type="FoHu" value="100"/>
+            <required type="FoGa" value="100"/>
+            <required type="OrSi" value="10"/>
+        </requirements>
+        <map out="Animal Skins"/>
+        <map out="Stone Tools"/>
+        <map out="Stone Weapons"/>
+    </facility>
+
+    <facility name="Primitive Hunters">
+        <image>primitive/hunters</image>
+        <tech>0</tech>
+        <requirements/>
+
+        <map in="FoHu" out="Animal Skins"/>
+        <map in="FoHu" out="Meat"/>
+    </facility>
+</facilities>
