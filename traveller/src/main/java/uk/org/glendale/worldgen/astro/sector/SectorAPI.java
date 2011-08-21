@@ -11,6 +11,7 @@ package uk.org.glendale.worldgen.astro.sector;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,9 @@ import uk.org.glendale.worldgen.server.AppManager;
 //@Path("/sector/{name}")
 @Controller
 public class SectorAPI {
+	@Autowired
+	private SectorFactory	factory;
+	
 	/**
 	 * Gets details on the specified sector. The sector can be defined by either
 	 * its unique name, or by its coordinates using x,y instead of the name.
@@ -41,13 +45,9 @@ public class SectorAPI {
 	@ResponseBody
 	@RequestMapping(value="/sector/{name}", method=RequestMethod.GET)
 	public Sector getSector(@PathVariable("name") String name) {
-		AppManager app = AppManager.getInstance();
-
 		System.out.println("Looking for [" + name + "]");
 
-		SectorFactory sf = new SectorFactory(app.getEntityManager());
-
-		return sf.getSector(name);
+		return factory.getSector(name);
 	}
 
 //	@GET @Path("/size")

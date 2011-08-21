@@ -36,12 +36,16 @@ public class Sandbox {
 
 	public static void main(String[] args) throws Exception {
 		ApplicationContext context;
-		
-		
+
 		context = new ClassPathXmlApplicationContext("applicationContext.xml");
 		System.out.println(context.containsBean("sectorFactory"));
 		SectorFactory sf = (SectorFactory)context.getBean("sectorFactory");
-		sf.getAllSectors();
+		List<Sector> list = sf.getAllSectors();
+		System.out.println(list.size());
+		for (Sector s : list) {
+			System.out.println(s.getId()+": "+s.getName() + " (" + s.getAllegiance() + ")");
+			System.out.println(sf.getSector(s.getId()).getName());
+		}
 
 		/*
 		AppManager app = new AppManager();

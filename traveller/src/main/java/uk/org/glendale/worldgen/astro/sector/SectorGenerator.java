@@ -36,7 +36,6 @@ public class SectorGenerator {
 	 * Instantiate a new SectorGenerator with the default entity manager.
 	 */
 	public SectorGenerator() {
-		this.entityManager = AppManager.getInstance().getEntityManager();
 	}
 
 	/**

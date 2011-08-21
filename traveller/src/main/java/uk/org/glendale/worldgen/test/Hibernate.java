@@ -63,8 +63,8 @@ public class Hibernate {
 		// Sector s = em.find(Sector.class, 132);
 		// System.out.println(s.getName());
 
-		SectorFactory sf = new SectorFactory(em);
-		SectorGenerator sg = new SectorGenerator(em);
+		//SectorFactory sf = new SectorFactory(em);
+		//SectorGenerator sg = new SectorGenerator(em);
 		/*
 		 * StarSystemFactory ssf = new StarSystemFactory(em); StarSystem ss =
 		 * ssf.getStarSystem(7545);
@@ -72,9 +72,9 @@ public class Hibernate {
 		 * for (Planet planet : ss.getPlanets()) {
 		 * System.out.println(planet.getName()); }
 		 */
-		Sector sector = sf.getSector("Test");
-		sg.clearSector(sector);
-		sg.fillRandomSector(sector, new Names("names"), 30);
+		//Sector sector = sf.getSector("Test");
+		//sg.clearSector(sector);
+		//sg.fillRandomSector(sector, new Names("names"), 30);
 		/*
 		 * PlanetFactory pf = new PlanetFactory(em); Planet p =
 		 * pf.getPlanet(597483); System.out.println(p.getName()); byte[] image =

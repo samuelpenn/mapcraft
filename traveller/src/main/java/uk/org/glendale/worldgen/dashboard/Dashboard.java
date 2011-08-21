@@ -23,6 +23,8 @@ public class Dashboard {
 	private		String		selectedSector = null;
 	private		int			selectedSystemId = 0;
 	
+	private SectorFactory	sectorFactory;
+	
 	public Dashboard() {
 		
 	}
@@ -36,9 +38,12 @@ public class Dashboard {
 	}
 	*/
 	
+	public void setSectorFactory(SectorFactory factory) {
+		this.sectorFactory = factory;
+	}
+	
 	public String getSelectedSector() {
 		if (selectedSector == null) {
-			SectorFactory		sectorFactory = new SectorFactory(app.getEntityManager());
 			List<Sector>		list = sectorFactory.getAllSectors();
 			selectedSector = list.get(0).getName();
 		}
@@ -73,13 +78,11 @@ public class Dashboard {
 	}
 	
 	public List<StarSystem> getSystemsList() {
-		SectorFactory		sectorFactory = new SectorFactory(app.getEntityManager());
 		StarSystemFactory	systemFactory = new StarSystemFactory(app.getEntityManager());
 		
 		Sector	currentSector = sectorFactory.getSector(selectedSector);
 		List<StarSystem> list = systemFactory.getStarSystemsInSector(currentSector);
 		
-		sectorFactory.close();
 		systemFactory.close();
 		
 		return list;
@@ -111,9 +114,7 @@ public class Dashboard {
 			//SubSector	subSector = SubSector.getSubSector(Integer.parseInt(x), Integer.parseInt(y));
 			SubSector	subSector = SubSector.getSubSector(system.getX(), system.getY());
 			
-			SectorFactory		sectorFactory = new SectorFactory(app.getEntityManager());
 			Sector	currentSector = sectorFactory.getSector(selectedSector);
-			sectorFactory.close();
 			return "/traveller/api/subsector/"+currentSector.getId()+"/"+subSector+"?scale=32";
 		}
 		return "";
