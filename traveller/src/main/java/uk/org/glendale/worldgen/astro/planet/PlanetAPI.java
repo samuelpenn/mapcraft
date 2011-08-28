@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.org.glendale.worldgen.server.AppManager;
 
-@Controller
+//@Controller
 public class PlanetAPI {
 	@RequestMapping(value="/planet/{id}", method=RequestMethod.GET)
 	@ResponseBody

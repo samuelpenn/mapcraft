@@ -8,9 +8,16 @@
  */
 package uk.org.glendale.worldgen.web;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import uk.org.glendale.worldgen.astro.sector.Sector;
+import uk.org.glendale.worldgen.astro.sector.SectorFactory;
 
 /**
  * MVC Controller which provides links to the basic top level web pages.
@@ -19,8 +26,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 public class HomeController {
+	@Autowired
+	private SectorFactory	sectorFactory;
+	
 	@RequestMapping("/")
-	public String homePage() {
+	public String homePage(Model model) {
+		model.addAttribute("hello", "Hello World");
+		
+		List<Sector> list = sectorFactory.getAllSectors();
+		model.addAttribute("count", list.size());
+		
 		return "home";
 	}
 	

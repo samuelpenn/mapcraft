@@ -27,7 +27,7 @@ import uk.org.glendale.worldgen.server.AppManager;
  * @author Samuel Penn
  */
 //@Path("/sector/{name}")
-@Controller
+//@Controller
 public class SectorAPI {
 	@Autowired
 	private SectorFactory	factory;

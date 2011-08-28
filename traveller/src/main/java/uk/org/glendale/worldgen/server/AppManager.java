@@ -23,8 +23,8 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+//import javax.servlet.ServletContextEvent;
+//import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 
 import org.hibernate.Session;
@@ -38,7 +38,7 @@ import uk.org.glendale.rpg.traveller.database.ObjectFactory;
  * 
  * @author Samuel Penn
  */
-public class AppManager implements ServletContextListener {
+public class AppManager {
 	private static Properties properties = new Properties();
 
 	private DataSource dataSource = null;
@@ -248,7 +248,7 @@ public class AppManager implements ServletContextListener {
 	private static AppManager appManager = null;
 
 	private DataSource ds = null;
-
+/*
 	public void contextDestroyed(ServletContextEvent arg0) {
 		ds = null;
 	}
@@ -274,7 +274,7 @@ public class AppManager implements ServletContextListener {
 		rootPath = arg0.getServletContext().getRealPath("");
 
 	}
-
+*/
 	public static String getUniverse() {
 		return universe;
 	}

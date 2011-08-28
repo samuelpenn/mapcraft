@@ -21,7 +21,7 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
-@Controller
+//@Controller
 public class StarSystemAPI {
 	@RequestMapping(value="/system/{systemId}", method=RequestMethod.GET)
 	@ResponseBody

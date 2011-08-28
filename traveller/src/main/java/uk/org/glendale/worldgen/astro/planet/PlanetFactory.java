@@ -27,7 +27,7 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
-@Repository
+//@Repository
 public class PlanetFactory {
 	//@PersistenceContext
 	EntityManager	em;

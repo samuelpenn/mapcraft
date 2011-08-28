@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 
 
@@ -21,6 +22,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +43,7 @@ public class SectorFactory {
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
-
+	
 	/**
 	 * Empty bean constructor used by Spring.
 	 */

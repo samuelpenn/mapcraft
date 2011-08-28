@@ -11,7 +11,7 @@
 	">	
 	
 	<!-- Scans the classpath of this application for @Components to deploy as beans -->
-	<context:component-scan base-package="uk.org.glendale.worldgen.web" />
+	<context:component-scan base-package="uk.org.glendale.worldgen" />
 
 	<!-- Configures the @Controller programming model -->
 	<mvc:annotation-driven />
@@ -35,9 +35,6 @@
 	</bean>
 	
 	<!-- 
-	<context:annotation-config />
-	<context:component-scan base-package="uk.org.glendale.worldgen.controllers"/>
-	
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
 		<property name="url" value="jdbc:mysql://appleseed/wgtest"/>
@@ -45,10 +42,11 @@
 		<property name="password" value="wgtest"/>
 	</bean>
 	
-	<bean id="sessionFactory" class="org.springframework.orm.hibernatge3.annotation.AnnotationSessionFactoryBean">
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
 		<property name="annotatedClasses">
 			<list>
+				<value>uk.org.glendale.worldgen.astro.sector.Sector</value>
 				<value>uk.org.glendale.worldgen.astro.planet.Planet</value>
 			</list>
 		</property>
@@ -60,4 +58,8 @@
 		</property>
 	</bean>
 	-->
+	
+	<!-- Load Hibernate related configuration -->
+	<import resource="hibernate-context.xml" />
+	
 </beans>

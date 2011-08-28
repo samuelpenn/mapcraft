@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 
  * @author Samuel Penn
  */
-@Controller
+//@Controller
 public class PlanetImageAPI {
 	//@GET	@Produces("image/jpeg")
 	@RequestMapping(value="/planetimage/{id}", method=RequestMethod.GET)

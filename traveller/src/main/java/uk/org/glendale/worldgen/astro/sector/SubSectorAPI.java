@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 
  * @author Samuel Penn
  */
-@Controller
+//@Controller
 public class SubSectorAPI {
 	
 	/**
@@ -51,7 +51,7 @@ public class SubSectorAPI {
 	 */
 	//@GET
 	//@Produces("image/jpeg")
-	@RequestMapping(value="/subsector/{sectorId}/{subSector}", method=RequestMethod.GET)
+	//@RequestMapping(value="/subsector/{sectorId}/{subSector}", method=RequestMethod.GET)
 	@ResponseBody
 	public File getImage(@PathVariable("sectorId") int sectorId, @PathVariable("subSector") SubSector subSector, 
 			             @RequestParam(value="scale", defaultValue="32") int scale,
