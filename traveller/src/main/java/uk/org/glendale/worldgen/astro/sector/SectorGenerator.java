@@ -13,6 +13,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
@@ -29,24 +32,20 @@ import uk.org.glendale.worldgen.text.Names;
  * 
  * @author Samuel Penn
  */
+@Service
 public class SectorGenerator {
-	private EntityManager entityManager;
+	@Autowired
+	private SectorFactory	sectorFactory;
+	
+	@Autowired
+	private StarSystemFactory	starSystemFactory;
 
 	/**
-	 * Instantiate a new SectorGenerator with the default entity manager.
+	 * IDefault constructor for bean.
 	 */
 	public SectorGenerator() {
 	}
 
-	/**
-	 * Instantiate a new SectorGenerator with a JPA EntityManager.
-	 * 
-	 * @param entityManager
-	 *            Persistence manager.
-	 */
-	public SectorGenerator(EntityManager entityManager) {
-		this.entityManager = entityManager;
-	}
 
 	/**
 	 * Create an empty sector which has no star systems defined. X and Y
@@ -66,18 +65,9 @@ public class SectorGenerator {
 	 */
 	public Sector createEmptySector(String name, int x, int y, String codes,
 			String allegiance) {
-		Sector sector = new Sector(name, x, y, codes, allegiance);
+		sectorFactory.createSector(name, x, y, allegiance);
 
-		EntityTransaction transaction = entityManager.getTransaction();
-		try {
-			transaction.begin();
-			entityManager.persist(sector);
-			transaction.commit();
-		} catch (Throwable t) {
-			transaction.rollback();
-		}
-
-		return sector;
+		return sectorFactory.getSector(name);
 	}
 
 	/**
@@ -88,11 +78,6 @@ public class SectorGenerator {
 	 *            Sector to be deleted.
 	 */
 	public void deleteSector(Sector sector) {
-		clearSector(sector);
-		EntityTransaction transaction = entityManager.getTransaction();
-		transaction.begin();
-		entityManager.remove(sector);
-		transaction.commit();
 	}
 
 	/**
@@ -103,21 +88,6 @@ public class SectorGenerator {
 	 *            Sector to clear.
 	 */
 	public void clearSector(Sector sector) {
-		StarSystemFactory factory = new StarSystemFactory(entityManager);
-		PlanetFactory pfactory = new PlanetFactory(entityManager);
-		List<StarSystem> systems = factory.getStarSystemsInSector(sector);
-
-		EntityTransaction transaction = entityManager.getTransaction();
-		transaction.begin();
-		for (StarSystem system : systems) {
-			System.out.println(system.getName());
-			List<Planet> planets = pfactory.getPlanets(system);
-			for (Planet planet : planets) {
-				entityManager.remove(planet);
-			}
-			entityManager.remove(system);
-		}
-		transaction.commit();
 	}
 
 	/**
@@ -149,8 +119,7 @@ public class SectorGenerator {
 			throw new IllegalStateException("Sector does not have a valid id");
 		}
 
-		StarSystemGenerator systemGenerator = new StarSystemGenerator(
-				entityManager);
+		StarSystemGenerator systemGenerator = null;
 
 		try {
 			for (int x = 1; x <= Sector.WIDTH; x++) {

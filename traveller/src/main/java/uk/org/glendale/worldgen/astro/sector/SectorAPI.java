@@ -8,6 +8,8 @@
  */
 package uk.org.glendale.worldgen.astro.sector;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.org.glendale.worldgen.server.AppManager;
@@ -26,34 +29,57 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
-//@Path("/sector/{name}")
-//@Controller
+@RequestMapping("/api/sector/")
+@Controller
 public class SectorAPI {
 	@Autowired
 	private SectorFactory	factory;
+	
+	@Autowired
+	private SectorGenerator	generator;
 	
 	/**
 	 * Gets details on the specified sector. The sector can be defined by either
 	 * its unique name, or by its coordinates using x,y instead of the name.
 	 * 
 	 * @param name
-	 *            Name of the sector, or x,y coordinates.
+	 *            Name of the sector, or its unique id.
 	 * @return JSON describing the sector.
 	 */
-//	@GET
-//	@Produces(MediaType.APPLICATION_JSON)
 	@ResponseBody
-	@RequestMapping(value="/sector/{name}", method=RequestMethod.GET)
+	@RequestMapping(value="/{name}", method=RequestMethod.GET)
 	public Sector getSector(@PathVariable("name") String name) {
 		System.out.println("Looking for [" + name + "]");
+		
+		if (name.matches("[0-9]+")) {
+			try {
+				int	id = Integer.parseInt(name);
+				return factory.getSector(id);
+			} catch (NumberFormatException e) {
+				// Not a number. Fall back to getting by name.
+			}
+		}
 
 		return factory.getSector(name);
 	}
-
-//	@GET @Path("/size")
-//  @Produces("text/plain")
-	public String getSize() {
-		return "42";
+	
+	@ResponseBody
+	@RequestMapping(value="/", method=RequestMethod.GET)
+	public List<Sector> getSectors() {
+		System.out.println("List all sectors");
+		
+		return factory.getAllSectors();
 	}
+	
+	@ResponseBody
+	@RequestMapping(value="/{name}", method=RequestMethod.POST)
+	public Sector createSector(@PathVariable("name") String name,
+			@RequestParam int x, @RequestParam int y,
+			@RequestParam(required=false) String allegiance, 
+			@RequestParam(required=false) String codes) {
 
+		factory.createSector(name, x, y, allegiance);
+
+		return factory.getSector(name);
+	}
 }

@@ -8,6 +8,7 @@
  */
 package uk.org.glendale.worldgen.astro.starsystem;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,21 +22,18 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
-//@Controller
+@Controller
 public class StarSystemAPI {
+	@Autowired
+	private StarSystemFactory	factory;
+
 	@RequestMapping(value="/system/{systemId}", method=RequestMethod.GET)
 	@ResponseBody
 	public StarSystem getSystem(@PathVariable("systemId") int systemId) {
 		StarSystem		system = null;
 		
-		AppManager		app = AppManager.getInstance();
-		
-		StarSystemFactory	sf = new StarSystemFactory(app.getEntityManager());
-		
-		system = sf.getStarSystem(systemId);
+		system = factory.getStarSystem(systemId);
 
-		sf.close();
-		
 		return system;
 	}
 }

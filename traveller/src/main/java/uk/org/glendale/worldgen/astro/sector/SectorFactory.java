@@ -11,26 +11,19 @@ package uk.org.glendale.worldgen.astro.sector;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-
-import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-
 
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.org.glendale.worldgen.server.AppManager;
-
 /**
- * Factory class for obtaining existing Sector objects.
+ * Factory class for creating and fetching Sector objects. This class is
+ * just a simple wrapper to the persistence layer, and has no intelligence
+ * associated with it.
+ * 
+ * @see uk.org.glendale.worldgen.astro.sector.SectorGenerator
  * 
  * @author Samuel Penn
  */
@@ -96,5 +89,15 @@ public class SectorFactory {
 		q.setParameter("name", name);
 		
 		return (Sector) q.uniqueResult();
+	}
+	
+	@Transactional
+	public void createSector(String name, int x, int y, String allegiance) {
+		Sector sector = new Sector();
+		sector.setName(name);
+		sector.setX(x);
+		sector.setY(y);
+		sector.setAllegiance(allegiance);
+		sessionFactory.getCurrentSession().persist(sector);
 	}
 }

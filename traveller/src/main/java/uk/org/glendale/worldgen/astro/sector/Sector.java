@@ -33,7 +33,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "sector")
-@XmlRootElement(name = "sector")
 public class Sector {
 	// Unique identifier used as primary key.
 	@Id
@@ -91,9 +90,12 @@ public class Sector {
 	 * 
 	 * @return Common sector name.
 	 */
-	@XmlElement
 	public String getName() {
 		return name;
+	}
+	
+	void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -104,9 +106,12 @@ public class Sector {
 	 * 
 	 * @return X coordinate of this sector.
 	 */
-	@XmlElement
 	public int getX() {
 		return x;
+	}
+	
+	void setX(int x) {
+		this.x = x;
 	}
 
 	/**
@@ -117,13 +122,20 @@ public class Sector {
 	 * 
 	 * @return Y coordinate of this sector.
 	 */
-	@XmlElement
 	public int getY() {
 		return y;
+	}
+	
+	void setY(int y) {
+		this.y = y;
 	}
 
 	public String getAllegiance() {
 		return allegiance;
+	}
+	
+	void setAllegiance(String allegiance) {
+		this.allegiance = allegiance;
 	}
 
 	public Set<SectorCode> getCodes() {
@@ -142,6 +154,14 @@ public class Sector {
 
 	public boolean hasCode(SectorCode code) {
 		return getCodes().contains(code);
+	}
+	
+	void addCode(SectorCode code) {
+		if (codes == null) {
+			this.codes = ""+code;
+		} else {
+			this.codes += " " + code;
+		}
 	}
 
 	public String toString() {

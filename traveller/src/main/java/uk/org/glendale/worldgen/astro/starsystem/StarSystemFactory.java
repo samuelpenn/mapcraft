@@ -10,9 +10,13 @@ package uk.org.glendale.worldgen.astro.starsystem;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.server.AppManager;
@@ -22,15 +26,21 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
+@Repository
+@Transactional
 public class StarSystemFactory {
-	EntityManager em;
-
-	public StarSystemFactory(EntityManager hibernateEntityManager) {
-		em = hibernateEntityManager;
+	/** Hibernate session factory. */
+	@Autowired
+	private SessionFactory		sessionFactory;
+	
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 
+	/**
+	 * Empty bean constructor.
+	 */
 	public StarSystemFactory() {
-		em = AppManager.getInstance().getEntityManager();
 	}
 
 	/**
@@ -41,14 +51,17 @@ public class StarSystemFactory {
 	 * @return The star system if found,
 	 */
 	public StarSystem getStarSystem(int systemId) {
-		return em.find(StarSystem.class, systemId);
+		Session session = sessionFactory.getCurrentSession();
+		
+		Query query = (Query) session.createQuery("from StarSystem where id = :id");
+		query.setParameter("id", systemId);
+
+		return (StarSystem) query.uniqueResult();
 	}
 
+	@Transactional
 	public void persist(StarSystem system) {
-		EntityTransaction transaction = em.getTransaction();
-		transaction.begin();
-		em.persist(system);
-		transaction.commit();
+		sessionFactory.getCurrentSession().persist(system);
 	}
 
 	/**
@@ -60,17 +73,11 @@ public class StarSystemFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<StarSystem> getStarSystemsInSector(Sector sector) {
-		Query q = em
-				.createQuery("from StarSystem s where s.sector = :sector order by s.name asc");
-		q.setParameter("sector", sector);
+		Session session = sessionFactory.getCurrentSession();
+		
+		Query query = (Query) session.createQuery("from StarSystem where sector = :sector order by name asc");
+		query.setParameter("sector", sector.getId());
 
-		List<StarSystem> systems = q.getResultList();
-
-		return systems;
+		return query.list();
 	}
-
-	public void close() {
-		em.close();
-	}
-
 }
