@@ -17,6 +17,7 @@ import junit.framework.Assert;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.xml.sax.SAXException;
 
 import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
@@ -24,7 +25,19 @@ import uk.org.glendale.worldgen.server.AppManager;
 import uk.org.glendale.worldgen.server.SQLReader;
 import uk.org.glendale.worldgen.text.Names;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration( { "/servlet-context.xml" })
 public class SectorGeneratorTest {
+	@Autowired
+	private SectorGenerator	generator;
+	
+	@Autowired
+	private SectorFactory	factory;
+	
 	@BeforeClass
 	public static void setupDatabase() {
 		SQLReader.setupTestDatabase();
@@ -35,30 +48,25 @@ public class SectorGeneratorTest {
 		Assert.assertNotNull(AppManager.getInstance());
 		Assert.assertEquals("test", AppManager.getUniverse());
 
-		SectorGenerator generator = new SectorGenerator();
 		Sector s = generator.createEmptySector("Test", 3, 4, "Sp Ba Lo", "Un");
 
 		Assert.assertNotNull(s);
 		Assert.assertTrue(s.getId() != 0);
 
-		SectorFactory factory = new SectorFactory();
 		s = factory.getSector("Test");
-		Assert.assertEquals("Test", s.getName());
-		Assert.assertEquals("Un", s.getAllegiance());
-		Assert.assertEquals(3, s.getX());
-		Assert.assertEquals(4, s.getY());
-		Assert.assertTrue(s.hasCode(SectorCode.Sp));
-		Assert.assertTrue(s.hasCode(SectorCode.Ba));
-		Assert.assertTrue(s.hasCode(SectorCode.Lo));
+		Assert.assertEquals("Sector name is wrong.", "Test", s.getName());
+		Assert.assertEquals("Allegiance is wrong.", "Un", s.getAllegiance());
+		Assert.assertEquals("X is wrong.", 3, s.getX());
+		Assert.assertEquals("Y is wrong.", 4, s.getY());
+		Assert.assertTrue("Does not have code Sp", s.hasCode(SectorCode.Sp));
+		Assert.assertTrue("Does not have code Ba", s.hasCode(SectorCode.Ba));
+		Assert.assertTrue("Does not have code Lo", s.hasCode(SectorCode.Lo));
 	}
 
 	@Test
 	public void testWithEntityManager() {
-		SectorGenerator generator = new SectorGenerator(AppManager
-				.getInstance().getEntityManager());
 		Assert.assertNotNull(generator.createEmptySector("Test 2", 5, 5, "Sp",
 				"Un"));
-
 	}
 
 	/**
@@ -79,8 +87,6 @@ public class SectorGeneratorTest {
 		comFac.createAllCommodities(new File("src/main/resources/commodities"));
 
 		// Now, build the star systems.
-		SectorGenerator generator = new SectorGenerator();
-		SectorFactory factory = new SectorFactory();
 		Sector s = factory.getSector("Test");
 
 		generator.fillRandomSector(s, new Names("names"), 1);
