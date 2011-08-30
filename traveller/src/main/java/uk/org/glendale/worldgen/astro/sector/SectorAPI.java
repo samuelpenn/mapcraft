@@ -78,7 +78,7 @@ public class SectorAPI {
 			@RequestParam(required=false) String allegiance, 
 			@RequestParam(required=false) String codes) {
 
-		factory.createSector(name, x, y, allegiance);
+		factory.createSector(name, x, y, allegiance, null);
 
 		return factory.getSector(name);
 	}

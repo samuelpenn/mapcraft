@@ -8,11 +8,17 @@
  */
 package uk.org.glendale.worldgen.astro.starsystem;
 
+import java.net.MalformedURLException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 
 import uk.org.glendale.rpg.traveller.systems.Zone;
 import uk.org.glendale.rpg.utils.Die;
@@ -24,26 +30,78 @@ import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.star.StarAPI;
 import uk.org.glendale.worldgen.astro.star.StarGenerator;
 import uk.org.glendale.worldgen.server.AppManager;
+import uk.org.glendale.worldgen.text.Names;
 
 /**
  * Creates new star systems.
  * 
  * @author Samuel Penn
  */
+@Controller
 public class StarSystemGenerator {
-	private EntityManager entityManager;
+	
+	@Autowired
+	private StarSystemFactory		factory;
 
 	public StarSystemGenerator() {
-		this.entityManager = AppManager.getInstance().getEntityManager();
+	}
+	
+	/**
+	 * Generate a new StarSystem object, without persisting it. This is a
+	 * wrapper to the normal constructor, and if the name or coordinates are
+	 * invalid then random options are selected instead.
+	 * 
+	 * @param sector	Sector to generate system in.
+	 * @param name		Name of the system.
+	 * @param x			X coordinate, 1-32.
+	 * @param y			Y coordinate, 1-40.
+	 * @return			Star system object.
+	 */
+	private StarSystem generateSystemTemplate(Sector sector, String name, int x, int y) {
+		StarSystem		template = null;
+		
+		if (x == 0 || y == 0 || x > 32 || y > 40) {
+			Set<String>	 locations = new HashSet<String>();
+			List<StarSystem> existingSystems = factory.getStarSystemsInSector(sector);
+			
+			for (int xx=1; xx <= 32; xx++) {
+				for (int yy=1; yy <= 40; yy++) {
+					locations.add(String.format("%02d%02d", xx, yy));
+				}
+			}
+			for (StarSystem system : existingSystems) {
+				locations.remove(system.getXY());
+			}
+			
+			System.out.println("Remaining locations: "+locations.size());
+			if (locations.size() == 0) {
+				throw new IllegalStateException("No free locations in this sector");
+			} else {
+				String coord = locations.toArray(new String[0])[Die.rollZero(locations.size())];
+				System.out.println("Random location is: "+coord);
+				x = Integer.parseInt(coord.substring(0, 2));
+				y = Integer.parseInt(coord.substring(2, 4));
+			}
+		}
+		if (name == null || name.trim().length() == 0) {
+			try {
+				Names names = new Names("names");
+				name = names.getPlanetName();
+			} catch (MalformedURLException e) {
+				// Only thrown if giving it a URL, which we're not.
+				name = "NGC "+Die.die(1000000);
+			}
+		}
+		template = new StarSystem(sector, name.trim(), x, y);
+		
+		return template;
 	}
 
-	public StarSystemGenerator(EntityManager entityManager) {
-		this.entityManager = entityManager;
-	}
 
 	/**
 	 * Creates an empty star system with no stars or planets. Not generally used
-	 * except in testing.
+	 * except in testing. If name or coordinates are not properly set, then
+	 * random ones are chosen.
 	 * 
 	 * @param sector
 	 *            Sector this system is in.
@@ -55,37 +113,53 @@ public class StarSystemGenerator {
 	 *            Y coordinate of the system.
 	 * @return New empty star system.
 	 */
+	@Transactional
 	public StarSystem createEmptySystem(Sector sector, String name, int x, int y) {
-		StarSystem system = new StarSystem(sector, name, x, y);
+		StarSystem system = generateSystemTemplate(sector, name, x, y);
 		system.setAllegiance("Un");
 		system.setZone(Zone.Green);
 
-		EntityTransaction transaction = entityManager.getTransaction();
-		transaction.begin();
-		entityManager.persist(system);
-		transaction.commit();
+		factory.persist(system);
 
+		return system;
+	}
+	
+	/**
+	 * Create a simple star system with a single star and a few planets.
+	 * 
+	 * @param sector	Sector to create system in.
+	 * @param name		Name to give to the system.
+	 * @param x			X coordinate, 1-32.
+	 * @param y			Y coordinate, 1-40.
+	 * @return			Newly created star system.
+	 */
+	@Transactional
+	public StarSystem createSimpleSystem(Sector sector, String name, int x, int y) {
+		System.out.println("Creating simple system ["+name+"]");
+		
+		StarSystem system = generateSystemTemplate(sector, name, x, y);
+		system.setAllegiance("Un");
+		system.setZone(Zone.Green);
+		//factory.persist(system);
+
+		StarGenerator starGenerator = new StarGenerator(system, false);
+		Star primary = starGenerator.generateSimplePrimary();
+		
+		system.addStar(primary);
+		factory.persist(system);
+		
+		System.out.println(system.getId()+": "+system.getStars().get(0).getId());
+		
 		return system;
 	}
 
 	public StarSystem createStarSystem(Sector sector, String name, int x, int y) {
-		StarSystem system = new StarSystem(sector, name, x, y);
+		StarSystem system = generateSystemTemplate(sector, name, x, y);
 		system.setAllegiance("Un");
 		system.setZone(Zone.Green);
 
-		EntityTransaction transaction = entityManager.getTransaction();
-		try {
-			transaction.begin();
-			entityManager.persist(system);
-
-			generateStars(system, sector.getCodes());
-
-			transaction.commit();
-		} catch (Throwable t) {
-			t.printStackTrace();
-			transaction.rollback();
-			system = null;
-		}
+		generateStars(system, sector.getCodes());
+		factory.persist(system);
 
 		return system;
 	}
@@ -125,16 +199,16 @@ public class StarSystemGenerator {
 
 		StarGenerator starGenerator = new StarGenerator(system, numStars > 1);
 		Star primary = starGenerator.generatePrimary();
-		entityManager.persist(primary);
 		system.addStar(primary);
+		factory.persist(system);
 		if (numStars > 1) {
 			Star secondary = starGenerator.generateSecondary();
-			entityManager.persist(secondary);
 			system.addStar(secondary);
+			factory.persist(system);
 			if (numStars > 2) {
 				Star tertiary = starGenerator.generateTertiary();
-				entityManager.persist(tertiary);
 				system.addStar(tertiary);
+				factory.persist(system);
 			}
 		}
 
@@ -202,20 +276,19 @@ public class StarSystemGenerator {
 			numPlanets /= 2;
 		}
 
-		PlanetGenerator planetGenerator = new PlanetGenerator(entityManager,
-				system, star);
+		PlanetGenerator planetGenerator = new PlanetGenerator(system, star);
 		for (int p = 0; p < numPlanets; p++) {
 			String planetName = star.getName() + " " + getOrbitNumber(p + 1);
 			Planet planet = planetGenerator.generatePlanet(planetName, p,
 					distance);
-			entityManager.persist(planet);
+			//entityManager.persist(planet);
 			System.out.println("Persisted planet [" + planet.getId() + "] ["
 					+ planet.getName() + "]");
 
 			List<Planet> moons = planetGenerator.generateMoons(planet, codes);
 			for (Planet moon : moons) {
 				System.out.println("Persisting [" + moon.getName() + "]");
-				entityManager.persist(moon);
+				//entityManager.persist(moon);
 				System.out.println("Persisted moon [" + moon.getId() + "] ["
 						+ moon.getName() + "]");
 			}

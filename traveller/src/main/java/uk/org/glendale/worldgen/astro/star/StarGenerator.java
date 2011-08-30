@@ -48,6 +48,23 @@ public class StarGenerator {
 
 		return primary;
 	}
+	
+	/**
+	 * Generate a primary star for a simple star system. A simple system
+	 * is very boring, so always has a single Class V star.
+	 * 
+	 * @return	A suitable, random class V star.
+	 */
+	public Star generateSimplePrimary() {
+		primary = new Star(system);
+		primary.setName(system.getName() + ((multipleStars) ? " Alpha" : ""));
+
+		primary.setForm(StarForm.Star);
+		primary.setClassification(StarClass.V);
+		primary.setSpectralType(StarClass.V.getSpectralType());
+
+		return primary;
+	}
 
 	public Star generatePrimary() {
 		primary = new Star(system);

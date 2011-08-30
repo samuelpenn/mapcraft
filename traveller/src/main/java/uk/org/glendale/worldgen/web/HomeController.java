@@ -67,7 +67,7 @@ public class HomeController {
 	@RequestMapping("/sector/{name}/{x}/{y}")
 	public final String createSector(final Model model, @PathVariable String name, @PathVariable int x, @PathVariable int y) {
 		
-		sectorFactory.createSector(name, x, y, "Un");
+		sectorFactory.createSector(name, x, y, "Un", null);
 		
 		List<Sector> list = sectorFactory.getAllSectors();
 		model.addAttribute("count", list.size());

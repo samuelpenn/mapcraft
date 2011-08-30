@@ -41,7 +41,6 @@ import uk.org.glendale.worldgen.astro.star.Star;
  */
 @Entity
 @Table(name = "system")
-@XmlRootElement(name = "system")
 @FilterDef(name = "noMoons")
 public class StarSystem {
 	// Unique identifier used as primary key.
@@ -151,6 +150,17 @@ public class StarSystem {
 	 */
 	public int getY() {
 		return y;
+	}
+	
+	/**
+	 * Gets the coordinates of this system as a 4 digit string, in the
+	 * format XXYY. This is the standard way of displaying a system's
+	 * position in the sector.
+	 * 
+	 * @return	Coordinates of sector as 4 digit string.
+	 */
+	public String getXY() {
+		return String.format("%02d%02d", x, y);
 	}
 
 	/**

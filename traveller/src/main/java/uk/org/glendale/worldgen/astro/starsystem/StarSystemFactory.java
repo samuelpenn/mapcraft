@@ -14,11 +14,13 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Query;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.org.glendale.worldgen.astro.sector.Sector;
+import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
@@ -27,7 +29,6 @@ import uk.org.glendale.worldgen.server.AppManager;
  * @author Samuel Penn
  */
 @Repository
-@Transactional
 public class StarSystemFactory {
 	/** Hibernate session factory. */
 	@Autowired
@@ -61,7 +62,16 @@ public class StarSystemFactory {
 
 	@Transactional
 	public void persist(StarSystem system) {
-		sessionFactory.getCurrentSession().persist(system);
+		Session session = sessionFactory.getCurrentSession();
+
+		/*
+		if (system.getStars() != null) {
+			for (Star star : system.getStars()) {
+				session.persist(star);
+			}
+		}
+		*/
+		session.persist(system);
 	}
 
 	/**
@@ -76,7 +86,7 @@ public class StarSystemFactory {
 		Session session = sessionFactory.getCurrentSession();
 		
 		Query query = (Query) session.createQuery("from StarSystem where sector = :sector order by name asc");
-		query.setParameter("sector", sector.getId());
+		query.setParameter("sector", sector);
 
 		return query.list();
 	}

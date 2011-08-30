@@ -29,7 +29,6 @@ import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
  */
 @Entity
 @Table(name = "star")
-@XmlRootElement(name = "star")
 public class Star {
 	// Unique identifier used as primary key.
 	@Id

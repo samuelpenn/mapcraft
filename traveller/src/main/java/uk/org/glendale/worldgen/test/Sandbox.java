@@ -37,23 +37,23 @@ public class Sandbox {
 	}
 
 	public static void main(String[] args) throws Exception {
-		
+		/*
 		HttpClient	client = new HttpClient();
 		
 		GetMethod get = new GetMethod("http://localhost:8080/Traveller/api/sector/Test");
 		get.setRequestHeader("Accept", "application/json;");
 		int status = client.executeMethod(get);
 		System.out.println(status);
+		*/
 		
-		/*
 		ApplicationContext context;
 
-		context = new ClassPathXmlApplicationContext("src/main/webapp/WEB-INF/applicationContext.xml");
+		context = new ClassPathXmlApplicationContext("servlet-context.xml");
 		System.out.println(context.containsBean("sectorFactory"));
 		SectorFactory sf = (SectorFactory)context.getBean("sectorFactory");
 		
 		
-		sf.createSector("Sandbox", 1, 1, "Un");
+		sf.createSector("Sandbox", 1, 1, "Un", null);
 		
 		List<Sector> list = sf.getAllSectors();
 		System.out.println(list.size());
@@ -61,7 +61,7 @@ public class Sandbox {
 			System.out.println(s.getId()+": "+s.getName() + " (" + s.getAllegiance() + ")");
 			System.out.println(sf.getSector(s.getId()).getName());
 		}
-		*/
+		
 		
 
 		/*

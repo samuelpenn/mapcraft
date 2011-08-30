@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import uk.org.glendale.rpg.traveller.Log;
+
 /**
  * Factory class for creating and fetching Sector objects. This class is
  * just a simple wrapper to the persistence layer, and has no intelligence
@@ -91,13 +93,48 @@ public class SectorFactory {
 		return (Sector) q.uniqueResult();
 	}
 	
+	public Sector getSector(int x, int y) {
+		Query q = sessionFactory.getCurrentSession().createQuery("from Sector where x = :x and y = :y");
+		q.setParameter("x", x);
+		q.setParameter("y", y);
+		
+		return (Sector) q.uniqueResult();
+	}
+	
+	/**
+	 * Create a new sector and persist it.
+	 * 
+	 * @param name			Name of the sector.
+	 * @param x				X coordinate of sector.
+	 * @param y				Y coordinate of sector.
+	 * @param allegiance	Allegiance, if any.
+	 * @param codes			Sector codes, if any.
+	 */
 	@Transactional
-	public void createSector(String name, int x, int y, String allegiance) {
+	public void createSector(String name, int x, int y, String allegiance, SectorCode... codes) {
+		if (name == null || name.trim().length() == 0) {
+			throw new IllegalArgumentException("Sector name must be valid");
+		} else if (name.matches("[0-9]+")) {
+			throw new IllegalArgumentException("Sector name must not be a number");
+		}
+		if (getSector(name) != null) {
+			throw new IllegalStateException("Sector [" + name + "] already exists.");
+		}
+		
 		Sector sector = new Sector();
 		sector.setName(name);
 		sector.setX(x);
 		sector.setY(y);
-		sector.setAllegiance(allegiance);
+		if (allegiance != null && allegiance.trim().length() > 0) {
+			sector.setAllegiance(allegiance);
+		} else {
+			sector.setAllegiance("Un");
+		}
+		if (codes != null && codes.length > 0) {
+			for (SectorCode code : codes) {
+				sector.addCode(code);
+			}
+		}
 		sessionFactory.getCurrentSession().persist(sector);
 	}
 }

@@ -8,6 +8,7 @@
  */
 package uk.org.glendale.worldgen.astro.sector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -16,6 +17,7 @@ import javax.persistence.EntityTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import uk.org.glendale.rpg.traveller.Log;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
@@ -39,9 +41,12 @@ public class SectorGenerator {
 	
 	@Autowired
 	private StarSystemFactory	starSystemFactory;
+	
+	@Autowired
+	private StarSystemGenerator	starSystemGenerator;
 
 	/**
-	 * IDefault constructor for bean.
+	 * Default constructor for bean.
 	 */
 	public SectorGenerator() {
 	}
@@ -65,7 +70,21 @@ public class SectorGenerator {
 	 */
 	public Sector createEmptySector(String name, int x, int y, String codes,
 			String allegiance) {
-		sectorFactory.createSector(name, x, y, allegiance);
+		
+		if (codes != null && codes.trim().length() > 0) {
+			List<SectorCode>	list = new ArrayList<SectorCode>();
+			for (String code : codes.split(" ")) {
+				try {
+					list.add(SectorCode.valueOf(code));
+				} catch (Throwable t) {
+					Log.warn("Sector code [" + code + "] is invalid, ignoring");
+				}
+			}
+			sectorFactory.createSector(name, x, y, allegiance, 
+									list.toArray(new SectorCode[0]));
+		} else {
+			sectorFactory.createSector(name, x, y, allegiance);
+		}
 
 		return sectorFactory.getSector(name);
 	}
