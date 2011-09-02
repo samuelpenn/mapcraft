@@ -28,6 +28,7 @@ import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorCode;
 import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.star.StarAPI;
+import uk.org.glendale.worldgen.astro.star.StarFactory;
 import uk.org.glendale.worldgen.astro.star.StarGenerator;
 import uk.org.glendale.worldgen.server.AppManager;
 import uk.org.glendale.worldgen.text.Names;
@@ -42,6 +43,9 @@ public class StarSystemGenerator {
 	
 	@Autowired
 	private StarSystemFactory		factory;
+	
+	@Autowired
+	private StarFactory				starFactory;
 
 	public StarSystemGenerator() {
 	}
@@ -144,6 +148,8 @@ public class StarSystemGenerator {
 
 		StarGenerator starGenerator = new StarGenerator(system, false);
 		Star primary = starGenerator.generateSimplePrimary();
+		
+		starFactory.persist(primary);
 		
 		system.addStar(primary);
 		factory.persist(system);

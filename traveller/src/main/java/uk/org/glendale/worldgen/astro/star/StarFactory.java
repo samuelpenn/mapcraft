@@ -6,7 +6,7 @@
  * as published by the Free Software Foundation; version 2.
  * See the file COPYING.
  */
-package uk.org.glendale.worldgen.astro.starsystem;
+package uk.org.glendale.worldgen.astro.star;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ import uk.org.glendale.worldgen.server.AppManager;
  * @author Samuel Penn
  */
 @Repository
-public class StarSystemFactory {
+public class StarFactory {
 	/** Hibernate session factory. */
 	@Autowired
 	private SessionFactory		sessionFactory;
@@ -41,7 +41,7 @@ public class StarSystemFactory {
 	/**
 	 * Empty bean constructor.
 	 */
-	public StarSystemFactory() {
+	public StarFactory() {
 	}
 
 	/**
@@ -52,38 +52,22 @@ public class StarSystemFactory {
 	 * @return The star system if found,
 	 */
 
-	public StarSystem getStarSystem(int systemId) {
+	public Star getStar(int id) {
 		Session session = sessionFactory.getCurrentSession();
 		
-		Query query = (Query) session.createQuery("from StarSystem where id = :id");
-		query.setParameter("id", systemId);
+		Query query = (Query) session.createQuery("from Star where id = :id");
+		query.setParameter("id", id);
 
-		StarSystem system = (StarSystem) query.uniqueResult();
-		system.getId();
-		system.getStars();
-		return system;
+		Star star = (Star) query.uniqueResult();
+		star.getId();
+		return star;
 	}
 
-	public void persist(StarSystem system) {
+	//@Transactional
+	public void persist(Star star) {
 		Session session = sessionFactory.getCurrentSession();
+		//star = (Star) session.merge(star);
 
-		session.persist(system);
-	}
-
-	/**
-	 * Gets all the star systems in the given sector.
-	 * 
-	 * @param sector
-	 *            Sector to get star systems for.
-	 * @return List of star systems found.
-	 */
-	@SuppressWarnings("unchecked")
-	public List<StarSystem> getStarSystemsInSector(Sector sector) {
-		Session session = sessionFactory.getCurrentSession();
-		
-		Query query = (Query) session.createQuery("from StarSystem where sector = :sector order by name asc");
-		query.setParameter("sector", sector);
-
-		return query.list();
+		session.persist(star);
 	}
 }

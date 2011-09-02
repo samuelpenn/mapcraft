@@ -75,7 +75,7 @@ public class StarSystem {
 	@Where(clause = "moon=0")
 	private List<Planet> planets;
 
-	@OneToMany(mappedBy = "system", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "system", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<Star> stars;
 
 	public StarSystem() {
