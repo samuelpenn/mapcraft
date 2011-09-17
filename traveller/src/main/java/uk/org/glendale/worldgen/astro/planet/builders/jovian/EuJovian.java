@@ -11,9 +11,9 @@ package uk.org.glendale.worldgen.astro.planet.builders.jovian;
 import java.util.ArrayList;
 
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
-import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.planet.PlanetType;
 import uk.org.glendale.worldgen.astro.planet.builders.JovianWorld;
 import uk.org.glendale.worldgen.astro.planet.builders.Tile;
 

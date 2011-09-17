@@ -31,6 +31,7 @@ import uk.org.glendale.rpg.traveller.systems.Star;
 import uk.org.glendale.rpg.traveller.systems.StarSystem;
 import uk.org.glendale.rpg.traveller.systems.Zone;
 import uk.org.glendale.rpg.traveller.systems.codes.*;
+import uk.org.glendale.worldgen.astro.planet.StarportType;
 import uk.org.glendale.worldgen.astro.sector.SubSector;
 
 /**

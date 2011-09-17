@@ -25,15 +25,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.GovernmentType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
-import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
-import uk.org.glendale.rpg.traveller.systems.codes.StarportType;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.worldgen.astro.planet.MapImage.Projection;
 import uk.org.glendale.worldgen.astro.star.Temperature;
@@ -43,7 +40,6 @@ import uk.org.glendale.worldgen.civ.facility.Facility;
 
 @Entity
 @Table(name = "planet")
-@XmlRootElement(name = "planet")
 public class Planet {
 	// Unique identifier used as primary key.
 	@Id
@@ -193,6 +189,10 @@ public class Planet {
 	 */
 	public StarSystem getSystem() {
 		return system;
+	}
+	
+	public void setSystem(StarSystem system) {
+		this.system = system;
 	}
 
 	/**

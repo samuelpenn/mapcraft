@@ -18,9 +18,9 @@ import java.util.*;
 
 import uk.org.glendale.rpg.traveller.database.ObjectFactory;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
-import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.planet.PlanetType;
 
 /**
  * Create a random description for a planet. Descriptions are made up of phrases

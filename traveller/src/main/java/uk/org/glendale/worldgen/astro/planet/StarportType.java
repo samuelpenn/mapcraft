@@ -9,7 +9,7 @@
  * $Revision: 1.3 $
  * $Date: 2007/12/09 17:45:17 $
  */
-package uk.org.glendale.rpg.traveller.systems.codes;
+package uk.org.glendale.worldgen.astro.planet;
 
 /**
  * Starport classification for a world. This uses the standard Traveller

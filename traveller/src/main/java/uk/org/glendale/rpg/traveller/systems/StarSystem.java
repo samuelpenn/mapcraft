@@ -18,6 +18,8 @@ import java.sql.*;
 import java.util.*;
 
 import uk.org.glendale.utils.Options;
+import uk.org.glendale.worldgen.astro.planet.PlanetType;
+import uk.org.glendale.worldgen.astro.planet.StarportType;
 import uk.org.glendale.worldgen.astro.star.StarClass;
 import uk.org.glendale.worldgen.astro.star.StarForm;
 import uk.org.glendale.worldgen.astro.star.Temperature;
@@ -33,8 +35,6 @@ import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.GovernmentType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
-import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
-import uk.org.glendale.rpg.traveller.systems.codes.StarportType;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 
 /**

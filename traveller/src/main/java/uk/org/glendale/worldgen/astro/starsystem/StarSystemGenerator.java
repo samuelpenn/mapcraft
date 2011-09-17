@@ -24,11 +24,15 @@ import uk.org.glendale.rpg.traveller.systems.Zone;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetGenerator;
+import uk.org.glendale.worldgen.astro.planet.PlanetType;
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorCode;
+import uk.org.glendale.worldgen.astro.star.SpectralType;
 import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.star.StarAPI;
+import uk.org.glendale.worldgen.astro.star.StarClass;
 import uk.org.glendale.worldgen.astro.star.StarFactory;
+import uk.org.glendale.worldgen.astro.star.StarForm;
 import uk.org.glendale.worldgen.astro.star.StarGenerator;
 import uk.org.glendale.worldgen.server.AppManager;
 import uk.org.glendale.worldgen.text.Names;
@@ -138,25 +142,38 @@ public class StarSystemGenerator {
 	 * @return			Newly created star system.
 	 */
 	@Transactional
-	public StarSystem createSimpleSystem(Sector sector, String name, int x, int y) {
+	public int createSimpleSystem(Sector sector, String name, int x, int y) {
 		System.out.println("Creating simple system ["+name+"]");
 		
 		StarSystem system = generateSystemTemplate(sector, name, x, y);
 		system.setAllegiance("Un");
 		system.setZone(Zone.Green);
-		//factory.persist(system);
 
 		StarGenerator starGenerator = new StarGenerator(system, false);
-		Star primary = starGenerator.generateSimplePrimary();
-		
-		starFactory.persist(primary);
+		Star primary = new Star();//starGenerator.generateSimplePrimary();
+		primary.setSystem(system);
+		primary.setName(system.getName());
+		primary.setClassification(StarClass.V);
+		primary.setSpectralType(SpectralType.G2);
+		primary.setForm(StarForm.Star);
+		//starFactory.persist(primary);
 		
 		system.addStar(primary);
+		
+		Planet	planet = new Planet();
+		planet.setSystem(system);
+		planet.setName(system.getName()+" I");
+		planet.setDistance(150);
+		planet.setType(PlanetType.Gaian);
+		planet.setRadius(6000 + Die.die(1000));
+		
+		system.addPlanet(planet);
+
 		factory.persist(system);
 		
 		System.out.println(system.getId()+": "+system.getStars().get(0).getId());
 		
-		return system;
+		return system.getId();
 	}
 
 	public StarSystem createStarSystem(Sector sector, String name, int x, int y) {

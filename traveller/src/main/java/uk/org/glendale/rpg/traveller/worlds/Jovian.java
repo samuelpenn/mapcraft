@@ -12,8 +12,8 @@
 package uk.org.glendale.rpg.traveller.worlds;
 
 import uk.org.glendale.rpg.traveller.systems.Planet;
-import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.planet.PlanetType;
 
 /**
  * Generates a map for a Jovian world.

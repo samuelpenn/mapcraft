@@ -40,7 +40,8 @@ public class StarGenerator {
 	 */
 	public Star generatePrimary(StarForm form, StarClass classification,
 			SpectralType type) {
-		primary = new Star(system);
+		primary = new Star();
+		primary.setSystem(system);
 		primary.setName(system.getName() + ((multipleStars) ? " Alpha" : ""));
 		primary.setForm(form);
 		primary.setClassification(classification);
@@ -56,7 +57,8 @@ public class StarGenerator {
 	 * @return	A suitable, random class V star.
 	 */
 	public Star generateSimplePrimary() {
-		primary = new Star(system);
+		primary = new Star();
+		primary.setSystem(system);
 		primary.setName(system.getName() + ((multipleStars) ? " Alpha" : ""));
 
 		primary.setForm(StarForm.Star);
@@ -67,7 +69,8 @@ public class StarGenerator {
 	}
 
 	public Star generatePrimary() {
-		primary = new Star(system);
+		primary = new Star();
+		primary.setSystem(system);
 		primary.setName(system.getName() + ((multipleStars) ? " Alpha" : ""));
 
 		StarClass starClass = null;
@@ -116,7 +119,8 @@ public class StarGenerator {
 		if (primary == null || primary.getId() == 0) {
 			throw new IllegalStateException("Primary star has not been defined");
 		}
-		secondary = new Star(system);
+		secondary = new Star();
+		secondary.setSystem(system);
 		secondary.setName(system.getName() + " Beta");
 
 		secondary.setForm(StarForm.Star);
@@ -138,7 +142,8 @@ public class StarGenerator {
 			throw new IllegalStateException(
 					"Secondary star has not been defined");
 		}
-		tertiary = new Star(system);
+		tertiary = new Star();
+		tertiary.setSystem(system);
 		tertiary.setName(system.getName() + " Gamma");
 
 		tertiary.setForm(StarForm.WhiteDwarf);

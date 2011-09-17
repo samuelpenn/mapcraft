@@ -8,20 +8,11 @@
  */
 package uk.org.glendale.worldgen.astro.star;
 
-import java.util.List;
-
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Query;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import uk.org.glendale.worldgen.astro.sector.Sector;
-import uk.org.glendale.worldgen.astro.star.Star;
-import uk.org.glendale.worldgen.server.AppManager;
 
 /**
  * Factory class for obtaining star systems from the database.
@@ -33,10 +24,6 @@ public class StarFactory {
 	/** Hibernate session factory. */
 	@Autowired
 	private SessionFactory		sessionFactory;
-	
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
 
 	/**
 	 * Empty bean constructor.
@@ -51,7 +38,6 @@ public class StarFactory {
 	 *            Id of the star system to be retrieved.
 	 * @return The star system if found,
 	 */
-
 	public Star getStar(int id) {
 		Session session = sessionFactory.getCurrentSession();
 		
@@ -63,10 +49,8 @@ public class StarFactory {
 		return star;
 	}
 
-	//@Transactional
 	public void persist(Star star) {
 		Session session = sessionFactory.getCurrentSession();
-		//star = (Star) session.merge(star);
 
 		session.persist(star);
 	}

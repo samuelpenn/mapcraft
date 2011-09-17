@@ -51,7 +51,7 @@ public class StarSystemFactory {
 	 *            Id of the star system to be retrieved.
 	 * @return The star system if found,
 	 */
-
+	@Transactional
 	public StarSystem getStarSystem(int systemId) {
 		Session session = sessionFactory.getCurrentSession();
 		

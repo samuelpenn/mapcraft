@@ -16,9 +16,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Defines a sector of space. A sector in the Traveller universe consists of a
@@ -78,7 +75,6 @@ public class Sector {
 	 * 
 	 * @return Internal sector id.
 	 */
-	@XmlAttribute
 	public int getId() {
 		return id;
 	}

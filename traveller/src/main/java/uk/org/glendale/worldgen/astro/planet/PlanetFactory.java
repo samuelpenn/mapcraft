@@ -10,15 +10,15 @@ package uk.org.glendale.worldgen.astro.planet;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
+import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 import uk.org.glendale.worldgen.server.AppManager;
 
@@ -27,17 +27,13 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
-//@Repository
+@Repository
 public class PlanetFactory {
-	//@PersistenceContext
-	EntityManager	em;
-	
-	public PlanetFactory(EntityManager hibernateEntityManager) {
-		em = hibernateEntityManager;
-	}
+	/** Hibernate session factory. */
+	@Autowired
+	private SessionFactory		sessionFactory;
 	
 	public PlanetFactory() {
-		//em = AppManager.getInstance().getEntityManager();
 	}
 	
 	/**
@@ -46,35 +42,28 @@ public class PlanetFactory {
 	 * @return
 	 */
 	public Planet getPlanet(int id) {
-		return em.find(Planet.class, id);
+		Session session = sessionFactory.getCurrentSession();
+		
+		Query query = (Query) session.createQuery("from Planet where id = :id");
+		query.setParameter("id", id);
+
+		Planet planet = (Planet) query.uniqueResult();
+		planet.getId();
+		return planet;
 	}
 	
-	/**
-	 * Gets the list of all planets in the star system. This list includes
-	 * moons as well as actual planets.
-	 * 
-	 * @param system	System to list planets for.
-	 * @return			List of all planets and moons.
-	 */
-	public List<Planet> getPlanets(StarSystem system) {
-		Query query = em.createQuery("from Planet p where p.system = :s");
-		query.setParameter("s", system);
-		
-		List<Planet>	list = query.getResultList();
-		
-		return list;
-	}
-	
+
 	public List<Planet>	getMoons(Planet planet) {
-		Query query = em.createQuery("from Planet p where p.parent_id = :s");
-		query.setParameter("s", planet.getId());
+		Session session = sessionFactory.getCurrentSession();
 		
-		List<Planet>	list = query.getResultList();
-		
-		return list;		
+		Query query = (Query) session.createQuery("from Planet p where p.parent_id = :planet");
+		query.setParameter("planet", planet);
+
+		return query.list();
 	}
 	
 	public byte[] getPlanetImage(int id, MapImage.Projection projection) {
+		/*
 		Query query = em.createQuery("from MapImage m where m.id = :i and m.type = :p");
 		query.setParameter("i", id);
 		query.setParameter("p", projection);
@@ -82,10 +71,8 @@ public class PlanetFactory {
 		MapImage	image = (MapImage) query.getSingleResult();
 		
 		return image.getData();
+		*/
+		return null;
 	}
 	
-	
-	public void close() {
-		em.close();
-	}
 }

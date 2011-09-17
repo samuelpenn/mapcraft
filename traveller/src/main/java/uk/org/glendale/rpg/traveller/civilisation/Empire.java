@@ -18,9 +18,9 @@ import uk.org.glendale.rpg.traveller.database.*;
 import uk.org.glendale.rpg.traveller.sectors.Sector;
 import uk.org.glendale.rpg.traveller.systems.*;
 import uk.org.glendale.rpg.traveller.systems.codes.GovernmentType;
-import uk.org.glendale.rpg.traveller.systems.codes.StarportType;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.planet.StarportType;
 
 /**
  * Simulates the rise of empires. Finds all the planets with populations,

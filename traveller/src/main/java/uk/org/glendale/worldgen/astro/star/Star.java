@@ -17,7 +17,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 
@@ -59,13 +58,13 @@ public class Star {
 	@Column(name = "type")
 	private SpectralType type;
 
-	Star() {
+	public Star() {
 
 	}
 
-	Star(StarSystem system) {
-		this.system = system;
-	}
+	//Star(StarSystem system) {
+	//	this.system = system;
+	//}
 
 	/**
 	 * Gets the unique id of the star. All star ids are unique across the entire
@@ -79,6 +78,10 @@ public class Star {
 
 	public StarSystem getSystem() {
 		return system;
+	}
+	
+	public void setSystem(StarSystem system) {
+		this.system = system;
 	}
 
 	/**
