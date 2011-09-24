@@ -17,26 +17,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 
 import uk.org.glendale.worldgen.astro.sector.Sector;
+import uk.org.glendale.worldgen.astro.sector.SectorCode;
 import uk.org.glendale.worldgen.astro.sector.SectorFactory;
 import uk.org.glendale.worldgen.astro.sector.SectorGenerator;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
  * Create a sandbox universe for testing purposes.
+ * Initiates the spring context and wires everything as required.
  * 
  * @author Samuel Penn
  */
 public class Sandbox {
-	//@Autowired
+	private static final String CONFIG = "/WEB-INF/spring/servlet-context.xml";
+	
 	private SectorFactory		sectorFactory;
 	
-	private static void sandbox() {
-
+	
+	public Sandbox(ApplicationContext context) {
+		sectorFactory = (SectorFactory) context.getBean("sectorFactory");
 	}
-
-	public static void main(String[] args) throws Exception {
+	
+	public void addToSandbox() {
+		Sector	sandbox = sectorFactory.getSector("Sandbox");
+		if (sandbox == null) {
+			sandbox = sectorFactory.createSector("Sandbox", 0, 0, "Un", SectorCode.Fe);
+		}
+		
+	}
+	
+	private static void sandbox() {
 		/*
 		HttpClient	client = new HttpClient();
 		
@@ -46,14 +59,23 @@ public class Sandbox {
 		System.out.println(status);
 		*/
 		
-		ApplicationContext context;
+	}
 
-		context = new ClassPathXmlApplicationContext("servlet-context.xml");
+	/**
+	 * Run the application and initiates the spring context.
+	 * 
+	 * @param args			None used.
+	 * @throws Exception	If anything goes wrong.
+	 */
+	public static void main(String[] args) throws Exception {
+		ApplicationContext 	context = new ClassPathXmlApplicationContext(CONFIG);
+		
+		Sandbox sb = new Sandbox(context);
+		
 		System.out.println(context.containsBean("sectorFactory"));
 		SectorFactory sf = (SectorFactory)context.getBean("sectorFactory");
 		
-		
-		sf.createSector("Sandbox", 1, 1, "Un", null);
+		sf.createSector("Sandbox", 1, 1, "Un");
 		
 		List<Sector> list = sf.getAllSectors();
 		System.out.println(list.size());

@@ -16,31 +16,43 @@
 	<context:property-placeholder location="/WEB-INF/spring/spring.properties" />
     
     <!-- Enable annotation style of managing transactions -->
-	<tx:annotation-driven transaction-manager="transactionManager" />	
-   
-    <!-- Declare the Hibernate SessionFactory for retrieving Hibernate sessions -->
-    <!-- See http://static.springsource.org/spring/docs/3.0.x/javadoc-api/org/springframework/orm/hibernate3/annotation/AnnotationSessionFactoryBean.html --> 							
-	<!-- See http://docs.jboss.org/hibernate/stable/core/api/index.html?org/hibernate/SessionFactory.html -->
-	<!-- See http://docs.jboss.org/hibernate/stable/core/api/index.html?org/hibernate/Session.html -->
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"
-				 p:dataSource-ref="dataSource"
-				 p:configLocation="${hibernate.config}"
-				 p:packagesToScan="uk.org.glendale.worldgen">
-				 
-		<!-- 
-		<property name="annotatedClasses">
-			<list>
-				<value>uk.org.glendale.worldgen.astro.sector.Sector</value>
-			</list>
-		</property>
-		-->	 
-		<!-- <property name="packagesToScan" value="uk.org.glendale.worldgen"/> -->
+	<tx:annotation-driven />
+	
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+	   <property name="entityManagerFactory" ref="emf"/>
 	</bean>
+	
+	<bean id="pum" class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager"/>
+	
+	<bean id="hibernate" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+	   <property name="showSql" value="false"/>
+	   <property name="generateDdl" value="false"/>
+	</bean>
+	
+	<bean id="emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	   <property name="persistenceUnitManager" ref="pum"/>
+	   <property name="persistenceUnitName" value="worldgen"/>
+	   <property name="persistenceXmlLocation" value="META-INF/persistence.xml"/>
+	   <property name="jpaVendorAdapter" ref="hibernate"/>
+	</bean>
+		
+	
+	<!--  Use Hibernate configured with annotations.
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+	   <property name="dataSource" ref="dataSource"/>
+	   <property name="packagesToScan">
+	       <list>
+	           <value>uk.org.glendale.worldgen.astro.sector</value>
+	       </list>
+	   </property>
+	   <property name="configLocation" value="${hibernate.config}"/>
+	</bean>
+-->	
 	
 	<!-- Declare a datasource that has pooling capabilities
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 				p:acquireIncrement="5"
-	-->
+	
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 				destroy-method="close"
 				p:driverClass="${app.jdbc.driverClassName}"
@@ -51,8 +63,5 @@
 				p:maxPoolSize="100"
 				p:maxStatements="50"
 				p:minPoolSize="10" />
-
-	<!-- Declare a transaction manager-->
-	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" 
-       			p:sessionFactory-ref="sessionFactory" />
+-->
 </beans>

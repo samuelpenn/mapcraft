@@ -15,6 +15,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
@@ -30,7 +32,16 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "sector")
+@NamedQueries( value = {
+		@NamedQuery( name = Sector.Q_ALL,
+		 query = "SELECT s FROM Sector s ORDER BY s.id")
+	}
+)
 public class Sector {
+	public static final String Q_ALL = "sectorGetAll";
+	public static final String Q_BY_ID = "sectorGetById";
+	public static final String Q_BY_NAME = "sectorGetByName";
+	
 	// Unique identifier used as primary key.
 	@Id
 	@GeneratedValue

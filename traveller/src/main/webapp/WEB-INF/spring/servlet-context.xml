@@ -11,7 +11,7 @@
 	">	
 	
 	<!-- Scans the classpath of this application for @Components to deploy as beans -->
-	<context:component-scan base-package="uk.org.glendale.worldgen" />
+	<context:component-scan base-package="uk.org.glendale.worldgen.astro" />
 
 	<!-- Configures the @Controller programming model -->
 	<mvc:annotation-driven />
@@ -34,32 +34,6 @@
 		<property name="suffix" value=".jsp"/>
 	</bean>
 	
-	<!-- 
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://appleseed/wgtest"/>
-		<property name="username" value="wgtest"/>
-		<property name="password" value="wgtest"/>
-	</bean>
-	
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-		<property name="dataSource" ref="dataSource"/>
-		<property name="annotatedClasses">
-			<list>
-				<value>uk.org.glendale.worldgen.astro.sector.Sector</value>
-				<value>uk.org.glendale.worldgen.astro.planet.Planet</value>
-			</list>
-		</property>
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				<prop key="hibernate.show_sql">true</prop>
-			</props>
-		</property>
-	</bean>
-	-->
-	
 	<!-- Load Hibernate related configuration -->
 	<import resource="hibernate-context.xml" />
-	
 </beans>

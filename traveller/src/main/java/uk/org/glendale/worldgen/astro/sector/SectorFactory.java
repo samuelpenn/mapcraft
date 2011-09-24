@@ -12,8 +12,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,11 +35,11 @@ import uk.org.glendale.rpg.traveller.Log;
 @Repository
 @Transactional
 public class SectorFactory {
-	private SessionFactory		sessionFactory;
+	@PersistenceContext
+	private EntityManager		em;
 	
-	@Autowired
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
+	public void setEntityManager(EntityManager em) {
+		this.em = em;
 	}
 	
 	/**
@@ -52,30 +55,24 @@ public class SectorFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Sector> getAllSectors() {
-		List<Sector>	list = new ArrayList<Sector>();
-		
-		Iterator<Sector> it = sessionFactory.getCurrentSession().createQuery("from Sector").iterate();
-		
-		while (it != null && it.hasNext()) {
-			Sector s = it.next();
-			s.getId(); // Force loading of entity.
-			list.add(s);
-		}
-
-		return list;
+		return em.createQuery("from Sector").getResultList();
 	}
 
 	/**
 	 * Gets a sector identified by its unique id.
 	 * 
-	 * @param id
-	 * @return
+	 * @param id	Id of the sector to locate.
+	 * @return		Found sector, or null if it doesn't exist.
 	 */
 	public Sector getSector(int id) {
-		Query q = sessionFactory.getCurrentSession().createQuery("from Sector where id = :id");
+		Query q = em.createQuery("SELECT s FROM Sector s WHERE s.id = :id");
 		q.setParameter("id", id);
 		
-		return (Sector) q.uniqueResult();		
+		try {
+			return (Sector) q.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 	/**
@@ -83,22 +80,37 @@ public class SectorFactory {
 	 * then it is assumed to be an id, and an id based search is returned
 	 * instead.
 	 * 
-	 * @param name
-	 * @return
+	 * @param name		Name of the sector to locate.
+	 * @return			Found sector, or null if it doesn't exist.
 	 */
 	public Sector getSector(String name) {
-		Query q = sessionFactory.getCurrentSession().createQuery("from Sector where name = :name");
+		if (name == null || name.length() == 0) {
+			throw new IllegalArgumentException("Sector name cannot be empty");
+		}
+		if (name.matches("^[0-9]+$")) {
+			return getSector(Integer.parseInt(name));
+		}
+		
+		Query q = em.createQuery("SELECT s FROM Sector s WHERE s.name = :name");
 		q.setParameter("name", name);
 		
-		return (Sector) q.uniqueResult();
+		try {
+			return (Sector) q.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 	
 	public Sector getSector(int x, int y) {
-		Query q = sessionFactory.getCurrentSession().createQuery("from Sector where x = :x and y = :y");
+		Query q = em.createQuery("SELECT s FROM Sector s WHERE x = :x and y = :y");
 		q.setParameter("x", x);
 		q.setParameter("y", y);
 		
-		return (Sector) q.uniqueResult();
+		try {
+			return (Sector) q.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 	
 	/**
@@ -111,7 +123,7 @@ public class SectorFactory {
 	 * @param codes			Sector codes, if any.
 	 */
 	@Transactional
-	public void createSector(String name, int x, int y, String allegiance, SectorCode... codes) {
+	public Sector createSector(String name, int x, int y, String allegiance, SectorCode... codes) {
 		if (name == null || name.trim().length() == 0) {
 			throw new IllegalArgumentException("Sector name must be valid");
 		} else if (name.matches("[0-9]+")) {
@@ -135,6 +147,8 @@ public class SectorFactory {
 				sector.addCode(code);
 			}
 		}
-		sessionFactory.getCurrentSession().persist(sector);
+		em.persist(sector);
+		
+		return sector;
 	}
 }

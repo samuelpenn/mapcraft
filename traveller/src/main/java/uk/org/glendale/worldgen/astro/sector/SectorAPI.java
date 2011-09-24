@@ -32,10 +32,10 @@ import uk.org.glendale.worldgen.server.AppManager;
 @RequestMapping("/api/sector/")
 @Controller
 public class SectorAPI {
-	@Autowired
+	//@Autowired
 	private SectorFactory	factory;
 	
-	@Autowired
+	//@Autowired
 	private SectorGenerator	generator;
 	
 	/**

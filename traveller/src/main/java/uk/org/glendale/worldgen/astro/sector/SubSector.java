@@ -17,10 +17,12 @@ package uk.org.glendale.worldgen.astro.sector;
  * @author Samuel Penn
  */
 public enum SubSector {
-	A(0, 0), B(1, 0), C(2, 0), D(3, 0), E(0, 1), F(1, 1), G(2, 1), H(3, 1), I(
-			0, 2), J(1, 2), K(2, 2), L(3, 2), M(0, 3), N(1, 3), O(2, 3), P(3, 3);
+	A(0, 0), B(1, 0), C(2, 0), D(3, 0), E(0, 1), F(1, 1), G(2, 1), H(3, 1), 
+	I(0, 2), J(1, 2), K(2, 2), L(3, 2), M(0, 3), N(1, 3), O(2, 3), P(3, 3);
 
+	/** X position of sub-sector, 0-3. */
 	private int x = 0;
+	/** Y position of sub-sector, 0-3. */
 	private int y = 0;
 
 	private SubSector(int x, int y) {
@@ -30,6 +32,7 @@ public enum SubSector {
 
 	/**
 	 * Gets the X position of this sub sector in the 4x4 grid.
+	 * 0,0 is top left of the sector, 3,3 is bottom right.
 	 * 
 	 * @return The X position, 0 - 3.
 	 */
@@ -39,6 +42,7 @@ public enum SubSector {
 
 	/**
 	 * Gets the Y position of this sub sector in the 4x4 grid.
+	 * 0,0 is top left of the sector, 3,3 is bottom right.
 	 * 
 	 * @return The Y position, 0 - 3.
 	 */
