@@ -23,7 +23,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -40,7 +39,6 @@ import org.hibernate.annotations.NotFoundAction;
  */
 @Entity
 @Table(name = "commodity")
-@XmlRootElement
 public class Commodity {
 	// Unique identifier used as primary key.
 	@Id

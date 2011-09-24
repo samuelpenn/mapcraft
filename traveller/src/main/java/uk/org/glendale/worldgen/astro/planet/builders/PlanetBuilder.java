@@ -13,6 +13,8 @@ import java.io.File;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.stereotype.Component;
+
 import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
@@ -44,7 +46,6 @@ import uk.org.glendale.worldgen.server.AppManager;
  * @author Samuel Penn.
  */
 public abstract class PlanetBuilder {
-	protected EntityManager entityManager;
 	protected Planet planet;
 	protected Star star;
 
@@ -61,6 +62,10 @@ public abstract class PlanetBuilder {
 	public PlanetBuilder() {
 		generateFractalHeightMap();
 	}
+	
+	public void setCommodityFactory(CommodityFactory factory) {
+		this.commodityFactory = factory;
+	}
 
 	/**
 	 * Gets the type of this planet, according to the PCL. Will always return a
@@ -69,16 +74,6 @@ public abstract class PlanetBuilder {
 	 * @return Gets the PCL type.
 	 */
 	public abstract PlanetType getPlanetType();
-
-	/**
-	 * Sets the entity manager to use for persistence.
-	 * 
-	 * @param entityManager
-	 *            Persistence manager.
-	 */
-	public void setEntityManager(EntityManager entityManager) {
-		this.entityManager = entityManager;
-	}
 
 	/**
 	 * Sets the star that is the primary for this world. This must be set before
@@ -138,10 +133,6 @@ public abstract class PlanetBuilder {
 	 *             Thrown if builder has not been set up.
 	 */
 	protected void validate() {
-		if (entityManager == null) {
-			throw new IllegalStateException(
-					"Entity manager has not yet been set for this builder");
-		}
 		if (star == null) {
 			throw new IllegalStateException(
 					"Star has not yet been set for this builder");
@@ -162,9 +153,6 @@ public abstract class PlanetBuilder {
 	 */
 	public void addResource(String commodityName, int density) {
 		validate();
-		if (commodityFactory == null) {
-			commodityFactory = new CommodityFactory(entityManager);
-		}
 		Commodity commodity = commodityFactory.getCommodity(commodityName);
 		if (commodity == null) {
 			throw new IllegalArgumentException("Cannot find commodity ["
@@ -833,8 +821,10 @@ public abstract class PlanetBuilder {
 			planet.addImage(surfaceMap);
 
 			System.out.println("Saving image for " + getPlanetType());
-			image.save(new File("/home/sam/tmp/maps/" + getPlanetType()
-					+ ".jpg"));
+			if (!new File("/tmp/maps").exists()) {
+				new File("/tmp/maps").mkdir();
+			}
+			image.save(new File("/tmp/maps/" + getPlanetType() + ".jpg"));
 
 			if (AppManager.getDrawGlobe()) {
 				MapImage globeMap = new MapImage();

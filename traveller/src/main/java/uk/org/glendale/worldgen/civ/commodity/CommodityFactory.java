@@ -17,11 +17,14 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -35,18 +38,13 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
+@Repository
+@Transactional
 public class CommodityFactory {
+	@PersistenceContext
 	EntityManager	em;
 
-	public CommodityFactory(EntityManager hibernateEntityManager) {
-		if (em == null) {
-			em = AppManager.getInstance().getEntityManager();
-		}
-		em = hibernateEntityManager;
-	}
-
 	public CommodityFactory() {
-		em = AppManager.getInstance().getEntityManager();
 	}
 
 	/**
@@ -68,7 +66,7 @@ public class CommodityFactory {
 	 * @return Found commodity, or null.
 	 */
 	public Commodity getCommodity(String name) {
-		Query q = em.createQuery("from Commodity where name = :n");
+		Query q = em.createQuery("SELECT c FROM Commodity c WHERE c.name = :n");
 		q.setParameter("n", name);
 		try {
 			return (Commodity) q.getSingleResult();
@@ -132,6 +130,7 @@ public class CommodityFactory {
 		if (name == null || name.length() == 0 || getCommodity(name) != null) {
 			return;
 		}
+		System.out.println("    "+name);
 		String image = name.toLowerCase().replaceAll(" ", "_");
 		if (parent != null) {
 			if (getCommodity(parent) == null) {
@@ -173,8 +172,22 @@ public class CommodityFactory {
 				}
 			}
 		}
+		System.out.println("Persist "+name);
+		persist(commodity);
+	}
+	
+	public void createCommodity(String name) {
+		Commodity c = new Commodity();
+		c.setName(name);
+		
+		persist(c);
+		
+		System.out.println(c.getId());
+	}
+	
+	@Transactional
+	public void persist(Commodity commodity) {
 		em.persist(commodity);
-
 	}
 
 	/**
@@ -186,18 +199,16 @@ public class CommodityFactory {
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	private void createCommodities(File file)
+	public void createCommodities(File file)
 			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilder db = DocumentBuilderFactory.newInstance()
 				.newDocumentBuilder();
 		Document document = db.parse(file);
 		NodeList groups = document.getElementsByTagName("group");
 
-		EntityTransaction transaction = em.getTransaction();
-		transaction.begin();
-
 		for (int i = 0; i < groups.getLength(); i++) {
 			Node group = groups.item(i);
+			System.out.println(XMLHelper.getAttribute(group, "name"));
 			String baseDir = XMLHelper.getAttribute(group, "base");
 			if (baseDir == null) {
 				baseDir = "";
@@ -210,7 +221,6 @@ public class CommodityFactory {
 				createCommodity(node, baseDir);
 			}
 		}
-		transaction.commit();
 	}
 
 	private void createMappings(Node node) {
@@ -248,23 +258,19 @@ public class CommodityFactory {
 		}
 	}
 
-	private void createMappings(File file) throws SAXException, IOException,
+	public void createMappings(File file) throws SAXException, IOException,
 			ParserConfigurationException {
 		DocumentBuilder db = DocumentBuilderFactory.newInstance()
 				.newDocumentBuilder();
 		Document document = db.parse(file);
 		NodeList groups = document.getElementsByTagName("group");
 
-		EntityTransaction transaction = em.getTransaction();
-
 		for (int i = 0; i < groups.getLength(); i++) {
 			Node group = groups.item(i);
 			NodeList list = group.getChildNodes();
 			for (int j = 0; j < list.getLength(); j++) {
-				transaction.begin();
 				Node node = list.item(j);
 				createMappings(node);
-				transaction.commit();
 			}
 		}
 	}

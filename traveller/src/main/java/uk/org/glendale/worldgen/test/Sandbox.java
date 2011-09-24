@@ -8,7 +8,11 @@
  */
 package uk.org.glendale.worldgen.test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -18,12 +22,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.xml.sax.SAXException;
 
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorCode;
 import uk.org.glendale.worldgen.astro.sector.SectorFactory;
 import uk.org.glendale.worldgen.astro.sector.SectorGenerator;
-import uk.org.glendale.worldgen.server.AppManager;
+import uk.org.glendale.worldgen.astro.starsystem.StarSystemFactory;
+import uk.org.glendale.worldgen.astro.starsystem.StarSystemGenerator;
+import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
 
 /**
  * Create a sandbox universe for testing purposes.
@@ -35,10 +43,49 @@ public class Sandbox {
 	private static final String CONFIG = "/WEB-INF/spring/servlet-context.xml";
 	
 	private SectorFactory		sectorFactory;
+	private StarSystemFactory	starSystemFactory;
+	private StarSystemGenerator	starSystemGenerator;
+	private CommodityFactory	commodityFactory;
 	
+	
+	public Sandbox() {
+		
+	}
 	
 	public Sandbox(ApplicationContext context) {
 		sectorFactory = (SectorFactory) context.getBean("sectorFactory");
+		starSystemFactory = (StarSystemFactory) context.getBean("starSystemFactory");
+		starSystemGenerator = (StarSystemGenerator) context.getBean("starSystemGenerator");
+		commodityFactory = (CommodityFactory) context.getBean("commodityFactory");
+	}
+	
+	public void importCommodities() {
+		String base = "src/main/resources/commodities/";
+		/*
+		commodityFactory.createCommodity("Foo");
+		if (1 < 2) {
+			return;
+		}
+		*/
+
+		String[] files = { "minerals.xml", "organic.xml" };
+
+		// Requires two passes to build everything. This allows mappings
+		// to refer to future commodities.
+		for (String file : files) {
+			try {
+				commodityFactory.createCommodities(new File(base + file));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		for (String file : files) {
+			try {
+				commodityFactory.createMappings(new File(base + file));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void addToSandbox() {
@@ -46,7 +93,7 @@ public class Sandbox {
 		if (sandbox == null) {
 			sandbox = sectorFactory.createSector("Sandbox", 0, 0, "Un", SectorCode.Fe);
 		}
-		
+		starSystemGenerator.createSimpleSystem(sandbox, null, 0, 0);
 	}
 	
 	private static void sandbox() {
@@ -72,6 +119,9 @@ public class Sandbox {
 		
 		Sandbox sb = new Sandbox(context);
 		
+		//sb.importCommodities();
+		sb.addToSandbox();
+		/*
 		System.out.println(context.containsBean("sectorFactory"));
 		SectorFactory sf = (SectorFactory)context.getBean("sectorFactory");
 		
@@ -83,7 +133,7 @@ public class Sandbox {
 			System.out.println(s.getId()+": "+s.getName() + " (" + s.getAllegiance() + ")");
 			System.out.println(sf.getSector(s.getId()).getName());
 		}
-		
+		*/
 		
 
 		/*

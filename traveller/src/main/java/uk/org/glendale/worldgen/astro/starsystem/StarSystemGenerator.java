@@ -23,8 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.org.glendale.rpg.traveller.systems.Zone;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
+import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
 import uk.org.glendale.worldgen.astro.planet.PlanetGenerator;
 import uk.org.glendale.worldgen.astro.planet.PlanetType;
+import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
+import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorCode;
 import uk.org.glendale.worldgen.astro.star.SpectralType;
@@ -49,8 +52,14 @@ public class StarSystemGenerator {
 	private StarSystemFactory		factory;
 	
 	@Autowired
+	private PlanetFactory			planetFactory;
+	
+	@Autowired
 	private StarFactory				starFactory;
-
+	
+	@Autowired
+	private StarSystemAPI			starSystemAPI;
+	
 	public StarSystemGenerator() {
 	}
 	
@@ -149,24 +158,28 @@ public class StarSystemGenerator {
 		system.setAllegiance("Un");
 		system.setZone(Zone.Green);
 
-		StarGenerator starGenerator = new StarGenerator(system, false);
 		Star primary = new Star();//starGenerator.generateSimplePrimary();
 		primary.setSystem(system);
 		primary.setName(system.getName());
 		primary.setClassification(StarClass.V);
 		primary.setSpectralType(SpectralType.G2);
-		primary.setForm(StarForm.Star);
-		//starFactory.persist(primary);
-		
+		primary.setForm(StarForm.Star);		
 		system.addStar(primary);
 		
-		Planet	planet = new Planet();
-		planet.setSystem(system);
-		planet.setName(system.getName()+" I");
-		planet.setDistance(150);
-		planet.setType(PlanetType.Gaian);
-		planet.setRadius(6000 + Die.die(1000));
+		PlanetBuilder	builder;
+		String			planetName;
+		int				position = 0;
+		int				distance = 0;
 		
+		// Setup a new planet generator for this star system.
+		PlanetGenerator	generator = new PlanetGenerator(planetFactory, system, primary);
+		Planet			planet = null;
+		
+		// Mercury planet.
+		planetName = system.getName() + " " + getOrbitNumber(++position);
+		distance = 50;
+		planet = generator.generatePlanet(planetName, position, distance, new Hermian());
+				
 		system.addPlanet(planet);
 
 		factory.persist(system);
@@ -299,7 +312,7 @@ public class StarSystemGenerator {
 			numPlanets /= 2;
 		}
 
-		PlanetGenerator planetGenerator = new PlanetGenerator(system, star);
+		PlanetGenerator planetGenerator = new PlanetGenerator(planetFactory, system, star);
 		for (int p = 0; p < numPlanets; p++) {
 			String planetName = star.getName() + " " + getOrbitNumber(p + 1);
 			Planet planet = planetGenerator.generatePlanet(planetName, p,

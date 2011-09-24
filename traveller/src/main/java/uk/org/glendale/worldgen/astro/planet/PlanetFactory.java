@@ -10,16 +10,19 @@ package uk.org.glendale.worldgen.astro.planet;
 
 import java.util.List;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
+import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
+import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
@@ -29,9 +32,26 @@ import uk.org.glendale.worldgen.server.AppManager;
  */
 @Repository
 public class PlanetFactory {
-	/** Hibernate session factory. */
+	@PersistenceContext
+	private EntityManager		em;
+	
 	@Autowired
-	private SessionFactory		sessionFactory;
+	private CommodityFactory		commodityFactory;
+	
+	@Autowired
+	private FacilityFactory			facilityFactory;
+	
+	public void setEntityManager(EntityManager em) {
+		this.em = em;
+	}
+	
+	public CommodityFactory getCommodityFactory() {
+		return commodityFactory;
+	}
+	
+	public FacilityFactory getFacilityFactory() {
+		return facilityFactory;
+	}
 	
 	public PlanetFactory() {
 	}
@@ -42,24 +62,32 @@ public class PlanetFactory {
 	 * @return
 	 */
 	public Planet getPlanet(int id) {
-		Session session = sessionFactory.getCurrentSession();
-		
-		Query query = (Query) session.createQuery("from Planet where id = :id");
+		Query query = em.createQuery("SELECT p FROM Planet p WHERE p.id = :id");
 		query.setParameter("id", id);
 
-		Planet planet = (Planet) query.uniqueResult();
-		planet.getId();
-		return planet;
+		try {
+			Planet planet = (Planet) query.getSingleResult();
+			planet.getId();
+			return planet;
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 	
-
+	/**
+	 * Gets the moons for the specified planet. A planet will have zero or more
+	 * moons, so the returned list may be empty. It will never be null. A moon
+	 * is simply a Planet where the isMoon() property is true.
+	 * 
+	 * @param planet	Planet to get the moons of.
+	 * @return			List containing zero or more moons (Planets).
+	 */
+	@SuppressWarnings("unchecked")
 	public List<Planet>	getMoons(Planet planet) {
-		Session session = sessionFactory.getCurrentSession();
-		
-		Query query = (Query) session.createQuery("from Planet p where p.parent_id = :planet");
+		Query query = em.createQuery("SELECT p FROM Planet p WHERE p.parent_id = :planet");
 		query.setParameter("planet", planet);
 
-		return query.list();
+		return query.getResultList();
 	}
 	
 	public byte[] getPlanetImage(int id, MapImage.Projection projection) {

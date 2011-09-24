@@ -8,9 +8,11 @@
  */
 package uk.org.glendale.worldgen.astro.star;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Query;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,9 +23,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class StarFactory {
-	/** Hibernate session factory. */
-	@Autowired
-	private SessionFactory		sessionFactory;
+	@PersistenceContext
+	private EntityManager		em;
+	
+	public void setEntityManager(EntityManager em) {
+		this.em = em;
+	}
 
 	/**
 	 * Empty bean constructor.
@@ -32,26 +37,26 @@ public class StarFactory {
 	}
 
 	/**
-	 * Gets a star system identified by its unique id.
+	 * Gets a star identified by its unique id.
 	 * 
 	 * @param systemId
-	 *            Id of the star system to be retrieved.
-	 * @return The star system if found,
+	 *            Id of the star to be retrieved.
+	 * @return The star system if found, null otherwise.
 	 */
 	public Star getStar(int id) {
-		Session session = sessionFactory.getCurrentSession();
-		
-		Query query = (Query) session.createQuery("from Star where id = :id");
+		Query query = em.createQuery("SELECT s FROM Star s WHERE s.id = :id");
 		query.setParameter("id", id);
 
-		Star star = (Star) query.uniqueResult();
-		star.getId();
-		return star;
+		try {
+			Star star = (Star) query.getSingleResult();
+			star.getId();
+			return star;
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 	public void persist(Star star) {
-		Session session = sessionFactory.getCurrentSession();
-
-		session.persist(star);
+		em.persist(star);
 	}
 }

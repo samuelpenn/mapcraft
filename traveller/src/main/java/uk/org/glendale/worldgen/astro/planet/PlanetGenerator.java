@@ -44,30 +44,21 @@ import uk.org.glendale.worldgen.server.AppManager;
  * @author Samuel Penn
  */
 public class PlanetGenerator {
+	private PlanetFactory	planetFactory;
 	private StarSystem		system;
 	private Star			star;
-	private EntityManager	entityManager;
 	private PlanetBuilder	builder	= null;
-
-	public PlanetGenerator(final StarSystem system, final Star star) {
-		this.entityManager = AppManager.getInstance().getEntityManager();
-		this.system = system;
-		this.star = star;
-	}
 
 	/**
 	 * Create a new PlanetGenerator for a given star in a star system.
 	 * 
-	 * @param entityManager
-	 *            Persistence manager.
 	 * @param system
 	 *            Star system that planets are being generated in.
 	 * @param star
 	 *            Star in that system that is the primary for these planets.
 	 */
-	public PlanetGenerator(EntityManager entityManager, StarSystem system,
-			Star star) {
-		this.entityManager = entityManager;
+	public PlanetGenerator(PlanetFactory factory, StarSystem system, Star star) {
+		this.planetFactory = factory;
 		this.system = system;
 		this.star = star;
 	}
@@ -107,9 +98,9 @@ public class PlanetGenerator {
 		planet.setDistance(distance);
 		planet.setTemperature(orbitTemperature);
 
-		builder.setEntityManager(entityManager);
 		builder.setPlanet(planet);
 		builder.setStar(star);
+		builder.setCommodityFactory(planetFactory.getCommodityFactory());
 		builder.generate();
 
 		return planet;
@@ -228,7 +219,6 @@ public class PlanetGenerator {
 			builder = new CryoJovian();
 			break;
 		}
-		builder.setEntityManager(entityManager);
 		builder.setPlanet(planet);
 		builder.setStar(star);
 		builder.generate();
@@ -274,7 +264,6 @@ public class PlanetGenerator {
 						true, moonName);
 				moon.setDistance(distance);
 				moon.setTemperature(orbitTemperature);
-				moonBuilder.setEntityManager(entityManager);
 				moonBuilder.setPlanet(moon);
 				moonBuilder.setStar(star);
 				moonBuilder.generate();

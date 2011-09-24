@@ -110,4 +110,43 @@ public class StarSystemAPI {
 		
 		return 0;
 	}
+	
+	/**
+	 * Gets the Roman Numeral suffix for the given orbital position.
+	 * 
+	 * @param position	1 is the first orbit.
+	 * @return			Roman numeral.
+	 */
+	public String getOrbitNumeral(int position) {
+		String numeral = "";
+		
+		while (position > 10) {
+			numeral += "X";
+			position -= 10;
+		}
+		
+		switch (position) {
+		case 1:
+			return numeral + "I";
+		case 2:
+			return numeral + "II";
+		case 3:
+			return numeral + "III";
+		case 4:
+			return numeral + "IV";
+		case 5:
+			return numeral + "V";
+		case 6:
+			return numeral + "VI";
+		case 7:
+			return numeral + "VII";
+		case 8: 
+			return numeral + "VIII";
+		case 9:
+			return numeral + "IX";
+		case 10:
+			return numeral + "X";
+		}
+		return numeral;
+	}
 }

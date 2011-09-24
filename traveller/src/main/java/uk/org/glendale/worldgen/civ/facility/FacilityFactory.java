@@ -11,22 +11,19 @@ package uk.org.glendale.worldgen.civ.facility;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
+import org.springframework.stereotype.Repository;
 
 import uk.org.glendale.worldgen.server.AppManager;
 
+@Repository
 public class FacilityFactory {
+	@PersistenceContext
 	EntityManager	em;
 
-	public FacilityFactory(EntityManager hibernateEntityManager) {
-		if (em == null) {
-			em = AppManager.getInstance().getEntityManager();
-		}
-		em = hibernateEntityManager;
-	}
-
 	public FacilityFactory() {
-		em = AppManager.getInstance().getEntityManager();
 	}
 
 	public Facility getFacility(int id) {
