@@ -27,7 +27,13 @@ import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
 import uk.org.glendale.worldgen.astro.planet.PlanetGenerator;
 import uk.org.glendale.worldgen.astro.planet.PlanetType;
 import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
+import uk.org.glendale.worldgen.astro.planet.builders.arean.Arean;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
+import uk.org.glendale.worldgen.astro.planet.builders.belt.AsteroidBelt;
+import uk.org.glendale.worldgen.astro.planet.builders.gaian.Gaian;
+import uk.org.glendale.worldgen.astro.planet.builders.hot.Cytherean;
+import uk.org.glendale.worldgen.astro.planet.builders.jovian.EuJovian;
+import uk.org.glendale.worldgen.astro.planet.builders.jovian.SubJovian;
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorCode;
 import uk.org.glendale.worldgen.astro.star.SpectralType;
@@ -176,12 +182,52 @@ public class StarSystemGenerator {
 		Planet			planet = null;
 		
 		// Mercury planet.
-		planetName = system.getName() + " " + getOrbitNumber(++position);
-		distance = 50;
-		planet = generator.generatePlanet(planetName, position, distance, new Hermian());
-				
-		system.addPlanet(planet);
+		if (Die.d2() == 1) {
+			planetName = system.getName() + " " + getOrbitNumber(++position);
+			distance = 40 + Die.d10(2);
+			planet = generator.generatePlanet(planetName, position, distance, new Hermian());
+			system.addPlanet(planet);
+			factory.persist(system);
+		}
+		
+		// Venus planet.
+		if (Die.d2() == 1) {
+			planetName = system.getName() + " " + getOrbitNumber(++position);
+			distance = 80 + Die.d10(2);
+			planet = generator.generatePlanet(planetName, position, distance, new Cytherean());
+			system.addPlanet(planet);
+			factory.persist(system);
+		}
 
+		// Earth planet.
+		planetName = system.getName() + " " + getOrbitNumber(++position);
+		distance = 130 + Die.d20(2);
+		planet = generator.generatePlanet(planetName, position, distance, new Gaian());
+		system.addPlanet(planet);
+		factory.persist(system);
+		
+		// Mars or Belt
+		if (Die.d3() == 1) {
+			planetName = system.getName() + " " + getOrbitNumber(++position);
+			distance = 200 + Die.d20(3);
+			planet = generator.generatePlanet(planetName, position, distance, new Arean());
+		} else {
+			planetName = system.getName() + " " + getOrbitNumber(++position);
+			distance = 200 + Die.d20(3);
+			planet = generator.generatePlanet(planetName, position, distance, new AsteroidBelt());
+		}
+		system.addPlanet(planet);
+		factory.persist(system);
+
+		// Gas giant.
+		planetName = system.getName() + " " + getOrbitNumber(++position);
+		distance = 700 + Die.d100(2);
+		if (Die.d2() == 1) {
+			planet = generator.generatePlanet(planetName, position, distance, new EuJovian());
+		} else {
+			planet = generator.generatePlanet(planetName, position, distance, new SubJovian());
+		}
+		system.addPlanet(planet);
 		factory.persist(system);
 		
 		System.out.println(system.getId()+": "+system.getStars().get(0).getId());
