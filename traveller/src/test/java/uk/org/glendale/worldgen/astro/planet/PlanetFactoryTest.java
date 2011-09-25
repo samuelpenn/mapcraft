@@ -31,13 +31,9 @@ public class PlanetFactoryTest {
 
 	@Test
 	public void dbFactoryTest() {
-		PlanetFactory factory = new PlanetFactory(AppManager.getInstance()
-				.getEntityManager());
 	}
 
 	@Test
 	public void planetFactoryTest() {
-		PlanetFactory factory = new PlanetFactory();
-
 	}
 }

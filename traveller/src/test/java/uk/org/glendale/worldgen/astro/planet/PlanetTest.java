@@ -17,8 +17,6 @@ import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.GovernmentType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
-import uk.org.glendale.rpg.traveller.systems.codes.PlanetType;
-import uk.org.glendale.rpg.traveller.systems.codes.StarportType;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.worldgen.astro.star.Temperature;
 

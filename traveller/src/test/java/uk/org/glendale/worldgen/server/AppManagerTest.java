@@ -31,9 +31,6 @@ public class AppManagerTest {
 		Assert.assertNotNull(AppManager.getInstance());
 		Assert.assertEquals("test", AppManager.getUniverse());
 
-		EntityManager em = AppManager.getInstance().getEntityManager();
-		Assert.assertNotNull(em);
-
 		AppManager.getDrawGlobe();
 		AppManager.getDrawMap();
 		AppManager.getStretchMap();

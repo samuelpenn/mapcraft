@@ -55,7 +55,7 @@ public class StarTest {
 
 	@Test
 	public void nullSystemTest() {
-		Star star = new Star(null);
+		Star star = new Star();
 	}
 
 	@Test(expected = IllegalArgumentException.class)

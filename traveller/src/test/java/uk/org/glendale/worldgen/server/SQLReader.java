@@ -89,7 +89,7 @@ public final class SQLReader {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
-		Connection cx = AppManager.getInstance().getDatabaseConnection();
+		Connection cx = null;//AppManager.getInstance().getDatabaseConnection();
 
 		File file = new File("docs/database.sql");
 

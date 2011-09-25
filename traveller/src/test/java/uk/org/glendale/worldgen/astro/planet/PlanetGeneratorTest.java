@@ -71,7 +71,7 @@ public class PlanetGeneratorTest {
 		system.addStar(star);
 		ssf.persist(system);
 
-		PlanetGenerator pg = new PlanetGenerator(system, star);
+		PlanetGenerator pg = new PlanetGenerator(new PlanetFactory(), system, star);
 		Planet planet = pg.generatePlanet("Test I", 1, 150, new Gaian());
 
 		system.addPlanet(planet);
