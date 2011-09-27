@@ -90,11 +90,7 @@ public class Icosohedron {
 		}
 		return widths[tileY];
 	}
-	
-	private final int getHeightAtX(final int tileX) {
-		return 0;
-	}
-	
+		
 	private final Point getBase(final int tileX, final int tileY) {
 		int		px = 0;
 		int		py = 0;
@@ -167,19 +163,17 @@ public class Icosohedron {
 		int x = tileX;
 		int y = tileY - d;
 		
-		if (tileY > 6) {
-			// Bottom third.
-			if (D[tileY][tileX] == -1) {
-				int m = getWidthAtY(tileY) / 5;
-				x -= (1 + (2 * (tileX / m)));
-			} else if (tileY > 8) {
-				int m = getWidthAtY(tileY) / 5;
-				x += (1 + (2 * (tileX / m)));
-			}
-			System.out.println("B: "+tileY+","+y+": "+tileX+","+x);
+		if (tileY > 6 || tileY < 4) {
+			// Bottom third (move from tileY to y).
+			int		tw = getWidthAtY(tileY) / 5;
+			int		w = getWidthAtY(y) / 5;
+			
+			int		ts = (tileX / tw);
+			System.out.println(ts+","+tw+","+w);
+			x -= (tw - w) * ts;
+			x -= (tw -w) / 2;
 		} else if (tileY > 3) {
 			x -= D[tileY][tileX];
-			System.out.println("M: "+tileY+","+y+": "+tileX+","+x);
 		}
 		
 		return new Point(x, y);
@@ -191,8 +185,6 @@ public class Icosohedron {
 		Tile	light = new Tile ("Light", "#CCCCCC", false);
 		Tile	dark = new Tile("Dark", "#BBBBBB", false);
 		Tile	red = new Tile("Red", "#FF0000", false);
-		Tile	blue = new Tile("Red", "#0000FF", false);
-		Tile	green = new Tile("Red", "#00FF00", false);
 		
 		for (int tileY=0; tileY < 12; tileY++) {
 			map[tileY] = new Tile[getWidthAtY(tileY)];
@@ -204,12 +196,8 @@ public class Icosohedron {
 				}
 			}
 		}
-		map[5][0] = blue;
-		map[6][19] = blue;
-		map[7][2] = blue;
-		map[4][14] = blue;
 
-		for (int i=0; i < 1; i++) {
+		for (int i=0; i < 4; i++) {
 			Tile[][] tmp = new Tile[12][];
 			
 			for (int tileY=0; tileY < 12; tileY++) {
@@ -221,11 +209,6 @@ public class Icosohedron {
 
 			for (int tileY=0; tileY < 12; tileY++) {
 				for (int tileX = 0; tileX < getWidthAtY(tileY); tileX++) {
-					if (tmp[tileY][tileX] == blue) {
-						Point p = getUpDown(tileX, tileY);
-						map[(int)p.getY()][(int)p.getX()] = green;						
-					}
-					if (blue == null) {
 					if (tmp[tileY][tileX] == dark) {
 						try {
 							switch (Die.d3()) {
@@ -247,7 +230,6 @@ public class Icosohedron {
 							map[tileY][tileX] = red;
 							System.out.println(tileX +", "+ tileY);
 						}
-					}
 					}
 				}
 			}
