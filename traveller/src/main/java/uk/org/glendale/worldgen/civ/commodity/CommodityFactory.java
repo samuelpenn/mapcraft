@@ -249,7 +249,8 @@ public class CommodityFactory {
 							}
 							CommodityMap map = new CommodityMap(
 									getCommodity(XMLHelper.getAttribute(node,
-											"name")), getCommodity(value), mode);
+											"name")), getCommodity(value), mode, 
+											efficiency);
 							em.persist(map);
 						}
 					}

@@ -184,10 +184,51 @@
             </description>
         </commodity>
         
-        <commodity name="Mammals" parent="Animals">
+        <commodity name="Microfauna" parent="Animals">
+            <cost volume="1">200</cost>
+            <production tech="0" law="6" pr="9" cr="10">
+                <output mode="Ag">Meat</output>
+            </production>
+            <codes source="Ag">Pe</codes>
+            <description>
+                Any type of small vertabrate land animal, from mice to wolves.
+            </description>
+        </commodity>
+        
+        <commodity name="Mesofauna" parent="Animals">
             <cost volume="1">500</cost>
-            <production tech="0" law="6" pr="10" cr="11"/>
-            <codes source="Ag">Pe Fr FoHd FoHu</codes>
+            <production tech="0" law="6" pr="9" cr="10">
+                <output mode="AgFa" efficiency="100">Meat</output>
+                <output mode="AgHu" efficiency="50">Meat</output>
+            </production>
+            <codes source="Ag">Pe</codes>
+            <description>
+                Any type of medium sized animal, ranging in size from around
+                50kg up to 5 tonnes.
+            </description>
+        </commodity>
+
+        <commodity name="Megafauna" parent="Animals">
+            <cost volume="1">1000</cost>
+            <production tech="0" law="6" pr="8" cr="10">
+                <output mode="AgFa" efficiency="100">Meat</output>
+                <output mode="AgHu" efficiency="50">Meat</output>
+            </production>
+            <codes source="Ag">Pe</codes>
+            <description>
+                Any type of large land animal, about 5 tonnes or larger.
+            </description>
+        </commodity>
+
+        <commodity name="Avians" parent="Animals">
+            <cost volume="1">300</cost>
+            <production tech="0" law="6" pr="12" cr="11">
+                <output mode="AgHu">Meat</output>
+            </production>
+            <codes source="Ag">Pe</codes>
+            <description>
+                Any type of flying vertabrates.
+            </description>
         </commodity>
 
         <commodity name="Meat" parent="Food">
