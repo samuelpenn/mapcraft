@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS facility_codes;
 DROP TABLE IF EXISTS facility_ops;
 DROP TABLE IF EXISTS facilities;
 DROP TABLE IF EXISTS facility;
+DROP VIEW IF EXISTS p;
 DROP TABLE IF EXISTS planet;
 DROP TABLE IF EXISTS star;
 DROP TABLE IF EXISTS system;
@@ -102,6 +103,8 @@ CREATE TABLE planet (id int auto_increment not null, system_id int not null,
     PRIMARY KEY(id), KEY(system_id), KEY(parent_id),
     FOREIGN KEY (system_id) REFERENCES system(id))
     ENGINE=INNODB;
+    
+CREATE VIEW p AS SELECT id, name, system_id, parent_id, distance, radius, type, starport, population from planet;
 
 CREATE TABLE planet_features (planet_id int not null, code varchar(32) NOT NULL,
     FOREIGN KEY (planet_id) REFERENCES planet(id)) ENGINE=INNODB;
@@ -161,7 +164,9 @@ CREATE TABLE commodity (id int auto_increment not null,
     cost int not null, dt int default 0,
     production int not null, consumption int not null,
     law int default 6, tech int default 0,
-    PRIMARY KEY(id), UNIQUE KEY(name))
+    PRIMARY KEY(id), UNIQUE KEY(name),
+    FOREIGN KEY(parent_id) REFERENCES commodity(id) 
+    ON DELETE CASCADE ON UPDATE CASCADE)
     ENGINE=INNODB;
                    
 CREATE TABLE commodity_codes (commodity_id int not null, code varchar(8) not null,
@@ -182,7 +187,11 @@ CREATE TABLE commodity_map (
     
 CREATE TABLE resources (id INT AUTO_INCREMENT NOT NULL, 
     planet_id INT NOT NULL, commodity_id INT NOT NULL, density INT NOT NULL,
-    PRIMARY KEY(id), UNIQUE KEY(planet_id, commodity_id)) 
+    PRIMARY KEY(id), UNIQUE KEY(planet_id, commodity_id),
+    FOREIGN KEY(commodity_id) REFERENCES commodity(id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(planet_id) REFERENCES planet(id)
+    ON UPDATE CASCADE ON DELETE CASCADE) 
     ENGINE=INNODB;
 
 

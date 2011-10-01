@@ -105,25 +105,84 @@ public abstract class GaianWorld extends PlanetBuilder {
 			addResource("Echinoderms", 10 + Die.d8(4));
 			addResource("Marine Arthropods", 10 + Die.d12(4));
 			addResource("Fish", 20 + Die.d20(3));
-			if (Die.d3() == 1) {
-				addResource("Moss", Die.d8(3));
-			} else {
-				addResource("Fungi", 5 + Die.d10(3));
+			
+			switch (Die.d6(2)) {
+			case 2:
+				addResource("Fungi", Die.d8(3));
+				break;
+			case 3:
+				addResource("Moss", 5 + Die.d10(3));
+				break;
+			case 4: case 5:
+				addResource("Fungi", Die.d6(2));
+				addResource("Moss", 10 + Die.d10(3));
+				addResource("Arthropods", Die.d10(2));
+				break;
+			case 6: case 7:
+				addResource("Moss", 10 + Die.d10(3));
+				addResource("Ferns", 20 + Die.d10(3));
+				if (Die.d2() == 1) {
+					addResource("Arthropods", 10 + Die.d10(2));
+				} else {
+					addResource("Arthropods", Die.d8(2));
+					addResource("Aquafauna", 5 + Die.d10(2));
+				}
+				break;
+			case 8: case 9:
+				addResource("Moss", Die.d10(2));
+				addResource("Ferns", 20 + Die.d20(3));
+				addResource("Arthropods", Die.d20(2));
+				addResource("Aquafauna", 10 + Die.d12(2));
+				addResource("Microfauna", 10 + Die.d6(3));
+				break;
+			case 10: case 11:
+				addResource("Ferns", 30 + Die.d20(3));
+				addResource("Arthropods", Die.d12(2));
+				addResource("Aquafauna", 10 + Die.d6(2));
+				addResource("Microfauna", 20 + Die.d8(3));
+				addResource("Mesofauna", Die.d6(2));
+				break;
+			case 12:
+				addResource("Ferns", 30 + Die.d20(3));
+				addResource("Trees", Die.d10(2));
+				addResource("Arthropods", Die.d4(2));
+				addResource("Aquafauna", 5 + Die.d6(2));
+				addResource("Microfauna", 30 + Die.d8(3));
+				addResource("Mesofauna", 10 + Die.d10(2));
+				break;				
 			}
 			break;
 		case ComplexLand:
-			addResource("Echinoderms", 10 + Die.d12(3));
+			addResource("Algae", Die.d6(2));
+			addResource("Cnidarians", 5 + Die.d8(2));
+			addResource("Echinoderms", 10 + Die.d8(3));
 			addResource("Marine Arthropods", 10 + Die.d12(4));
-			addResource("Fish", 20 + Die.d20(3));
-			addResource("Trees", 10 + Die.d12(3));
-			// addResource("Mammals", 10 + Die.d12(2));
+			addResource("Fish", 30 + Die.d20(3));
+			addResource("Trees", 40 + Die.d12(4));
+			addResource("Grasses", 40 + Die.d12(4));
+			addResource("Arthropods", Die.d4(2));
+			addResource("Aquafauna", 5 + Die.d6(2));
+			addResource("Microfauna", 20 + Die.d10(3));
+			addResource("Mesofauna", 20 + Die.d10(4));
 			break;
 		case Extensive:
-			addResource("Echinoderms", 10 + Die.d12(3));
+			addResource("Algae", Die.d6(2));
+			addResource("Cnidarians", 5 + Die.d8(2));
+			addResource("Echinoderms", 10 + Die.d8(3));
 			addResource("Marine Arthropods", 10 + Die.d12(4));
-			addResource("Fish", 20 + Die.d20(3));
-			addResource("Trees", 25 + Die.d20(3));
-			// addResource("Mammals", 20 + Die.d20(3));
+			addResource("Fish", 30 + Die.d20(3));
+			addResource("Trees", 40 + Die.d12(4));
+			addResource("Grasses", 40 + Die.d12(4));
+			addResource("Arthropods", Die.d4(2));
+			addResource("Aquafauna", 5 + Die.d6(2));
+			addResource("Microfauna", 20 + Die.d10(3));
+			if (Die.d3() == 1) {
+				addResource("Mesofauna", 30 + Die.d12(4));
+				addResource("Megafauna", 10 + Die.d10(2));
+			} else {
+				addResource("Mesofauna", 10 + Die.d10(2));
+				addResource("Megafauna", 30 + Die.d12(5));				
+			}
 			break;
 		}
 	}

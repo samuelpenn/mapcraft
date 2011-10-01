@@ -183,6 +183,31 @@
                 Parent holder for all types of land animals.
             </description>
         </commodity>
+
+        <commodity name="Arthropods" parent="Animals">
+            <cost volume="1">200</cost>
+            <production tech="0" law="6" pr="9" cr="10">
+                <output mode="Ag">Meat</output>
+            </production>
+            <codes source="Ag">Pe</codes>
+            <description>
+                Any of a wide range of non-aquatic creatures with an
+                exoskeleton, including insects and arachnids.
+            </description>
+        </commodity>
+
+        <commodity name="Aquafauna" parent="Animals">
+            <cost volume="1">200</cost>
+            <production tech="0" law="6" pr="9" cr="10">
+                <output mode="Ag">Meat</output>
+            </production>
+            <codes source="Ag">Pe</codes>
+            <description>
+                Any type of vertabrate animal that lives in both water and
+                on land. Includes amphibians, but also creatures such as
+                crocodiles and otters.
+            </description>
+        </commodity>
         
         <commodity name="Microfauna" parent="Animals">
             <cost volume="1">200</cost>
@@ -191,7 +216,19 @@
             </production>
             <codes source="Ag">Pe</codes>
             <description>
-                Any type of small vertabrate land animal, from mice to wolves.
+                Any type of small vertebrate land animal smaller than about
+                5kg. Will mostly consists of rodent like creatures.
+            </description>
+        </commodity>
+
+        <commodity name="Minifauna" parent="Animals">
+            <cost volume="1">200</cost>
+            <production tech="0" law="6" pr="9" cr="10">
+                <output mode="Ag">Meat</output>
+            </production>
+            <codes source="Ag">Pe</codes>
+            <description>
+                Any type of small vertebrate land animal, from mice to wolves.
             </description>
         </commodity>
         
@@ -204,7 +241,7 @@
             <codes source="Ag">Pe</codes>
             <description>
                 Any type of medium sized animal, ranging in size from around
-                50kg up to 5 tonnes.
+                50kg up to a few tonnes.
             </description>
         </commodity>
 
@@ -216,7 +253,7 @@
             </production>
             <codes source="Ag">Pe</codes>
             <description>
-                Any type of large land animal, about 5 tonnes or larger.
+                Any type of large land animal, a few tonnes or larger.
             </description>
         </commodity>
 
