@@ -200,13 +200,6 @@ CREATE TABLE facility (id INT AUTO_INCREMENT NOT NULL,
     PRIMARY KEY (id), UNIQUE KEY(name))
     ENGINE=INNODB;
     
---CREATE TABLE facility_reqs (facility_id INT NOT NULL, 
---    requirement VARCHAR(12) NOT NULL,
---    level INT NOT NULL DEFAULT 100,
---    FOREIGN KEY (facility_id) REFERENCES facility(id)
---    ON DELETE CASCADE ON UPDATE CASCADE)
---    ENGINE=INNODB;
-    
 CREATE TABLE facility_ops (facility_id INT NOT NULL,
     operation VARCHAR(12) NOT NULL,
     efficiency INT NOT NULL DEFAULT 100,
@@ -219,6 +212,35 @@ CREATE TABLE facility_codes (facility_id INT NOT NULL,
     FOREIGN KEY (facility_id) REFERENCES facility(id)
     ON DELETE CASCADE ON UPDATE CASCADE)
     ENGINE=INNODB;
+    
+CREATE TABLE facility_req (facility_id INT NOT NULL,
+    code VARCHAR(12) NOT NULL,
+    FOREIGN KEY (facility_id) REFERENCES facility(id)
+    ON DELETE CASCADE ON UPDATE CASCADE)
+    ENGINE=INNODB;
+
+CREATE TABLE facility_consume (facility_id INT NOT NULL,
+    code VARCHAR(12) NOT NULL,
+    FOREIGN KEY (facility_id) REFERENCES facility(id)
+    ON DELETE CASCADE ON UPDATE CASCADE)
+    ENGINE=INNODB;
+    
+CREATE TABLE facility_map (
+    id INT AUTO_INCREMENT NOT NULL, 
+    facility_id INT NOT NULL,
+    from_id int,
+    to_id int NOT NULL,
+    level int DEFAULT 100,
+    PRIMARY KEY(id),
+    FOREIGN KEY (facility_id) REFERENCES facility(id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (from_id) REFERENCES commodity(id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (to_id) REFERENCES commodity(id)
+    ON DELETE CASCADE ON UPDATE CASCADE)
+    ENGINE=INNODB;
+    
+
 
 CREATE TABLE facilities (facility_id int not null, planet_id int not null, 
     size int not null,

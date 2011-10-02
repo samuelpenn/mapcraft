@@ -199,7 +199,7 @@
         <commodity name="Aquafauna" parent="Animals">
             <cost volume="1">200</cost>
             <production tech="0" law="6" pr="9" cr="10">
-                <output mode="Ag">Meat</output>
+                <output mode="Ag">Game</output>
             </production>
             <codes source="Ag">Pe</codes>
             <description>
@@ -212,7 +212,7 @@
         <commodity name="Microfauna" parent="Animals">
             <cost volume="1">200</cost>
             <production tech="0" law="6" pr="9" cr="10">
-                <output mode="Ag">Meat</output>
+                <output mode="Ag">Game</output>
             </production>
             <codes source="Ag">Pe</codes>
             <description>
@@ -260,7 +260,7 @@
         <commodity name="Avians" parent="Animals">
             <cost volume="1">300</cost>
             <production tech="0" law="6" pr="12" cr="11">
-                <output mode="AgHu">Meat</output>
+                <output mode="AgHu">Game</output>
             </production>
             <codes source="Ag">Pe</codes>
             <description>
@@ -271,7 +271,19 @@
         <commodity name="Meat" parent="Food">
             <cost volume="1">200</cost>
             <production tech="0" law="6" pr="10" cr="11"/>
-            <codes source="Ag">Pe Fr AgHd AgHu</codes>
+            <codes source="Ag">Fo Pe Hq</codes>
+        </commodity>
+        
+        <commodity name="Game" parent="Food">
+            <cost volume="1">100</cost>
+            <production tech="0" law="6" pr="10" cr="11"/>
+            <codes source="Ag">Fo Pe</codes>
+        </commodity>
+        
+        <commodity name="Animal products">
+            <cost volume="1">50</cost>
+            <production tech="0" law="6" pr="11" cr="12"/>
+            <codes source="Ag">Pe</codes>
         </commodity>
     </group>
 </commodities>

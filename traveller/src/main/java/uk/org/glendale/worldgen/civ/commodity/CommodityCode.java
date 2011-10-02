@@ -23,9 +23,9 @@ public enum CommodityCode {
 	Tp("Primitive (TL0-1)"),
 	Tm("Medieval (TL2-4)"),
 	Ti("Industrial (TL5-6)"),
-	Tt("Technological (TL7-8)"),
-	Ta("Advanced (TL9-10)"),
-	Tu("Ultratech (TL11+)"),
+	Tt("Technological (TL7-9)"),
+	Ta("Advanced (TL10-13)"),
+	Tu("Ultratech (TL14+)"),
 	// Used by world types
 	In("Industrial"),
 	Ag("Agricultural"),

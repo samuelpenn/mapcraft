@@ -86,7 +86,7 @@ public class Commodity {
 	/**
 	 * Set up a commodity with default values.
 	 */
-	protected Commodity() {
+	public Commodity() {
 		source = Source.Mi;
 		consumption = production = 20;
 		volume = 1;

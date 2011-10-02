@@ -32,6 +32,8 @@ import uk.org.glendale.worldgen.astro.sector.SectorGenerator;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystemFactory;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystemGenerator;
 import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
+import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
+import uk.org.glendale.worldgen.civ.facility.FacilityGenerator;
 
 /**
  * Create a sandbox universe for testing purposes.
@@ -46,6 +48,8 @@ public class Sandbox {
 	private StarSystemFactory	starSystemFactory;
 	private StarSystemGenerator	starSystemGenerator;
 	private CommodityFactory	commodityFactory;
+	private FacilityFactory		facilityFactory;
+	private FacilityGenerator	facilityGenerator;
 	
 	
 	public Sandbox() {
@@ -57,6 +61,8 @@ public class Sandbox {
 		starSystemFactory = (StarSystemFactory) context.getBean("starSystemFactory");
 		starSystemGenerator = (StarSystemGenerator) context.getBean("starSystemGenerator");
 		commodityFactory = (CommodityFactory) context.getBean("commodityFactory");
+		facilityFactory = (FacilityFactory) context.getBean("facilityFactory");
+		facilityGenerator = (FacilityGenerator) context.getBean("facilityGenerator");
 	}
 	
 	public void importCommodities() {
@@ -68,7 +74,7 @@ public class Sandbox {
 		}
 		*/
 
-		String[] files = { "minerals.xml", "organic.xml" };
+		String[] files = { "minerals.xml", "organic.xml", "primitive.xml" };
 
 		// Requires two passes to build everything. This allows mappings
 		// to refer to future commodities.
@@ -86,6 +92,11 @@ public class Sandbox {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void importFacilities() throws Exception {
+		String base = "src/main/resources/facilities/";
+		facilityGenerator.createAllFacilities(new File(base));
 	}
 	
 	public void addToSandbox() {
@@ -119,40 +130,9 @@ public class Sandbox {
 		
 		Sandbox sb = new Sandbox(context);
 		
-		//sb.importCommodities();
-		sb.addToSandbox();
-		/*
-		System.out.println(context.containsBean("sectorFactory"));
-		SectorFactory sf = (SectorFactory)context.getBean("sectorFactory");
-		
-		sf.createSector("Sandbox", 1, 1, "Un");
-		
-		List<Sector> list = sf.getAllSectors();
-		System.out.println(list.size());
-		for (Sector s : list) {
-			System.out.println(s.getId()+": "+s.getName() + " (" + s.getAllegiance() + ")");
-			System.out.println(sf.getSector(s.getId()).getName());
-		}
-		*/
-		
-
-		/*
-		AppManager app = new AppManager();
-		SectorGenerator sg = new SectorGenerator(app.getEntityManager());
-		SectorFactory sf = new SectorFactory(app.getEntityManager());
-
-		List<Sector> list = sf.getAllSectors();
-		System.out.println(list.size());
-
-		if (list.size() == 0) {
-			sg.createEmptySector("Sandbox Core", 0, 0, "", "Un");
-		}
-		Sector sector = sf.getSector("Sandbox Core");
-		// sg.clearSector(sector);
-		// sg.fillRandomSector(sector, new Names("names"), 20);
-		app.getEntityManager().close();
-		System.out.println("Sector completed");
-		*/
+		sb.importCommodities();
+		sb.importFacilities();
+		//sb.addToSandbox();
 	}
 
 

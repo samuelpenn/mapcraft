@@ -8,6 +8,8 @@
  */
 package uk.org.glendale.worldgen.civ.facility;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
@@ -15,10 +17,12 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import uk.org.glendale.worldgen.server.AppManager;
 
 @Repository
+@Transactional
 public class FacilityFactory {
 	@PersistenceContext
 	EntityManager	em;
@@ -40,17 +44,17 @@ public class FacilityFactory {
 		}
 	}
 
-	public void createFacility(Facility facility) {
-		EntityTransaction transaction = em.getTransaction();
-		transaction.begin();
-		em.persist(facility);
-		transaction.commit();
-	}
-
 	public void persist(Facility facility) {
-		EntityTransaction transaction = em.getTransaction();
-		transaction.begin();
 		em.persist(facility);
-		transaction.commit();
+	}
+	
+	public void persist(List<ProductionMap> list) {
+		for (ProductionMap pm : list) {
+			em.persist(pm);
+		}
+	}
+	
+	public void persist(ProductionMap production) {
+		em.persist(production);
 	}
 }

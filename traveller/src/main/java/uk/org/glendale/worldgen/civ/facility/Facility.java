@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Samuel Penn, sam@glendale.org.uk
+ * Copyright (C) 2011 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,6 +26,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
+
 /**
  * A Facility describes one facet of a civilisation. They are central to the
  * economic system, since they are the producers and consumers of commodities.
@@ -37,7 +39,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "facility")
-@XmlRootElement
 public class Facility {
 	// Unique identifier used as primary key.
 	@Id
@@ -63,7 +64,19 @@ public class Facility {
 	@ElementCollection(fetch = FetchType.EAGER)
 	@JoinTable(name = "facility_ops", joinColumns = @JoinColumn(name = "facility_id"))
 	private List<Operation>		operations	= new ArrayList<Operation>();
+	
+	@ElementCollection(fetch = FetchType.EAGER)
+	@JoinTable(name = "facility_req", joinColumns = @JoinColumn(name = "facility_id"))
+	@Enumerated(EnumType.STRING)
+	@Column(name = "code")
+	private Set<CommodityCode>	required = EnumSet.noneOf(CommodityCode.class);
 
+	@ElementCollection(fetch = FetchType.EAGER)
+	@JoinTable(name = "facility_consume", joinColumns = @JoinColumn(name = "facility_id"))
+	@Enumerated(EnumType.STRING)
+	@Column(name = "code")
+	private Set<CommodityCode>	consumed = EnumSet.noneOf(CommodityCode.class);
+	
 	/*
 	 * @MapKey(name="facility_id") @JoinTable(name="facility_requirements",
 	 * joinColumns=@JoinColumn(name="facility_id"))
@@ -179,5 +192,38 @@ public class Facility {
 
 	public boolean hasCode(FacilityCode code) {
 		return codes.contains(code);
+	}
+	
+	/**
+	 * Gets the list of required goods for this facility. If the requirements
+	 * aren't met, then output can be greatly reduced. Requirements are by
+	 * commodity code, rather than by specific commodities, so may be met in
+	 * a variety of ways.
+	 * 
+	 * @return	List of good types required by the facility.
+	 */
+	public Set<CommodityCode> getRequiredGoods() {
+		return required;
+	}
+	
+	
+	public void addRequired(CommodityCode code) {
+		required.add(code);
+	}
+	
+	/**
+	 * Gets the list of goods which are consumed by this facility. Unlike
+	 * requirements, their absence does not affect output. However, the
+	 * price of such goods will rise if there is a short fall. They are
+	 * often luxury or consumer goods.
+	 * 
+	 * @return	List of good types consumed by this facility.
+	 */
+	public Set<CommodityCode> getConsumedGoods() {
+		return consumed;
+	}
+
+	public void addConsumed(CommodityCode code) {
+		consumed.add(code);
 	}
 }

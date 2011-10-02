@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<commodities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xmlns:w="http://glendale.org.uk/mapcraft/worldgen"
+			 xsi:schemaLocation="commodities.xsd">
+
+    <group name="Base">
+        <commodity name="Tools">
+            <cost volume="1">50</cost>
+            <production tech="0" law="6" pr="4" cr="5"/>
+            <codes source="In">ToHd</codes>
+        </commodity>
+
+        <commodity name="Clothes">
+            <cost volume="1">50</cost>
+            <production tech="0" law="6" pr="4" cr="5"/>
+            <codes source="In">Cl</codes>
+        </commodity>
+    </group>
+    
+	<group name="Tools" base="primitive">
+        <commodity name="Stone tools" parent="Tools">
+            <cost volume="1">15</cost>
+            <production tech="0" law="6" pr="6" cr="7"/>
+            <codes source="In">HoTl TL</codes>
+            <description>
+                Primitive stone tools.
+            </description>
+        </commodity>
+
+        <commodity name="Stone weapons" parent="Tools">
+            <cost volume="1">15</cost>
+            <production tech="0" law="5" pr="6" cr="7"/>
+            <codes source="In">WpnH TL</codes>
+            <description>
+                Primitive stone weapons.
+            </description>
+        </commodity>
+
+        <commodity name="Neolithic art">
+            <cost volume="1">45</cost>
+            <production tech="0" law="5" pr="10" cr="13"/>
+            <codes source="In">HoLu</codes>
+            <description>
+                Neolithic art.
+            </description>
+        </commodity>
+    </group>
+
+    <group name="Clothes" base="primitive">
+        <commodity name="Animal skins" parent="Clothes">
+            <cost volume="1">15</cost>
+            <production tech="0" law="6" pr="6" cr="7"/>
+            <codes source="In">ClCv Tl</codes>
+        </commodity>
+    </group>
+</commodities>
