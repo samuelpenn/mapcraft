@@ -30,23 +30,23 @@ public class FacilityAPI {
 	}
 
 	private void processMining(Planet planet, Installation installation) {
-		List<Resource> resources = planet.getResources();
-
-		for (Resource resource : resources) {
-			if (resource.getCommodity().hasCode(null)) {
-				
-			}
-		}
+//		List<Resource> resources = planet.getResources();
+//
+//		for (Resource resource : resources) {
+//			if (resource.getCommodity().hasCode(null)) {
+//				
+//			}
+//		}
 	}
 
 	public void processPlanet(Planet planet) {
-		List<Installation> facilities = planet.getFacilities();
-
-		for (Installation i : facilities) {
-			if (i.getFacility().getType() == FacilityType.Mining) {
-				processMining(planet, i);
-			}
-		}
+//		List<Installation> facilities = planet.getFacilities();
+//
+//		for (Installation i : facilities) {
+//			if (i.getFacility().getType() == FacilityType.Mining) {
+//				processMining(planet, i);
+//			}
+//		}
 	}
 
 }

@@ -47,7 +47,10 @@
     <group name="Silicate Ores" base="minerals">
 		<commodity name="Silicate Ore" parent="Minerals">
 		    <cost volume="1">50</cost>
-		    <production tech="0" law="6" pr="7" cr="8"/>
+		    <production tech="0" law="6" pr="7" cr="8">
+                <output mode="Mi" efficiency="100">Silicate Ore</output>
+                <output mode="MiSi" efficiency="100">Silicate Ore</output>
+            </production>
 		    <codes source="Mi">Or</codes>
 		</commodity>
 		

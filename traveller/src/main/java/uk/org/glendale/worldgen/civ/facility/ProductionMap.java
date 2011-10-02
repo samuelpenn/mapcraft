@@ -45,7 +45,7 @@ class ProductionMap {
 	private Commodity	from;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "to_id", nullable = false)
+	@JoinColumn(name = "to_id", nullable = true)
 	private Commodity   to;
 	
 	@Column(name = "level")

@@ -40,7 +40,7 @@ public class FacilityFactoryTest {
 		f.addCode(FacilityCode.T0);
 		f.addOperation("Ag", 100);
 
-		factory.createFacility(f);
+		factory.persist(f);
 
 		f = factory.getFacility("Test");
 		Assert.assertEquals("Test", f.getName());

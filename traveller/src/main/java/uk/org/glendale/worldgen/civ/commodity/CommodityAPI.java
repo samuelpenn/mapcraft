@@ -133,7 +133,7 @@ public class CommodityAPI {
 	}
 
 	public static void main(String[] args) {
-		PlanetFactory planetFactory = new PlanetFactory();
+/*		PlanetFactory planetFactory = new PlanetFactory();
 
 		Planet planet = planetFactory.getPlanet(601524);
 		List<Resource> list = planet.getResources();
@@ -153,6 +153,6 @@ public class CommodityAPI {
 				}
 			}
 		}
-	}
+*/	}
 
 }

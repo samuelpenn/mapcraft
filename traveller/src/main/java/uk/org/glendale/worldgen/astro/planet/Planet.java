@@ -133,7 +133,8 @@ public class Planet {
 	@ElementCollection(fetch = FetchType.LAZY)
 	@JoinTable(name = "facilities", joinColumns = @JoinColumn(name = "planet_id"))
 	private List<Installation>	facilities		= new ArrayList<Installation>();
-
+	
+	
 	public Planet() {
 
 	}
@@ -204,6 +205,10 @@ public class Planet {
 	 */
 	public int getParentId() {
 		return parentId;
+	}
+	
+	public void setParentId(final int parentId) {
+		this.parentId = parentId;
 	}
 
 	/**
@@ -608,5 +613,9 @@ public class Planet {
 	 */
 	public List<Installation> getFacilities() {
 		return facilities;
+	}
+
+	public boolean hasTradeCode(TradeCode ag) {
+		return tradeCodes.contains(ag);
 	}
 }

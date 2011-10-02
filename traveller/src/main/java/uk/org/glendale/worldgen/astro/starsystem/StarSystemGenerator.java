@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.org.glendale.rpg.traveller.systems.Zone;
+import uk.org.glendale.rpg.traveller.systems.codes.GovernmentType;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
@@ -43,6 +44,7 @@ import uk.org.glendale.worldgen.astro.star.StarClass;
 import uk.org.glendale.worldgen.astro.star.StarFactory;
 import uk.org.glendale.worldgen.astro.star.StarForm;
 import uk.org.glendale.worldgen.astro.star.StarGenerator;
+import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
 import uk.org.glendale.worldgen.server.AppManager;
 import uk.org.glendale.worldgen.text.Names;
 
@@ -65,6 +67,9 @@ public class StarSystemGenerator {
 	
 	@Autowired
 	private StarSystemAPI			starSystemAPI;
+	
+	@Autowired
+	private FacilityFactory			facilityFactory;
 	
 	public StarSystemGenerator() {
 	}
@@ -203,6 +208,13 @@ public class StarSystemGenerator {
 		planetName = system.getName() + " " + getOrbitNumber(++position);
 		distance = 130 + Die.d20(2);
 		planet = generator.generatePlanet(planetName, position, distance, new Gaian());
+		planet.setPopulation(Die.d6(3) * 100000);
+		planet.setTechLevel(0);
+		planet.setGovernment(GovernmentType.Anarchy);
+		planet.setLawLevel(0);
+		planet.addFacility(facilityFactory.getFacility("Hunter Gatherer"), 100);
+		planet.addFacility(facilityFactory.getFacility("Primitive Tribes"), 100);
+		planet.addFacility(facilityFactory.getFacility("Primitive Mining"), 10);
 		system.addPlanet(planet);
 		factory.persist(system);
 		

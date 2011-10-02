@@ -93,6 +93,11 @@ public class FacilityGenerator {
 
 		Facility facility = new Facility(name, type, baseDir + image);
 		List<ProductionMap>	map = new ArrayList<ProductionMap>();
+		
+		if (factory.getFacility(name) != null) {
+			// Duplicate, so skip this one.
+			return;
+		}
 
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node n = nodes.item(i);
@@ -128,7 +133,7 @@ public class FacilityGenerator {
 				
 				Commodity from = commodityFactory.getCommodity(fromName);
 				Commodity to = commodityFactory.getCommodity(toName);
-				if (from != null && to != null) {
+				if ((fromName == null || from != null) && (toName == null || to != null)) {
 					map.add(new ProductionMap(facility, from, to, level));
 				} else if (from == null) {
 					System.out.println("Facility [" + name + "] maps unknown commodity [" + fromName + "]");

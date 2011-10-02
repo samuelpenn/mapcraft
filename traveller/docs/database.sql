@@ -229,7 +229,7 @@ CREATE TABLE facility_map (
     id INT AUTO_INCREMENT NOT NULL, 
     facility_id INT NOT NULL,
     from_id int,
-    to_id int NOT NULL,
+    to_id int,
     level int DEFAULT 100,
     PRIMARY KEY(id),
     FOREIGN KEY (facility_id) REFERENCES facility(id)
@@ -249,29 +249,26 @@ CREATE TABLE facilities (facility_id int not null, planet_id int not null,
     FOREIGN KEY (planet_id) REFERENCES planet(id)
     ON DELETE CASCADE ON UPDATE CASCADE)
     ENGINE=INNODB;
- 
+
+
+CREATE TABLE inventory (id INT AUTO_INCREMENT NOT NULL, planet_id INT NOT NULL,
+    commodity_id int not null, amount bigint default 0, 
+    produced bigint default 0, consumed bigint default 0, 
+    bought bigint default 0, sold bigint default 0,
+    weeklyin bigint default 0, weeklyout bigint default 0,
+    price int not null,
+    PRIMARY KEY(id),
+    FOREIGN KEY(planet_id) REFERENCES planet(id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(commodity_id) REFERENCES commodity(id)
+    ON DELETE CASCADE ON UPDATE CASCADE)
+    ENGINE=INNODB;
+
+    
 -- EXIT
     
     
-CREATE TABLE facility (id int auto_increment not null, name varchar(64), type varchar(16), image varchar(48),
-                       techLevel int default 0, capacity int default 0,
-                       resource_id int default 0, inputs varchar(32) default '', outputs varchar(32) default '',
-                       codes varchar(64) not null,
-                       PRIMARY KEY(id), UNIQUE KEY(name)) ENGINE=INNODB;
-
-CREATE TABLE facility_requirements (facility_id int not null, code varchar(12) not null, value int not null,
-    FOREIGN KEY (facility_id) REFERENCES facility(id)) ENGINE=INNODB;
-
-CREATE TABLE facility_inputs (facility_id int not null, code varchar(12) not null, value int not null,
-    FOREIGN KEY (facility_id) REFERENCES facility(id)) ENGINE=INNODB;
-
-CREATE TABLE facility_outputs (facility_id int not null, commodity_id int not null, value int not null,
-    FOREIGN KEY (facility_id) REFERENCES facility(id),
-    FOREIGN KEY (commodity_id) REFERENCES commodity(id)) ENGINE=INNODB;
-
-CREATE TABLE facilities (facility_id int not null, planet_id int not null, size int not null,
-                         UNIQUE KEY (facility_id, planet_id)) ENGINE=INNODB;
-                         
+                       
 
 
 -- Standard residential facilities

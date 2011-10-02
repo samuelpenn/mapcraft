@@ -25,6 +25,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
+import uk.org.glendale.worldgen.astro.planet.Planet;
+import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
 import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.astro.sector.SectorCode;
 import uk.org.glendale.worldgen.astro.sector.SectorFactory;
@@ -34,6 +36,9 @@ import uk.org.glendale.worldgen.astro.starsystem.StarSystemGenerator;
 import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
 import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
 import uk.org.glendale.worldgen.civ.facility.FacilityGenerator;
+import uk.org.glendale.worldgen.civ.trade.Civilisation;
+import uk.org.glendale.worldgen.civ.trade.CivilisationAPI;
+import uk.org.glendale.worldgen.civ.trade.CivilisationFactory;
 
 /**
  * Create a sandbox universe for testing purposes.
@@ -50,6 +55,9 @@ public class Sandbox {
 	private CommodityFactory	commodityFactory;
 	private FacilityFactory		facilityFactory;
 	private FacilityGenerator	facilityGenerator;
+	private PlanetFactory		planetFactory;
+	private CivilisationFactory	civilisationFactory;
+	private CivilisationAPI		civilisationAPI;
 	
 	
 	public Sandbox() {
@@ -63,6 +71,9 @@ public class Sandbox {
 		commodityFactory = (CommodityFactory) context.getBean("commodityFactory");
 		facilityFactory = (FacilityFactory) context.getBean("facilityFactory");
 		facilityGenerator = (FacilityGenerator) context.getBean("facilityGenerator");
+		planetFactory = (PlanetFactory) context.getBean("planetFactory");
+		civilisationFactory = (CivilisationFactory) context.getBean("civilisationFactory");
+		civilisationAPI = (CivilisationAPI) context.getBean("civilisationAPI");
 	}
 	
 	public void importCommodities() {
@@ -107,6 +118,14 @@ public class Sandbox {
 		starSystemGenerator.createSimpleSystem(sandbox, null, 0, 0);
 	}
 	
+	public void testSimulation(int planetId) {
+		civilisationAPI.simulate(planetId);
+//		Planet planet = planetFactory.getPlanet(planetId);
+//		Civilisation civ = civilisationFactory.getCivilisation(planet);
+		
+//		civ.simulate();
+	}
+	
 	private static void sandbox() {
 		/*
 		HttpClient	client = new HttpClient();
@@ -130,9 +149,11 @@ public class Sandbox {
 		
 		Sandbox sb = new Sandbox(context);
 		
-		sb.importCommodities();
-		sb.importFacilities();
+		//sb.importCommodities();
+		//sb.importFacilities();
 		//sb.addToSandbox();
+		
+		sb.testSimulation(87);
 	}
 
 

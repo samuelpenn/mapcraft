@@ -19,6 +19,8 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import uk.org.glendale.worldgen.astro.planet.Installation;
+import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.server.AppManager;
 
 @Repository
@@ -56,5 +58,9 @@ public class FacilityFactory {
 	
 	public void persist(ProductionMap production) {
 		em.persist(production);
+	}
+	
+	public void addFacilitiesToPlanet(Planet planet, List<Installation> list) {
+		
 	}
 }

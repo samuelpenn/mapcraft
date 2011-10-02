@@ -8,6 +8,12 @@
  */
 package uk.org.glendale.worldgen.civ.trade;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +28,9 @@ import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
  */
 @Service
 public class CivilisationFactory {
+	@PersistenceContext
+	private EntityManager		em;
+
 	@Autowired
 	private CommodityFactory	commodityFactory;
 	
@@ -41,7 +50,23 @@ public class CivilisationFactory {
 		
 		civ.setCommodityFactory(commodityFactory);
 		civ.setFacilityFactory(facilityFactory);
-		
+		civ.setInventory(getPlanetInventory(planet));
+
 		return civ;
+	}
+	
+	public final List<Inventory> getPlanetInventory(Planet planet) {
+		Query query = em.createQuery("SELECT i FROM Inventory i WHERE i.planet = :planet");
+		query.setParameter("planet", planet);
+		
+		List<Inventory> inventory = query.getResultList();
+		
+		return inventory;
+	}
+	
+	public final void persist(List<Inventory> inventory) {
+		for (Inventory item : inventory) {
+			em.persist(item);
+		}
 	}
 }

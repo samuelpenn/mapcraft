@@ -29,7 +29,7 @@ public class PlanetImageAPI {
 		PlanetFactory pf = new PlanetFactory();
 		Planet planet = pf.getPlanet(id);
 
-		byte[] data = planet.getFlatImage();
+		byte[] data = null;//planet.getFlatImage();
 
 		return data;
 	}

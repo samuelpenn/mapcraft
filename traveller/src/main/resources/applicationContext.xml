@@ -24,6 +24,6 @@
 	<mvc:view-controller path="/" view-name="home"/>
 	
 	<!-- Load Hibernate related configuration -->
-	<import resource="hibernate-context.xml" />
+	<import resource="src/main/webapp/WEB-INF/hibernate-context.xml" />
 	<!--  Test -->
 </beans>

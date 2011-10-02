@@ -99,7 +99,7 @@ public class Trade {
 	 * have more people involved in service industries. The TL and
 	 * Government Type also affect things.
 	 */
-	public long getProductionCapacity() {
+	private long getProductionCapacity() {
 		long		effectivePopulation = planet.getPopulation();
 		long		production = 0;
 		

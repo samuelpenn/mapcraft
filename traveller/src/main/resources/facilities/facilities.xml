@@ -32,5 +32,10 @@
             <map from="Silicate ore" to="Neolithic art" level="10"/>
             <map from="Silicate ore" to="Stone weapons" level="50"/>
         </facility>
+        
+        <facility name="Primitive Mining" type="Mining">
+            <codes>T0 P3 P4 P5 P6 P7</codes>
+            <operation level="25">MiSi</operation>
+        </facility>
     </group>             
 </facilities>
