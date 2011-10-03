@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import uk.org.glendale.rpg.traveller.Log;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
+import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Installation;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.Resource;
@@ -111,8 +112,10 @@ public class Civilisation {
 	
 	private long getWeeklyProduction(Commodity commodity, final long capacity) {
 		final int	pr = commodity.getProductionRating();
+		final int	var = planet.getGovernment().getVariability();
+		double modifier = 1.00 + (Die.die(var) - Die.die(var)) / 100.0;
 		
-		return (long) (capacity / Math.log10( pr / 2.0));
+		return (long) (modifier * capacity / Math.log10( pr / 2.0));
 	}
 	
 	private Inventory getInventoryItem(Commodity commodity) {
