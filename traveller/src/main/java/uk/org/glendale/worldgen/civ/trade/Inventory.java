@@ -18,6 +18,7 @@ import javax.persistence.Table;
 
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.civ.commodity.Commodity;
+import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
 
 /**
  * Represents a planet's inventory of stock that is available for sale and/or
@@ -87,15 +88,110 @@ public class Inventory {
 		return amount;
 	}
 	
-	public void setAmount(final long amount) {
-		this.amount = amount;
+	public void setAmount(final long units) {
+		this.amount = units;
 	}
 	
-	public void addAmount(final long amount) {
-		this.amount += amount;
+	public void addAmount(final long units) {
+		this.amount += units;
 		if (this.amount < 0) {
 			this.amount = 0;
 		}
 	}
 	
+	/**
+	 * Consume the given amount of the item. Consuming the item reduces the
+	 * amount stored, and adds to the amount consumed. If the amount to
+	 * consume is greater than that available, then only that which is
+	 * available is consumed.
+	 * 
+	 * @param units		Amount of the item to consume.
+	 * @return			The amount actually consumed.
+	 */
+	public long consume(long units) {
+		if (units < 0) {
+			throw new IllegalArgumentException("Cannot consume negative amounts.");
+		} else if (units > amount) {
+			units = amount;
+		}
+		this.amount -= units;
+		this.consumed += units;
+		this.weeklyOut += units;
+		
+		return units;
+	}
+	
+	public void produce(long units) {
+		if (units < 0) {
+			throw new IllegalArgumentException("Cannot produce negative amounts.");
+		}
+		this.amount += units;
+		this.produced += units;
+		this.weeklyIn += units;
+	}
+	
+	public long sell(long units) {
+		if (units < 0) {
+			throw new IllegalArgumentException("Cannot sell a negative amount.");
+		} else if (units > amount) {
+			units = amount;
+		}
+		this.amount -= units;
+		this.sold += units;
+		this.weeklyOut += units;
+		return units;
+	}
+	
+	public void buy(long units) {
+		if (units < 0) {
+			throw new IllegalArgumentException("Cannot buy a negative amount.");
+		}
+		this.amount += units;
+		this.bought += units;
+		this.weeklyIn += units;
+	}
+	
+	public long getConsumed() {
+		return consumed;
+	}
+	
+	public long getProduced() {
+		return produced;
+	}
+	
+	public long getSold() {
+		return sold;
+	}
+	
+	public long getBought() {
+		return bought;
+	}
+	
+	public long getWeeklyIn() {
+		return weeklyIn;
+	}
+	
+	public long getWeeklyOut() {
+		return weeklyOut;
+	}
+	
+	/**
+	 * At the end of each week, the inventory is processed. Stock levels will
+	 * decay (Perishable goods decay faster), and other statistics are halved.
+	 * Statistics aren't reset to zero, so the previous week affects the
+	 * current week's statistics.
+	 */
+	public void endOfWeek() {
+		if (commodity.hasCode(CommodityCode.Pe)) {
+			this.amount *= 0.9;
+		} else {
+			this.amount *= 0.99;
+		}
+		this.weeklyIn *= 0.5;
+		this.weeklyOut *= 0.5;
+		this.bought *= 0.5;
+		this.sold *= 0.5;
+		this.consumed *= 0.5;
+		this.produced *= 0.5;
+	}
 }

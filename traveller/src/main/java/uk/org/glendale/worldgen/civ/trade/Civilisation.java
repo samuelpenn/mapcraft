@@ -8,6 +8,7 @@
  */
 package uk.org.glendale.worldgen.civ.trade;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -72,7 +73,14 @@ public class Civilisation {
 	}
 	
 	private void processWeek(boolean honourRequirements) {
-		manageResources(honourRequirements);
+		// Run the End Of Week processing. This updates all the statistics
+		// from the previous week.
+		for (Inventory item : inventory) {
+			item.endOfWeek();
+		}
+		
+		// Manage all the resources for the planet.
+		manageResources(honourRequirements);		
 	}
 	
 	/**
@@ -92,21 +100,61 @@ public class Civilisation {
 
 		System.out.println("Resources: " + resources.size());
 		
+		// Process mining facilities first.
 		for (Installation inst : planet.getFacilities()) {
 			Facility	facility = inst.getFacility();
 			long		capacity = inst.getSize();
 			
-			capacity = (planet.getPopulation() * capacity) / 100;
-			
+			capacity = (planet.getPopulation() * capacity * capacity) / 10000;
+
 			if (facility.getType().equals(FacilityType.Mining)) {
 				System.out.println("Mine: "+facility.getName()+" [" + capacity + "]");
 				Set<CommodityCode> required = facility.getRequiredGoods();
-				if (honourRequirements) {
+				int honoured = requiredGoods(required, capacity);
+				if (honourRequirements && honoured < 100) {
 					// TODO: Work out requirements and their effect on
 					// the capacity of this installation.
 				}
-				processMine(facility, capacity);
+				processMiAg(facility, capacity);
 			}
+		}
+		
+		// Process agricultural facilities second.
+		for (Installation inst : planet.getFacilities()) {
+			Facility	facility = inst.getFacility();
+			long		capacity = inst.getSize();
+			
+			capacity = (planet.getPopulation() * capacity * capacity) / 10000;
+
+			if (facility.getType().equals(FacilityType.Agriculture)) {
+				System.out.println("Agriculture: "+facility.getName()+" [" + capacity + "]");
+				Set<CommodityCode> required = facility.getRequiredGoods();
+				int honoured = requiredGoods(required, capacity);
+				if (honourRequirements && honoured < 100) {
+					// TODO: Work out requirements and their effect on
+					// the capacity of this installation.
+				}
+				processMiAg(facility, capacity);
+			}		
+		}
+
+		// Process Residential facilities third.
+		for (Installation inst : planet.getFacilities()) {
+			Facility	facility = inst.getFacility();
+			long		capacity = inst.getSize();
+			
+			capacity = (planet.getPopulation() * capacity * capacity) / 10000;
+
+			if (facility.getType().equals(FacilityType.Residential)) {
+				System.out.println("Residential: "+facility.getName()+" [" + capacity + "]");
+				Set<CommodityCode> required = facility.getRequiredGoods();
+				int honoured = requiredGoods(required, capacity);
+				if (honourRequirements && honoured < 100) {
+					// TODO: Work out requirements and their effect on
+					// the capacity of this installation.
+				}
+				processResidential(facility, capacity);
+			}		
 		}
 	}
 	
@@ -137,18 +185,89 @@ public class Civilisation {
 	}
 	
 	/**
-	 * Process a mining facility. Mining facilities perform operations on
-	 * raw resources. Each resource which supports an operation supported
-	 * by the facility will be processed, and converted into trade goods
-	 * for that planet.
+	 * Work out what inventory stock is consumed based on the requirements
+	 * list provided. 
+	 * 
+	 * @param required	List of codes that must be satisfied.
+	 * @param capacity	Amount of satisfaction required.
+	 * @return
+	 */
+	private int requiredGoods(Set<CommodityCode> required, long capacity) {
+		int	percentageMet = 100;
+		
+		for (CommodityCode code : required) {
+			Set<Inventory>	hq = new HashSet<Inventory>();
+			Set<Inventory>	std = new HashSet<Inventory>();
+			Set<Inventory>	lq = new HashSet<Inventory>();
+			Set<Inventory>	lu = new HashSet<Inventory>();
+			Set<Inventory>	vi = new HashSet<Inventory>();
+
+			for (Inventory item : inventory) {
+				Commodity	c = item.getCommodity();
+				if (c.hasCode(code)) {
+					if (c.hasCode(CommodityCode.Lu)) {
+						lu.add(item);
+					} else if (c.hasCode(CommodityCode.Vi)) {
+						vi.add(item);
+					} else if (c.hasCode(CommodityCode.Hq)) {
+						hq.add(item);
+					} else if (c.hasCode(CommodityCode.Lq)) {
+						lq.add(item);
+					} else {
+						std.add(item);
+					}
+				}
+			}
+			
+			long	needed = capacity;
+			System.out.println(code+": "+needed);
+			while (needed > 0) {
+				if (hq.size() + std.size() + lq.size() + lu.size() + vi.size() == 0) {
+					break;
+				}
+				for (Inventory item : vi) {
+					if (item.getAmount() > needed) {
+						item.consume(needed);
+						needed = 0;
+					} else {
+						needed -= item.getAmount();
+						item.consume(item.getAmount());
+						
+					}
+				}
+				for (Inventory item : std) {
+					if (item.getAmount() > needed) {
+						item.consume(needed);
+						needed = 0;
+					} else {
+						needed -= item.getAmount();
+						item.consume(item.getAmount());
+						
+					}
+				}
+				break; // XXX: Can't yet guarantee it's not an infinite loop.
+			}
+			
+			
+		}
+		
+		
+		return percentageMet;
+	}
+	
+	/**
+	 * Process mining and agriculture facilities. Such facilities perform 
+	 * operations on raw resources. Each resource which supports an operation 
+	 * supported by the facility will be processed, and converted into trade 
+	 * goods for that planet.
 	 * 
 	 * @param facility	Facility being processed.
 	 * @param capacity	Effective population capacity for this resource.
 	 */
-	private void processMine(Facility facility, long capacity) {
+	private void processMiAg(Facility facility, long capacity) {
 		List<Resource>	resources = planet.getResources();
 
-		System.out.println("processMine: [" + facility.getName() + "] [" 
+		System.out.println("processMiAg: [" + facility.getName() + "] [" 
 				+ capacity + "]");
 		
 		for (Resource resource : resources) {
@@ -161,18 +280,49 @@ public class Civilisation {
 				if (rate <= 0) {
 					continue;
 				}
-				System.out.println("processMine: [" + c.getName() + 
+				System.out.println("processMiAg: [" + c.getName() + 
 						" -> " + operation + " [" + rate + "%] -> [" 
 						+ m.getOutput().getName() + "]");
 
 				// Get capacity of this operation.
 				long cap = (capacity * rate * m.getEfficiency()) / 100000;
-				long produced = getWeeklyProduction(c, cap);
+				long produced = getWeeklyProduction(m.getOutput(), cap);
 				
 				System.out.println("    + " + produced);
-				getInventoryItem(c).addAmount(produced);
+				getInventoryItem(m.getOutput()).produce(produced);
 			}
 		}
 	}
 	
+	private void processResidential(Facility facility, long capacity) {
+		List<Resource>	resources = planet.getResources();
+
+		System.out.println("processResidential: [" + facility.getName() + "] [" 
+				+ capacity + "]");
+		
+		for (Inventory item : inventory) {
+			Commodity			c = item.getCommodity();
+			List<CommodityMap> 	map = commodityFactory.getMappings(c);
+			
+			for (CommodityMap m : map) {
+				String	operation = m.getOperation();
+				int		rate = facility.getOperation(operation);
+				if (rate <= 0) {
+					continue;
+				}
+				System.out.println("processResidential: [" + c.getName() + 
+						" -> " + operation + " [" + rate + "%] -> [" 
+						+ m.getOutput().getName() + "]");
+
+				// Get capacity of this operation.
+				long cap = (capacity * rate * m.getEfficiency()) / 100000;
+				long produced = getWeeklyProduction(m.getOutput(), cap);
+				
+				System.out.println("    + " + produced);
+				getInventoryItem(m.getOutput()).produce(produced);
+			}
+		}
+		
+	}
+		
 }
