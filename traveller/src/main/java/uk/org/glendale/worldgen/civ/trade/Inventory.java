@@ -193,5 +193,7 @@ public class Inventory {
 		this.sold *= 0.5;
 		this.consumed *= 0.5;
 		this.produced *= 0.5;
+		
+		price = (int)(150.0 * weeklyOut / weeklyIn);
 	}
 }

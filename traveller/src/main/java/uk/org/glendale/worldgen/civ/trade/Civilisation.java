@@ -225,35 +225,57 @@ public class Civilisation {
 				if (hq.size() + std.size() + lq.size() + lu.size() + vi.size() == 0) {
 					break;
 				}
-				for (Inventory item : vi) {
-					if (item.getAmount() > needed) {
-						item.consume(needed);
-						needed = 0;
-					} else {
-						needed -= item.getAmount();
-						item.consume(item.getAmount());
-						
-					}
-				}
-				for (Inventory item : std) {
-					if (item.getAmount() > needed) {
-						item.consume(needed);
-						needed = 0;
-					} else {
-						needed -= item.getAmount();
-						item.consume(item.getAmount());
-						
-					}
-				}
-				break; // XXX: Can't yet guarantee it's not an infinite loop.
-			}
-			
-			
+				long	needLu = (int)(needed * 0.05);
+				long	needHq = (int)(needed * 0.15);
+				long	needLq = (int)(needed * 0.20);
+				long	needVi = (int)(needed * 0.20);
+				long	needStd = needed - (needLu + needHq + needLq + needVi);
+				
+				long	consumed = 0;
+				consumed += consumeResources(std, needStd);
+				consumed += consumeResources(vi, needVi);
+				consumed += consumeResources(lu, needLu);
+				consumed += consumeResources(hq, needHq);
+				consumed += consumeResources(lq, needLq);
+				needed -= consumed;
+				System.out.println("Needed: "+needed);
+			}	
 		}
-		
-		
 		return percentageMet;
 	}
+	
+	private long consumeResources(Set<Inventory> list, long needed) {
+		long	consumed = 0;
+		Set<Inventory>	empty = new HashSet<Inventory>();
+		
+		if (list != null && list.size() > 0) {
+			long	need = needed / list.size();
+			
+			System.out.println("consumeResources: Need [" + need +"/" + needed + "]");
+			
+			for (Inventory item : list) {
+				int cr = item.getCommodity().getConsumptionRating();
+				cr = (int) Math.pow(10, cr / 2.0);
+				
+				System.out.println("  "+item.getCommodity().getName()+": ["
+						+ item.getCommodity().getConsumptionRating()+"] ["+cr+"] [" + item.getAmount() + "]");
+				
+
+				consumed += item.consume(need / cr + 1) * cr;
+				System.out.println("  Consumed: "+ consumed);
+				if (item.getAmount() < 1) {
+					empty.add(item);
+				}
+			}
+			
+			for (Inventory item : empty) {
+				list.remove(item);
+			}
+		}
+		
+		return consumed;
+	}
+	
 	
 	/**
 	 * Process mining and agriculture facilities. Such facilities perform 
