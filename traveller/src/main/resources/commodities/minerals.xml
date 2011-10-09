@@ -7,7 +7,7 @@
     <group name="Base" base="minerals">
         <commodity name="Minerals" image="mineral">
             <cost volume="1">100</cost>     
-            <production tech="0" law="6" pr="7" cr="8"/> 
+            <production tech="0" law="6" pr="9" cr="10"/> 
             <codes source="Mi">Or</codes>
         </commodity>
     </group>
@@ -15,31 +15,31 @@
     <group name="Metallic Ores" base="minerals">
         <commodity name="Ferric Ore" parent="Minerals">
             <cost volume="1">150</cost>
-            <production tech="1" law="6" pr="8" cr="9"/>
+            <production tech="1" law="6" pr="10" cr="11"/>
             <codes source="Mi">Or Me</codes>
         </commodity>
 
         <commodity name="Rare Metals" parent="Ferric Ore">
             <cost volume="1">750</cost>
-            <production tech="4" law="6" pr="10" cr="10"/>
+            <production tech="4" law="6" pr="11" cr="12"/>
             <codes source="Mi">Or Me</codes>
         </commodity>
 
         <commodity name="Precious Metals" parent="Ferric Ore">
             <cost volume="1">1500</cost>
-            <production tech="1" law="6" pr="10" cr="11"/>
+            <production tech="1" law="6" pr="15" cr="14"/>
             <codes source="Mi">Or Me</codes>
         </commodity>
 
         <commodity name="Heavy Metals" parent="Ferric Ore">
             <cost volume="1">350</cost>
-            <production tech="2" law="6" pr="9" cr="10"/>
+            <production tech="2" law="6" pr="11" cr="11"/>
             <codes source="Mi">Or Me</codes>
         </commodity>
 
         <commodity name="Radioactives" parent="Ferric Ore">
             <cost volume="1">700</cost>
-            <production tech="2" law="1" pr="12" cr="13"/>
+            <production tech="2" law="1" pr="14" cr="14"/>
             <codes source="Mi">Or Hz</codes>
         </commodity>
     </group>
@@ -47,7 +47,7 @@
     <group name="Silicate Ores" base="minerals">
 		<commodity name="Silicate Ore" parent="Minerals">
 		    <cost volume="1">50</cost>
-		    <production tech="0" law="6" pr="7" cr="8">
+		    <production tech="0" law="6" pr="9" cr="10">
                 <output mode="Mi" efficiency="100">Silicate Ore</output>
                 <output mode="MiSi" efficiency="100">Silicate Ore</output>
             </production>
@@ -56,7 +56,7 @@
 		
 		<commodity name="Silicate Crystals" parent="Silicate Ore">
             <cost volume="1">250</cost>
-            <production tech="0" law="6" pr="9" cr="11"/>
+            <production tech="0" law="6" pr="11" cr="12"/>
             <codes source="Mi">Or</codes>
 		</commodity>
     </group>
@@ -64,13 +64,13 @@
     <group name="Carbonic Ores" base="minerals">
 	    <commodity name="Carbonic Ore" parent="Minerals">
 	        <cost volume="1">100</cost>
-	        <production tech="2" law="6" pr="7" cr="8"/>
+	        <production tech="2" law="6" pr="10" cr="11"/>
 	        <codes source="Mi">Or</codes>
 	    </commodity>
 
         <commodity name="Carbonic Crystals" parent="Carbonic Ore">
             <cost volume="1">500</cost>
-            <production tech="2" law="6" pr="11" cr="11"/>
+            <production tech="2" law="6" pr="12" cr="12"/>
             <codes source="Mi">Or</codes>
         </commodity>
     </group>
@@ -78,25 +78,25 @@
     <group name="Other Chemicals" base="minerals">
 	    <commodity name="Water" parent="Minerals">
 	        <cost volume="1">10</cost>
-	        <production tech="0" law="6" pr="2" cr="4"/>
+	        <production tech="0" law="6" pr="1" cr="2"/>
 	        <codes source="Mi">Vi Re In Ag</codes>
 	    </commodity>
 
 	    <commodity name="Inert Gases" parent="Minerals">
 	        <cost volume="1">3</cost>
-	        <production tech="0" law="6" pr="10" cr="12"/>
+	        <production tech="0" law="6" pr="12" cr="14"/>
 	        <codes source="Mi">Va Re</codes>
 	    </commodity>
 
 		<commodity name="Organic Gases" parent="Inert Gases">
 		    <cost volume="1">30</cost>
-		    <production tech="4" law="6" pr="9" cr="11"/>
+		    <production tech="4" law="6" pr="12" cr="13"/>
 		    <codes source="Mi">In</codes>
 		</commodity>
 
         <commodity name="Organic Chemicals" parent="Water">
             <cost volume="1">60</cost>
-            <production tech="4" law="6" pr="7" cr="10"/>
+            <production tech="4" law="6" pr="11" cr="12"/>
             <codes source="Mi">In</codes>
         </commodity>
 		
@@ -108,25 +108,25 @@
 
 		<commodity name="Corrosive Gases" parent="Inert Gases">
 		    <cost volume="1">200</cost>
-            <production tech="6" law="5" pr="8" cr="10"/>
+            <production tech="6" law="5" pr="14" cr="14"/>
 		    <codes source="Mi">Hz In</codes>
 		</commodity>
 		
 		<commodity name="Corrosive Chemicals" parent="Water">
 		    <cost volume="1">1200</cost>
-            <production tech="5" law="6" pr="5" cr="7"/>
+            <production tech="5" law="13" pr="13" cr="7"/>
             <codes source="Mi">Hz In Mi</codes>
 		</commodity>
 		
 		<commodity name="Oxygen" parent="Inert Gases">
 		    <cost volume="1">15</cost>
-		    <production tech="4" law="6" pr="4" cr="5"/>
+		    <production tech="4" law="6" pr="4" cr="1"/>
 		    <codes source="Mi">Va Vi Re</codes>
 		</commodity>
 		
 		<commodity name="Hydrogen" parent="Inert Gases">
 		    <cost volume="1">8</cost>
-		    <production tech="4" law="6" pr="4" cr="6"/>
+		    <production tech="4" law="6" pr="12" cr="11"/>
 		    <codes source="Mi">Sp</codes>
 		    <description>
 		        Light gas, used as a fuel in starship drives.
@@ -135,7 +135,7 @@
 		
 		<commodity name="Deuterium" parent="Water">
 		    <cost volume="1">100</cost>
-		    <production tech="7" law="3" pr="7" cr="10"/>
+		    <production tech="7" law="3" pr="12" cr="15"/>
 		    <codes source="In">In Tt Ta Tu</codes>
 		    <description>
 		        Isotope of Hydrogen, used in nuclear fission.
@@ -144,7 +144,7 @@
 		
 		<commodity name="Helium 3" parent="Inert Gases">
 		    <cost volume="1">1000</cost>
-		    <production tech="7" law="5" pr="10" cr="12"/>
+		    <production tech="7" law="5" pr="13" cr="15"/>
 		    <codes source="Mi">In Tt Ta Tu</codes>
 		    <description>
 		        Isotope of Helium, used in nuclear fusion.

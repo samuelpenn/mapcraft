@@ -30,7 +30,7 @@ import uk.org.glendale.worldgen.civ.commodity.Commodity;
  */
 @Entity
 @Table(name = "facility_map")
-class ProductionMap {
+public class ProductionMap {
 	@Id
 	@GeneratedValue
 	@Column(name = "id")
@@ -40,11 +40,11 @@ class ProductionMap {
 	@JoinColumn(name = "facility_id", nullable = false)
 	private Facility	facility;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "from_id", nullable = true)
 	private Commodity	from;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "to_id", nullable = true)
 	private Commodity   to;
 	

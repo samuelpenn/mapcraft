@@ -55,6 +55,15 @@ public class FacilityGenerator {
 	public FacilityGenerator() {
 	}
 
+	/**
+	 * Import list of facilities into database from XML file. If the given file
+	 * is a directory, all XML files in that directory are processed.
+	 * 
+	 * @param base	XML file to import, or directory of XML files.
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 */
 	public void createAllFacilities(final File base)
 			throws ParserConfigurationException, SAXException, IOException {
 
@@ -78,6 +87,13 @@ public class FacilityGenerator {
 		}
 	}
 
+	/**
+	 * Creates and imports a new facility into the database from the XML
+	 * document.
+	 * 
+	 * @param node			XML node to parse.
+	 * @param baseDir		Base directory for resources.
+	 */
 	private void createFacility(Node node, String baseDir) {
 		String name = XMLHelper.getAttribute(node, "name");
 

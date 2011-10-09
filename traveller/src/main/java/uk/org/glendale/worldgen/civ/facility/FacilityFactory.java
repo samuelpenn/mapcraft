@@ -45,6 +45,14 @@ public class FacilityFactory {
 			return null;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ProductionMap> getProductionMap(Facility facility) {
+		Query	q = em.createQuery("from ProductionMap where facility = :f");
+		q.setParameter("f", facility);
+
+		return (List<ProductionMap>) q.getResultList();
+	}
 
 	public void persist(Facility facility) {
 		em.persist(facility);

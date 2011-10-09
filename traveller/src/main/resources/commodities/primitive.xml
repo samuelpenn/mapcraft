@@ -7,13 +7,13 @@
     <group name="Base">
         <commodity name="Tools">
             <cost volume="1">50</cost>
-            <production tech="0" law="6" pr="4" cr="5"/>
+            <production tech="0" law="6" pr="8" cr="8"/>
             <codes source="In">ToHd</codes>
         </commodity>
 
         <commodity name="Clothes">
             <cost volume="1">50</cost>
-            <production tech="0" law="6" pr="4" cr="5"/>
+            <production tech="0" law="6" pr="8" cr="8"/>
             <codes source="In">Cl</codes>
         </commodity>
     </group>
@@ -21,7 +21,7 @@
 	<group name="Tools" base="primitive">
         <commodity name="Stone tools" parent="Tools">
             <cost volume="1">15</cost>
-            <production tech="0" law="6" pr="6" cr="7"/>
+            <production tech="0" law="6" pr="8" cr="10"/>
             <codes source="In">HoTl TL</codes>
             <description>
                 Primitive stone tools.
@@ -30,7 +30,7 @@
 
         <commodity name="Stone weapons" parent="Tools">
             <cost volume="1">15</cost>
-            <production tech="0" law="5" pr="6" cr="7"/>
+            <production tech="0" law="5" pr="8" cr="11"/>
             <codes source="In">WpnH TL</codes>
             <description>
                 Primitive stone weapons.
@@ -50,7 +50,7 @@
     <group name="Clothes" base="primitive">
         <commodity name="Animal skins" parent="Clothes">
             <cost volume="1">15</cost>
-            <production tech="0" law="6" pr="6" cr="7"/>
+            <production tech="0" law="6" pr="8" cr="8"/>
             <codes source="In">ClCv Tl</codes>
         </commodity>
     </group>

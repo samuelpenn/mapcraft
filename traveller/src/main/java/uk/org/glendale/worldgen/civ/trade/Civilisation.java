@@ -8,6 +8,8 @@
  */
 package uk.org.glendale.worldgen.civ.trade;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +29,7 @@ import uk.org.glendale.worldgen.civ.commodity.CommodityMap;
 import uk.org.glendale.worldgen.civ.facility.Facility;
 import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
 import uk.org.glendale.worldgen.civ.facility.FacilityType;
+import uk.org.glendale.worldgen.civ.facility.ProductionMap;
 
 /**
  * Manages the weekly processes for a planet.
@@ -158,12 +161,35 @@ public class Civilisation {
 		}
 	}
 	
+	/**
+	 * Gets the amount of a resource that is produced each week given the
+	 * production capacity available to produce it. The capacity is based
+	 * on the size of the facility and the population. The amount actually
+	 * produced depends on the production rating of the commodity.
+	 * 
+	 * The actual capacity is randomly modified according to the government
+	 * type. If the output is going to be zero, then there is a random
+	 * probability of producing 1 unit.
+	 * 
+	 * @param commodity		Commodity to be produced.
+	 * @param capacity		Facility capacity available.
+	 * @return				Units of commodity actually produced.
+	 */
 	private long getWeeklyProduction(Commodity commodity, final long capacity) {
 		final int	pr = commodity.getProductionRating();
 		final int	var = planet.getGovernment().getVariability();
 		double modifier = 1.00 + (Die.die(var) - Die.die(var)) / 100.0;
 		
-		return (long) (modifier * capacity / Math.log10( pr / 2.0));
+		long 	available = (long) (capacity * modifier);
+		double 	output = available / Math.pow(10, pr / 2.0);
+		
+		// We use the square root of the fraction, rather than the raw
+		// fraction, to increase the likelyhood of producing something.
+		if (output < 1 && Math.random() <= Math.sqrt(output - ((int)output))) {
+			output += 1;
+		}
+		
+		return (long) output;
 	}
 	
 	private Inventory getInventoryItem(Commodity commodity) {
@@ -244,6 +270,17 @@ public class Civilisation {
 		return percentageMet;
 	}
 	
+	/**
+	 * Consume the given list of resources. The total number of resources
+	 * to consume is given, and that is split equally across all the
+	 * resources in the list. Each unit of resource is worth an amount based
+	 * on its consumption rating (ea +2 = x10). Items are removed from the
+	 * list once they become exhausted.
+	 * 
+	 * @param list
+	 * @param needed
+	 * @return
+	 */
 	private long consumeResources(Set<Inventory> list, long needed) {
 		long	consumed = 0;
 		Set<Inventory>	empty = new HashSet<Inventory>();
@@ -259,7 +296,6 @@ public class Civilisation {
 				
 				System.out.println("  "+item.getCommodity().getName()+": ["
 						+ item.getCommodity().getConsumptionRating()+"] ["+cr+"] [" + item.getAmount() + "]");
-				
 
 				consumed += item.consume(need / cr + 1) * cr;
 				System.out.println("  Consumed: "+ consumed);
@@ -316,6 +352,16 @@ public class Civilisation {
 		}
 	}
 	
+	/**
+	 * Residential facilities represent societies. There will normally be
+	 * one residential facility per world, though this isn't a rule.
+	 * They process existing commodities (not resources). They may produce
+	 * items 'out of nothing' as well if their other requirements are met.
+	 * These are often luxury and/or knowledge based goods.
+	 * 
+	 * @param facility	Facility being processed.
+	 * @param capacity	Effective population capacity for this resource.
+	 */
 	private void processResidential(Facility facility, long capacity) {
 		List<Resource>	resources = planet.getResources();
 
@@ -335,16 +381,47 @@ public class Civilisation {
 				System.out.println("processResidential: [" + c.getName() + 
 						" -> " + operation + " [" + rate + "%] -> [" 
 						+ m.getOutput().getName() + "]");
+				
 
 				// Get capacity of this operation.
+				/*
 				long cap = (capacity * rate * m.getEfficiency()) / 100000;
 				long produced = getWeeklyProduction(m.getOutput(), cap);
 				
 				System.out.println("    + " + produced);
 				getInventoryItem(m.getOutput()).produce(produced);
+				*/
 			}
+
+		}
+
+		List<ProductionMap> pmap = facilityFactory.getProductionMap(facility);
+
+		for (ProductionMap m : pmap) {
+			Commodity	from = m.getFrom();
+			Commodity	to = m.getTo();
+			System.out.println("    " + from.getName() + "-> " + to.getName());
+			
+			Inventory item = getInventoryItem(from);
+
+			long amount = (long)(capacity / Math.pow(10, to.getProductionRating()/2.0));
+			if (amount > item.getAmount()) {
+				amount = item.getAmount();
+			}
+			item.consume(amount);
+			
+			item = getInventoryItem(to);
+			item.produce(amount);
 		}
 		
+	}
+	
+	public static void main(String[] args) {
+		for (int pr = 0; pr < 21; pr++) {
+			DecimalFormat df = new DecimalFormat("#,###");
+			String msg = String.format("%-2d: %s", pr, df.format((long)Math.pow(10, pr / 2.0)));
+			System.out.println(msg);
+		}
 	}
 		
 }
