@@ -108,7 +108,7 @@ public class Civilisation {
 			Facility	facility = inst.getFacility();
 			long		capacity = inst.getSize();
 			
-			capacity = (planet.getPopulation() * capacity * capacity) / 10000;
+			capacity = (planet.getPopulation() * capacity) / 100;
 
 			if (facility.getType().equals(FacilityType.Mining)) {
 				System.out.println("Mine: "+facility.getName()+" [" + capacity + "]");
@@ -127,7 +127,7 @@ public class Civilisation {
 			Facility	facility = inst.getFacility();
 			long		capacity = inst.getSize();
 			
-			capacity = (planet.getPopulation() * capacity * capacity) / 10000;
+			capacity = (planet.getPopulation() * capacity) / 100;
 
 			if (facility.getType().equals(FacilityType.Agriculture)) {
 				System.out.println("Agriculture: "+facility.getName()+" [" + capacity + "]");
@@ -146,7 +146,7 @@ public class Civilisation {
 			Facility	facility = inst.getFacility();
 			long		capacity = inst.getSize();
 			
-			capacity = (planet.getPopulation() * capacity * capacity) / 10000;
+			capacity = (planet.getPopulation() * capacity) / 100;
 
 			if (facility.getType().equals(FacilityType.Residential)) {
 				System.out.println("Residential: "+facility.getName()+" [" + capacity + "]");
@@ -343,7 +343,8 @@ public class Civilisation {
 						+ m.getOutput().getName() + "]");
 
 				// Get capacity of this operation.
-				long cap = (capacity * rate * m.getEfficiency()) / 100000;
+				long cap = (capacity * resource.getDensity() * resource.getDensity()) / 10000; 
+				cap = (cap * rate * m.getEfficiency()) / 10000;
 				long produced = getWeeklyProduction(m.getOutput(), cap);
 				
 				System.out.println("    + " + produced);

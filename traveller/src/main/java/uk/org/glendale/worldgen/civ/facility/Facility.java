@@ -175,6 +175,13 @@ public class Facility {
 		return operations.contains(new Operation(name, 100));
 	}
 
+	/**
+	 * Gets the efficiency of a named operation that this Facility performs.
+	 * Operations may be AgFa, MiSi etc.
+	 * 
+	 * @param name	Name of operation.
+	 * @return		Efficiency, on a scale of 1-100.
+	 */
 	public int getOperation(String name) {
 		for (Operation o : operations) {
 			if (o.getName().equals(name)) {

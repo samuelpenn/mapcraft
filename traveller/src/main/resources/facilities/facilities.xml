@@ -23,7 +23,17 @@
             <operation level="5">MiSi</operation>
         </facility>
 
-        <facility name="Primitive Tribes" type="Residential">
+        <facility name="Neolithic Tribe" type="Residential">
+            <codes>T0 P0 P1 P2 H0 H1 H2</codes>
+            <require>Fo ClCv HoTl</require>
+            <consume>HoLu HoCl WpnH</consume>
+            <map from="Animal products" to="Animal skins" level="100"/>
+            <map from="Silicate ore" to="Stone tools" level="50"/>
+            <map from="Silicate ore" to="Neolithic art" level="5"/>
+            <map from="Silicate ore" to="Stone weapons" level="10"/>
+        </facility>
+
+        <facility name="Neolithic Tribes" type="Residential">
             <codes>T0 P3 P4 P5 H0 H1</codes>
             <require>Fo ClCv HoTl</require>
             <consume>HoLu HoCl WpnH</consume>
@@ -37,5 +47,25 @@
             <codes>T0 P3 P4 P5 P6 P7</codes>
             <operation level="25">MiSi</operation>
         </facility>
-    </group>             
+        
+        <facility name="Primitive Tribes" type="Residential">
+            <codes>T1 P3 P4 P5 H0 H1</codes>
+            <require>Fo ClCv HoTl</require>
+            <consume>HoLu HoCl WpnH</consume>
+            <map from="Animal products" to="Leather clothing" level="100"/>
+            <map from="Ferric ore" to="Bronze tools" level="100"/>
+            <map from="Ferric ore" to="Bronze jewellery" level="10"/>
+            <map from="Ferric ore" to="Bronze weapons" level="50"/>
+        </facility>
+
+        <facility name="Primitive City States" type="Residential">
+            <codes>T1 P5 P6 P7 H0 H1</codes>
+            <require>Fo ClCv HoTl</require>
+            <consume>HoLu HoCl WpnH</consume>
+            <map from="Animal products" to="Leather clothing" level="25"/>
+            <map from="Ferric ore" to="Bronze tools" level="100"/>
+            <map from="Ferric ore" to="Bronze jewellery" level="20"/>
+            <map from="Ferric ore" to="Bronze weapons" level="50"/>
+        </facility>
+    </group>
 </facilities>
