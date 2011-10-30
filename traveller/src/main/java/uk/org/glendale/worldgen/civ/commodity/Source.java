@@ -18,8 +18,14 @@ package uk.org.glendale.worldgen.civ.commodity;
  * @author Samuel Penn
  */
 public enum Source {
+	/** Agricultural produce, grown and farmed. */
 	Ag,
+	/** Industrial goods, made in factories. */
 	In,
+	/** Minerals, obtained raw from the environment. */
 	Mi,
-	Kn
+	/** Knowledge goods, information and entertainment. */
+	Kn,
+	/** Residential goods, produced in the home or by simple labour. */
+	Re
 }

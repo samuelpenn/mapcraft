@@ -46,8 +46,15 @@ public class Facility {
 	@Column(name = "id")
 	private int					id;
 
+	/** Unique internal name for this facility. */
 	@Column(name = "name")
 	private String				name;
+	
+	/** Descriptive title for this facility. */
+	@Column(name = "title")
+	private String				title;
+	
+	/** Type of facility. */
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type")
 	private FacilityType		type;
@@ -97,8 +104,9 @@ public class Facility {
 
 	}
 
-	public Facility(String name, FacilityType type, String image) {
+	public Facility(String name, String title, FacilityType type, String image) {
 		this.name = name;
+		this.title = title;
 		this.type = type;
 		this.imagePath = image;
 	}
@@ -113,10 +121,10 @@ public class Facility {
 	}
 
 	/**
-	 * Gets the name of this type of facility. This is the name that will be
-	 * displayed to the users. It is unique.
+	 * Gets the name of this type of facility. This is a short and unique
+	 * name that is used to identify the facility in some APIs.
 	 * 
-	 * @return Human readable name of the facility.
+	 * @return Unique name of the facility.
 	 */
 	public String getName() {
 		return name;
@@ -130,6 +138,26 @@ public class Facility {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	/**
+	 * Gets the title of this type of facility. This is the name that will be
+	 * displayed to the users. It is unique.
+	 * 
+	 * @return Short descriptive title of the facility.
+	 */
+	public String getTitle() {
+		return title;
+	}
+	
+	/**
+	 * Sets the facility title.
+	 * 
+	 * @param name
+	 *            Set unique facility title.
+	 */
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	/**

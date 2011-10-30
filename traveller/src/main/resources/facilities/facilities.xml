@@ -15,7 +15,8 @@
              xmlns:w="http://glendale.org.uk/mapcraft/worldgen">
 
     <group name="Primitive" base="primitive">
-        <facility name="Hunter Gatherer" type="Agriculture">
+        <facility name="hunterGatherer" type="Agriculture">
+            <title>Hunter Gatherer</title>
             <codes>T0 P3 P4 P5 H0 H1</codes>
             <consume>WpnH</consume>
             <operation level="75">Ag</operation>
@@ -23,7 +24,8 @@
             <operation level="5">MiSi</operation>
         </facility>
 
-        <facility name="Neolithic Tribe" type="Residential">
+        <facility name="neolithicTribe" type="Residential">
+            <title>Neolithic Tribe</title>
             <codes>T0 P0 P1 P2 H0 H1 H2</codes>
             <require>Fo ClCv HoTl</require>
             <consume>HoLu HoCl WpnH</consume>
@@ -33,7 +35,8 @@
             <map from="Silicate ore" to="Stone weapons" level="10"/>
         </facility>
 
-        <facility name="Neolithic Tribes" type="Residential">
+        <facility name="neolithicTribes" type="Residential">
+            <title>Neolithic Tribes</title>
             <codes>T0 P3 P4 P5 H0 H1</codes>
             <require>Fo ClCv HoTl</require>
             <consume>HoLu HoCl WpnH</consume>
@@ -43,12 +46,14 @@
             <map from="Silicate ore" to="Stone weapons" level="50"/>
         </facility>
         
-        <facility name="Primitive Mining" type="Mining">
+        <facility name="primitiveMining" type="Mining">
+            <title>Primitive Mining</title>
             <codes>T0 P3 P4 P5 P6 P7</codes>
             <operation level="25">MiSi</operation>
         </facility>
         
-        <facility name="Primitive Tribes" type="Residential">
+        <facility name="primitiveTribes" type="Residential">
+            <title>Primitive Tribes</title>
             <codes>T1 P3 P4 P5 H0 H1</codes>
             <require>Fo ClCv HoTl</require>
             <consume>HoLu HoCl WpnH</consume>
@@ -58,7 +63,8 @@
             <map from="Ferric ore" to="Bronze weapons" level="50"/>
         </facility>
 
-        <facility name="Primitive City States" type="Residential">
+        <facility name="tribalStates" type="Residential">
+            <title>Tribal States</title>
             <codes>T1 P5 P6 P7 H0 H1</codes>
             <require>Fo ClCv HoTl</require>
             <consume>HoLu HoCl WpnH</consume>
@@ -66,6 +72,20 @@
             <map from="Ferric ore" to="Bronze tools" level="100"/>
             <map from="Ferric ore" to="Bronze jewellery" level="20"/>
             <map from="Ferric ore" to="Bronze weapons" level="50"/>
+        </facility>
+        
+        <facility name="warriorKingdoms" type="Residential">
+            <title>Warrior Kingdoms</title>
+            <codes>T2 P4 P5 P6 P7 P8</codes>
+            <require>Fo ClCv HoTl</require>
+            <consume>HoLu HoCl WpnH</consume>
+        </facility>
+
+        <facility name="primitiveFarming" type="Agriculture">
+            <title>Primitive Farming</title>
+            <codes>T0 T1 T2 T3 P3 P4 P5 P6 P7 P8 H0 H1</codes>
+            <require>ToAg</require>
+            <operation level="100">AgFa</operation>
         </facility>
     </group>
 </facilities>

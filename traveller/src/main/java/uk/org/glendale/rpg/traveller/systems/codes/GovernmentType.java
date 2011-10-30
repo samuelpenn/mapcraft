@@ -34,6 +34,7 @@ public enum GovernmentType {
 	TheocraticOligarchy("Th", +2, -1, -1, 5), 
 	TotalitarianOligarchy("Ol", +2, -2, -2, 5),
 	SmallStationOfFacility("Az", 0, -1, -1, 10), 
+	Communist("Co", +1, 0, 0, 10),
 	SplitControl("Az", 0, 0, 0, 15), SingleClan("Az", 0, 0, 0, 10), SingleMultiWorldClan("Az", 0, 0, 0, 5),
 	MajorClan("Az", 0, 0, 0, 5), VassalClan("Az", 0, 0, 0, 5), MajorVassalClan("Az", 0, 0, 0, 5), 
 	Family("Kk", 0, 0, 0, 15), Krurruna("Kk", 0, 0, 0, 10), Steppelord("Kk", 0, 0, 0, 10), 

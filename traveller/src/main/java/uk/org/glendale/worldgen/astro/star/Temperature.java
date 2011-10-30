@@ -29,14 +29,14 @@ package uk.org.glendale.worldgen.astro.star;
  *
  */
 public enum Temperature {
-	UltraCold(0.0, 50, 20),
-	ExtremelyCold(0.0, 100, 15), 
-	VeryCold(0.0, 200, 12), 
-	Cold(0.1, 250, 5), 
-	Cool(0.5, 273, 2), 
+	UltraCold(0.0, 50, 25),
+	ExtremelyCold(0.0, 100, 20), 
+	VeryCold(0.0, 200, 15), 
+	Cold(0.1, 250, 7), 
+	Cool(0.5, 273, 3), 
 	Standard(1.0, 293, 0), 
 	Warm(0.75, 310, 2), 
-	Hot(0.1, 330, 10), 
+	Hot(0.1, 330, 7), 
 	VeryHot(0.0, 360, 50), 
 	ExtremelyHot(0.0, 400, 100),
 	UltraHot(0.0, 600, 150);

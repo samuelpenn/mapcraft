@@ -164,6 +164,7 @@
             <cost volume="1">60</cost>
             <production tech="0" law="6" pr="3" cr="3">
                 <output mode="AgFa">Grain</output>
+                <output mode="AgFa" efficiency="10">Textiles</output>
             </production>
             <codes source="Ag">Pe</codes>
             <description>

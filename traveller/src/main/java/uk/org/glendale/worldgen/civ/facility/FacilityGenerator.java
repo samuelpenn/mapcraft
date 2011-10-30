@@ -20,11 +20,15 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +38,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.XMLHelper;
+import uk.org.glendale.worldgen.astro.planet.Habitability;
+import uk.org.glendale.worldgen.astro.planet.Planet;
+import uk.org.glendale.worldgen.astro.planet.PopulationSize;
 import uk.org.glendale.worldgen.civ.commodity.Commodity;
 import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
 import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
@@ -86,6 +94,16 @@ public class FacilityGenerator {
 			createFacilities(base);
 		}
 	}
+	
+	private String getTextChild(Node node, String childName) {
+		for (int i = 0; i < node.getChildNodes().getLength(); i++) {
+			Node child = node.getChildNodes().item(i);
+			if (child != null && child.getNodeName().equals(childName)) {
+				return child.getTextContent();
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Creates and imports a new facility into the database from the XML
@@ -106,8 +124,13 @@ public class FacilityGenerator {
 		String image = name.toLowerCase().replaceAll(" ", "_");
 		FacilityType type = FacilityType.Residential;
 		type = FacilityType.valueOf(XMLHelper.getAttribute(node, "type"));
-
-		Facility facility = new Facility(name, type, baseDir + image);
+		
+		String title = getTextChild(node, "title");
+		if (title == null || title.trim().length() == 0) {
+			title = name;
+		}
+		
+		Facility facility = new Facility(name, title, type, baseDir + image);
 		List<ProductionMap>	map = new ArrayList<ProductionMap>();
 		
 		if (factory.getFacility(name) != null) {
@@ -190,5 +213,70 @@ public class FacilityGenerator {
 				}
 			}
 		}
+	}
+	
+	private Properties	config;
+	
+	/**
+	 * Read all the configuration properties from the resource file.
+	 * If the file has already been read, then don't read it again.
+	 */
+	private void readConfig() {
+		if (config == null) {
+			ResourceBundle	bundle = ResourceBundle.getBundle("uk.org.glendale.worldgen.civ.facility.facilities");
+			Enumeration<String>		e = bundle.getKeys();
+			while (e.hasMoreElements()) {
+				String	key = e.nextElement();
+				config.setProperty(key, bundle.getString(key));
+			}
+		}
+	}
+	
+	/**
+	 * Get one option from the configuration. A configuration value may consist
+	 * of multiple space separated options. If there is more than one, chose one
+	 * at random and return that. If the key is unset, returns null.
+	 * 
+	 * @param key		Key to retrieve from the configuration.
+	 * @return			One of the listed options from the value.
+	 */
+	private String getOneOption(String key) {
+		String value = config.getProperty(key, "");
+		if (value.trim().length() > 0) {
+			String[] options = value.split(" ");
+			if (options.length > 1) {
+				value = options[Die.rollZero(options.length)];
+			}
+		}
+		return value.trim();
+	}
+	
+	/**
+	 * Get the value of the key key"."subKey. If a value consists of
+	 * multiple options, one is chosen randomly.
+	 * 
+	 * @param key		First part of the key.
+	 * @param subKey	Second part of the key.
+	 * @return			One value chosen from the list of options.
+	 */
+	private String getOneOption(Object key, Object subKey) {
+		return getOneOption(key + "." + subKey);
+	}
+	
+	/**
+	 * Generate facilities for the given planet. Uses a properties file to
+	 * determine the type of society to build based on the population size
+	 * and the world type.
+	 * 
+	 * @param planet
+	 */
+	public void generateFacilities(Planet planet, PopulationSize size) {
+		readConfig();
+		
+		Habitability	h = Habitability.getHabitability(planet);
+		
+		String culture = getOneOption(size, h);
+		
+		String	residential = getOneOption(culture, "residential");
 	}
 }

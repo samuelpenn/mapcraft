@@ -23,6 +23,11 @@ import uk.org.glendale.worldgen.astro.planet.Installation;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.server.AppManager;
 
+/**
+ * Factory class for retrieving and persisting factories.
+ * 
+ * @author Samuel Penn
+ */
 @Repository
 @Transactional
 public class FacilityFactory {
@@ -32,10 +37,22 @@ public class FacilityFactory {
 	public FacilityFactory() {
 	}
 
+	/**
+	 * Gets a facility by its unique id.
+	 * 
+	 * @param id	Unique id of facility.
+	 * @return		Facility.
+	 */
 	public Facility getFacility(int id) {
 		return em.find(Facility.class, id);
 	}
 
+	/**
+	 * Gets a facility by its name.
+	 * 
+	 * @param name	Name of facility to retrieve.
+	 * @return		Facility, or null if not found.
+	 */
 	public Facility getFacility(String name) {
 		Query q = em.createQuery("from Facility where name = :n");
 		q.setParameter("n", name);
@@ -68,7 +85,4 @@ public class FacilityFactory {
 		em.persist(production);
 	}
 	
-	public void addFacilitiesToPlanet(Planet planet, List<Installation> list) {
-		
-	}
 }
