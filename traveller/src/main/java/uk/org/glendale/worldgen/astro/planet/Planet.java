@@ -176,11 +176,11 @@ public class Planet {
 	 * @param name
 	 *            New name to give to the planet.
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		if (name == null || name.trim().length() == 0) {
 			throw new IllegalArgumentException("Name cannot be empty");
 		}
-		this.name = name;
+		this.name = name.trim();
 	}
 
 	/**
@@ -231,7 +231,7 @@ public class Planet {
 	 * @param distance
 	 *            Distance from primary, MKm (if primary is a star) or km.
 	 */
-	public void setDistance(int distance) {
+	public void setDistance(final int distance) {
 		if (distance <= 0) {
 			throw new IllegalArgumentException(
 					"Distance must be greater than zero");
@@ -254,7 +254,7 @@ public class Planet {
 	 * @param radius
 	 *            Planet radius, in kilometres.
 	 */
-	public void setRadius(int radius) {
+	public void setRadius(final int radius) {
 		if (radius < 0) {
 			throw new IllegalArgumentException("Radius cannot be negative");
 		}
@@ -282,7 +282,7 @@ public class Planet {
 		return type;
 	}
 
-	public void setType(PlanetType type) {
+	public void setType(final PlanetType type) {
 		if (type == null) {
 			throw new IllegalArgumentException("PlanetType must be valid");
 		}
@@ -308,7 +308,7 @@ public class Planet {
 	 * @param atmosphere
 	 *            Type of atmosphere.
 	 */
-	public void setAtmosphere(AtmosphereType atmosphere) {
+	public void setAtmosphere(final AtmosphereType atmosphere) {
 		this.atmosphere = atmosphere;
 		if (atmosphere == null || atmosphere == AtmosphereType.Vacuum) {
 			this.atmosphere = AtmosphereType.Vacuum;
@@ -328,7 +328,7 @@ public class Planet {
 		return pressure;
 	}
 
-	public void setPressure(AtmospherePressure pressure) {
+	public void setPressure(final AtmospherePressure pressure) {
 		this.pressure = pressure;
 		if (pressure == null || pressure == AtmospherePressure.None) {
 			this.atmosphere = AtmosphereType.Vacuum;
@@ -340,7 +340,7 @@ public class Planet {
 		return temperature;
 	}
 
-	public void setTemperature(Temperature temperature) {
+	public void setTemperature(final Temperature temperature) {
 		this.temperature = temperature;
 	}
 
@@ -348,7 +348,7 @@ public class Planet {
 		return hydrographics;
 	}
 
-	public void setHydrographics(int hydrographics) {
+	public void setHydrographics(final int hydrographics) {
 		if (hydrographics < 0) {
 			this.hydrographics = 0;
 		} else if (hydrographics > 100) {
@@ -362,7 +362,7 @@ public class Planet {
 		return axialTilt;
 	}
 
-	public void setAxialTilt(int axialTilt) {
+	public void setAxialTilt(final int axialTilt) {
 		this.axialTilt = axialTilt;
 	}
 
@@ -419,7 +419,7 @@ public class Planet {
 	 * @param dayLength
 	 *            Length of day in seconds.
 	 */
-	public void setDayLength(int dayLength) {
+	public void setDayLength(final int dayLength) {
 		if (dayLength < 1) {
 			throw new IllegalArgumentException("Day length must be positive");
 		}
@@ -430,7 +430,7 @@ public class Planet {
 		return lifeLevel;
 	}
 
-	public void setLifeType(LifeType lifeType) {
+	public void setLifeType(final LifeType lifeType) {
 		if (lifeType == null) {
 			this.lifeLevel = LifeType.None;
 		} else {
@@ -442,7 +442,7 @@ public class Planet {
 		return population;
 	}
 
-	public void setPopulation(long population) {
+	public void setPopulation(final long population) {
 		if (population < 0) {
 			throw new IllegalArgumentException("Population cannot be negative");
 		}
@@ -453,7 +453,7 @@ public class Planet {
 		return starport;
 	}
 
-	public void setStarport(StarportType starport) {
+	public void setStarport(final StarportType starport) {
 		this.starport = starport;
 	}
 
@@ -461,24 +461,35 @@ public class Planet {
 		return government;
 	}
 
-	public void setGovernment(GovernmentType government) {
+	public void setGovernment(final GovernmentType government) {
 		this.government = government;
+		if (this.government == null) {
+			this.government = GovernmentType.Anarchy;
+		}
 	}
 
 	public int getTechLevel() {
 		return techLevel;
 	}
 
-	public void setTechLevel(int techLevel) {
+	public void setTechLevel(final int techLevel) {
 		this.techLevel = techLevel;
+		if (this.techLevel < 0) {
+			this.techLevel = 0;
+		}
 	}
 
 	public int getLawLevel() {
 		return lawLevel;
 	}
 
-	public void setLawLevel(int lawLevel) {
+	public void setLawLevel(final int lawLevel) {
 		this.lawLevel = lawLevel;
+		if (this.lawLevel < 0) {
+			this.lawLevel = 0;
+		} else if (this.lawLevel > 6) {
+			this.lawLevel = 6;
+		}
 	}
 
 	public String getBaseType() {
@@ -489,7 +500,7 @@ public class Planet {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -597,7 +608,7 @@ public class Planet {
 	 * @param size
 	 *            Size of facility as percentage of optimum.
 	 */
-	public void addFacility(Facility facility, int size) {
+	public void addFacility(final Facility facility, final int size) {
 		if (facilities.contains(facility)) {
 			facilities.remove(facility);
 		}

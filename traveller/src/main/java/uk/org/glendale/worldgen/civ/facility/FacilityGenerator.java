@@ -38,6 +38,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import uk.org.glendale.rpg.traveller.systems.codes.GovernmentType;
+import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.XMLHelper;
 import uk.org.glendale.worldgen.astro.planet.Habitability;
@@ -262,6 +264,21 @@ public class FacilityGenerator {
 	private String getOneOption(Object key, Object subKey) {
 		return getOneOption(key + "." + subKey);
 	}
+
+	private String[] getAllOptions(String key) {
+		String value = config.getProperty(key, "");
+		if (value.trim().length() > 0) {
+			String[] options = value.split(" ");
+			if (options.length > 1) {
+				return options;
+			}
+		}
+		return new String[0];
+	}
+	
+	private String[] getAllOptions(Object key, Object subKey) {
+		return getAllOptions(key + "." + subKey);
+	}
 	
 	/**
 	 * Generate facilities for the given planet. Uses a properties file to
@@ -277,6 +294,45 @@ public class FacilityGenerator {
 		
 		String culture = getOneOption(size, h);
 		
-		String	residential = getOneOption(culture, "residential");
+		// There will be one of these.
+		String		residential = getOneOption(culture, "residential");
+		String[]	facilityNames = getAllOptions(culture, "facilities");
+		
+		planet.setTechLevel(Integer.parseInt(getOneOption(culture, "tech")));
+		planet.setLawLevel(Integer.parseInt(getOneOption(culture, "tech")));
+		
+		// Population is given as a power of 10. Randomly generate a suitable
+		// number to 4 significant figures.
+		int	p = Integer.parseInt(getOneOption(culture, "population"));
+		switch (p) {
+		case 0:
+			planet.setPopulation(Die.die(9));
+			break;
+		case 1:
+			planet.setPopulation(10 + Die.rollZero(90));
+			break;
+		case 2:
+			planet.setPopulation(100 + Die.rollZero(900));
+			break;
+		default:
+			planet.setPopulation((1000 + Die.rollZero(9000)) * (long)Math.pow(10, p - 2));
+			break;
+		}
+		
+		try {
+			planet.setGovernment(GovernmentType.valueOf(getOneOption(culture, "government")));
+			planet.setLawLevel(planet.getLawLevel() + planet.getGovernment().getLawModifier());
+		} catch (Throwable e) {
+			planet.setGovernment(GovernmentType.Anarchy);
+		}
+		
+		// Add all listed trade codes to the planet.
+		for (String code : getAllOptions(culture, "trade")) {
+			try {
+				planet.addTradeCode(TradeCode.valueOf(code));
+			} catch (Throwable e) {
+				// Catch illegal trade codes.
+			}
+		}
 	}
 }
