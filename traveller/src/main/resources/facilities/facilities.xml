@@ -87,5 +87,12 @@
             <require>ToAg</require>
             <operation level="100">AgFa</operation>
         </facility>
+
+        <facility name="agrarianColony" type="Residential">
+            <title>Agrarian Colony</title>
+            <codes>T3 T4 T5 T6 T7 P4 P5 P6 P7 P8</codes>
+            <require>Fo ClCv HoTl</require>
+            <consume>HoLu HoCl WpnH</consume>
+        </facility>
     </group>
 </facilities>

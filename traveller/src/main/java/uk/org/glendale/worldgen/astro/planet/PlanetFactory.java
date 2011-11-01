@@ -24,6 +24,7 @@ import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
 import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
+import uk.org.glendale.worldgen.civ.facility.FacilityGenerator;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
@@ -42,6 +43,9 @@ public class PlanetFactory {
 	@Autowired
 	private FacilityFactory			facilityFactory;
 	
+	@Autowired
+	private FacilityGenerator		facilityGenerator;
+	
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}
@@ -52,6 +56,10 @@ public class PlanetFactory {
 	
 	public FacilityFactory getFacilityFactory() {
 		return facilityFactory;
+	}
+	
+	public FacilityGenerator getFacilityGenerator() {
+		return facilityGenerator;
 	}
 	
 	public PlanetFactory() {

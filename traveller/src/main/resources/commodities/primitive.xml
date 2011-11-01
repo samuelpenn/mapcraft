@@ -16,6 +16,12 @@
             <production tech="0" law="6" pr="8" cr="8"/>
             <codes source="In">Cl</codes>
         </commodity>
+
+        <commodity name="Luxuries">
+            <cost volume="1">100</cost>
+            <production tech="0" law="6" pr="8" cr="8"/>
+            <codes source="In">Lu</codes>
+        </commodity>
     </group>
     
     <!-- 

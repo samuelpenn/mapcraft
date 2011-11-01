@@ -1,6 +1,8 @@
 package uk.org.glendale.worldgen.astro.planet;
 
 public enum PopulationSize {
+	/** No population at all. */
+	None,
 	/** Up to 100 people. */
 	Tiny,
 	/** Up to 10,000 people. */

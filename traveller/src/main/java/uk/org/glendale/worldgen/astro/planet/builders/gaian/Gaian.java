@@ -111,7 +111,7 @@ public class Gaian extends GaianWorld {
 		
 		generateMap();
 		generateResources();
-		
+/*
 		// Temporary population adding fix.
 		switch (Die.d6(2)) {
 		case -2: case -1: case 0: case 1:
@@ -182,6 +182,7 @@ public class Gaian extends GaianWorld {
 			planet.setLawLevel(Die.d4()+2);
 			break;		
 		}
+*/
 	}
 	
 	protected void addEcology() {

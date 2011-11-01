@@ -45,6 +45,7 @@ import uk.org.glendale.worldgen.XMLHelper;
 import uk.org.glendale.worldgen.astro.planet.Habitability;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PopulationSize;
+import uk.org.glendale.worldgen.astro.planet.StarportType;
 import uk.org.glendale.worldgen.civ.commodity.Commodity;
 import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
 import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
@@ -225,6 +226,7 @@ public class FacilityGenerator {
 	 */
 	private void readConfig() {
 		if (config == null) {
+			config = new Properties();
 			ResourceBundle	bundle = ResourceBundle.getBundle("uk.org.glendale.worldgen.civ.facility.facilities");
 			Enumeration<String>		e = bundle.getKeys();
 			while (e.hasMoreElements()) {
@@ -290,16 +292,22 @@ public class FacilityGenerator {
 	public void generateFacilities(Planet planet, PopulationSize size) {
 		readConfig();
 		
+		if (size == null || size == PopulationSize.None) {
+			return;
+		}
+		
 		Habitability	h = Habitability.getHabitability(planet);
 		
 		String culture = getOneOption(size, h);
+		System.out.println(size + ", " + culture);
 		
 		// There will be one of these.
-		String		residential = getOneOption(culture, "residential");
+		String		residentialName = getOneOption(culture, "residential");
 		String[]	facilityNames = getAllOptions(culture, "facilities");
 		
 		planet.setTechLevel(Integer.parseInt(getOneOption(culture, "tech")));
 		planet.setLawLevel(Integer.parseInt(getOneOption(culture, "tech")));
+		planet.setStarport(StarportType.valueOf(getOneOption(culture, "port")));
 		
 		// Population is given as a power of 10. Randomly generate a suitable
 		// number to 4 significant figures.
@@ -326,6 +334,8 @@ public class FacilityGenerator {
 			planet.setGovernment(GovernmentType.Anarchy);
 		}
 		
+		System.out.println("Generate: "+planet.getName()+", "+planet.getPopulation()+", "+planet.getGovernment());
+		
 		// Add all listed trade codes to the planet.
 		for (String code : getAllOptions(culture, "trade")) {
 			try {
@@ -333,6 +343,48 @@ public class FacilityGenerator {
 			} catch (Throwable e) {
 				// Catch illegal trade codes.
 			}
+		}
+		
+		Facility residential = factory.getFacility(residentialName);
+		int		 residentialSize = 89 + Die.d10(2);
+		if (planet.hasTradeCode(TradeCode.Po)) {
+			residentialSize -= Die.d6(3);
+		} else if (planet.hasTradeCode(TradeCode.Ri)){
+			residentialSize += Die.d6(3);
+		}
+		planet.addFacility(residential, residentialSize);
+		
+		int totalSize = 0;
+		for (String f : facilityNames) {
+			int		facilitySize = 100;
+			if (f.indexOf(";") > -1) {
+				try {
+					facilitySize = Integer.parseInt(f.replaceAll("[^0-9]", ""));
+				} catch (Throwable e) {
+					facilitySize = 100;
+				}
+			}
+			totalSize += facilitySize;
+		}
+		double multiplier = 100.0 / totalSize;
+		for (String f : facilityNames) {
+			String	facilityName = f;
+			int		facilitySize = 100;
+			if (f.indexOf(";") > -1) {
+				try {
+					facilityName = f.replaceAll(";.*", "");
+					facilitySize = Integer.parseInt(f.replaceAll("[^0-9]", ""));
+				} catch (Throwable e) {
+					facilitySize = 100;
+				}
+			}
+			Facility	facility = factory.getFacility(facilityName);
+			facilitySize *= multiplier;
+			facilitySize += Die.d6() - Die.d6();
+			if (facilitySize < 2) {
+				facilitySize = Die.d4();
+			}
+			planet.addFacility(facility, facilitySize);
 		}
 	}
 }

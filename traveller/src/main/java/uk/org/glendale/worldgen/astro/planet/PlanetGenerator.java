@@ -102,6 +102,13 @@ public class PlanetGenerator {
 		builder.setStar(star);
 		builder.setCommodityFactory(planetFactory.getCommodityFactory());
 		builder.generate();
+		
+		Habitability h = Habitability.getHabitability(planet);
+		System.out.println(planet.getName() + ": " + planet.getType() + ", " + h);
+		if (h.equals(Habitability.Ideal)) {
+			PopulationSize		size = PopulationSize.Small;
+			planetFactory.getFacilityGenerator().generateFacilities(planet, size);
+		}
 
 		return planet;
 	}
