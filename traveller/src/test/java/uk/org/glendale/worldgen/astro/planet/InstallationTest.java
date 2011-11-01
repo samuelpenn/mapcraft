@@ -23,7 +23,7 @@ import uk.org.glendale.worldgen.civ.facility.FacilityType;
 public class InstallationTest {
 	@Test
 	public void testInstallation() {
-		Facility f = new Facility("Test", FacilityType.Industry, "test");
+		Facility f = new Facility("test", "Test", FacilityType.Industry, "test");
 		Installation i = new Installation(f, 100);
 
 		Assert.assertEquals(f, i.getFacility());
@@ -39,7 +39,7 @@ public class InstallationTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testIllegalSize() {
-		Facility f = new Facility("Test", FacilityType.Industry, "test");
+		Facility f = new Facility("test", "Test", FacilityType.Industry, "test");
 		Installation i = new Installation(f, 0);
 	}
 }

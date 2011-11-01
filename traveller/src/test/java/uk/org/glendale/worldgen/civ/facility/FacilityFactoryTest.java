@@ -35,7 +35,7 @@ public class FacilityFactoryTest {
 
 		FacilityFactory factory = new FacilityFactory();
 
-		Facility f = new Facility("Test", FacilityType.Residential, "test");
+		Facility f = new Facility("test", "Test", FacilityType.Residential, "test");
 		f.addCode(FacilityCode.H0);
 		f.addCode(FacilityCode.T0);
 		f.addOperation("Ag", 100);
