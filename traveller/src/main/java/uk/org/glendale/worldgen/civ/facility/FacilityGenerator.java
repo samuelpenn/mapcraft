@@ -287,7 +287,8 @@ public class FacilityGenerator {
 	 * determine the type of society to build based on the population size
 	 * and the world type.
 	 * 
-	 * @param planet
+	 * @param plaet		Planet to generate facilities for.
+	 * @param size		Size of population for this planet.
 	 */
 	public void generateFacilities(Planet planet, PopulationSize size) {
 		readConfig();
@@ -323,7 +324,7 @@ public class FacilityGenerator {
 			planet.setPopulation(100 + Die.rollZero(900));
 			break;
 		default:
-			planet.setPopulation((1000 + Die.rollZero(9000)) * (long)Math.pow(10, p - 2));
+			planet.setPopulation((1000 + Die.rollZero(9000)) * (long)Math.pow(10, p - 3));
 			break;
 		}
 		
@@ -367,6 +368,7 @@ public class FacilityGenerator {
 			totalSize += facilitySize;
 		}
 		double multiplier = 100.0 / totalSize;
+		System.out.println("Facility totalSize ["+totalSize+"] [" + multiplier + "]");
 		for (String f : facilityNames) {
 			String	facilityName = f;
 			int		facilitySize = 100;
@@ -384,6 +386,7 @@ public class FacilityGenerator {
 			if (facilitySize < 2) {
 				facilitySize = Die.d4();
 			}
+			System.out.println("  Add ["+facility.getName()+"] ["+facilitySize+"]");
 			planet.addFacility(facility, facilitySize);
 		}
 	}

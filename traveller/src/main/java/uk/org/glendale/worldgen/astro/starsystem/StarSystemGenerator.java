@@ -208,13 +208,6 @@ public class StarSystemGenerator {
 		planetName = system.getName() + " " + getOrbitNumber(++position);
 		distance = 130 + Die.d20(2);
 		planet = generator.generatePlanet(planetName, position, distance, new Gaian());
-		planet.setPopulation(Die.d6(3) * 100000);
-		planet.setTechLevel(0);
-		planet.setGovernment(GovernmentType.Anarchy);
-		planet.setLawLevel(0);
-		planet.addFacility(facilityFactory.getFacility("Hunter Gatherer"), 100);
-		planet.addFacility(facilityFactory.getFacility("Primitive Tribes"), 100);
-		planet.addFacility(facilityFactory.getFacility("Primitive Mining"), 10);
 		system.addPlanet(planet);
 		factory.persist(system);
 		

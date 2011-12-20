@@ -112,4 +112,8 @@ public class PlanetFactory {
 		return null;
 	}
 	
+	public void persist(Planet planet) {
+		em.persist(planet);
+	}
+	
 }

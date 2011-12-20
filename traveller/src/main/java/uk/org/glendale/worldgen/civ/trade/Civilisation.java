@@ -183,8 +183,24 @@ public class Civilisation {
 		long 	available = (long) (capacity * modifier);
 		double 	output = available / Math.pow(10, pr / 2.0);
 		
+		if (planet.getTechLevel() < commodity.getTechLevel()) {
+			// Unable to produce this good.
+			return 0;
+		} else {
+			// If tech level is higher, then can produce the good at a
+			// faster rate than normal, normally 5% per level higher.
+			int	 techDiff = planet.getTechLevel() - commodity.getTechLevel();
+			double techMod = 1.0 + techDiff * 0.05;
+			if (commodity.hasCode(CommodityCode.Tl)) {
+				techMod = 1.0 + techDiff * 0.10;
+			} else if (commodity.hasCode(CommodityCode.TL)) {
+				techMod = 1.0 + techDiff * 0.20;
+			}
+			output *= techMod;
+		}
+		
 		// We use the square root of the fraction, rather than the raw
-		// fraction, to increase the likelyhood of producing something.
+		// fraction, to increase the likelihood of producing something.
 		if (output < 1 && Math.random() <= Math.sqrt(output - ((int)output))) {
 			output += 1;
 		}
@@ -192,6 +208,14 @@ public class Civilisation {
 		return (long) output;
 	}
 	
+	/**
+	 * Gets the inventory item for the given commodity. If there is currently
+	 * no inventory item, then one is created and added to the planet's
+	 * current inventory with zero statistics.
+	 * 
+	 * @param commodity		Commodity to retrieve inventory for.
+	 * @return				Existing or new inventory item.
+	 */
 	private Inventory getInventoryItem(Commodity commodity) {
 		Inventory	item = null;
 		
@@ -216,7 +240,8 @@ public class Civilisation {
 	 * 
 	 * @param required	List of codes that must be satisfied.
 	 * @param capacity	Amount of satisfaction required.
-	 * @return
+	 * 
+	 * @return			Percentage of requirements which were met.
 	 */
 	private int requiredGoods(Set<CommodityCode> required, long capacity) {
 		int	percentageMet = 100;

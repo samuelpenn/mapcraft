@@ -105,11 +105,48 @@ public class PlanetGenerator {
 		
 		Habitability h = Habitability.getHabitability(planet);
 		System.out.println(planet.getName() + ": " + planet.getType() + ", " + h);
-		if (h.equals(Habitability.Ideal)) {
-			PopulationSize		size = PopulationSize.Small;
-			planetFactory.getFacilityGenerator().generateFacilities(planet, size);
+		PopulationSize		size = PopulationSize.None;
+		switch (h) {
+		case Ideal:
+			// Ideal worlds, tend to have very large populations.
+			switch (Die.d6(2)) {
+			case 2:	case 3:
+				size = PopulationSize.Medium;
+				break;
+			case 4: case 5:
+				size = PopulationSize.Large;
+				break;
+			case 6: case 7: case 8: case 9: case 10:
+				size = PopulationSize.Huge;
+				break;
+			case 11: case 12:
+				size = PopulationSize.Gigantic;
+				break;
+			}
+			break;
+		case Habitable:
+			// Ideal worlds, tend to have large populations.
+			switch (Die.d6(2)) {
+			case 2:
+				size = PopulationSize.Small;
+				break;
+			case 3: case 4:
+				size = PopulationSize.Medium;
+				break;
+			case 5: case 6: case 7:
+				size = PopulationSize.Large;
+				break;
+			case 8: case 9: case 10: case 11:
+				size = PopulationSize.Huge;
+				break;
+			case 12:
+				size = PopulationSize.Gigantic;
+				break;
+			}
+			break;
 		}
-
+		planetFactory.getFacilityGenerator().generateFacilities(planet, size);
+		System.out.println("TechLevel: "+planet.getTechLevel());
 		return planet;
 	}
 
