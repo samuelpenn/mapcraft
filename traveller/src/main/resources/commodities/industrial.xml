@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<commodities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xmlns:w="http://glendale.org.uk/mapcraft/worldgen"
+			 xsi:schemaLocation="commodities.xsd">
+
+    <group name="Base">
+    </group>
+    
+    <!-- 
+        Primitive items are TL0-2. They are mostly stone or metal tools,
+        simple artistic items, simple clothes and weapons.
+     -->
+	<group name="Tools" base="industrial">
+        <commodity name="Agricultural tools TL5" parent="Tools">
+            <cost volume="1">175</cost>
+            <production tech="5" law="6" pr="6" cr="7"/>
+            <codes source="Re">To AgTl Tm</codes>
+            <description>
+                Agricultural tools.
+            </description>
+        </commodity>
+
+        <commodity name="Household tools TL5" parent="Tools">
+            <cost volume="1">50</cost>
+            <production tech="6" law="4" pr="7" cr="8"/>
+            <codes source="Re">To Tm HoTl</codes>
+            <description>
+                Household tools.
+            </description>
+        </commodity>
+
+        <commodity name="Craft tools TL5" parent="Tools">
+            <cost volume="1">200</cost>
+            <production tech="5" law="6" pr="7" cr="6"/>
+            <codes source="Re">To Tm HoTl</codes>
+            <description>
+                Craft tools.
+            </description>
+        </commodity>
+        
+        
+        <commodity name="Muskets" parent="Tools">
+            <cost volume="1">120</cost>
+            <production tech="5" law="4" pr="7" cr="8"/>
+            <codes source="Re">WpnH Tp Tm</codes>
+            <description>
+                Primitive firearms.
+            </description> 
+        </commodity>        
+    </group>
+
+    <group name="Clothes" base="primitive">
+
+    </group>
+</commodities>

@@ -192,10 +192,28 @@
 
         <commodity name="Grain" parent="Food">
             <cost volume="1">40</cost>
-            <production tech="0" law="6" pr="3" cr="5"/>
+            <production tech="0" law="6" pr="3" cr="3"/>
             <codes source="Ag">Fo Pe</codes>
             <description>
                 Edible seed bearing fruits.
+            </description>
+        </commodity>
+
+        <commodity name="Beer" parent="Food">
+            <cost volume="1">20</cost>
+            <production tech="0" law="6" pr="2" cr="2"/>
+            <codes source="Ag">Fo Pe</codes>
+            <description>
+                Beer.
+            </description>
+        </commodity>
+
+        <commodity name="Wine" parent="Food">
+            <cost volume="1">120</cost>
+            <production tech="0" law="6" pr="3" cr="3"/>
+            <codes source="Ag">Fo Pe</codes>
+            <description>
+                Wine.
             </description>
         </commodity>
         
@@ -295,13 +313,16 @@
 
         <commodity name="Meat" parent="Food">
             <cost volume="1">200</cost>
-            <production tech="0" law="6" pr="4" cr="6"/>
+            <production tech="0" law="6" pr="4" cr="3"/>
             <codes source="Ag">Fo Pe Hq</codes>
+            <description>
+                Meat from large animals.
+            </description>
         </commodity>
         
         <commodity name="Entomeat" parent="Food">
             <cost volume="1">50</cost>
-            <production tech="0" law="6" pr="2" cr="3"/>
+            <production tech="0" law="6" pr="2" cr="2"/>
             <codes source="Ag">Fo Pe Lq</codes>
             <description>
                 Meat of insects and other arthropods.
@@ -310,13 +331,13 @@
 
         <commodity name="Game" parent="Food">
             <cost volume="1">100</cost>
-            <production tech="0" law="6" pr="4" cr="5"/>
+            <production tech="0" law="6" pr="4" cr="4"/>
             <codes source="Ag">Fo Pe</codes>
         </commodity>
         
         <commodity name="Animal products">
             <cost volume="1">50</cost>
-            <production tech="0" law="6" pr="4" cr="8"/>
+            <production tech="0" law="6" pr="4" cr="7"/>
             <codes source="Ag">Pe</codes>
         </commodity>
     </group>

@@ -79,12 +79,29 @@
             <codes>T2 P4 P5 P6 P7 P8</codes>
             <require>Fo ClCv HoTl</require>
             <consume>HoLu HoCl WpnH</consume>
+            <map from="Ferric ore" to="Iron tools" level="100"/>
+            <map from="Ferric ore" to="Metal jewellery" level="20"/>
+            <map from="Ferric ore" to="Iron weapons" level="50"/>
+            <map from="Silicate ore" to="Bricks" level="10"/>
         </facility>
+
+        <facility name="feudalKingdoms" type="Residential">
+            <title>Feudal Kingdoms</title>
+            <codes>T2 P4 P5 P6 P7 P8</codes>
+            <require>Fo ClCv HoTl</require>
+            <consume>HoLu HoCl WpnH</consume>
+            <map from="Ferric ore" to="Iron tools" level="100"/>
+            <map from="Ferric ore" to="Metal jewellery" level="20"/>
+            <map from="Ferric ore" to="Iron weapons" level="100"/>
+            <map from="Ferric ore" to="Steel weapons" level="25"/>
+            <map from="Silicate ore" to="Bricks" level="50"/>
+        </facility>
+
 
         <facility name="primitiveFarming" type="Agriculture">
             <title>Primitive Farming</title>
             <codes>T0 T1 T2 T3 P3 P4 P5 P6 P7 P8 H0 H1</codes>
-            <require>ToAg</require>
+            <require>To</require>
             <operation level="100">AgFa</operation>
         </facility>
 
@@ -94,5 +111,74 @@
             <require>Fo ClCv HoTl</require>
             <consume>HoLu HoCl WpnH</consume>
         </facility>
+
+        <facility name="simpleFarming" type="Agriculture">
+            <title>Simple Farming</title>
+            <codes>T3 T4</codes>
+            <require>To</require>
+            <operation level="100">AgFa</operation>
+        </facility>
+
+        <facility name="simpleMining" type="Mining">
+            <title>Simple Mining</title>
+            <codes>T3 P3 P4 P5 P6 P7</codes>
+            <operation level="50">MiSi</operation>
+            <operation level="75">MiFe</operation>
+        </facility>
     </group>
+
+    <group name="Enlightenment" base="enlightenment">
+        <facility name="merchantKingdoms" type="Residential">
+            <title>Merchant Kingdoms</title>
+            <codes>T4 P4 P5 P6 P7 P8</codes>
+            <require>Fo ClCv HoTl</require>
+            <consume>HoLu HoCl WpnH</consume>
+            <map from="Ferric ore" to="Iron tools" level="100"/>
+            <map from="Ferric ore" to="Metal jewellery" level="20"/>
+            <map from="Ferric ore" to="Iron weapons" level="25"/>
+            <map from="Ferric ore" to="Steel weapons" level="75"/>
+            <map from="Silicate ore" to="Bricks" level="75"/>
+        </facility>
+    
+        <facility name="industrialState" type="Residential">
+            <title>Industrial State</title>
+            <codes>T5 P6 P7 P8</codes>
+            <require>Fo ClCv HoTl</require>
+            <consume>HoLu HoCl WpnH</consume>
+            <map from="Ferric ore" to="Iron tools" level="100"/>
+            <map from="Ferric ore" to="Metal jewellery" level="20"/>
+            <map from="Ferric ore" to="Iron weapons" level="25"/>
+            <map from="Ferric ore" to="Steel weapons" level="75"/>
+            <map from="Silicate ore" to="Bricks" level="75"/>
+        </facility>
+
+        <facility name="industrialFarming" type="Agriculture">
+            <title>Simple Farming</title>
+            <codes>T3 T4</codes>
+            <require>To</require>
+            <operation level="100">AgFa</operation>
+        </facility>
+
+        <facility name="steamIndustry" type="Industry">
+            <title>Simple Farming</title>
+            <codes>T5</codes>
+            <require>To</require>
+            <operation level="100">AgFa</operation>
+            <map from="Ferric ore" to="Agricultural tools TL5" level="100"/>
+            <map from="Ferric ore" to="Household tools TL5" level="100"/>
+            <map from="Ferric ore" to="Craft tools TL5" level="100"/>
+            <map from="Silicate ore" to="Pottery TL5" level="100"/>
+        </facility>
+    </group>
+        
+    <!-- 
+    <group name="High Tech">
+        <facility name="highTech" type="Residential">
+            <title>Technological Society</title>
+            <codes>T7 T8</codes>
+            <require>Fo </require>
+            <consume></consume>
+        </facility>
+    </group>
+    -->
 </facilities>

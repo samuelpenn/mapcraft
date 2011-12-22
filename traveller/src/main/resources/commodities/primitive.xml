@@ -127,6 +127,15 @@
                 Good quality steel weapons and armour.
             </description> 
         </commodity>
+        
+        <commodity name="Bricks">
+            <cost volume="1">5</cost>
+            <production tech="1" law="6" pr="5" cr="6"/>
+            <codes source="Re">BldH</codes>
+            <description>
+                Basic building materials.
+            </description> 
+        </commodity>
     </group>
 
     <group name="Clothes" base="primitive">
@@ -146,6 +155,12 @@
             <cost volume="1">25</cost>
             <production tech="2" law="6" pr="5" cr="6"/>
             <codes source="Re">ClCv Tp Tm</codes>
-        </commodity>"
+        </commodity>
+        
+        <commodity name="Noble clothes" parent="Clothes">
+            <cost volume="1">150</cost>
+            <production tech="3" law="6" pr="7" cr="8"/>
+            <codes source="Re">ClCv Tp Tm</codes>
+        </commodity>
     </group>
 </commodities>
