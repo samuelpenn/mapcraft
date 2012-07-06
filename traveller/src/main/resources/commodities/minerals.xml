@@ -10,18 +10,33 @@
             <production tech="0" law="6" pr="9" cr="10"/> 
             <codes source="Mi">Or</codes>
         </commodity>
+
+        <commodity name="Alloys" image="alloys">
+            <cost volume="1">1000</cost>     
+            <production tech="2" law="6" pr="5" cr="5"/> 
+            <codes source="In">In</codes>
+        </commodity>
     </group>
 
     <group name="Metallic Ores" base="minerals">
         <commodity name="Ferric Ore" parent="Minerals">
             <cost volume="1">150</cost>
-            <production tech="1" law="6" pr="10" cr="11"/>
+            <production tech="1" law="6" pr="10" cr="11">
+                <output mode="MiFe" efficiency="100">Ferric Ore</output>
+                <output mode="InFe1" efficiency="100">Bronze</output>
+                <output mode="InFe2" efficiency="100">Iron</output>
+                <output mode="InFe3" efficiency="100">Steel</output>
+                <output mode="InFe6" efficiency="100">Steel Alloy</output>
+            </production>
             <codes source="Mi">Or Me</codes>
         </commodity>
 
         <commodity name="Rare Metals" parent="Ferric Ore">
             <cost volume="1">750</cost>
-            <production tech="4" law="6" pr="11" cr="12"/>
+            <production tech="4" law="6" pr="11" cr="12">
+                <output mode="MiFe" efficiency="50">Rare Metals</output>
+                <output mode="InFe5" efficiency="100">Conductors</output>
+            </production>
             <codes source="Mi">Or Me</codes>
         </commodity>
 
@@ -150,6 +165,53 @@
 		        Isotope of Helium, used in nuclear fusion.
 		    </description>
 		</commodity>
+    </group>
+    
+    <group name="Alloys" base="industrial">
+        <commodity name="Bronze" parent="Alloys">
+            <cost volume="1">200</cost>
+            <production tech="1" law="6" pr="3" cr="4"/>
+            <codes source="In">In</codes>
+            <description>
+                Bronze ingots.
+            </description>
+        </commodity>
+
+        <commodity name="Iron" parent="Alloys">
+            <cost volume="1">500</cost>
+            <production tech="2" law="6" pr="3" cr="4"/>
+            <codes source="In">In</codes>
+            <description>
+                Iron ingots.
+            </description>
+        </commodity>
+
+        <commodity name="Steel" parent="Alloys">
+            <cost volume="1">1200</cost>
+            <production tech="3" law="6" pr="3" cr="4"/>
+            <codes source="In">In</codes>
+            <description>
+                Steel ingots.
+            </description>
+        </commodity>
+
+        <commodity name="Steel Alloy" parent="Alloys">
+            <cost volume="1">1800</cost>
+            <production tech="6" law="6" pr="3" cr="4"/>
+            <codes source="In">In</codes>
+            <description>
+                Steel alloys.
+            </description>
+        </commodity>
+
+        <commodity name="Conductors" parent="Alloys">
+            <cost volume="1">500</cost>
+            <production tech="5" law="6" pr="3" cr="4"/>
+            <codes source="In">In</codes>
+            <description>
+                Conductive metals for electrical components.
+            </description>
+        </commodity>
     </group>
 
 </commodities>
