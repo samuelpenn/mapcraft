@@ -121,6 +121,13 @@ public class Inventory {
 		return units;
 	}
 	
+	/**
+	 * Produce the given number of units of this item. Amount is added to the
+	 * amount stored, the number produced this week, and the total weekly
+	 * input. Cannot produce a negative number of units.
+	 * 
+	 * @param units		Number of units of this item to produce.
+	 */
 	public void produce(long units) {
 		if (units < 0) {
 			throw new IllegalArgumentException("Cannot produce negative amounts.");
@@ -130,6 +137,15 @@ public class Inventory {
 		this.weeklyIn += units;
 	}
 	
+	/**
+	 * Sell the given number of units of this item. Stored amount is reduced
+	 * by units sold, count of sold and weeklyOut is incremented. Exception
+	 * is thrown if units are negative. If try to sell more than we have, then
+	 * the amount sold is capped at current stocks.
+	 * 
+	 * @param units		Number of units to sell.
+	 * @return			Actual number sold.
+	 */
 	public long sell(long units) {
 		if (units < 0) {
 			throw new IllegalArgumentException("Cannot sell a negative amount.");
@@ -142,6 +158,13 @@ public class Inventory {
 		return units;
 	}
 	
+	/**
+	 * Buy the given number of units of this item. Stored amount is incremented
+	 * by units bought. Count of bought and weeklyIn is incremented. Cannot
+	 * buy a negative number of units.
+	 * 
+	 * @param units		Number of units to buy.
+	 */
 	public void buy(long units) {
 		if (units < 0) {
 			throw new IllegalArgumentException("Cannot buy a negative amount.");
@@ -176,6 +199,16 @@ public class Inventory {
 	}
 	
 	/**
+	 * Get the current price for this item. This is affected by current stock
+	 * levels, and whether more are being produced than consumed.
+	 * 
+	 * @return	Current unit price of this commodity.
+	 */
+	public int getPrice() {
+		return price;
+	}
+	
+	/**
 	 * At the end of each week, the inventory is processed. Stock levels will
 	 * decay (Perishable goods decay faster), and other statistics are halved.
 	 * Statistics aren't reset to zero, so the previous week affects the
@@ -194,6 +227,10 @@ public class Inventory {
 		this.consumed *= 0.5;
 		this.produced *= 0.5;
 		
-		price = (int)(150.0 * weeklyOut / weeklyIn);
+		if (weeklyIn > 0) {
+			price = (int)(commodity.getCost() * weeklyOut / weeklyIn);
+		} else {
+			price = commodity.getCost();
+		}
 	}
 }

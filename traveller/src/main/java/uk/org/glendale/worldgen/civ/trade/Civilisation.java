@@ -372,8 +372,10 @@ public class Civilisation {
 				cap = (cap * rate * m.getEfficiency()) / 10000;
 				long produced = getWeeklyProduction(m.getOutput(), cap);
 				
-				System.out.println("    + " + produced);
-				getInventoryItem(m.getOutput()).produce(produced);
+				if (produced > 0) {
+					System.out.println("    + " + produced);
+					getInventoryItem(m.getOutput()).produce(produced);
+				}
 			}
 		}
 	}
