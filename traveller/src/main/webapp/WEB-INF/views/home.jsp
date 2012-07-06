@@ -20,6 +20,10 @@
 				</c:forEach>
 			</ul>
 			
+			<p>
+			 System: ${id}, ${name}, ${stars}
+			</p>
+			
 			<h4>New Sector</h4>
 			
 			<table>
