@@ -10,9 +10,33 @@
             <production tech="0" law="6" pr="4" cr="5"/>
             <codes source="Ag">Fo Pe</codes>
         </commodity>
+        
+        <commodity name="Synthetic Green" parent="Food">
+            <cost volume="1">10</cost>
+            <production tech="6" law="6" pr="4" cr="5"/>
+            <codes source="In">Fo Pe Lq</codes>
+            <description>
+                Synthetic food made from simple organic matter. It is considered
+                to be poor quality, but it is easily manufactured on worlds
+                which have a limited biosphere.
+            </description>
+        </commodity>
+        
+        <commodity name="Synthetic Red" parent="Food">
+            <cost volume="1">25</cost>
+            <production tech="8" law="6" pr="4" cr="5"/>
+            <codes source="In">Fo Pe Lq</codes>
+            <description>
+                Synthetic food similar to Synthetic Green, but with a much
+                higher protein content. It is designed to replace meat. It
+                is harder to produce than Green, but is considered slightly
+                better.
+            </description>
+        </commodity>
     </group>
     
 	<group name="Base Organics" base="organics">
+	    </commodity>
 	    <commodity name="Protobionts" parent="Food">
 	        <cost volume="1">7</cost>
             <production tech="8" law="6" pr="0" cr="1"/>
