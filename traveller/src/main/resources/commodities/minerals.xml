@@ -100,17 +100,24 @@
     <group name="Silicate Ores" base="minerals">
 		<commodity name="Silicate Ore" parent="Minerals">
 		    <cost volume="1000000">50</cost>
-		    <production tech="0" law="6" pr="9" cr="10">
+		    <production tech="0" law="6" pr="0" cr="0">
                 <output mode="Quarry" tech="0" efficiency="50">Stone</output>
                 <output mode="Quarry" tech="0" efficiency="50">Flint</output>
                 <output mode="Mine" tech="0" efficiency="100">Stone</output>
                 <output mode="Mine" tech="0" efficiency="100">Flint</output>
                 <output mode="Mine" tech="1" efficiency="100">Quartz</output>
+            </production>
+		    <codes source="Mi">Or</codes>
+		</commodity>
+
+		<commodity name="Silicate Crystals" parent="Silicate Ore">
+            <cost volume="1000000">100</cost>
+            <production tech="0" law="6" pr="0" cr="0">
                 <output mode="Mine" tech="0" efficiency="100">Olivine</output>
                 <output mode="Mine" tech="0" efficiency="100">Magnesite</output>
                 <output mode="Mine" tech="0" efficiency="100">Crystalline</output>
             </production>
-		    <codes source="Mi">Or</codes>
+            <codes source="Mi">Or</codes>
 		</commodity>
 
         <commodity name="Stone" parent="Silicate Ore">
