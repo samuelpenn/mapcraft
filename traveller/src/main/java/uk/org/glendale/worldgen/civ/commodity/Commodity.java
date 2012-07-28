@@ -200,7 +200,7 @@ public class Commodity {
 		return production;
 	}
 
-	long getProduction(final long population) {
+	public long getProduction(final long population) {
 		return (long) (population / Math.pow(10, production / 2.0));
 	}
 
@@ -221,7 +221,7 @@ public class Commodity {
 		return consumption;
 	}
 
-	long getConsumption(final long population) {
+	public long getConsumption(final long population) {
 		return (long) (population / Math.pow(10, consumption / 2.0));
 	}
 
@@ -276,6 +276,15 @@ public class Commodity {
 
 	public boolean hasCode(final CommodityCode code) {
 		return codes.contains(code);
+	}
+	
+	public boolean equals(Object o) {
+		if (o instanceof Commodity) {
+			if (((Commodity) o).getId() == id) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

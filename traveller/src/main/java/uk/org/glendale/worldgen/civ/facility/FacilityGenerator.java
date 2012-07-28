@@ -269,9 +269,10 @@ public class FacilityGenerator {
 
 	private String[] getAllOptions(String key) {
 		String value = config.getProperty(key, "");
+
 		if (value.trim().length() > 0) {
 			String[] options = value.split(" ");
-			if (options.length > 1) {
+			if (options.length > 0) {
 				return options;
 			}
 		}
@@ -300,11 +301,17 @@ public class FacilityGenerator {
 		Habitability	h = Habitability.getHabitability(planet);
 		
 		String culture = getOneOption(size, h);
-		System.out.println(size + ", " + culture);
+		
+		// XXX: Force to be this for testing.
+		culture = "neolithicTribes";
+		
+		System.out.println("  " + size + ", " + culture);
 		
 		// There will be one of these.
 		String		residentialName = getOneOption(culture, "residential");
 		String[]	facilityNames = getAllOptions(culture, "facilities");
+		
+		System.out.println("  " + residentialName+ ", " + facilityNames.length);
 		
 		planet.setTechLevel(Integer.parseInt(getOneOption(culture, "tech")));
 		planet.setLawLevel(Integer.parseInt(getOneOption(culture, "tech")));
@@ -357,6 +364,7 @@ public class FacilityGenerator {
 		
 		int totalSize = 0;
 		for (String f : facilityNames) {
+			System.out.println("  Adding facility [" + f + "]");
 			int		facilitySize = 100;
 			if (f.indexOf(";") > -1) {
 				try {

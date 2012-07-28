@@ -357,6 +357,8 @@ public class Civilisation {
 			Commodity			c = resource.getCommodity();
 			List<CommodityMap> 	map = commodityFactory.getMappings(c);
 			
+			System.out.println(resource.getCommodity().getName() + ": {{" + map.size() + "}}");
+			
 			for (CommodityMap m : map) {
 				String	operation = m.getOperation();
 				int		rate = facility.getOperation(operation);
@@ -428,15 +430,15 @@ public class Civilisation {
 		for (ProductionMap m : pmap) {
 			Commodity	from = m.getFrom();
 			Commodity	to = m.getTo();
-			System.out.println("    " + from.getName() + "-> " + to.getName());
 			
 			Inventory item = getInventoryItem(from);
 
-			long amount = (long)(capacity / Math.pow(10, to.getProductionRating()/2.0));
+			long amount = to.getProduction(capacity);
 			if (amount > item.getAmount()) {
 				amount = item.getAmount();
 			}
 			item.consume(amount);
+			System.out.println("    " + from.getName() + "-> " + to.getName() + " [" + amount + "]");
 			
 			item = getInventoryItem(to);
 			item.produce(amount);

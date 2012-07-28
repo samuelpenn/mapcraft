@@ -112,6 +112,21 @@ public class CommodityFactory {
 			return new ArrayList<CommodityMap>();
 		}
 	}
+	
+	public void deleteMapping(Commodity commodity, String mode, Commodity output) {
+		Query q = em.createQuery("from CommodityMap where commodity = :c and output = :o and mode = :m");
+		q.setParameter("c", commodity);
+		q.setParameter("o", output);
+		q.setParameter("m", mode);
+		try {
+			List<CommodityMap> mappings = q.getResultList();
+			for (CommodityMap map : mappings) {
+				em.remove(map);
+			}
+		} catch (NoResultException e) {
+			// Nothing to delete.
+		}
+	}
 
 	/**
 	 * Create a new commodity if it doesn't already exist. Writes commodity into
@@ -251,9 +266,13 @@ public class CommodityFactory {
 							if (techLevel < 0) {
 								techLevel = 0;
 							}
-							CommodityMap map = new CommodityMap(
-									getCommodity(XMLHelper.getAttribute(node,
-											"name")), getCommodity(value), mode, 
+							String    name = XMLHelper.getAttribute(node, "name");
+							Commodity input = getCommodity(name);
+							Commodity output = getCommodity(value);
+							
+							deleteMapping(input, mode, output);
+							
+							CommodityMap map = new CommodityMap(input, output, mode, 
 											efficiency, techLevel);
 							em.persist(map);
 						}
