@@ -6,13 +6,13 @@
 
     <group name="Base">
         <commodity name="Food">
-            <cost volume="1">50</cost>
+            <cost volume="1000000">50</cost>
             <production tech="0" law="6" pr="4" cr="5"/>
             <codes source="Ag">Fo Pe</codes>
         </commodity>
-        
+
         <commodity name="Synthetic Green" parent="Food">
-            <cost volume="1">10</cost>
+            <cost volume="1000000">10</cost>
             <production tech="6" law="6" pr="4" cr="5"/>
             <codes source="In">Fo Pe Lq</codes>
             <description>
@@ -21,9 +21,9 @@
                 which have a limited biosphere.
             </description>
         </commodity>
-        
+
         <commodity name="Synthetic Red" parent="Food">
-            <cost volume="1">25</cost>
+            <cost volume="1000000">25</cost>
             <production tech="8" law="6" pr="4" cr="5"/>
             <codes source="In">Fo Pe Lq</codes>
             <description>
@@ -34,45 +34,48 @@
             </description>
         </commodity>
     </group>
-    
-	<group name="Base Organics" base="organics">
-	    </commodity>
-	    <commodity name="Protobionts" parent="Food">
-	        <cost volume="1">7</cost>
-            <production tech="8" law="6" pr="0" cr="1"/>
-	        <codes source="Ag">Fo FoOr Lq Pe</codes>
-	        <description>
-	            Abiotically produced organic molecules. May have a simple
-	            cell-like membrane structure, and be capable of simple
-	            self-replication.
-	        </description>
-	    </commodity>
 
-	    <commodity name="Prokaryotes" parent="Food">
-	    	<cost volume="1">5</cost>
-	    	<production tech="8" law="6" pr="0" cr="2"/>
-	    	<codes source="Ag">Fo FoOr Lq Pe</codes>
-	    	<description>
-	    		Simple organisms which lack a cell nucleus, though may have a
-	    		simple cell structure. They are the simplest living things, 
-	    		evolved from protobionts.
-	    	</description>
-	    </commodity>
-    
-	    <commodity name="Cyanobacteria" parent="Food">
-	    	<source>Ag</source><image>algae</image>
-	    	<cost volume="1">9</cost>
-	    	<production tech="7" law="6" pr="1" cr="2"/>
-	    	<codes source="Ag">Fo FoOr Lq Pe</codes>
-	    	<description>
-	    		A phylum of bacteria also known as blue-green algae that
-	    		uses photosynthesis to generate oxygen. They have simple
-	    		cell structures and are often precursors to true algae.
-	    	</description>
-	    </commodity>
+    <group name="Base Organics" base="organics">
+        <commodity name="Protobionts">
+            <cost volume="1000000">7</cost>
+            <production tech="8" law="6" pr="0" cr="1">
+                <output mode="FoodSynG">Fo</output>
+            </production>
+            <codes source="Ag">Fo FoOr Lq Pe</codes>
+            <description>
+                Abiotically produced organic molecules. May have a simple
+                cell-like membrane structure, and be capable of simple
+                self-replication.
+            </description>
+        </commodity>
+
+        <commodity name="Prokaryotes">
+            <cost volume="1000000">5</cost>
+            <production tech="8" law="6" pr="0" cr="2">
+                <output mode="FoodSynG">Fo</output>
+            </production>
+            <codes source="Ag">Fo FoOr Lq Pe</codes>
+            <description>
+                Simple organisms which lack a cell nucleus, though may have a
+                simple cell structure. They are the simplest living things,
+                evolved from protobionts.
+            </description>
+        </commodity>
+
+        <commodity name="Cyanobacteria">
+            <source>Ag</source><image>algae</image>
+            <cost volume="1000000">9</cost>
+            <production tech="7" law="6" pr="1" cr="2"/>
+            <codes source="Ag">Fo FoOr Lq Pe</codes>
+            <description>
+                A phylum of bacteria also known as blue-green algae that
+                uses photosynthesis to generate oxygen. They have simple
+                cell structures and are often precursors to true algae.
+            </description>
+        </commodity>
 
 	    <commodity name="Algae" parent="Food">
-	        <cost volume="1">12</cost>
+	        <cost volume="1000000">12</cost>
 	        <production tech="6" pr="1" cr="3"/>
 	        <codes source="Ag">Fo FoOr Lq Pe</codes>
 	        <description>
@@ -81,18 +84,18 @@
 	            bearing worlds. Also known as seaweed.
 	        </description>
 	    </commodity>
-    
+
 	    <commodity name="Cnidarians" parent="Food">
-	    	<cost volume="1">25</cost>
+	    	<cost volume="1000000">25</cost>
 	    	<production tech="1" law="6" pr="2" cr="3"/>
 	    	<codes source="Ag">Fo FoFi Lq Pe</codes>
 	    	<description>
-	    		Simple sea creatures such as jellies, sea ameneonies and hydras.
+	    		Simple sea creatures such as jellies, sea anemones and hydras.
 	    	</description>
 	    </commodity>
-    
+
 	    <commodity name="Echinoderms" parent="Food">
-	    	<cost volume="1">50</cost>
+	    	<cost volume="1000000">50</cost>
 	    	<production tech="1" law="6" pr="3" cr="3"/>
 	    	<codes source="Ag">Fo FoFi Pe</codes>
 	    	<description>
@@ -101,7 +104,7 @@
 	    </commodity>
 
 	    <commodity name="Marine Arthropods" parent="Food">
-	    	<cost volume="1">75</cost>
+	    	<cost volume="1000000">75</cost>
 	    	<production tech="1" law="6" pr="4" cr="4">
 	    	    <output mode="FiDs">Fo Pe</output>
                 <output mode="Fi" efficiency="10">Fo Pe</output>
@@ -113,7 +116,7 @@
 	    </commodity>
 
         <commodity name="Pisces" parent="Food">
-            <cost volume="1">90</cost>
+            <cost volume="1000000">90</cost>
             <production tech="1" law="6" pr="3" cr="5">
                 <output mode="Fi">Fish</output>
             </production>
@@ -124,7 +127,7 @@
         </commodity>
 
         <commodity name="Fish" parent="Food">
-            <cost volume="1">90</cost>
+            <cost volume="1000000">90</cost>
             <production tech="0" law="6" pr="3" cr="5"/>
             <codes source="Ag">Fo Pe</codes>
             <description>
@@ -133,7 +136,7 @@
         </commodity>
 
         <commodity name="Shellfish" parent="Food">
-            <cost volume="1">90</cost>
+            <cost volume="1000000">90</cost>
             <production tech="0" law="6" pr="4" cr="5"/>
             <codes source="Ag">Fo Pe</codes>
             <description>
@@ -142,7 +145,7 @@
         </commodity>
 
         <commodity name="Moss" parent="Food">
-            <cost volume="1">10</cost>
+            <cost volume="1000000">10</cost>
             <production tech="6" law="6" pr="3" cr="2"/>
             <codes source="Ag">Fo Pe Lq</codes>
             <description>
@@ -151,16 +154,16 @@
         </commodity>
 
         <commodity name="Fungi" parent="Food">
-            <cost volume="1">30</cost>
+            <cost volume="1000000">30</cost>
             <production tech="0" law="6" pr="3" cr="3"/>
             <codes source="Ag">Fo Pe Lq</codes>
             <description>
                 Spore based land life.
             </description>
         </commodity>
-        
+
         <commodity name="Ferns" parent="Food">
-            <cost volume="1">50</cost>
+            <cost volume="1000000">50</cost>
             <production tech="0" law="6" pr="4" cr="4">
                 <output mode="Ag">Vegetables</output>
             </production>
@@ -172,7 +175,7 @@
         </commodity>
 
         <commodity name="Trees" parent="Food">
-            <cost volume="1">60</cost>
+            <cost volume="1000000">60</cost>
             <production tech="0" law="6" pr="4" cr="3">
                 <output mode="Ag">Vegetables</output>
                 <output mode="Ag">Fruit</output>
@@ -185,7 +188,7 @@
         </commodity>
 
         <commodity name="Grasses" parent="Food">
-            <cost volume="1">60</cost>
+            <cost volume="1000000">60</cost>
             <production tech="0" law="6" pr="3" cr="3">
                 <output mode="AgFa">Grain</output>
                 <output mode="AgFa" efficiency="10">Textiles</output>
@@ -197,7 +200,7 @@
         </commodity>
 
         <commodity name="Vegetables" parent="Food">
-            <cost volume="1">50</cost>
+            <cost volume="1000000">50</cost>
             <production tech="0" law="6" pr="3" cr="4"/>
             <codes source="Ag">Fo Pe</codes>
             <description>
@@ -206,7 +209,7 @@
         </commodity>
 
         <commodity name="Fruit" parent="Food">
-            <cost volume="1">75</cost>
+            <cost volume="1000000">75</cost>
             <production tech="0" law="6" pr="5" cr="4"/>
             <codes source="Ag">Fo Pe</codes>
             <description>
@@ -215,7 +218,7 @@
         </commodity>
 
         <commodity name="Grain" parent="Food">
-            <cost volume="1">40</cost>
+            <cost volume="1000000">40</cost>
             <production tech="0" law="6" pr="3" cr="3"/>
             <codes source="Ag">Fo Pe</codes>
             <description>
@@ -224,7 +227,7 @@
         </commodity>
 
         <commodity name="Beer" parent="Food">
-            <cost volume="1">20</cost>
+            <cost volume="1000000">20</cost>
             <production tech="0" law="6" pr="2" cr="2"/>
             <codes source="Ag">Fo Pe</codes>
             <description>
@@ -233,16 +236,16 @@
         </commodity>
 
         <commodity name="Wine" parent="Food">
-            <cost volume="1">120</cost>
+            <cost volume="1000000">120</cost>
             <production tech="0" law="6" pr="3" cr="3"/>
             <codes source="Ag">Fo Pe</codes>
             <description>
                 Wine.
             </description>
         </commodity>
-        
+
         <commodity name="Animals">
-            <cost volume="1">500</cost>
+            <cost volume="1000000">500</cost>
             <production tech="0" law="6" pr="4" cr="4"/>
             <codes source="Ag">Pe</codes>
             <description>
@@ -251,7 +254,7 @@
         </commodity>
 
         <commodity name="Arthropods" parent="Animals">
-            <cost volume="1">200</cost>
+            <cost volume="1000000">200</cost>
             <production tech="0" law="6" pr="2" cr="3">
                 <output mode="AgSc">Entomeat</output>
                 <output mode="Ag" efficiency="10">Entomeat</output>
@@ -264,7 +267,7 @@
         </commodity>
 
         <commodity name="Aquafauna" parent="Animals">
-            <cost volume="1">200</cost>
+            <cost volume="1000000">200</cost>
             <production tech="0" law="6" pr="4" cr="4">
                 <output mode="AgHu">Game</output>
             </production>
@@ -275,9 +278,9 @@
                 crocodiles and otters.
             </description>
         </commodity>
-        
+
         <commodity name="Microfauna" parent="Animals">
-            <cost volume="1">200</cost>
+            <cost volume="1000000">200</cost>
             <production tech="0" law="6" pr="3" cr="3">
                 <output mode="Ag">Game</output>
             </production>
@@ -289,7 +292,7 @@
         </commodity>
 
         <commodity name="Minifauna" parent="Animals">
-            <cost volume="1">200</cost>
+            <cost volume="1000000">200</cost>
             <production tech="0" law="6" pr="3" cr="4">
                 <output mode="Ag">Meat</output>
             </production>
@@ -298,9 +301,9 @@
                 Any type of small vertebrate land animal, from mice to wolves.
             </description>
         </commodity>
-        
+
         <commodity name="Mesofauna" parent="Animals">
-            <cost volume="1">500</cost>
+            <cost volume="1000000">500</cost>
             <production tech="0" law="6" pr="3" cr="5">
                 <output mode="AgFa" efficiency="100">Meat</output>
                 <output mode="AgHu" efficiency="50">Meat</output>
@@ -313,7 +316,7 @@
         </commodity>
 
         <commodity name="Megafauna" parent="Animals">
-            <cost volume="1">1000</cost>
+            <cost volume="1000000">1000</cost>
             <production tech="0" law="6" pr="4" cr="6">
                 <output mode="AgFa" efficiency="100">Meat</output>
                 <output mode="AgHu" efficiency="50">Meat</output>
@@ -325,7 +328,7 @@
         </commodity>
 
         <commodity name="Avians" parent="Animals">
-            <cost volume="1">300</cost>
+            <cost volume="1000000">300</cost>
             <production tech="0" law="6" pr="5" cr="3">
                 <output mode="AgHu">Game</output>
             </production>
@@ -336,16 +339,16 @@
         </commodity>
 
         <commodity name="Meat" parent="Food">
-            <cost volume="1">200</cost>
+            <cost volume="1000000">200</cost>
             <production tech="0" law="6" pr="4" cr="3"/>
             <codes source="Ag">Fo Pe Hq</codes>
             <description>
                 Meat from large animals.
             </description>
         </commodity>
-        
+
         <commodity name="Entomeat" parent="Food">
-            <cost volume="1">50</cost>
+            <cost volume="1000000">50</cost>
             <production tech="0" law="6" pr="2" cr="2"/>
             <codes source="Ag">Fo Pe Lq</codes>
             <description>
@@ -354,13 +357,13 @@
         </commodity>
 
         <commodity name="Game" parent="Food">
-            <cost volume="1">100</cost>
+            <cost volume="1000000">100</cost>
             <production tech="0" law="6" pr="4" cr="4"/>
             <codes source="Ag">Fo Pe</codes>
         </commodity>
-        
+
         <commodity name="Animal products">
-            <cost volume="1">50</cost>
+            <cost volume="1000000">50</cost>
             <production tech="0" law="6" pr="4" cr="7"/>
             <codes source="Ag">Pe</codes>
         </commodity>

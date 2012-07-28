@@ -177,7 +177,6 @@ public class StarSystemGenerator {
 		primary.setForm(StarForm.Star);		
 		system.addStar(primary);
 		
-		PlanetBuilder	builder;
 		String			planetName;
 		int				position = 0;
 		int				distance = 0;

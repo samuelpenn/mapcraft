@@ -241,16 +241,20 @@ public class CommodityFactory {
 							String mode = XMLHelper.getAttribute(o, "mode");
 							int efficiency = XMLHelper.getInteger(o,
 									"efficiency");
+							int techLevel = XMLHelper.getInteger(o, "tech");
 							if (mode == null) {
 								continue;
 							}
 							if (efficiency < 1) {
 								efficiency = 100;
 							}
+							if (techLevel < 0) {
+								techLevel = 0;
+							}
 							CommodityMap map = new CommodityMap(
 									getCommodity(XMLHelper.getAttribute(node,
 											"name")), getCommodity(value), mode, 
-											efficiency);
+											efficiency, techLevel);
 							em.persist(map);
 						}
 					}
@@ -276,6 +280,20 @@ public class CommodityFactory {
 		}
 	}
 
+	/**
+	 * Used to populate the database from the XML configuration files.
+	 * Either loads data from the specified file, or if a directory is
+	 * given, loads data from all "*.xml" files in that directory.
+	 * 
+	 * Configuration is scanned twice, once to add all the commodities,
+	 * and second to generate the mappings. This allows mappings to refer
+	 * to commodities later in the configuration.
+	 * 
+	 * @param base	Directory to find files in, or a single file.
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 */
 	public void createAllCommodities(final File base)
 			throws ParserConfigurationException, SAXException, IOException {
 		if (base.isDirectory()) {

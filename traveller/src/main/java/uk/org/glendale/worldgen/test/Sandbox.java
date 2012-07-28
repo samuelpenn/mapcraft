@@ -149,9 +149,9 @@ public class Sandbox {
 		
 		Sandbox sb = new Sandbox(context);
 		
-		sb.importCommodities();
+		//sb.importCommodities();
 		//sb.importFacilities();
-		//sb.addToSandbox();
+		sb.addToSandbox();
 		
 		//sb.testSimulation(129);
 	}

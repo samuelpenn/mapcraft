@@ -42,6 +42,9 @@ public class CommodityMap {
 
 	@Column(name = "mode")
 	private String operation;
+	
+	@Column(name = "tech")
+	private int techLevel;
 
 	@Column(name = "efficiency")
 	private int efficiency;
@@ -66,6 +69,7 @@ public class CommodityMap {
 		this.output = output;
 		this.operation = operation;
 		this.efficiency = 100;
+		this.techLevel = 0;
 	}
 
 	/**
@@ -82,13 +86,16 @@ public class CommodityMap {
 	 *            Operation that must be performed.
 	 * @param effiency
 	 *            Percentage.
+	 * @param techLevel
+	 * 			  Minimum technology level.
 	 */
 	CommodityMap(Commodity commodity, Commodity output, String operation,
-			int efficiency) {
+			int efficiency, int techLevel) {
 		this.commodity = commodity;
 		this.output = output;
 		this.operation = operation;
 		this.efficiency = efficiency;
+		this.techLevel = techLevel;
 	}
 
 	/**
@@ -128,5 +135,15 @@ public class CommodityMap {
 	 */
 	public int getEfficiency() {
 		return efficiency;
+	}
+	
+	/**
+	 * Gets the minimum technology level required to produce output of this
+	 * type. This defaults to zero if not set.
+	 * 
+	 * @return	Minimum technology level.
+	 */
+	public int getTechLevel() {
+		return techLevel;
 	}
 }
