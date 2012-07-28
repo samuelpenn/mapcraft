@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 
+<!--
     Population types
-    
+
     P0  1-9
     P1  10-99
     P2  100-999
@@ -19,9 +19,11 @@
             <title>Hunter Gatherer</title>
             <codes>T0 P3 P4 P5 H0 H1</codes>
             <consume>WpnH</consume>
-            <operation level="75">Ag</operation>
-            <operation level="50">AgHu</operation>
-            <operation level="5">MiSi</operation>
+            <operation level="50">AgHg</operation>
+            <operation level="5">Quarry</operation>
+            <map from="Animal products" to="Animal skins" level="100"/>
+            <map from="Flint" to="Stone tools" level="100"/>
+            <map from="Flint" to="Stone weapons" level="100"/>
         </facility>
 
         <facility name="neolithicTribe" type="Residential">
@@ -45,13 +47,13 @@
             <map from="Silicate ore" to="Neolithic art" level="10"/>
             <map from="Silicate ore" to="Stone weapons" level="50"/>
         </facility>
-        
+
         <facility name="primitiveMining" type="Mining">
             <title>Primitive Mining</title>
             <codes>T0 P3 P4 P5 P6 P7</codes>
             <operation level="25">MiSi</operation>
         </facility>
-        
+
         <facility name="primitiveTribes" type="Residential">
             <title>Primitive Tribes</title>
             <codes>T1 P3 P4 P5 H0 H1</codes>
@@ -73,7 +75,7 @@
             <map from="Ferric ore" to="Bronze jewellery" level="20"/>
             <map from="Ferric ore" to="Bronze weapons" level="50"/>
         </facility>
-        
+
         <facility name="warriorKingdoms" type="Residential">
             <title>Warrior Kingdoms</title>
             <codes>T2 P4 P5 P6 P7 P8</codes>
@@ -125,8 +127,8 @@
             <operation level="50">MiSi</operation>
             <operation level="75">MiFe</operation>
         </facility>
-        
-        <facility name="metalWorks" type="Industrial">
+
+        <facility name="metalWorks" type="Industry">
             <title>Metal Working</title>
             <codes>T2 T3 T4 T5 T6</codes>
             <operation level="10">InFe1</operation>
@@ -147,7 +149,7 @@
             <map from="Iron" to="Steel weapons" level="75"/>
             <map from="Silicate ore" to="Bricks" level="75"/>
         </facility>
-    
+
         <facility name="industrialState" type="Residential">
             <title>Industrial State</title>
             <codes>T5 P6 P7 P8</codes>
@@ -178,8 +180,8 @@
             <map from="Silicate ore" to="Pottery TL5" level="100"/>
         </facility>
     </group>
-        
-    <!-- 
+
+    <!--
     <group name="High Tech">
         <facility name="highTech" type="Residential">
             <title>Technological Society</title>

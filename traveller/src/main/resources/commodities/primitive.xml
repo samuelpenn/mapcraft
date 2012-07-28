@@ -6,31 +6,31 @@
 
     <group name="Base">
         <commodity name="Tools">
-            <cost volume="1">50</cost>
+            <cost volume="1000000">50</cost>
             <production tech="0" law="6" pr="8" cr="8"/>
             <codes source="In">ToHd</codes>
         </commodity>
 
         <commodity name="Clothes">
-            <cost volume="1">50</cost>
+            <cost volume="1000000">50</cost>
             <production tech="0" law="6" pr="8" cr="8"/>
             <codes source="In">Cl</codes>
         </commodity>
 
         <commodity name="Luxuries">
-            <cost volume="1">100</cost>
+            <cost volume="1000000">100</cost>
             <production tech="0" law="6" pr="8" cr="8"/>
             <codes source="In">Lu</codes>
         </commodity>
     </group>
-    
-    <!-- 
+
+    <!--
         Primitive items are TL0-2. They are mostly stone or metal tools,
         simple artistic items, simple clothes and weapons.
      -->
 	<group name="Tools" base="primitive">
         <commodity name="Stone tools" parent="Tools">
-            <cost volume="1">15</cost>
+            <cost volume="1000000">15</cost>
             <production tech="0" law="6" pr="6" cr="7"/>
             <codes source="Re">To HoTl TL Tp</codes>
             <description>
@@ -39,7 +39,7 @@
         </commodity>
 
         <commodity name="Stone weapons" parent="Tools">
-            <cost volume="1">15</cost>
+            <cost volume="1000000">15</cost>
             <production tech="0" law="4" pr="7" cr="8"/>
             <codes source="Re">WpnH TL Tp</codes>
             <description>
@@ -48,34 +48,34 @@
         </commodity>
 
         <commodity name="Neolithic art" parent="Luxuries">
-            <cost volume="1">45</cost>
+            <cost volume="1000">45</cost>
             <production tech="0" law="6" pr="7" cr="6"/>
             <codes source="Re">Lu HoLu Tp</codes>
             <description>
                 Neolithic art.
             </description>
         </commodity>
-        
+
         <commodity name="Bronze tools" parent="Tools">
-            <cost volume="1">20</cost>
+            <cost volume="1000000">20</cost>
             <production tech="1" law="6" pr="6" cr="7"/>
             <codes source="Re">To HoTl TL Tp</codes>
             <description>
                 Simple bronze tools.
             </description>
         </commodity>
-        
+
         <commodity name="Bronze weapons" parent="Tools">
-            <cost volume="1">25</cost>
+            <cost volume="1000000">25</cost>
             <production tech="1" law="4" pr="7" cr="8"/>
             <codes source="Re">WpnH TL Tp</codes>
             <description>
                 Primitive bronze weapons and armour.
-            </description> 
+            </description>
         </commodity>
-        
+
         <commodity name="Bronze jewellery" parent="Luxuries">
-            <cost volume="1">75</cost>
+            <cost volume="1000">75</cost>
             <production tech="1" law="6" pr="7" cr="6"/>
             <codes source="Re">Lu HoLu Tp</codes>
             <description>
@@ -84,25 +84,25 @@
         </commodity>
 
         <commodity name="Iron tools" parent="Tools">
-            <cost volume="1">30</cost>
+            <cost volume="1000000">30</cost>
             <production tech="2" law="6" pr="6" cr="7"/>
             <codes source="Re">To HoTl TL Tp Tm</codes>
             <description>
                 Simple iron tools.
             </description>
         </commodity>
-        
+
         <commodity name="Iron weapons" parent="Tools">
-            <cost volume="1">45</cost>
+            <cost volume="1000000">45</cost>
             <production tech="2" law="4" pr="7" cr="8"/>
             <codes source="Re">WpnH TL Tp Tm</codes>
             <description>
                 Primitive iron weapons and armour.
-            </description> 
+            </description>
         </commodity>
-        
+
         <commodity name="Metal jewellery" parent="Luxuries">
-            <cost volume="1">75</cost>
+            <cost volume="1000">75</cost>
             <production tech="2" law="6" pr="7" cr="6"/>
             <codes source="Re">Lu HoLu Tp Tm</codes>
             <description>
@@ -111,7 +111,7 @@
         </commodity>
 
         <commodity name="Steel tools" parent="Tools">
-            <cost volume="1">30</cost>
+            <cost volume="1000000">30</cost>
             <production tech="2" law="6" pr="6" cr="7"/>
             <codes source="Re">To HoTl TL Tp Tm Hq</codes>
             <description>
@@ -120,45 +120,51 @@
         </commodity>
 
         <commodity name="Steel weapons" parent="Tools">
-            <cost volume="1">75</cost>
+            <cost volume="1000000">75</cost>
             <production tech="3" law="4" pr="7" cr="8"/>
             <codes source="Re">WpnH TL Tp Tm Hq</codes>
             <description>
                 Good quality steel weapons and armour.
-            </description> 
+            </description>
         </commodity>
-        
+
         <commodity name="Bricks">
-            <cost volume="1">5</cost>
+            <cost volume="1000000">5</cost>
             <production tech="1" law="6" pr="5" cr="6"/>
             <codes source="Re">BldH</codes>
             <description>
                 Basic building materials.
-            </description> 
+            </description>
         </commodity>
     </group>
 
     <group name="Clothes" base="primitive">
         <commodity name="Animal skins" parent="Clothes">
-            <cost volume="1">15</cost>
+            <cost volume="1000000">15</cost>
             <production tech="0" law="6" pr="5" cr="6"/>
             <codes source="Re">ClCv Tp</codes>
         </commodity>
-        
+
+        <commodity name="Leather clothing" parent="Clothes">
+            <cost volume="1000000">25</cost>
+            <production tech="1" law="6" pr="5" cr="6"/>
+            <codes source="Re">ClCv Tp</codes>
+        </commodity>
+
         <commodity name="Primitive clothes" parent="Clothes">
-            <cost volume="1">25</cost>
+            <cost volume="1000000">25</cost>
             <production tech="1" law="6" pr="5" cr="6"/>
             <codes source="Re">ClCv Tp Tm</codes>
         </commodity>"
 
         <commodity name="Simple clothes" parent="Clothes">
-            <cost volume="1">25</cost>
+            <cost volume="1000000">25</cost>
             <production tech="2" law="6" pr="5" cr="6"/>
             <codes source="Re">ClCv Tp Tm</codes>
         </commodity>
-        
+
         <commodity name="Noble clothes" parent="Clothes">
-            <cost volume="1">150</cost>
+            <cost volume="1000000">150</cost>
             <production tech="3" law="6" pr="7" cr="8"/>
             <codes source="Re">ClCv Tp Tm</codes>
         </commodity>
