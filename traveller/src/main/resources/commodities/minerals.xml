@@ -128,7 +128,7 @@
 
         <commodity name="Flint" parent="Silicate Ore">
             <cost volume="1000000">50</cost>
-            <production tech="0" law="6" pr="6" cr="7"/>
+            <production tech="0" law="6" pr="3" cr="7"/>
             <codes source="Mi">Or</codes>
         </commodity>
 

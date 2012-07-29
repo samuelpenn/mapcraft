@@ -38,8 +38,8 @@
             <map from="Animal products" to="Animal skins" level="100"/>
             <map from="Flint" to="Stone tools" level="100"/>
             <map from="Flint" to="Stone weapons" level="100"/>
-            <map from="Stone" to="Neolithic art" level="25"/>
             <map from="Stone" to="Neolithic pottery" level="50"/>
+            <map from="Stone" to="Neolithic art" level="25"/>
         </facility>
 
         <facility name="primitiveMining" type="Mining">

@@ -31,7 +31,7 @@
 	<group name="Tools" base="primitive">
         <commodity name="Stone tools" parent="Tools">
             <cost volume="1000">15</cost>
-            <production tech="0" law="6" pr="4" cr="4"/>
+            <production tech="0" law="6" pr="7" cr="4"/>
             <codes source="Re">To HoTl TL Tp</codes>
             <description>
                 Primitive stone tools.
@@ -40,7 +40,7 @@
 
         <commodity name="Stone weapons" parent="Tools">
             <cost volume="1000">15</cost>
-            <production tech="0" law="4" pr="5" cr="6"/>
+            <production tech="0" law="4" pr="8" cr="6"/>
             <codes source="Re">WpnH TL Tp</codes>
             <description>
                 Primitive stone weapons.
@@ -49,7 +49,7 @@
 
         <commodity name="Neolithic art" parent="Luxuries">
             <cost volume="1000">45</cost>
-            <production tech="0" law="6" pr="6" cr="6"/>
+            <production tech="0" law="6" pr="7" cr="6"/>
             <codes source="Re">Lu HoLu Tp</codes>
             <description>
                 Neolithic art.
