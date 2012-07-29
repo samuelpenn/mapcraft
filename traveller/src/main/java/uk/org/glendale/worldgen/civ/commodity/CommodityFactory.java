@@ -142,8 +142,12 @@ public class CommodityFactory {
 		String name = XMLHelper.getAttribute(node, "name");
 		String parent = XMLHelper.getAttribute(node, "parent");
 
-		if (name == null || name.length() == 0 || getCommodity(name) != null) {
+		if (name == null || name.length() == 0) {
 			return;
+		}
+		commodity = getCommodity(name);
+		if (commodity == null) {
+			commodity = new Commodity();
 		}
 		System.out.println("    "+name);
 		String image = name.toLowerCase().replaceAll(" ", "_");
