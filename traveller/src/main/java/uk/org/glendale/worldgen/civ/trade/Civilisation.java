@@ -10,7 +10,9 @@ package uk.org.glendale.worldgen.civ.trade;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
@@ -344,6 +346,9 @@ public class Civilisation {
 	 * supported by the facility will be processed, and converted into trade 
 	 * goods for that planet.
 	 * 
+	 * A facility needs to have an <operation/> defined with a mode which
+	 * matches an <output/> defined on the resource commodity.
+	 * 
 	 * @param facility	Facility being processed.
 	 * @param capacity	Effective population capacity for this resource.
 	 */
@@ -353,16 +358,22 @@ public class Civilisation {
 		System.out.println("processMiAg: [" + facility.getName() + "] [" 
 				+ capacity + "]");
 		
+		// For each resource that this planet has...
 		for (Resource resource : resources) {
 			Commodity			c = resource.getCommodity();
 			List<CommodityMap> 	map = commodityFactory.getMappings(c);
 			
 			System.out.println(resource.getCommodity().getName() + ": {{" + map.size() + "}}");
 			
+			// Get all the <output/> mappings for this commodity, and if the
+			// facility has a matching <operation/>, then we produce some goods.
 			for (CommodityMap m : map) {
 				String	operation = m.getOperation();
 				int		rate = facility.getOperation(operation);
 				if (rate <= 0) {
+					continue;
+				}
+				if (m.getTechLevel() > planet.getTechLevel()) {
 					continue;
 				}
 				System.out.println("processMiAg: [" + c.getName() + 
@@ -427,23 +438,71 @@ public class Civilisation {
 
 		List<ProductionMap> pmap = facilityFactory.getProductionMap(facility);
 
+		// The ProductionMap comes from the facility <map/> element. It allows
+		// a residential facility to turn one type of good into another type
+		// of good.
+		
+		// If multiple mappings work on the same source commodity, then it's
+		// possible one may consume it all before the others have a look in.
+		// As a simplistic fix, count how many mappings use each source...
+		Hashtable<Commodity, Integer>  reqCount = new Hashtable<Commodity, Integer>();
+		for (ProductionMap m : pmap) {
+			Commodity	from = m.getFrom();
+			if (reqCount.get(from) != null) {
+				reqCount.put(from, reqCount.get(from) + 1);
+			} else {
+				reqCount.put(from, 1);
+			}
+		}
+		
+		// ...in the first pass, limit each mapping to only using a limited
+		// share of each source, by dividing total available by number of
+		// mappings using each requirement. This ensures that every mapping
+		// gets a bite at the pie...
+		List<ProductionMap>	retry = produceFromMap(pmap, reqCount, capacity);
+		// ...if any mappings didn't get everything they want, allow them a
+		// second pass, and allow early ones to be greedy and starve later
+		// mappings.
+		if (retry.size() > 0) {
+			produceFromMap(retry, null, capacity);
+		}
+	}
+	
+	private List<ProductionMap> produceFromMap(List<ProductionMap> pmap, Hashtable<Commodity, Integer> reqCount, long capacity) {
+		List<ProductionMap>	retry = new ArrayList<ProductionMap>();
 		for (ProductionMap m : pmap) {
 			Commodity	from = m.getFrom();
 			Commodity	to = m.getTo();
 			
-			Inventory item = getInventoryItem(from);
-
-			long amount = to.getProduction(capacity);
-			if (amount > item.getAmount()) {
-				amount = item.getAmount();
+			if (from != null) {
+				Inventory item = getInventoryItem(from);
+				long		available = item.getAmount();
+				if (reqCount != null && reqCount.get(from) > 1) {
+					available /= reqCount.get(from);
+				}
+	
+				long amount = to.getProduction(capacity);
+				amount *= (m.getLevel() / 100.0);
+				if (amount > available) {
+					amount = available;
+					retry.add(m);
+				}
+				item.consume(amount);
+				System.out.println("    " + from.getName() + " -> " + to.getName() + " [" + amount + "]");
+				
+				item = getInventoryItem(to);
+				item.produce(amount);
+			} else if (reqCount != null) {
+				// Some items may be produced out of nothing. These are normally
+				// knowledge goods.
+				long amount = to.getProduction(capacity);
+				amount *= (m.getLevel() / 100.0);
+				System.out.println("    * -> " + to.getName() + " [" + amount + "]");
+				Inventory item = getInventoryItem(to);
+				item.produce(amount);
 			}
-			item.consume(amount);
-			System.out.println("    " + from.getName() + "-> " + to.getName() + " [" + amount + "]");
-			
-			item = getInventoryItem(to);
-			item.produce(amount);
 		}
-		
+		return retry;
 	}
 	
 	public static void main(String[] args) {
