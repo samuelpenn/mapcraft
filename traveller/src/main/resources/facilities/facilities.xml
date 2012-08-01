@@ -19,19 +19,15 @@
             <title>Hunter Gatherer</title>
             <codes>T0 P3 P4 P5 H0 H1</codes>
             <consume>WpnH</consume>
-            <operation level="50">AgHg</operation>
+            <operation level="100">AgHg</operation>
             <operation level="25">Quarry</operation>
-        </facility>
-
-        <facility name="neolithicTribe" type="Residential">
-            <title>Neolithic Tribe</title>
-            <codes>T0 P0 P1 P2 H0 H1 H2</codes>
-            <require>Fo ClCv HoTl</require>
-            <consume>HoLu HoCl WpnH</consume>
         </facility>
 
         <facility name="neolithicTribes" type="Residential">
             <title>Neolithic Tribes</title>
+            <description>
+                Stone age tribes living as hunter gatherers.
+            </description>
             <codes>T0 P3 P4 P5 H0 H1</codes>
             <require>Fo ClCv HoTl</require>
             <consume>HoLu HoCl WpnH</consume>
@@ -42,11 +38,36 @@
             <map from="Stone" to="Neolithic art" level="25"/>
         </facility>
 
-        <facility name="primitiveMining" type="Mining">
-            <title>Primitive Mining</title>
-            <codes>T0 P3 P4 P5 P6 P7</codes>
-            <operation level="25">MiSi</operation>
+        <facility name="primitiveFarming" type="Agriculture">
+            <title>Primitive Farming</title>
+            <codes>T0 T1 T2 T3 P3 P4 P5 P6 P7 P8 H0 H1</codes>
+            <require>To</require>
+            <operation level="100">AgFa</operation>
+            <operation level="25">Quarry</operation>
         </facility>
+
+        <facility name="primitiveMining" type="Agriculture">
+            <title>Primitive Farming</title>
+            <codes>T0 T1 T2 T3 P3 P4 P5 P6 P7 P8 H0 H1</codes>
+            <require>To</require>
+            <operation level="100">Mine</operation>
+        </facility>
+
+        <facility name="neolithicFarmers" type="Residential">
+            <title>Neolithic Tribes</title>
+            <description>
+                Stone age primitive farmers.
+            </description>
+            <codes>T0 P3 P4 P5 H0 H1</codes>
+            <require>Fo ClCv HoTl</require>
+            <consume>HoLu HoCl WpnH</consume>
+            <map from="Animal products" to="Animal skins" level="100"/>
+            <map from="Flint" to="Stone tools" level="100"/>
+            <map from="Flint" to="Stone weapons" level="100"/>
+            <map from="Stone" to="Neolithic pottery" level="75"/>
+            <map from="Stone" to="Neolithic art" level="50"/>
+        </facility>
+
 
         <facility name="primitiveTribes" type="Residential">
             <title>Primitive Tribes</title>
@@ -94,12 +115,6 @@
         </facility>
 
 
-        <facility name="primitiveFarming" type="Agriculture">
-            <title>Primitive Farming</title>
-            <codes>T0 T1 T2 T3 P3 P4 P5 P6 P7 P8 H0 H1</codes>
-            <require>To</require>
-            <operation level="100">AgFa</operation>
-        </facility>
 
         <facility name="agrarianColony" type="Residential">
             <title>Agrarian Colony</title>

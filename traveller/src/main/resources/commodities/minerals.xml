@@ -113,9 +113,9 @@
 		<commodity name="Silicate Crystals" parent="Silicate Ore">
             <cost volume="1000000">100</cost>
             <production tech="0" law="6" pr="0" cr="0">
-                <output mode="Mine" tech="0" efficiency="100">Olivine</output>
-                <output mode="Mine" tech="0" efficiency="100">Magnesite</output>
-                <output mode="Mine" tech="0" efficiency="100">Crystalline</output>
+                <output mode="Mine" tech="3" efficiency="100">Olivine</output>
+                <output mode="Mine" tech="5" efficiency="100">Magnesite</output>
+                <output mode="Mine" tech="7" efficiency="100">Crystalline</output>
             </production>
             <codes source="Mi">Or</codes>
 		</commodity>
@@ -128,7 +128,7 @@
 
         <commodity name="Flint" parent="Silicate Ore">
             <cost volume="1000000">50</cost>
-            <production tech="0" law="6" pr="3" cr="7"/>
+            <production tech="0" law="6" pr="3" cr="6"/>
             <codes source="Mi">Or</codes>
         </commodity>
 

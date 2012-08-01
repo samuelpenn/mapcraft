@@ -203,9 +203,9 @@
             <cost volume="1000000">60</cost>
             <production tech="0" law="6" pr="3" cr="3">
                 <output mode="AgHg" tech="0" efficiency="15">Fruit</output>
-                <output mode="AgHg" tech="0" efficiency="15">Vegetables</output>
+                <output mode="AgHg" tech="0" efficiency="50">Vegetables</output>
                 <output mode="AgFa" tech="1" efficiency="100">Grain</output>
-                <output mode="AgFa" tech="0" efficiency="100">Fruit</output>
+                <output mode="AgFa" tech="0" efficiency="30">Fruit</output>
                 <output mode="AgFa" tech="0" efficiency="100">Vegetables</output>
                 <output mode="AgFa" tech="0" efficiency="100">Beer</output>
                 <output mode="AgFa" tech="0" efficiency="100">Wine</output>
@@ -326,8 +326,8 @@
         <commodity name="Mesofauna" parent="Animals">
             <cost volume="1000000">500</cost>
             <production tech="0" law="6" pr="3" cr="5">
-                <output mode="AgHg" efficiency="50">Meat</output>
-                <output mode="AgHg" efficiency="50">Animal products</output>
+                <output mode="AgHg" efficiency="75">Meat</output>
+                <output mode="AgHg" efficiency="75">Animal products</output>
                 <output mode="AgFa" efficiency="100">Meat</output>
                 <output mode="AgFa" efficiency="100">Animal products</output>
             </production>
@@ -341,8 +341,8 @@
         <commodity name="Megafauna" parent="Animals">
             <cost volume="1000000">1000</cost>
             <production tech="0" law="6" pr="4" cr="6">
-                <output mode="AgHg" efficiency="50">Meat</output>
-                <output mode="AgHg" efficiency="50">Animal products</output>
+                <output mode="AgHg" efficiency="75">Meat</output>
+                <output mode="AgHg" efficiency="75">Animal products</output>
                 <output mode="AgFa" efficiency="125">Meat</output>
                 <output mode="AgFa" efficiency="125">Animal products</output>
             </production>
