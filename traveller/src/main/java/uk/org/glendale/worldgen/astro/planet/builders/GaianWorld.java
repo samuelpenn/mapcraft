@@ -176,12 +176,12 @@ public abstract class GaianWorld extends PlanetBuilder {
 			addResource("Arthropods", Die.d4(2));
 			addResource("Aquafauna", 5 + Die.d6(2));
 			addResource("Microfauna", 20 + Die.d10(3));
-			if (Die.d3() == 1) {
-				addResource("Mesofauna", 30 + Die.d12(4));
-				addResource("Megafauna", 10 + Die.d10(2));
-			} else {
+			if (Die.d6() == 1) {
 				addResource("Mesofauna", 10 + Die.d10(2));
 				addResource("Megafauna", 30 + Die.d12(5));				
+			} else {
+				addResource("Mesofauna", 30 + Die.d12(4));
+				addResource("Megafauna", Die.d4(2));
 			}
 			break;
 		}

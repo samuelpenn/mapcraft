@@ -164,6 +164,10 @@ public class FacilityGenerator {
 					facility.addRequired(CommodityCode.valueOf(r));
 				}
 			} else if (n.getNodeName().equals("consume")) {
+				String	required = n.getTextContent();
+				for (String r : required.split(" ")) {
+					facility.addConsumed(CommodityCode.valueOf(r));
+				}
 			} else if (n.getNodeName().equals("map")) {
 				String fromName = XMLHelper.getAttribute(n, "from");
 				String toName = XMLHelper.getAttribute(n, "to");

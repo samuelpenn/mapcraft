@@ -157,8 +157,13 @@ public class Civilisation {
 				if (honourRequirements && honoured < 100) {
 					// TODO: Work out requirements and their effect on
 					// the capacity of this installation.
+					System.out.println("  Requirements at " + honoured + "%");
 				}
 				processResidential(facility, capacity);
+				
+				Set<CommodityCode> consumed = facility.getConsumedGoods();
+				System.out.println("  Consume " + consumed.size() + " things");
+				requiredGoods(consumed, capacity);
 			}		
 		}
 	}
