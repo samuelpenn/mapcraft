@@ -17,7 +17,7 @@
 			
 			try {
 				int		id = Integer.parseInt(request.getParameter("id"));
-				system = new StarSystem(id);
+				system = null;//new StarSystem(id);
 				name = system.getName();
 			} catch (Throwable e) {
 				system = null;
@@ -71,12 +71,12 @@
 			
 			<tr>
 				<th>Allegiance</th>
-				<td><%=system.getAllegianceCode()%></td>
+				<td><%=system.getAllegiance()%></td>
 			</tr>
 			
 			<tr>
 				<th>Status</th>
-				<td><%= system.getStatus() %></td>
+				<td><%= system.getZone() %></td>
 			</tr>
 		</table>
 		

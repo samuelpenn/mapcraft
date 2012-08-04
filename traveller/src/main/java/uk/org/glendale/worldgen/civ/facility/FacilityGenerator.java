@@ -315,6 +315,8 @@ public class FacilityGenerator {
 		String		residentialName = getOneOption(culture, "residential");
 		String[]	facilityNames = getAllOptions(culture, "facilities");
 		
+		residentialName = "neolithicTribes";
+		
 		System.out.println("  " + residentialName+ ", " + facilityNames.length);
 		
 		planet.setTechLevel(Integer.parseInt(getOneOption(culture, "tech")));

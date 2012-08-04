@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Samuel Penn, sam@glendale.org.uk
+ * Copyright (C) 2009, 2012 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -8,13 +8,18 @@
  */
 package uk.org.glendale.worldgen.astro.sector;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.sql.DataSource;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,17 +27,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
  * Provides a REST style interface for obtaining information about sectors.
+ * A sector is a flat, 2D, region of space 40 parsecs 'high' and 32 parsecs
+ * 'wide'. Each parsec is a hexagonal tile which may contain zero or one
+ * star systems.
  * 
  * @author Samuel Penn
  */
 @RequestMapping("/api/sector/")
 @Controller
 public class SectorAPI {
-	//@Autowired
+	@Autowired
 	private SectorFactory	factory;
 	
 	//@Autowired
@@ -40,7 +49,10 @@ public class SectorAPI {
 	
 	/**
 	 * Gets details on the specified sector. The sector can be defined by either
-	 * its unique name, or by its coordinates using x,y instead of the name.
+	 * its unique name, or by its coordinates using x,y instead of the name. If
+	 * the sector 'name' is a pure number (matching [0-9]+), then the 'name'
+	 * is assumed to be a unique id. Otherwise, search for a sector with the
+	 * given unique name. 
 	 * 
 	 * @param name
 	 *            Name of the sector, or its unique id.
@@ -63,6 +75,35 @@ public class SectorAPI {
 		return factory.getSector(name);
 	}
 	
+	//@ResponseBody
+	@RequestMapping(value="/{name}/image", method=RequestMethod.GET)
+	public void getSectorThumbnail(@PathVariable("name") String name,
+			HttpServletResponse response) {
+		response.setContentType("image/jpeg");
+		
+		Sector		sector = getSector(name);
+		SimpleImage image = factory.getThumbnail(sector);
+		try {
+			ByteArrayOutputStream 	stream = image.save();
+			ServletOutputStream 	out =  response.getOutputStream();
+			
+			out.write(stream.toByteArray());
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//return image;
+	}
+	
+	/**
+	 * Gets a list of all the defined sectors, from top to bottom and left
+	 * to right.
+	 * 
+	 * @return	List of all sectors.
+	 */
+	@Transactional
 	@ResponseBody
 	@RequestMapping(value="/", method=RequestMethod.GET)
 	public List<Sector> getSectors() {

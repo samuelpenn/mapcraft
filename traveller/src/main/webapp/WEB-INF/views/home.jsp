@@ -5,8 +5,55 @@
 <html>
 	<head>
 		<title>WorldGen</title>
+		<link rel="stylesheet" href="/Traveller/css/default.css"/> 
+		<script type="text/javascript" src="/Traveller/scripts/jquery.js"></script>
+	    <script type="text/javascript">
+	       function drawSectorMap(sectors) {
+	    	   var    minX = 999, minY = 999;
+	    	   var    maxX = -999, maxY = -999;
+	    	   
+	    	   for (var i=0; i < sectors.length; i++) {
+	    		   minX = Math.min(minX, sectors[i].x);
+	    		   maxX = Math.max(maxX, sectors[i].x);
+	    		   minY = Math.min(minY, sectors[i].y);
+	    		   maxY = Math.max(maxY, sectors[i].y);
+	    	   }
+	    	   
+	    	   $("#sectorMap").html("<table id='sectorTable'><tr id='smHdr'><th></th></tr></table>");
+	    	   
+	    	   
+	    	   for (var x = minX; x <= maxX; x++) {
+	    		   $("#smHdr").append("<th>"+x+"</th>");
+	    	   }
+	    	   
+	    	   var    i = 0;
+	    	   for (var y = minY; y <= maxY; y++) {
+	    		   var rowId = "sm"+y;
+	    		   $("#sectorTable").append("<tr id='"+rowId+"'><th>"+y+"</th></tr>");
+		    	   for (var x = minX; x <= maxX; x++) {
+		    		   var sector = sectors[i++];
+		    		   $("#"+rowId).append("<td><img src='/Traveller/api/sector/"+sector.name+"/image' alt='"+sector.name+"'/></td>");
+		    	   }
+	    	   }
+	    	   
+	    	   //$("#sectorMap").html(minX+","+maxX+","+minY+","+maxY);
+	       }
+	       $(document).ready(function() {
+	    	   
+	    	   $.getJSON("/Traveller/api/sector/", function(data) {
+	               drawSectorMap(data);
+
+	    	   });
+	    	   
+	       });
+	    </script>
 	</head>
+	
+	
 	<body>
+	   <div id="header">
+	       <h1>WorldGen</h1>
+	   </div>
 
 		<div class="container">
 			<h1>Sectors</h1>
@@ -19,6 +66,10 @@
 					</li>
 				</c:forEach>
 			</ul>
+			
+			<div id="sectorMap">
+			 Not loaded.
+			</div>
 			
 			<p>
 			 System: ${id}, ${name}, ${stars}

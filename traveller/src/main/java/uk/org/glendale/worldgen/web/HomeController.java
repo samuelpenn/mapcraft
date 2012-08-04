@@ -29,6 +29,7 @@ import uk.org.glendale.worldgen.astro.starsystem.StarSystemGenerator;
  * 
  * @author Samuel Penn
  */
+@RequestMapping("/ui")
 @Controller
 public class HomeController {
 	@Autowired
@@ -42,6 +43,7 @@ public class HomeController {
 	
 	@RequestMapping("/")
 	public String homePage(Model model) {
+		System.out.println("homePage:");
 		model.addAttribute("hello", "Hello World");
 		
 		List<Sector> list = sectorFactory.getAllSectors();
@@ -69,7 +71,7 @@ public class HomeController {
 	public String help() {
 		return "help";
 	}
-	
+		
 	@RequestMapping("/sector/{name}/{x}/{y}")
 	public final String createSector(final Model model, @PathVariable String name, @PathVariable int x, @PathVariable int y) {
 		

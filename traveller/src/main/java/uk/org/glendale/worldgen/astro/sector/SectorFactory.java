@@ -21,7 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.rpg.traveller.Log;
+import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 
 /**
  * Factory class for creating and fetching Sector objects. This class is
@@ -33,7 +35,7 @@ import uk.org.glendale.rpg.traveller.Log;
  * @author Samuel Penn
  */
 @Repository
-@Transactional
+//@Transactional
 public class SectorFactory {
 	@PersistenceContext
 	private EntityManager		em;
@@ -55,7 +57,7 @@ public class SectorFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Sector> getAllSectors() {
-		return em.createQuery("from Sector").getResultList();
+		return em.createQuery("from Sector order by y, x").getResultList();
 	}
 
 	/**
@@ -111,6 +113,27 @@ public class SectorFactory {
 		} catch (NoResultException e) {
 			return null;
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public SimpleImage getThumbnail(Sector sector) {
+		SimpleImage		image = new SimpleImage(128, 160, "#FFFFFF");
+		
+		Query	q = em.createQuery("SELECT ss FROM StarSystem ss WHERE sector = :sector");
+		q.setParameter("sector", sector);
+		
+		try {
+			List<StarSystem> systems = q.getResultList();
+			for (StarSystem system : systems) {
+				int		x = system.getX() * 4;
+				int		y = system.getY() * 4 + (system.getX() % 2) * 2;
+				image.rectangle(x+1, y+1, 1, 1, "#000000");
+			}
+		} catch (NoResultException e) {
+			// Just return a blank image.
+		}
+		
+		return image;
 	}
 	
 	/**

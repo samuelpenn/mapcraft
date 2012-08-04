@@ -110,10 +110,53 @@ public class Sandbox {
 		facilityGenerator.createAllFacilities(new File(base));
 	}
 	
+	private void createSectors() {
+		String[] names = { "Aquila", "Serpens", "Virgo",
+						   "Aquarius", "Sol", "Hydra",
+						   "Pisces", "Taurus", "Orion" };
+
+		int	x = -1, y = -1;
+		for (String name : names) {
+			if (sectorFactory.getSector(name) == null) {
+				sectorFactory.createSector(name, x, y, "Un", SectorCode.Fe);
+			}
+			if (++x > 1) {
+				x = -1;
+				y ++;
+			}
+		}
+		/*
+		create("Aquila", -1, -1, "hF");
+		create("Serpens", 0, -1, "hG");
+		create("Virgo", 1, -1, "hH");
+		create("Aquarius", -1, 0, "iF");
+		//create("Sol", 0, 0, "iG");
+		create("Hydra", 1, 0, "iH");
+		create("Pisces", -1, 1, "jF");
+		create("Taurus", 0, 1, "jG");
+		create("Orion", 1, 1, "jH");
+		
+		// Other sectors.
+		create("Rift", -2, -2, "gE");
+		create("Passage", -1, -2, "gF");
+		create("Borders", -2, -1, "hE");
+		create("Dominion", -2, 0, "iE");
+		*/
+	}
+	
 	public void addToSandbox() {
-		Sector	sandbox = sectorFactory.getSector("Sandbox");
+		List<Sector> sectors = sectorFactory.getAllSectors();
+		for (Sector sector : sectors) {
+			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
+			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
+			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
+			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
+			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
+		}
+		
+		Sector	sandbox = sectorFactory.getSector("Sol");
 		if (sandbox == null) {
-			sandbox = sectorFactory.createSector("Sandbox", 0, 0, "Un", SectorCode.Fe);
+			sandbox = sectorFactory.createSector("Sol", 0, 0, "Un", SectorCode.Fe);
 		}
 		starSystemGenerator.createSimpleSystem(sandbox, null, 0, 0);
 	}
@@ -148,11 +191,11 @@ public class Sandbox {
 		ApplicationContext 	context = new ClassPathXmlApplicationContext(CONFIG);
 		
 		Sandbox sb = new Sandbox(context);
-		
+		//sb.createSectors();
 		//sb.importCommodities();
 		//sb.importFacilities();
-		//sb.addToSandbox();
+		sb.addToSandbox();
 		
-		sb.testSimulation(172);
+		//sb.testSimulation(172);
 	}
 }

@@ -15,12 +15,46 @@
 
 	<!-- Configures the @Controller programming model -->
 	<mvc:annotation-driven />
-
+	
+    <!--
+        Configure a handler adapter with a
+        BufferedImageHttpMessageConverter. This must be done manually
+        due to http://jira.springframework.org/browse/SPR-5975
+    -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <!--
+            NOTE: it is important to specify the order property, so this
+            adapter will be attempted before the HandlerAdapter that
+            Spring MVC automatically configures. This is because a
+            MappingJacksonHttpMessageConverter is registered
+            automatically with the default adapter that will attempt to
+            handle any Java object including BufferedImage.
+        -->
+        <property name="order" value="1" />
+        <property name="messageConverters">
+            <list>
+                <!-- Default converters -->
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.FormHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
+                
+                <!-- Converter for images -->
+                <bean class="org.springframework.http.converter.BufferedImageHttpMessageConverter"/>
+                
+                <!-- This must come after our image converter -->
+                <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+    
 	<!-- Forwards requests to the "/" resource to the "welcome" view -->
 	<mvc:view-controller path="/" view-name="home"/>
 	<!-- 
 	<mvc:view-controller path="/help" view-name="help"/>
 	-->
+	
+	<mvc:resources location="/css/" mapping="/css/**" />
 	
 	<!-- Configures Handler Interceptors -->	
 	<mvc:interceptors>

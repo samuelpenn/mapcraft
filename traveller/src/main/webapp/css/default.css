@@ -5,17 +5,17 @@ body {
 	padding: 0px;
 }
 
-div.header {
+div#header {
 	background-color: #000044;
 	margin: 0px;
 }
 
-div.header h1 {
+div#header h1 {
 	color: #FFFF88;
 	margin: 0px;
 }
 
-div.header p {
+div#header p {
 	margin: 0px;
 	margin-left: 1em;
 	color: white;
