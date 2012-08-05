@@ -28,7 +28,7 @@ public class CommodityMapTest {
 		Assert.assertEquals(100, cm.getEfficiency());
 		Assert.assertEquals("AgFa", cm.getOperation());
 
-		cm = new CommodityMap(c1, c2, "AgFa", 75);
+		cm = new CommodityMap(c1, c2, "AgFa", 75, 0);
 		Assert.assertEquals(c1, cm.getCommodity());
 		Assert.assertEquals(c2, cm.getOutput());
 		Assert.assertEquals(75, cm.getEfficiency());
