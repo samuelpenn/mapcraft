@@ -32,7 +32,7 @@
 	    		   $("#sectorTable").append("<tr id='"+rowId+"'><th>"+y+"</th></tr>");
 		    	   for (var x = minX; x <= maxX; x++) {
 		    		   var sector = sectors[i++];
-		    		   $("#"+rowId).append("<td><img src='/Traveller/api/sector/"+sector.name+"/image' alt='"+sector.name+"'/></td>");
+		    		   $("#"+rowId).append("<td><img src='/Traveller/api/sector/"+sector.name+"/image' title='"+sector.name+"'/></td>");
 		    	   }
 	    	   }
 	    	   
@@ -47,6 +47,17 @@
 	    	   
 	       });
 	    </script>
+	    
+	    <style>
+	       #sidebar {
+	           float: left;
+	           width: 10em;
+	       }
+	       
+	       #sectorMap {
+	           margin-left: 12em;
+	       }
+	    </style>
 	</head>
 	
 	
@@ -56,24 +67,24 @@
 	   </div>
 
 		<div class="container">
-			<h1>Sectors</h1>
-
-			<ul>
-				<c:forEach var="sector" items="${sectors}">
-					<li>
-						<c:out value="${sector.name}"/>
-						(${sector.x},${sector.y})
-					</li>
-				</c:forEach>
-			</ul>
-			
+		    <div id="sidebar">
+				<h2>Sectors</h2>
+	
+				<ul id="sectorList">
+					<c:forEach var="sector" items="${sectors}">
+						<li>
+							<c:out value="${sector.name}"/>
+							(${sector.x},${sector.y})
+						</li>
+					</c:forEach>
+				</ul>
+            </div>
+            			
 			<div id="sectorMap">
 			 Not loaded.
 			</div>
 			
-			<p>
-			 System: ${id}, ${name}, ${stars}
-			</p>
+			<!-- 
 			
 			<h4>New Sector</h4>
 			
@@ -102,6 +113,8 @@
 				Allegiance: <input id="allegiance"/><br/>
 				Codes: <input id="codes"/><br/>
 			</form>
+			
+			-->
 		</div>
 	</body>
 </html>

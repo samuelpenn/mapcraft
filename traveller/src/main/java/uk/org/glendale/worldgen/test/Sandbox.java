@@ -145,6 +145,7 @@ public class Sandbox {
 	}
 	
 	public void addToSandbox() {
+		/*
 		List<Sector> sectors = sectorFactory.getAllSectors();
 		for (Sector sector : sectors) {
 			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
@@ -153,10 +154,11 @@ public class Sandbox {
 			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
 			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
 		}
-		
-		Sector	sandbox = sectorFactory.getSector("Sol");
+		*/
+		String sectorName = "Aquila";
+		Sector	sandbox = sectorFactory.getSector(sectorName);
 		if (sandbox == null) {
-			sandbox = sectorFactory.createSector("Sol", 0, 0, "Un", SectorCode.Fe);
+			sandbox = sectorFactory.createSector(sectorName, 0, 0, "Un", SectorCode.Fe);
 		}
 		starSystemGenerator.createSimpleSystem(sandbox, null, 0, 0);
 	}

@@ -38,10 +38,10 @@
             <map from="Stone" to="Neolithic art" level="25"/>
         </facility>
 
-        <facility name="primitiveFarming" type="Agriculture">
-            <title>Primitive Farming</title>
-            <codes>T0 T1 T2 T3 P3 P4 P5 P6 P7 P8 H0 H1</codes>
-            <require>To</require>
+        <facility name="neolithicFarming" type="Agriculture">
+            <title>Neolithic Farming</title>
+            <codes>T0 P3 P4 P5 P6 P7 P8 H0 H1</codes>
+            <require>ToAg</require>
             <operation level="100">AgFa</operation>
             <operation level="25">Quarry</operation>
         </facility>
@@ -66,8 +66,16 @@
             <map from="Flint" to="Stone weapons" level="100"/>
             <map from="Stone" to="Neolithic pottery" level="75"/>
             <map from="Stone" to="Neolithic art" level="50"/>
+            <map from="Stone" to="Primitive farm tools" level="100"/>
         </facility>
 
+        <facility name="primitiveFarming" type="Agriculture">
+            <title>Primitive Farming</title>
+            <codes>T1 T2 T3 P3 P4 P5 P6 P7 P8 H0 H1</codes>
+            <require>ToAg</require>
+            <operation level="100">AgFa</operation>
+            <operation level="25">Quarry</operation>
+        </facility>
 
         <facility name="primitiveTribes" type="Residential">
             <title>Primitive Tribes</title>
@@ -75,9 +83,10 @@
             <require>Fo ClCv HoTl</require>
             <consume>HoLu HoCl WpnH</consume>
             <map from="Animal products" to="Leather clothing" level="100"/>
-            <map from="Ferric ore" to="Bronze tools" level="100"/>
-            <map from="Ferric ore" to="Bronze jewellery" level="10"/>
-            <map from="Ferric ore" to="Bronze weapons" level="50"/>
+            <map from="Bronze" to="Bronze tools" level="100"/>
+            <map from="Bronze ore" to="Bronze jewellery" level="10"/>
+            <map from="Bronze ore" to="Bronze weapons" level="50"/>
+            <map from="Stone" to="Primitive farm tools" level="100"/>
         </facility>
 
         <facility name="tribalStates" type="Residential">

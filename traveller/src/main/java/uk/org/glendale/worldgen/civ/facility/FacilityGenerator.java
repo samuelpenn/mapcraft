@@ -395,6 +395,10 @@ public class FacilityGenerator {
 				}
 			}
 			Facility	facility = factory.getFacility(facilityName);
+			if (facility == null) {
+				System.out.println("Unable to find facility [" + facilityName + "]");
+				continue;
+			}
 			facilitySize *= multiplier;
 			facilitySize += Die.d6() - Die.d6();
 			if (facilitySize < 2) {
