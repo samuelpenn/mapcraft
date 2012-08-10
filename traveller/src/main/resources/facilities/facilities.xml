@@ -142,8 +142,7 @@
         <facility name="simpleMining" type="Mining">
             <title>Simple Mining</title>
             <codes>T3 P3 P4 P5 P6 P7</codes>
-            <operation level="50">MiSi</operation>
-            <operation level="75">MiFe</operation>
+            <operation level="100">Mine</operation>
         </facility>
 
         <facility name="metalWorks" type="Industry">

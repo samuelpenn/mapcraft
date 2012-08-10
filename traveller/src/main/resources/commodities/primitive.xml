@@ -65,6 +65,15 @@
             </description>
         </commodity>
 
+        <commodity name="Primitive farm tools" parent="Tools">
+            <cost volume="1000000">45</cost>
+            <production tech="0" law="6" pr="4" cr="6"/>
+            <codes source="Re">To AgTl Tp</codes>
+            <description>
+                Stone age farming implements.
+            </description>
+        </commodity>
+
         <commodity name="Bronze tools" parent="Tools">
             <cost volume="1000">20</cost>
             <production tech="1" law="6" pr="6" cr="7"/>
