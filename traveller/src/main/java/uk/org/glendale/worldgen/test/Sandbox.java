@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
+import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
 import uk.org.glendale.worldgen.astro.sector.Sector;
@@ -156,7 +157,8 @@ public class Sandbox {
 		}
 		*/
 		String sectorName = "Aquila";
-		Sector	sandbox = sectorFactory.getSector(sectorName);
+		int	   sectorId = Die.die(9);
+		Sector	sandbox = sectorFactory.getSector(sectorId);
 		if (sandbox == null) {
 			sandbox = sectorFactory.createSector(sectorName, 0, 0, "Un", SectorCode.Fe);
 		}

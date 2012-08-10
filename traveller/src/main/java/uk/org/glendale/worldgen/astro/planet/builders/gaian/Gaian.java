@@ -63,27 +63,28 @@ public class Gaian extends GaianWorld {
 		
 		// Set the atmosphere's pressure, modified by planet size.
 		switch (Die.d6(2) + planet.getRadius()/2000) {
-		case 3: case 4:
+		case 3:
 			planet.setPressure(AtmospherePressure.VeryThin);
 			populationModifier-=2;
 			break;
-		case 5: case 6: case 7:
+		case 4: case 5: case 6:
 			planet.setPressure(AtmospherePressure.Thin);
 			populationModifier--;
 			break;
 		case 14: case 15: case 16:
+			planet.setTemperature(planet.getTemperature().getHotter());
 			planet.setPressure(AtmospherePressure.Dense);
 			break;
 		case 17: case 18:
+			planet.setTemperature(planet.getTemperature().getHotter());
 			planet.setPressure(AtmospherePressure.VeryDense);
 			populationModifier--;
 			break;
 		default:
+			planet.setTemperature(planet.getTemperature().getHotter());
 			planet.setPressure(AtmospherePressure.Standard);			
 		}
 		
-		
-		planet.setTemperature(planet.getTemperature().getHotter());
 		planet.setHydrographics(15 + Die.d20(4));
 		setHydrographics(planet.getHydrographics());
 		
