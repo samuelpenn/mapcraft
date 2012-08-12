@@ -173,6 +173,10 @@ public class Sandbox {
 //		civ.simulate();
 	}
 	
+	public void testSimulation() {
+		civilisationAPI.simulate();
+	}
+	
 	private static void sandbox() {
 		/*
 		HttpClient	client = new HttpClient();
@@ -198,8 +202,9 @@ public class Sandbox {
 		//sb.createSectors();
 		//sb.importCommodities();
 		//sb.importFacilities();
-		sb.addToSandbox();
+		//sb.addToSandbox();
 		
 		//sb.testSimulation(172);
+		sb.testSimulation();
 	}
 }
