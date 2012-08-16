@@ -5,22 +5,25 @@
 <html>
 	<head>
 		<title>WorldGen</title>
-		<link rel="stylesheet" href="/Traveller/css/default.css"/> 
-		<script type="text/javascript" src="/Traveller/scripts/jquery.js"></script>
+		<link rel="stylesheet" href="/traveller/css/default.css"/> 
+		<script type="text/javascript" src="/traveller/scripts/jquery.js"></script>
 	    <script type="text/javascript">
 	       function drawSectorMap(sectors) {
 	    	   var    minX = 999, minY = 999;
 	    	   var    maxX = -999, maxY = -999;
 	    	   
+               $("#sectorList").html("");
 	    	   for (var i=0; i < sectors.length; i++) {
 	    		   minX = Math.min(minX, sectors[i].x);
 	    		   maxX = Math.max(maxX, sectors[i].x);
 	    		   minY = Math.min(minY, sectors[i].y);
 	    		   maxY = Math.max(maxY, sectors[i].y);
+	    		   $("#sectorList").append("<li>" + sectors[i].name + " (" + 
+	    				   sectors[i].x + "," + sectors[i].y + ")</li>");
 	    	   }
 	    	   
-	    	   $("#sectorMap").html("<table id='sectorTable'><tr id='smHdr'><th></th></tr></table>");
 	    	   
+	    	   $("#sectorMap").html("<table id='sectorTable'><tr id='smHdr'><th></th></tr></table>");
 	    	   
 	    	   for (var x = minX; x <= maxX; x++) {
 	    		   $("#smHdr").append("<th>"+x+"</th>");
@@ -32,7 +35,7 @@
 	    		   $("#sectorTable").append("<tr id='"+rowId+"'><th>"+y+"</th></tr>");
 		    	   for (var x = minX; x <= maxX; x++) {
 		    		   var sector = sectors[i++];
-		    		   $("#"+rowId).append("<td><img src='/Traveller/api/sector/"+sector.name+"/image' title='"+sector.name+"'/></td>");
+		    		   $("#"+rowId).append("<td><img src='/traveller/api/sector/"+sector.name+"/image' title='"+sector.name+"'/></td>");
 		    	   }
 	    	   }
 	    	   
@@ -40,7 +43,7 @@
 	       }
 	       $(document).ready(function() {
 	    	   
-	    	   $.getJSON("/Traveller/api/sector/", function(data) {
+	    	   $.getJSON("/traveller/api/sector/", function(data) {
 	               drawSectorMap(data);
 
 	    	   });
@@ -70,14 +73,7 @@
 		    <div id="sidebar">
 				<h2>Sectors</h2>
 	
-				<ul id="sectorList">
-					<c:forEach var="sector" items="${sectors}">
-						<li>
-							<c:out value="${sector.name}"/>
-							(${sector.x},${sector.y})
-						</li>
-					</c:forEach>
-				</ul>
+				<ul id="sectorList"></ul>
             </div>
             			
 			<div id="sectorMap">
