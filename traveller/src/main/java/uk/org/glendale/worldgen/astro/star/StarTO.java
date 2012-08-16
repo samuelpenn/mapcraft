@@ -12,12 +12,12 @@ package uk.org.glendale.worldgen.astro.star;
  * A minimal Star representation for use in REST data transfer.
  */
 public class StarTO {
-	private int id;
-	private String name;
-	private int parentId;
-	private int distance;
-	private StarClass classification;
-	private StarForm  form;
+	public final int id;
+	public final String name;
+	public final int parentId;
+	public final int distance;
+	public final StarClass classification;
+	public final StarForm  form;
 
 	public StarTO(Star star) {
 		this.id = star.getId();
@@ -26,29 +26,5 @@ public class StarTO {
 		this.parentId = star.getParentId();
 		this.form = star.getForm();
 		this.distance = star.getDistance();
-	}
-	
-	public int getId() {
-		return id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public int getParentId() {
-		return parentId;
-	}
-	
-	public int getDistance() {
-		return distance;
-	}
-	
-	public StarClass getClassification() {
-		return classification;
-	}
-	
-	public StarForm getForm() {
-		return form;
 	}
 }
