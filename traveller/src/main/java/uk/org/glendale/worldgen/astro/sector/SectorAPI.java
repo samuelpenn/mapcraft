@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -31,6 +32,7 @@ import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystemFactory;
+import uk.org.glendale.worldgen.astro.starsystem.StarSystemTO;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
@@ -84,21 +86,21 @@ public class SectorAPI {
 	@Transactional
 	@ResponseBody
 	@RequestMapping(value="/{name}/systems", method=RequestMethod.GET)
-	public List<StarSystem> getStarSystems(@PathVariable("name") String name) {
+	public List<StarSystemTO> getStarSystems(@PathVariable("name") String name) {
 		final Sector	 sector = getSector(name);
 		
-		List<StarSystem> list = null;
+		List<StarSystemTO> list = null;
 		if (sector == null) {
 			return null;
 		}
-		list = starSystemFactory.getStarSystemsInSector(sector);
-		for (StarSystem system : list) {
+		list = new ArrayList<StarSystemTO>();
+		for (StarSystem system : starSystemFactory.getStarSystemsInSector(sector)) {
 			System.out.println(system.getName());
 			system.getStars();
 			for (Planet planet : system.getPlanets()) {
 				System.out.println("  " + planet.getName());
 			}
-			
+			list.add(new StarSystemTO(system));
 		}
 		
 		return list;
