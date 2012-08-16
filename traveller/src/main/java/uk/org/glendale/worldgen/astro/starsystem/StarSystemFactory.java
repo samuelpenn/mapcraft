@@ -52,7 +52,7 @@ public class StarSystemFactory {
 	 */
 	@Transactional
 	public StarSystem getStarSystem(int systemId) {
-		Query query = em.createQuery("SELECT s FROM StarSystem s WHEREe id = :id");
+		Query query = em.createQuery("SELECT s FROM StarSystem s WHERE id = :id");
 		query.setParameter("id", systemId);
 
 		try {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Samuel Penn, sam@glendale.org.uk
+ * Copyright (C) 2011,2012 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,6 +25,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
@@ -52,6 +54,7 @@ public class Planet {
 	private String				name;
 
 	// Astronomical data
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "system_id", referencedColumnName = "id")
 	private StarSystem			system;
@@ -122,14 +125,17 @@ public class Planet {
 	@Column(name = "nextevent")
 	private long				nextEvent;
 
+	@JsonIgnore
 	@ElementCollection(fetch = FetchType.LAZY)
 	@JoinTable(name = "resources", joinColumns = @JoinColumn(name = "planet_id"))
 	private List<Resource>		resources		= new ArrayList<Resource>();
 
+	@JsonIgnore
 	@ElementCollection(fetch = FetchType.LAZY)
 	@JoinTable(name = "planet_maps", joinColumns = @JoinColumn(name = "planet_id"))
 	private List<MapImage>		map				= new ArrayList<MapImage>();
 
+	@JsonIgnore
 	@ElementCollection(fetch = FetchType.LAZY)
 	@JoinTable(name = "facilities", joinColumns = @JoinColumn(name = "planet_id"))
 	private List<Installation>	facilities		= new ArrayList<Installation>();

@@ -25,6 +25,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.Where;
 
@@ -52,6 +53,7 @@ public class StarSystem {
 	// Persisted fields.
 	@Column(name = "name")
 	private String name;
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sector_id", referencedColumnName = "id")
 	private Sector sector;

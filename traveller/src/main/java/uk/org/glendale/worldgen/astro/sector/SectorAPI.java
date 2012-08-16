@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.org.glendale.graphics.SimpleImage;
+import uk.org.glendale.worldgen.astro.planet.Planet;
+import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
+import uk.org.glendale.worldgen.astro.starsystem.StarSystemFactory;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
@@ -43,6 +46,9 @@ import uk.org.glendale.worldgen.server.AppManager;
 public class SectorAPI {
 	@Autowired
 	private SectorFactory	factory;
+	
+	@Autowired
+	private StarSystemFactory starSystemFactory;
 	
 	//@Autowired
 	private SectorGenerator	generator;
@@ -73,6 +79,29 @@ public class SectorAPI {
 		}
 
 		return factory.getSector(name);
+	}
+	
+	@Transactional
+	@ResponseBody
+	@RequestMapping(value="/{name}/systems", method=RequestMethod.GET)
+	public List<StarSystem> getStarSystems(@PathVariable("name") String name) {
+		final Sector	 sector = getSector(name);
+		
+		List<StarSystem> list = null;
+		if (sector == null) {
+			return null;
+		}
+		list = starSystemFactory.getStarSystemsInSector(sector);
+		for (StarSystem system : list) {
+			System.out.println(system.getName());
+			system.getStars();
+			for (Planet planet : system.getPlanets()) {
+				System.out.println("  " + planet.getName());
+			}
+			
+		}
+		
+		return list;
 	}
 	
 	//@ResponseBody
