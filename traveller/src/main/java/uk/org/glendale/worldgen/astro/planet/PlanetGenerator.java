@@ -16,6 +16,7 @@ import javax.persistence.EntityManager;
 
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
+import uk.org.glendale.worldgen.astro.planet.builders.PlanetDescription;
 import uk.org.glendale.worldgen.astro.planet.builders.arean.Arean;
 import uk.org.glendale.worldgen.astro.planet.builders.arean.EoArean;
 import uk.org.glendale.worldgen.astro.planet.builders.arean.MesoArean;
@@ -147,6 +148,10 @@ public class PlanetGenerator {
 		}
 		planetFactory.getFacilityGenerator().generateFacilities(planet, size);
 		System.out.println("TechLevel: "+planet.getTechLevel());
+		
+		PlanetDescription  description = new PlanetDescription(builder);
+		planet.setDescription(description.getFullDescription());
+		
 		return planet;
 	}
 
