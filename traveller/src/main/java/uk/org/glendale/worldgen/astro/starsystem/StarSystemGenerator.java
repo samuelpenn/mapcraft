@@ -176,6 +176,7 @@ public class StarSystemGenerator {
 		primary.setSpectralType(SpectralType.G2);
 		primary.setForm(StarForm.Star);		
 		system.addStar(primary);
+		factory.persist(system);
 		
 		String			planetName;
 		int				position = 0;
