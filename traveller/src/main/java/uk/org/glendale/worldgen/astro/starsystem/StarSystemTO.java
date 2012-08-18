@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.org.glendale.rpg.traveller.systems.Zone;
+import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetTO;
 import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.star.StarTO;
@@ -34,15 +35,19 @@ public class StarSystemTO {
 	private int numberOfStars;
 	private int numberOfPlanets;
 
-	//private List<Planet> planets;
 	private List<StarTO> stars;
 	private PlanetTO mainWorld;
+	private List<PlanetTO> planets;
 
 	/**
 	 * Create a minimal representation of a StarSystem. Does not include
 	 * any planets. Designed for use when detailing whole sectors.
 	 */
 	public StarSystemTO(StarSystem system) {
+		this(system, false);
+	}
+
+	public StarSystemTO(StarSystem system, boolean detail) {
 		this.id = system.getId();
 		this.name = system.getName();
 		this.sector = system.getSector().getName();
@@ -59,6 +64,13 @@ public class StarSystemTO {
 		}
 		this.mainWorld = new PlanetTO(system.getMainWorld());
 		
+		if (detail) {
+			planets = new ArrayList<PlanetTO>();
+			
+			for (Planet planet : system.getPlanets()) {
+				planets.add(new PlanetTO(planet));
+			}
+		}
 	}
 	
 	public int getId() {
@@ -103,5 +115,9 @@ public class StarSystemTO {
 	
 	public PlanetTO getMainWorld() {
 		return mainWorld;
+	}
+	
+	public List<PlanetTO> getPlanets() {
+		return planets;
 	}
 }

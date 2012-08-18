@@ -38,6 +38,7 @@ public class PlanetTO {
 	public final GovernmentType government;
 	public final StarportType starport;
 	public final PlanetType type;
+	public final String description;
 	
 	public PlanetTO(Planet planet) {
 		this.id = planet.getId();
@@ -60,6 +61,7 @@ public class PlanetTO {
 		this.population = planet.getPopulation();
 		this.starport = planet.getStarport();
 		this.type = planet.getType();
+		this.description = (planet.getDescription() == null)?null:planet.getDescription();
 	}
 	
 }

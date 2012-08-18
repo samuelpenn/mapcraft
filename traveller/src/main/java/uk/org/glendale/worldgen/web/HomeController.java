@@ -72,7 +72,7 @@ public class HomeController {
 		return "help";
 	}
 		
-	@RequestMapping("/sector/{name}/{x}/{y}")
+	//@RequestMapping("/sector/{name}/{x}/{y}")
 	public final String createSector(final Model model, @PathVariable String name, @PathVariable int x, @PathVariable int y) {
 		
 		sectorFactory.createSector(name, x, y, "Un", null);
@@ -84,7 +84,7 @@ public class HomeController {
 		return "home";		
 	}
 	
-	@RequestMapping("/system/{id}")
+	//@RequestMapping("/system/{id}")
 	public final String createStarSystem(final Model model, @PathVariable int id) {
 		Sector	sector = sectorFactory.getSector(id);
 

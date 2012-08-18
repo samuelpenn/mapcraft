@@ -69,6 +69,7 @@ public class Cytherean extends BarrenWorld {
 		planet.setHydrographics(0);
 		planet.addTradeCode(TradeCode.H5);
 		planet.setLifeType(LifeType.None);
+		planet.addFeature(PlanetFeature.DenseClouds);
 
 		mountains = new Tile("Mountains", "#B0B0B0", false);
 		setCraterNumbers(Die.d6(2));

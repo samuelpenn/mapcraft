@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,14 +48,16 @@ public class StarSystemAPI {
 	@Autowired
 	private SectorFactory sectorFactory;
 
-	@RequestMapping(value="/system/{systemId}", method=RequestMethod.GET)
+	@RequestMapping(value="/{systemId}", method=RequestMethod.GET)
 	@ResponseBody
-	public StarSystem getSystem(@PathVariable("systemId") int systemId) {
+	@Transactional
+	public StarSystemTO getSystem(@PathVariable("systemId") int systemId) {
 		StarSystem		system = null;
 		
 		system = factory.getStarSystem(systemId);
+		system.getSector();
 
-		return system;
+		return new StarSystemTO(system, true);
 	}
 	
 	/**
