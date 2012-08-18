@@ -41,7 +41,7 @@ public class Icosohedron {
 	/** Width of each row, in tiles. */
 	private final int[] widths = { 5, 15, 25, 35, 40, 40, 40, 40, 35, 25, 15, 5 };
 	private final static double  ROOT3 = Math.sqrt(3.0);
-	private final static int     W = 20;
+	private final static int     W = 40;
 	
 	/** X position of each triangle. */
 	private final int[][] P = {
@@ -239,6 +239,7 @@ public class Icosohedron {
 	
 	public void draw() throws IOException {
 		SimpleImage		img = new SimpleImage(881, 415, "#000000");
+		img = new SimpleImage(881 * 2, 415 * 2, "#000000");
 		
 		int baseX = 0;
 		int baseY = (int)(W * ROOT3);
