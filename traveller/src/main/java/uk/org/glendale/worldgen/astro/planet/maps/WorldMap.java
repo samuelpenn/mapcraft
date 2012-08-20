@@ -1,0 +1,161 @@
+/*
+ * Copyright (C) 2012 Samuel Penn, sam@glendale.org.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; version 2.
+ * See the file COPYING.
+ */
+package uk.org.glendale.worldgen.astro.planet.maps;
+
+import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import uk.org.glendale.graphics.SimpleImage;
+import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.planet.builders.Tile;
+
+/**
+ * Manages mapping of worlds.
+ */
+public class WorldMap {
+	private Icosohedron		model = new Icosohedron();
+	private Tile[][]		map;
+	
+	private static final Tile	OOB = new Tile("OOB", "#FFFFFF", false);
+	private static final Tile	BLANK = new Tile("BLANK", "#000000", false);
+	
+	public WorldMap() {
+		map = new Tile[model.getTotalHeight()][];
+		for (int y=0; y < model.getTotalHeight(); y++) {
+			map[y] = new Tile[model.getWidthAtY(y)];
+			for (int x=0; x < model.getWidthAtY(y); x++) {
+				map[y][x] = BLANK;
+			}
+		}
+	}
+	public void random() {
+		Tile	light = new Tile ("Light", "#CCCCCC", false);
+		Tile	dark = new Tile("Dark", "#BBBBBB", false);
+		Tile	red = new Tile("Red", "#FF0000", false);
+		
+		for (int tileY=0; tileY < 12; tileY++) {
+			map[tileY] = new Tile[model.getWidthAtY(tileY)];
+			for (int tileX = 0; tileX < model.getWidthAtY(tileY); tileX++) {
+				if (Die.d20() == 1) {
+					map[tileY][tileX] = dark;
+				} else {
+					map[tileY][tileX] = light;
+				}
+			}
+		}
+		
+		System.out.println(model.getUpDown(39, 4));
+		System.out.println(map[3][34]);
+		
+		for (int i=0; i < 4; i++) {
+			Tile[][] tmp = new Tile[12][];
+			
+			for (int tileY=0; tileY < 12; tileY++) {
+				tmp[tileY] = new Tile[model.getWidthAtY(tileY)];
+				for (int tileX = 0; tileX < model.getWidthAtY(tileY); tileX++) {
+					tmp[tileY][tileX] = map[tileY][tileX];
+				}
+			}
+
+			for (int tileY=0; tileY < 12; tileY++) {
+				for (int tileX = 0; tileX < model.getWidthAtY(tileY); tileX++) {
+					if (tmp[tileY][tileX] == dark) {
+						try {
+							switch (Die.d3()) {
+							case 1:
+								// West.
+								map[tileY][model.getWest(tileX, tileY)] = dark;
+								break;
+							case 2:
+								// East.
+								map[tileY][model.getEast(tileX, tileY)] = dark;
+								break;
+							case 3:
+								// North/South.
+								Point p = model.getUpDown(tileX, tileY);
+								map[(int)p.getY()][(int)p.getX()] = dark;
+								break;
+							}
+						} catch (ArrayIndexOutOfBoundsException e) {
+							map[tileY][tileX] = red;
+							System.out.println(tileX +", "+ tileY);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private void testUpDown(int x, int y) {
+		Tile blue = new Tile("Blue", "#0000FF", false);
+		Tile red = new Tile("Red", "#FF0000", false);
+		
+		map[y][x] = blue;
+		map[model.getUpDown(x, y).y][model.getUpDown(x, y).x] = red;
+	}
+	
+	private int getVariedColour(int c, int var) {
+		c += Die.die(var) - Die.die(var);
+		if (c < 1) {
+			c = 1;
+		} else if (c > 254) {
+			c = 254;
+		}
+		return c;
+	}
+	
+	public void generate() throws IOException {
+		random();
+		SimpleImage image = model.draw(map);
+		
+		BufferedImage	bi = image.getBufferedImage();
+		
+		for (int y=0; y < bi.getHeight(); y++) {
+			for (int x=0; x < bi.getWidth(); x++) {
+				int c = bi.getRGB(x, y) % 0xFFFFFF;
+				if (c == -1) {
+					bi.setRGB(x, y, 0xFFFFFF);
+				} else {
+					int r = (c >> 16) & 0xFF;
+					int g = (c >> 8) & 0xFF;
+					int b = c & 0xFF;
+					
+					r = getVariedColour(r, 8);
+					g = getVariedColour(g, 8);
+					b = getVariedColour(b, 8);
+					//System.out.println(r);
+					
+					c = r * 65536 + g * 256 + b;
+					
+					bi.setRGB(x, y, c);
+				}
+			}
+		}
+		image.save(new File("/tmp/maps/test.jpg"), bi);
+	}
+	
+	public static void main(String[] args) throws Exception {
+		WorldMap	map = new WorldMap();
+
+		for (int y=0; y < map.model.getTotalHeight(); y++) {
+			for (int x=0; x < map.model.getTotalWidth(); x++) {
+				if (map.model.isValid(x, y)) {
+					System.out.print("X");
+				} else {
+					System.out.print(" ");
+				}
+			}
+			System.out.println("");
+		}
+		
+		map.generate();
+	}
+}

@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2011 Samuel Penn, sam@glendale.org.uk
+ * Copyright (C) 2011,2012 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation version 2.
  * See the file COPYING.
  */
-package uk.org.glendale.worldgen.test;
+package uk.org.glendale.worldgen.astro.planet.maps;
 
 import java.awt.Image;
 import java.awt.Point;
@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.image.codec.jpeg.ImageFormatException;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
@@ -28,7 +29,7 @@ import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.Tile;
 
 /**
- * Test for mapping world surfaces as an icosohedron. This would split the
+ * Model for mapping world surfaces as an icosohedron. This would split the
  * world into triangles (20 large triangles, each split into 16 smaller
  * triangles).
  * 
@@ -76,6 +77,24 @@ public class Icosohedron {
 			{ 1, 1, 1, 1, 1 },
 	};
 	
+	public int getTotalHeight() {
+		return widths.length;
+	}
+	
+	public int getTotalWidth() {
+		return 44;
+	}
+	
+	public boolean isValid(final int tileX, final int tileY) {
+		for (int x = 0; x < P[tileY].length; x++) {
+			if (P[tileY][x] == tileX) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * Gets the width of the world at the given y coordinate. 
 	 * Y coordinate ranges from 0 (north pole) to 11 (south pole).
@@ -83,7 +102,7 @@ public class Icosohedron {
 	 * @param tileY		Y coordinate on map, from 0 to 11.
 	 * @return
 	 */
-	private final int getWidthAtY(final int tileY) {
+	public final int getWidthAtY(final int tileY) {
 		if (tileY < 0 || tileY > 11) {
 			throw new IllegalArgumentException("Y coordinate [" + tileY 
 					+ "] is outside bounds 0 - 11");
@@ -123,7 +142,7 @@ public class Icosohedron {
 	 * @param tileY		Y coordinate to check.
 	 * @return			X coordinate of new tile.
 	 */
-	private final int getWest(final int tileX, final int tileY) {
+	public final int getWest(final int tileX, final int tileY) {
 		int x = tileX - 1;
 		if (x < 0) {
 			x = getWidthAtY(tileY) - 1;
@@ -140,7 +159,7 @@ public class Icosohedron {
 	 * @param tileY		Y coordinate to check.
 	 * @return			X coordinate of new tile.
 	 */
-	private final int getEast(final int tileX, final int tileY) {
+	public final int getEast(final int tileX, final int tileY) {
 		int x= tileX + 1;
 		if (x >= getWidthAtY(tileY)) {
 			x = 0;
@@ -158,12 +177,12 @@ public class Icosohedron {
 	 * @param tileY		Y coordinate to check.
 	 * @return			Y coordinate of new tile.
 	 */
-	private final Point getUpDown(final int tileX, final int tileY) {
+	public final Point getUpDown(final int tileX, final int tileY) {
 		int d = D[tileY][tileX];
 		int x = tileX;
 		int y = tileY - d;
 		
-		if (tileY > 6 || tileY < 4) {
+		if (tileY > 7 || tileY < 4) {
 			// Bottom third (move from tileY to y).
 			int		tw = getWidthAtY(tileY) / 5;
 			int		w = getWidthAtY(y) / 5;
@@ -172,6 +191,10 @@ public class Icosohedron {
 			System.out.println(ts+","+tw+","+w);
 			x -= (tw - w) * ts;
 			x -= (tw -w) / 2;
+		} else if (tileY == 4 && y == 3) {
+			x -= x / 8 + 1;
+		} else if (tileY == 7 && y == 8) {
+			x -= x / 8;
 		} else if (tileY > 3) {
 			x -= D[tileY][tileX];
 		}
@@ -237,7 +260,7 @@ public class Icosohedron {
 	}
 	
 	
-	public void draw() throws IOException {
+	public SimpleImage draw(Tile[][] map) throws IOException {
 		SimpleImage		img = new SimpleImage(881, 415, "#000000");
 		img = new SimpleImage(881 * 2, 415 * 2, "#000000");
 		
@@ -255,8 +278,11 @@ public class Icosohedron {
 				//break;
 			}
 		}
-		img.save(new File("/tmp/maps/test.jpg"));
-		
+		return img;
+		//img.save(new File("/tmp/maps/test.jpg"));
+	}
+	
+	public void stretch(SimpleImage img) throws ImageFormatException, IOException {
 		// Stretch
 		BufferedImage b = img.getBufferedImage();
 		System.out.println(b.getWidth() + " x " + b.getHeight());
@@ -297,6 +323,6 @@ public class Icosohedron {
 		Icosohedron ico = new Icosohedron();
 		
 		ico.random();
-		ico.draw();
+		ico.draw(ico.map);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Samuel Penn, sam@glendale.org.uk
+ * Copyright (C) 2006-2012 Samuel Penn, sam@glendale.org.uk
  *
  * BSD.
  */
@@ -184,6 +184,12 @@ public class SimpleImage implements ImageObserver {
 		g.dispose();
 
 		return bimage;
+	}
+	
+	public int getColour(int x, int y) {
+		BufferedImage bimage = getBufferedImage();
+		
+		return bimage.getRGB(x, y);
 	}
 	
 	public void paint(URL url, int x, int y, int width, int height)
@@ -401,6 +407,12 @@ public class SimpleImage implements ImageObserver {
 		// Paint the image onto the buffered image
 		g.drawImage(image, 0, 0, null);
 
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(path));
+		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+		encoder.encode(bimage);
+	}
+	
+	public void save(File path, BufferedImage bimage) throws IOException {
 		OutputStream out = new BufferedOutputStream(new FileOutputStream(path));
 		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
 		encoder.encode(bimage);

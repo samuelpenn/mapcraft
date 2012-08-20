@@ -56,4 +56,8 @@ public class Tile {
 	public boolean isWater() {
 		return isWater;
 	}
+	
+	public String toString() {
+		return rgb;
+	}
 }
