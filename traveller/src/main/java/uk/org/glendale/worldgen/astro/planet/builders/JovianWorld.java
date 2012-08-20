@@ -13,6 +13,7 @@ import java.util.List;
 
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.ice.Europan;
+import uk.org.glendale.worldgen.astro.planet.maps.Tile;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**

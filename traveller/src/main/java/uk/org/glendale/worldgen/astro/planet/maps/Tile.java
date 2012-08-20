@@ -6,7 +6,7 @@
  * as published by the Free Software Foundation; version 2.
  * See the file COPYING.
  */
-package uk.org.glendale.worldgen.astro.planet.builders;
+package uk.org.glendale.worldgen.astro.planet.maps;
 
 /**
  * A tile represents a square section of world map. When a world is first

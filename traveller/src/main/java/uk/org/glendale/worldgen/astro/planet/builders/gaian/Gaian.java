@@ -13,7 +13,7 @@ import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.PlanetType;
 import uk.org.glendale.worldgen.astro.planet.StarportType;
 import uk.org.glendale.worldgen.astro.planet.builders.GaianWorld;
-import uk.org.glendale.worldgen.astro.planet.builders.Tile;
+import uk.org.glendale.worldgen.astro.planet.maps.Tile;
 import uk.org.glendale.worldgen.astro.star.Temperature;
 
 /**

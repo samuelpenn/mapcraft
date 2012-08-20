@@ -15,7 +15,7 @@ import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.PlanetType;
 import uk.org.glendale.worldgen.astro.planet.builders.BarrenWorld;
-import uk.org.glendale.worldgen.astro.planet.builders.Tile;
+import uk.org.glendale.worldgen.astro.planet.maps.Tile;
 import uk.org.glendale.worldgen.astro.star.Temperature;
 
 /**

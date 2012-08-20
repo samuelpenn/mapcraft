@@ -26,7 +26,6 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.rpg.utils.Die;
-import uk.org.glendale.worldgen.astro.planet.builders.Tile;
 
 /**
  * Model for mapping world surfaces as an icosohedron. This would split the

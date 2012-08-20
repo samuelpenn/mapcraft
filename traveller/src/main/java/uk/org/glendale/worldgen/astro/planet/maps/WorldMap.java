@@ -15,7 +15,6 @@ import java.io.IOException;
 
 import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.rpg.utils.Die;
-import uk.org.glendale.worldgen.astro.planet.builders.Tile;
 
 /**
  * Manages mapping of worlds.

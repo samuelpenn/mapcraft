@@ -13,6 +13,7 @@ import static uk.org.glendale.rpg.utils.Die.d100;
 import static uk.org.glendale.rpg.utils.Die.d4;
 import static uk.org.glendale.rpg.utils.Die.d6;
 import static uk.org.glendale.rpg.utils.Die.rollZero;
+import uk.org.glendale.worldgen.astro.planet.maps.Tile;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**

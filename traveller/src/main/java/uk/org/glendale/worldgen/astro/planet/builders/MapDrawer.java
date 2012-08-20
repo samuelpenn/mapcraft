@@ -27,6 +27,7 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
 import uk.org.glendale.graphics.SimpleImage;
+import uk.org.glendale.worldgen.astro.planet.maps.Tile;
 
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.image.TextureLoader;
