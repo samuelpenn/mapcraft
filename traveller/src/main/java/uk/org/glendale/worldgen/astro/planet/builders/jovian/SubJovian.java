@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Samuel Penn, sam@glendale.org.uk
+ * Copyright (C) 2011, 2012 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -77,12 +77,15 @@ public class SubJovian extends JovianWorld {
 	}
 
 	protected Tile getBand(int y) {
+		/*
 		if (y < TILE_HEIGHT / 8 || y >= TILE_HEIGHT - (TILE_HEIGHT / 8)) {
 			return tiles.get((y / 2) % 2);
 		} else if (y % 8 == 0) {
 			return tiles.get(3);
 		}
 		return tiles.get((y / 2) % 2 + 1);
+		*/
+		return null;
 	}
 
 	/**

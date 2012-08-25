@@ -87,12 +87,15 @@ public class CryoJovian extends JovianWorld {
 	}
 
 	protected Tile getBand(int y) {
+		/*
 		if (y < TILE_HEIGHT / 8 || y >= TILE_HEIGHT - (TILE_HEIGHT / 8)) {
 			return tiles.get((y / 2) % 2);
 		} else if (y % 8 == 0) {
 			return tiles.get(3);
 		}
 		return tiles.get((y / 2) % 2 + 1);
+		*/
+		return null;
 	}
 
 	public void generateResources() {

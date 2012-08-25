@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Samuel Penn, sam@glendale.org.uk
+ * Copyright (C) 2011, 2012 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -8,12 +8,14 @@
  */
 package uk.org.glendale.worldgen.astro.planet.builders;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.ice.Europan;
 import uk.org.glendale.worldgen.astro.planet.maps.Tile;
+import uk.org.glendale.worldgen.astro.planet.maps.WorldBuilder;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
@@ -25,10 +27,17 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
-public abstract class JovianWorld extends PlanetBuilder {
+public abstract class JovianWorld extends WorldBuilder {
 	protected List<Tile> tiles;
 
 	public JovianWorld() {
+		map = new Tile[model.getTotalHeight()][];
+		for (int y=0; y < model.getTotalHeight(); y++) {
+			map[y] = new Tile[model.getWidthAtY(y)];
+			for (int x=0; x < model.getWidthAtY(y); x++) {
+				map[y][x] = BLANK;
+			}
+		}
 	}
 
 	@Override
@@ -44,30 +53,19 @@ public abstract class JovianWorld extends PlanetBuilder {
 	protected Tile getBand(int y) {
 		return tiles.get((y / 2) % tiles.size());
 	}
+	
+	private void drawBandedJovianWorld() {
+		for (int tileY=0; tileY < 12; tileY++) {
+			map[tileY] = new Tile[model.getWidthAtY(tileY)];
+			for (int tileX = 0; tileX < model.getWidthAtY(tileY); tileX++) {
+				map[tileY][tileX] = tiles.get(tileY % tiles.size());
+			}
+		}
+	}
 
 	@Override
 	public void generateMap() {
-		if (!AppManager.getDrawMap()) {
-			return;
-		}
-		map = new Tile[TILE_HEIGHT][TILE_WIDTH];
-		heightMap = new int[TILE_HEIGHT][TILE_WIDTH];
-		for (int y = 0; y < TILE_HEIGHT; y++) {
-			for (int x = 0; x < TILE_WIDTH; x++) {
-				if (x < getWest(y) || x >= getEast(y)) {
-					map[y][x] = OUT_OF_BOUNDS;
-					heightMap[y][x] = 0;
-				} else {
-					map[y][x] = getBand(y);
-					heightMap[y][x] = Die.d4();
-				}
-			}
-		}
-		map = scaleMap(map, TILE_SIZE);
-		if (AppManager.getStretchMap()) {
-			map = stretchMap(map);
-		}
-
+		drawBandedJovianWorld();
 		getImage();
 	}
 
@@ -76,7 +74,7 @@ public abstract class JovianWorld extends PlanetBuilder {
 		addResource("Hydrogen", 60 + Die.d20(2));
 	}
 
-	private PlanetBuilder[] moonBuilders = null;
+	private WorldBuilder[] moonBuilders = null;
 
 	/**
 	 * Gets a list of planet types typically found as moons of a Jovian world.
@@ -84,19 +82,21 @@ public abstract class JovianWorld extends PlanetBuilder {
 	 * ones will be listed here. It can be assumed that there will also be a
 	 * large number of captured asteroids.
 	 */
-	public PlanetBuilder[] getMoonBuilders() {
+	public WorldBuilder[] getMoonBuilders() {
 		if (moonBuilders != null) {
 			return moonBuilders;
 		}
 		int numMoons = Die.d3(2);
 
 		System.out.println("JovianWorlds: Adding " + numMoons + " moons");
-
+		moonBuilders = new WorldBuilder[0];
+		/*
 		moonBuilders = new PlanetBuilder[numMoons];
 
 		for (int i = 0; i < numMoons; i++) {
 			moonBuilders[i] = new Europan();
 		}
+		*/
 
 		return moonBuilders;
 	}

@@ -75,6 +75,9 @@ public class Cytherean extends BarrenWorld {
 		setCraterNumbers(Die.d6(2));
 		setCraterMinSize(15);
 		
+		LIGHT.setRGB("#6d4824");
+		DARK.setRGB("#462300");
+		
 		generateMap();
 		generateResources();
 	}
