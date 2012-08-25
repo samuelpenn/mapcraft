@@ -50,11 +50,13 @@
     
 	<!-- Forwards requests to the "/" resource to the "welcome" view -->
 	<mvc:view-controller path="/" view-name="home"/>
+    <mvc:view-controller path="/ui/system/*" view-name="system"/>
 	<!-- 
 	<mvc:view-controller path="/help" view-name="help"/>
 	-->
-	
+
 	<mvc:resources location="/css/" mapping="/css/**" />
+    <mvc:resources location="/images/" mapping="/images/**" />
 	
 	<!-- Configures Handler Interceptors -->	
 	<mvc:interceptors>
