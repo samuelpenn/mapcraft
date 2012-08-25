@@ -27,6 +27,7 @@ import uk.org.glendale.worldgen.astro.planet.builders.gaian.Gaian;
 import uk.org.glendale.worldgen.astro.planet.builders.jovian.CryoJovian;
 import uk.org.glendale.worldgen.astro.planet.builders.jovian.EuJovian;
 import uk.org.glendale.worldgen.astro.planet.builders.jovian.SubJovian;
+import uk.org.glendale.worldgen.astro.planet.maps.WorldBuilder;
 import uk.org.glendale.worldgen.astro.sector.SectorCode;
 import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.star.StarAPI;
@@ -49,6 +50,7 @@ public class PlanetGenerator {
 	private StarSystem		system;
 	private Star			star;
 	private PlanetBuilder	builder	= null;
+	private WorldBuilder	worldBuilder = null;
 
 	/**
 	 * Create a new PlanetGenerator for a given star in a star system.
@@ -63,7 +65,6 @@ public class PlanetGenerator {
 		this.system = system;
 		this.star = star;
 	}
-
 	/**
 	 * Generate a specific single planet at the given distance with the
 	 * specified name. No checks are performed to see if the planet is being
@@ -81,7 +82,7 @@ public class PlanetGenerator {
 	 * @return Newly generated planet.
 	 */
 	public Planet generatePlanet(String name, int position, int distance,
-			PlanetBuilder builder) {
+			Builder builder) {
 		Temperature orbitTemperature = StarAPI.getOrbitTemperature(star,
 				distance);
 
@@ -155,6 +156,7 @@ public class PlanetGenerator {
 		return planet;
 	}
 
+
 	/**
 	 * Generate a single planet at the given distance with the specified name.
 	 * The type of planet is randomly determined based on the orbital
@@ -192,15 +194,15 @@ public class PlanetGenerator {
 		case ExtremelyHot:
 			switch (Die.d6()) {
 			case 1:
-				builder = new Hermian();
+				// XXX: builder = new Hermian();
 				break;
 			case 2:
 			case 3:
 			case 4:
-				builder = new Ferrinian();
+				// XXX: builder = new Ferrinian();
 				break;
 			default:
-				builder = new Hadean();
+				// XXX: builder = new Hadean();
 				break;
 			}
 			break;
@@ -210,17 +212,17 @@ public class PlanetGenerator {
 			case 1:
 			case 2:
 			case 3:
-				builder = new Hermian();
+				// XXX: builder = new Hermian();
 				break;
 			default:
-				builder = new Ferrinian();
+				// XXX: builder = new Ferrinian();
 				break;
 			}
 			break;
 		case Hot:
 		case Warm:
 			// Venus' orbit.
-			builder = new Hermian();
+			// XXX: builder = new Hermian();
 			break;
 		case Standard:
 			// Earth's orbit.
@@ -241,12 +243,12 @@ public class PlanetGenerator {
 				builder = new MesoArean();
 				break;
 			default:
-				builder = new Arean();
+				// XXX: builder = new Arean();
 			}
 			break;
 		case Cold:
 			// Mars, Asteroids
-			builder = new Arean();
+			// XXX: builder = new Arean();
 			break;
 		case VeryCold:
 			// Jupiter, Saturn

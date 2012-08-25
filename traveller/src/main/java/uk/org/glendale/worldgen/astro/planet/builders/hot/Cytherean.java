@@ -71,7 +71,7 @@ public class Cytherean extends BarrenWorld {
 		planet.setLifeType(LifeType.None);
 		planet.addFeature(PlanetFeature.DenseClouds);
 
-		mountains = new Tile("Mountains", "#B0B0B0", false);
+		//mountains = new Tile("Mountains", "#B0B0B0", false);
 		setCraterNumbers(Die.d6(2));
 		setCraterMinSize(15);
 		

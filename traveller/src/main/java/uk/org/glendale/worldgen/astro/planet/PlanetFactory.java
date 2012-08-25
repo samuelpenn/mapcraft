@@ -109,7 +109,9 @@ public class PlanetFactory {
 		
 		return image.getData();
 		*/
-		return null;
+		Planet planet = getPlanet(id);
+
+		return planet.getImage(projection);
 	}
 	
 	public void persist(Planet planet) {

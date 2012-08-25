@@ -22,21 +22,25 @@ public class Tile {
 	private String rgb;
 	private boolean isWater;
 
-	public Tile(String name, String rgb, boolean isWater) {
+	public Tile(final String name, final String rgb, final boolean isWater) {
 		this.name = name;
 		this.rgb = rgb;
 		this.isWater = isWater;
 	}
 
-	public String getName() {
+	public final String getName() {
 		return name;
 	}
 
-	public String getRGB() {
+	public final String getRGB() {
 		return rgb;
 	}
+	
+	public final void setRGB(final String rgb) {
+		this.rgb = rgb;
+	}
 
-	private String getHex(int v) {
+	private final String getHex(int v) {
 		if (v > 255)
 			v = 255;
 		if (v < 0)
@@ -45,7 +49,7 @@ public class Tile {
 		return ((v < 16) ? "0" : "") + Integer.toHexString(v);
 	}
 
-	public String getRGB(int modifier) {
+	public final String getRGB(final int modifier) {
 		int r = Integer.parseInt(rgb.substring(1, 3), 16) + modifier;
 		int g = Integer.parseInt(rgb.substring(3, 5), 16) + modifier;
 		int b = Integer.parseInt(rgb.substring(5, 7), 16) + modifier;
@@ -53,11 +57,11 @@ public class Tile {
 		return "#" + getHex(r) + getHex(g) + getHex(b);
 	}
 
-	public boolean isWater() {
+	public final boolean isWater() {
 		return isWater;
 	}
 	
-	public String toString() {
+	public final String toString() {
 		return rgb;
 	}
 }

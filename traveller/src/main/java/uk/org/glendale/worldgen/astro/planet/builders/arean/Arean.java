@@ -61,9 +61,9 @@ public class Arean extends BarrenWorld {
 		setCraterMinSize(10);
 		setCraterNumbers(50);
 
-		base = new Tile("Base", "#3c3b36", false);
-		crust = new Tile("Crust", "#d8b476", false);
-		mountains = new Tile("Mountains", "#e9be7a", false);
+		//base = new Tile("Base", "#3c3b36", false);
+		//crust = new Tile("Crust", "#d8b476", false);
+		//mountains = new Tile("Mountains", "#e9be7a", false);
 
 		super.generateMap();
 	}

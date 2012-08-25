@@ -26,6 +26,10 @@ public class WorldMap {
 	private static final Tile	OOB = new Tile("OOB", "#FFFFFF", false);
 	private static final Tile	BLANK = new Tile("BLANK", "#000000", false);
 	
+	private Tile	light = new Tile ("Light", "#CCCCCC", false);
+	private Tile	dark = new Tile("Dark", "#BBBBBB", false);
+	private Tile	red = new Tile("Red", "#FF0000", false);
+
 	public WorldMap() {
 		map = new Tile[model.getTotalHeight()][];
 		for (int y=0; y < model.getTotalHeight(); y++) {
@@ -35,11 +39,8 @@ public class WorldMap {
 			}
 		}
 	}
-	public void random() {
-		Tile	light = new Tile ("Light", "#CCCCCC", false);
-		Tile	dark = new Tile("Dark", "#BBBBBB", false);
-		Tile	red = new Tile("Red", "#FF0000", false);
-		
+	
+	public void generateMap() {	
 		for (int tileY=0; tileY < 12; tileY++) {
 			map[tileY] = new Tile[model.getWidthAtY(tileY)];
 			for (int tileX = 0; tileX < model.getWidthAtY(tileY); tileX++) {
@@ -50,10 +51,7 @@ public class WorldMap {
 				}
 			}
 		}
-		
-		System.out.println(model.getUpDown(39, 4));
-		System.out.println(map[3][34]);
-		
+
 		for (int i=0; i < 4; i++) {
 			Tile[][] tmp = new Tile[12][];
 			
@@ -93,6 +91,15 @@ public class WorldMap {
 		}
 	}
 	
+	/**
+	 * Used to test the neighbour logic. Given a tile, colours it blue and
+	 * then colours its vertical neighbour red. Allows an easy manual check
+	 * to ensure that the vertical neighbour match is working.
+	 * 
+	 * @param x		X coordinate of tile to look for up/down neighbour.
+	 * @param y		Y coordinate of tile to look for up/down neighbour.
+	 */
+	@SuppressWarnings("unused")
 	private void testUpDown(int x, int y) {
 		Tile blue = new Tile("Blue", "#0000FF", false);
 		Tile red = new Tile("Red", "#FF0000", false);
@@ -111,8 +118,51 @@ public class WorldMap {
 		return c;
 	}
 	
+	private void blur(BufferedImage image) {
+		for (int y=0; y < image.getHeight(); y++) {
+			for (int x=0; x < image.getWidth(); x++) {
+				int c = image.getRGB(x, y) & 0xFFFFFF;
+				if (c == 0xFFFFFF) {
+					continue;
+				}
+				int r = (c >> 16) & 0xFF;
+				int g = (c >> 8) & 0xFF;
+				int b = c & 0xFF;
+				switch (Die.d8()) {
+				case 1:
+					if (y > 0) {
+						c = image.getRGB(x, y-1);
+					}
+					break;
+				case 2:
+					if (y < image.getHeight() - 1) {
+						c = image.getRGB(x, y+1);
+					}
+					break;
+				case 3:
+					if (x > 0) {
+						c = image.getRGB(x-1, y);
+					}
+					break;
+				case 4:
+					if (x < image.getWidth() - 1) {
+						c = image.getRGB(x+1, y);
+					}
+					break;
+				default:
+					break;
+				}
+				if ((c & 0xFFFFFF) != 0xFFFFFF) {
+					if ((c & 0xFFFFFF) == 0xBBBBBB) {
+						image.setRGB(x, y, c);
+					}
+				}
+			}
+		}
+	}
+	
 	public void generate() throws IOException {
-		random();
+		generateMap();
 		SimpleImage image = model.draw(map);
 		
 		BufferedImage	bi = image.getBufferedImage();
@@ -127,6 +177,7 @@ public class WorldMap {
 					int g = (c >> 8) & 0xFF;
 					int b = c & 0xFF;
 					
+					/*
 					r = getVariedColour(r, 8);
 					g = getVariedColour(g, 8);
 					b = getVariedColour(b, 8);
@@ -135,9 +186,15 @@ public class WorldMap {
 					c = r * 65536 + g * 256 + b;
 					
 					bi.setRGB(x, y, c);
+					*/
 				}
 			}
 		}
+		
+		for (int i=0; i < 8; i++) {
+			blur(bi);
+		}
+		
 		image.save(new File("/tmp/maps/test.jpg"), bi);
 	}
 	

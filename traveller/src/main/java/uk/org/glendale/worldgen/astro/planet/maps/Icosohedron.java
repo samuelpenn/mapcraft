@@ -13,6 +13,8 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageProducer;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -258,10 +260,8 @@ public class Icosohedron {
 		}
 	}
 	
-	
 	public SimpleImage draw(Tile[][] map) throws IOException {
-		SimpleImage		img = new SimpleImage(881, 415, "#000000");
-		img = new SimpleImage(881 * 2, 415 * 2, "#000000");
+		SimpleImage image = new SimpleImage(881 * 2, 415 * 2, "#FFFFFF");
 		
 		int baseX = 0;
 		int baseY = (int)(W * ROOT3);
@@ -270,27 +270,27 @@ public class Icosohedron {
 			for (int tileX=0; tileX < getWidthAtY(tileY); tileX++) {
 				Point	point = getBase(tileX, tileY);
 				int		h = (int)(W * ROOT3 * getDirection(tileX, tileY));
-				img.triangleFill(baseX + (int)point.getX(), baseY + (int)point.getY(), W, h, map[tileY][tileX].getRGB(Die.d10())); 
-				img.triangle(baseX + (int)point.getX(), baseY + (int)point.getY(), W, h, map[tileY][tileX].getRGB(Die.d10())); 
+				image.triangleFill(baseX + (int)point.getX(), baseY + (int)point.getY(), W, h, map[tileY][tileX].getRGB(Die.d8())); 
+				image.triangle(baseX + (int)point.getX(), baseY + (int)point.getY(), W, h, map[tileY][tileX].getRGB(Die.d8())); 
 			}
 			if (tileY > 6) {
 				//break;
 			}
 		}
-		return img;
-		//img.save(new File("/tmp/maps/test.jpg"));
+		return image;
 	}
 	
-	public void stretch(SimpleImage img) throws ImageFormatException, IOException {
+	@SuppressWarnings("restriction")
+	public byte[] stretchImage(SimpleImage image) throws IOException {
 		// Stretch
-		BufferedImage b = img.getBufferedImage();
+		BufferedImage b = image.getBufferedImage();
 		System.out.println(b.getWidth() + " x " + b.getHeight());
 		for (int y=0; y < b.getHeight(); y++) {
 			int count = 0;
-			List<Integer>  nonBlack = new ArrayList<Integer>();
+			List<Integer>  nonWhite = new ArrayList<Integer>();
 			for (int x=0; x < b.getWidth(); x++) {
-				if (b.getRGB(x, y) != -16777216) {
-					nonBlack.add(b.getRGB(x, y));
+				if ((b.getRGB(x, y) & 0xFFFFFF) != 0xFFFFFF) {
+					nonWhite.add(b.getRGB(x, y));
 					count++;
 				}
 			}
@@ -299,7 +299,7 @@ public class Icosohedron {
 			double stretch = 1.0 * b.getWidth() / count;
 			double total = 0;
 			int	lastRgb = 0;
-			for (int rgb : nonBlack) {
+			for (int rgb : nonWhite) {
 				lastRgb = rgb;
 				total += stretch;
 				int i = (int)(total);
@@ -312,9 +312,14 @@ public class Icosohedron {
 				b.setRGB(x++, y, lastRgb);
 			}
 		}
-		OutputStream out = new BufferedOutputStream(new FileOutputStream("/tmp/maps/stretch.jpg"));
+		Image i = b.getScaledInstance(1024, 1024, BufferedImage.SCALE_FAST);
+		SimpleImage si = new SimpleImage(i);
+		b = si.getBufferedImage();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
 		encoder.encode(b);
+		
+		return out.toByteArray();
 
 	}
 	

@@ -79,19 +79,19 @@ public class Hermian extends BarrenWorld {
 
 	@Override
 	public void generateMap() {
-		base = new Tile("Sea", "#908070", false);
-		crust = new Tile("Crust", "#A09080", false);
-		mountains = new Tile("Mountains", "#C0B0B0", false);
-		crater = new Tile("Crater", "#887767", false);
+		LIGHT.setRGB("#A09080");
+		DARK.setRGB("#908070");
+		//mountains = new Tile("Mountains", "#C0B0B0", false);
+		//crater = new Tile("Crater", "#887767", false);
 
 		if (planet.hasFeatureCode(PlanetFeature.Dust)) {
-			base = new Tile("Sea", "#A08070", false);
-			crust = new Tile("Crust", "#A09080", false);
-			crater = new Tile("Crater", "#987767", false);
+			//base = new Tile("Sea", "#A08070", false);
+			//crust = new Tile("Crust", "#A09080", false);
+			//crater = new Tile("Crater", "#987767", false);
 			setCraterMinSize(20);
 		}
 
-		setNumberOfContinents(15);
+		//setNumberOfContinents(15);
 		setCraterSharpness(3);
 		setCraterSize(25);
 

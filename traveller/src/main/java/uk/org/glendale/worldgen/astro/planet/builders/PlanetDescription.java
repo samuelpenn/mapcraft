@@ -22,6 +22,7 @@ import java.util.StringTokenizer;
 
 import uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.planet.Builder;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
 
@@ -43,7 +44,7 @@ import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
  */
 public class PlanetDescription {
 	private StringBuffer buffer = new StringBuffer();
-	private PlanetBuilder builder = null;
+	private Builder builder = null;
 	private Planet planet = null;
 
 	private Properties phrases = null;
@@ -107,7 +108,7 @@ public class PlanetDescription {
 		}
 	}
 
-	public PlanetDescription(PlanetBuilder builder) {
+	public PlanetDescription(Builder builder) {
 		this.builder = builder;
 		this.planet = builder.getPlanet();
 		if (this.planet == null || builder.getStar() == null) {
@@ -428,9 +429,10 @@ public class PlanetDescription {
 	 * Test things.
 	 */
 	public static void main(String[] args) throws Exception {
+		/*
 		PlanetBuilder b = new Hermian();
 		b.setPlanet(new Planet());
 		PlanetDescription d = new PlanetDescription(b);
-
+		*/
 	}
 }

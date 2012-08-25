@@ -591,17 +591,17 @@ public class Planet {
 		this.map.add(image);
 	}
 
-	public byte[] getFlatImage() {
+	public byte[] getImage(Projection projection) {
 		if (map == null || map.size() == 0) {
 			return null;
 		}
 		for (int i = 0; i < map.size(); i++) {
 			MapImage mi = map.get(i);
-			if (mi.getType() == Projection.Mercator) {
+			if (mi.getType() == projection) {
 				return mi.getData();
 			}
 		}
-		return null;
+		return map.get(0).getData();
 	}
 
 	/**

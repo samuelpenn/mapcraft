@@ -20,6 +20,7 @@ import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.planet.Builder;
 import uk.org.glendale.worldgen.astro.planet.MapImage;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetType;
@@ -46,7 +47,7 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn.
  */
-public abstract class PlanetBuilder {
+public abstract class PlanetBuilder implements Builder {
 	protected Planet planet;
 	protected Star star;
 
@@ -875,10 +876,12 @@ public abstract class PlanetBuilder {
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(GraphicsEnvironment.isHeadless());
+		/*
 		PlanetBuilder barren = new Hermian();
 		barren.setPlanet(new Planet());
 		barren.generate();
 		System.exit(0);
+		*/
 
 		/*
 		 * Tile sea = new Tile("Sea", "#505050", false); Tile crust = new

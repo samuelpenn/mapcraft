@@ -63,12 +63,12 @@ public class Ferrinian extends BarrenWorld {
 
 	@Override
 	public void generateMap() {
-		base = new Tile("Sea", "#706050", false);
-		crust = new Tile("Crust", "#907060", false);
-		mountains = new Tile("Mountains", "#C0B0B0", false);
-		crater = new Tile("Crater", "#807060", false);
+		//base = new Tile("Sea", "#706050", false);
+		//crust = new Tile("Crust", "#907060", false);
+		//mountains = new Tile("Mountains", "#C0B0B0", false);
+		//crater = new Tile("Crater", "#807060", false);
 
-		setNumberOfContinents(5);
+		//setNumberOfContinents(5);
 		setCraterNumbers(500);
 		if (planet.hasFeatureCode(HeavilyCratered)) {
 			setCraterNumbers(500 + Die.d100(5));

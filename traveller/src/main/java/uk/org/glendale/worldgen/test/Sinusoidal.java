@@ -1,6 +1,6 @@
 package uk.org.glendale.worldgen.test;
 
-import uk.org.glendale.worldgen.astro.planet.builders.Tile;
+import uk.org.glendale.worldgen.astro.planet.maps.Tile;
 
 public class Sinusoidal {
 	public static final int MAP_WIDTH = 1024;

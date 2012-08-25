@@ -8,23 +8,69 @@
  */
 package uk.org.glendale.worldgen.astro.planet;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.org.glendale.graphics.SimpleImage;
+import uk.org.glendale.worldgen.astro.planet.MapImage.Projection;
+import uk.org.glendale.worldgen.astro.sector.Sector;
 import uk.org.glendale.worldgen.server.AppManager;
 
-//@Controller
+@Controller
+@RequestMapping("/api/planet")
 public class PlanetAPI {
-	@RequestMapping(value="/planet/{id}", method=RequestMethod.GET)
+	@Autowired
+	PlanetFactory		factory;
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public Planet getPlanet(@PathVariable("id") int id) {
-		AppManager app = AppManager.getInstance();
+	@Transactional
+	public PlanetTO getPlanet(@PathVariable("id") int id) {
+		return new PlanetTO(factory.getPlanet(id));
+	}
+	
+	@RequestMapping(value="/{id}/map", method=RequestMethod.GET)
+	@Transactional
+	public void getPlanetMap(@PathVariable("id") int id, HttpServletResponse response) {
+		
+		byte[] data = factory.getPlanetImage(id, Projection.Icosohedron);
+		response.setContentType("image/jpeg");
+		response.setContentLength(data.length);
+		
+		try {
+			ServletOutputStream 	out =  response.getOutputStream();
+			out.write(data);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-		PlanetFactory pf = new PlanetFactory();
+	@RequestMapping(value="/{id}/projection.jpg", method=RequestMethod.GET)
+	@Transactional
+	public void getPlanetProjected(@PathVariable("id") int id, HttpServletResponse response) {
+		
+		byte[] data = factory.getPlanetImage(id, Projection.Mercator);
 
-		return pf.getPlanet(id);
+		response.setContentType("image/jpeg");
+		response.setContentLength(data.length);
+		try {
+			ServletOutputStream 	out =  response.getOutputStream();
+			out.write(data);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
