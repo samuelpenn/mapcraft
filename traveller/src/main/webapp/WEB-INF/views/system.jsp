@@ -79,17 +79,42 @@
                
                $("#planetData").append("<div id='statBlock'></div>");
                
-               var para = "";
-               para += "<b>Distance: </b>" + getDistance(planet) + "; ";
-               para += "<b>Radius: </b>" + getRadius(planet) + "; ";
-               para += "<b>Axial Tilt: </b>" + getAxialTilt(planet) + ";";
-               para += "<b>Length of Day: </b>" + getDayLength(planet) + ";";
-               para += "<b>Temperature: </b>" + getTemperature(planet) + "; ";
-               para += "<b>Atmosphere: </b>" + getAtmosphere(planet) + "; ";
-               para += "<b>Hydrographics: </b>" + getHydrographics(planet) + ";";
-               $("#statBlock").append("<p>" + para + "</p>");
+               // It's a table. I can't think of a better way of laying this
+               // out which doesn't involve a table.
+               var para = "<table class='data'><tr>";
+               
+               var labels = [ "Distance", "Radius", "Axial Tilt", "Day Length" ];
+               var data = [ getDistance(planet), getRadius(planet), 
+                            getAxialTilt(planet), getDayLength(planet) ];
+               
+               para += mkTable(labels, data);
+               
+               var labels = [ "Temperature", "Atmosphere", "Hydrographics", "Life" ];
+               var data = [ getTemperature(planet), getAtmosphere(planet), 
+                            getHydrographics(planet), getLifeLevel(planet) ];
+               
+               para += mkTable(labels, data);
+
+               para += "</tr></table>";
+               $("#statBlock").append(para);
                
 	    	   
+	       }
+	       
+	       function mkTable(labels, data) {
+	    	   var    th = "";
+	    	   var    td = "";
+	    	   
+	    	   for (var i=0; i < labels.length; i++) {
+	    		   th += "<th>" + labels[i] + "</th>";
+	    		   td += "<td>" + data[i] + "</td>"; 
+	    	   }
+	    	   
+	    	   return "<tr>" + th + "</tr><tr>" + td + "</tr>";
+	       }
+	       
+	       function addData(label, value) {
+	    	   return "<dt>" + label + "</dt> <dd>" + value + "</dd>";
 	       }
 	       
 	       function showPlanetsForStar(system, starId) {
@@ -165,6 +190,8 @@
 	       function getAtmosphere(planet) {
 	    	   if (planet.pressure == "None") {
 	    		   return "Vacuum";
+	    	   } else if (planet.pressure == "Standard") {
+	    		   return formatEnum(planet.atmosphere);
 	    	   } else {
 	    		    return formatEnum(planet.pressure + " " + planet.atmosphere);
 	    	   }

@@ -30,10 +30,53 @@
 }
 
 #statBlock {
-	float: right;
-	margin-left: 250px;
+	margin-left: 220px;
 	font-size: x-large;
 	margin-top: 0px;
+	clear: none;
+}
+
+table.data {
+    font-size: large;
+    font-family: Arial;
+}
+
+table.data tr th {
+    font-weight: bold;
+    border: 1px solid #000077;
+    background-color: #7777FF;
+    width: 10em;
+    margin-right: 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+table.data tr td {
+    border: none;
+    margin-left: 0px;
+    text-align: center;
+    font-style: italic;
+    padding-right: 5px;
+}
+
+dt {
+	display: inline-block;
+	font-weight: bold;
+	border: 1px solid #000077;
+	background-color: #7777FF;
+	width: 8em;
+	margin-right: 0px;
+	padding-left: 5px;
+}
+
+dd {
+	display: inline-block;
+	border: 1px solid #000077;
+	width: 7em;
+	margin-left: 0px;
+	text-align: right;
+	font-style: italic;
+	padding-right: 5px;
 }
 
 h1 {
