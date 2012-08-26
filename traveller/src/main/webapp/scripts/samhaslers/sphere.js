@@ -1,3 +1,14 @@
+/*!
+ * Sphere.js JavaScript Library v0.2
+ * https://github.com/SamHasler/sphere
+ *
+ * Copyright 2012 Samuel David Hasler
+ * Released under the MIT license
+ */
+
+// Description
+// -----------
+
 // **Sphere** renders a mathematically perfect textured sphere.
 // It calculates the surface of the sphere instead of approximating it with triangles.
 
@@ -334,7 +345,7 @@
       // add to 24*60*60 so it will be a day before turnBy is negative and it hits the slow negative modulo bug
       var turnBy = 24*60*60 + firstFramePos - time * posDelta;
       var pixel = size*size;
-
+      
       while(pixel--){
         var vector = getVector(pixel);
         if (vector !== null){
