@@ -134,10 +134,15 @@
 	       
 	       function displayPlanetResources(list) {
 	    	   $("#resources").html("<h3>Resources</h3>");
-	    	   
+	    	   	    	   
 	    	   for (var i=0; i < list.length; i++) {
 	    		   var c = list[i];
-	    		   $("#resources").append("<p>" + c.name + ": " + c.amount + "</p>");
+	    		   var image = "/traveller/images/trade/" + c.imagePath + ".png";
+	    		   var name = c.name + " " + c.amount + "%";
+	    		   var html = "<img src='"+image+"' width='64' height='64' title='"+name+"'/>";
+	    		   
+	    		   $("#resources").append(html);
+	    		   
 	    	   }
 	       }
 	       
