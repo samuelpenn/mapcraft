@@ -174,10 +174,12 @@ public class Commodity {
 	}
 
 	/**
-	 * Gets the volume of one unit of this commodity type. This will nearly
-	 * always be one.
+	 * Gets the volume of one unit of this commodity type, in cubic centimetres.
+	 * This will normally be 1,000,000, i.e. 1 cubic metre. Precious metals,
+	 * drugs and other very rare commodities will be measured in small units,
+	 * generally either 1000's or 1's.
 	 * 
-	 * @return Volume of one unit, in displacement tonnes.
+	 * @return Volume of one unit, in cubic centimetres.
 	 */
 	public int getVolume() {
 		return volume;

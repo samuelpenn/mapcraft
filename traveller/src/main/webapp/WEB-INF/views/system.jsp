@@ -124,6 +124,21 @@
                $("#planetData").append("<p id='description'>" + planet.description + "</p>")
                
                $("#planetData").append("<p style='clear:both'/>");
+
+               $("#planetData").append("<div id='resources'></div>");
+               
+               $.getJSON("/traveller/api/planet/" + planet.id + "/resources", function(data) {
+                   displayPlanetResources(data);
+               });
+	       }
+	       
+	       function displayPlanetResources(list) {
+	    	   $("#resources").html("<h3>Resources</h3>");
+	    	   
+	    	   for (var i=0; i < list.length; i++) {
+	    		   var c = list[i];
+	    		   $("#resources").append("<p>" + c.name + ": " + c.amount + "</p>");
+	    	   }
 	       }
 	       
 	       function mkTable(labels, data) {
@@ -397,11 +412,6 @@
             </div>
             			
 			<div id="systemBody">
-			<!-- 
-			    <canvas style="border: 2px solid black" id="sphere" width="200" height="200">
-			        Need canvas support.
-			    </canvas>
-			   -->
 			    <div id="systemData">
 			    </div>
 			    
@@ -409,37 +419,6 @@
 			    </div>
 			</div>
 			
-			<!-- 
-			
-			<h4>New Sector</h4>
-			
-			<table>
-				<tr>
-					<th></th>
-					<c:set var="endX" value="${maxX - minX + 1}"/>
-					<c:forEach var="xx" begin="0" end="5">
-					    <c:set var="x" value="${minX + 1}"/>   
-						<th>${x}</th>	
-					</c:forEach>
-				</tr>
-				
-				<c:forEach var="yy" begin="0" end="${maxY+1}" step="1">
-				    <c:set var="y" value="${maxY - yy}"/>
-					<tr>
-						<th>${y}</th>
-					</tr>
-				</c:forEach>
-			</table>			
-			
-			<form>
-				Name: <input id="name"/><br/>
-				X: <input id="x"/><br/>
-				Y: <input id="y"/><br/>
-				Allegiance: <input id="allegiance"/><br/>
-				Codes: <input id="codes"/><br/>
-			</form>
-			
-			-->
 		</div>
 	</body>
 </html>
