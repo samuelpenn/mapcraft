@@ -6,25 +6,90 @@
 	<head>
 		<title>WorldGen</title>
 		<link rel="stylesheet" href="/traveller/css/default.css"/> 
+        <link rel="stylesheet" href="/traveller/css/system.css"/> 
 		<script type="text/javascript" src="/traveller/scripts/jquery.js"></script>
 	    <script type="text/javascript">
+	       var  _system = null;
+	    
 	       function displaySystemData(system) {
+	    	   _system = system;
 	    	   
 	    	   $("#title").html(system.sectorName + " / " + system.name);
 	    	   
+	    	   /*
 	    	   $("#systemData").append("<b>Main world:</b> " + system.mainWorld.name + "<br/>");
                $("#systemData").append("<b>World type:</b> " + system.mainWorld.type + "<br/>");
                $("#systemData").append("<b>Distance:</b> " + system.mainWorld.distance + " Mkm<br/>");
                $("#systemData").append("<b>Radius:</b> " + system.mainWorld.radius + " km<br/>");
                $("#systemData").append("<b>Population:</b> " + system.mainWorld.population + "<br/>");
+	    	   */
 	    	   
 	    	   for (var i = 0; i < system.stars.length; i++) {
 	    		   $("#systemStars").html("<h2>" + system.stars[i].name + "</h2>");
-	    		   $("#systemStars").append("<div id='star" + system.stars[i].id + "'></div>");	    		   
-	    		   showPlanetsForStar(system, system.stars[i].id);
+	    		   $("#systemStars").append("<div id='star" + system.stars[i].id + "'></div>");
+
+	    		   $("#systemStars").append("<div id='links'></div>");
+	    		   	    		   
+	    		   listPlanetsForStar(system, system.stars[i].id);
 	    	   }
 	    	   
+	    	   $("#systemStars").append("<div id='planetData'></div>");
+	    	   
+	    	   showPlanet(system.mainWorld.id);
+	    	   
 	    	   //$("#sectorMap").html(minX+","+maxX+","+minY+","+maxY);
+	       }
+
+	       function listPlanetsForStar(system, starId) {
+               for (var i = 0; i < system.planets.length; i++) {
+                   var planet = system.planets[i];
+                   if (planet.parentId != starId) {
+                       continue;
+                   }
+                   
+                   var number = (planet.name+"").replace(/.* /g, "");
+                   
+                   var html = "<span onclick='javascript: showPlanet(" + planet.id + ")'>";
+                   html += number;
+                   html += "</span>";
+                   
+                   $("#links").append(html);
+               }
+	       }
+	       
+	       function showPlanet(id) {
+	    	   var planet = null;
+               for (var i = 0; i < _system.planets.length; i++) {
+                   var p = _system.planets[i];
+                   if (p.id == id) {
+                	   planet = p;
+                       break;
+                   }
+               }
+               if (planet == null) {
+            	   $("#planetData").html("No planet selected");
+            	   return;
+               }
+               $("#planetData").html("<h2>" + planet.name + " (" + getType(planet) + ")</h2>");
+               
+               $("#planetData").append("<canvas id='globe' width='200px' height='200px'>Not supported</canvas>");
+               var texture="/traveller/api/planet/" + id + "/projection.jpg";
+               // TODO: Need to cancel the previous animation. 
+               createSphere(document.getElementById("globe"), texture);
+               
+               $("#planetData").append("<div id='statBlock'></div>");
+               
+               var para = "";
+               para += "<b>Distance: </b>" + getDistance(planet) + "; ";
+               para += "<b>Radius: </b>" + getRadius(planet) + "; ";
+               para += "<b>Axial Tilt: </b>" + getAxialTilt(planet) + ";";
+               para += "<b>Length of Day: </b>" + getDayLength(planet) + ";";
+               para += "<b>Temperature: </b>" + getTemperature(planet) + "; ";
+               para += "<b>Atmosphere: </b>" + getAtmosphere(planet) + "; ";
+               para += "<b>Hydrographics: </b>" + getHydrographics(planet) + ";";
+               $("#statBlock").append("<p>" + para + "</p>");
+               
+	    	   
 	       }
 	       
 	       function showPlanetsForStar(system, starId) {
@@ -79,6 +144,10 @@
 		    	   val = "" + val;
 	               return val.replace(/([A-Z])/g, " $1").trim();
 	    	   }	    	   
+	       }
+	       
+	       function getType(planet) {
+	    	   return formatEnum(planet.type);
 	       }
 	       
 	       function getDistance(planet) {
@@ -143,6 +212,7 @@
 	               displaySystemData(data);
 	    	   });
 	    	   
+	    	   /*
                var canvas = document.getElementById("sphere");
                var context = canvas.getContext("2d");
                context.strokeStyle = "#000000";
@@ -152,10 +222,10 @@
                context.closePath();
                context.stroke();
                context.fill();
-
-               var texture="http://localhost:8080/traveller/api/planet/445/projection.jpg";
+               */
+               //var texture="http://localhost:8080/traveller/api/planet/488/projection.jpg";
                //var texture="http://localhost:8080/traveller/images/earth1024x1024.jpg";
-               createSphere(document.getElementById("sphere"), texture);
+               //createSphere(document.getElementById("globe"), texture);
 	       });
 	    </script>
 	    
@@ -197,9 +267,11 @@
             </div>
             			
 			<div id="systemBody">
-			    <canvas style="border: 2px solid black" id="sphere" width="300" height="300">
+			<!-- 
+			    <canvas style="border: 2px solid black" id="sphere" width="200" height="200">
 			        Need canvas support.
 			    </canvas>
+			   -->
 			    <div id="systemData">
 			    </div>
 			    

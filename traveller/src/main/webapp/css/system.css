@@ -1,14 +1,40 @@
 /*
- * Copyright (C) 2007 Samuel Penn, sam@glendale.org.uk
+ * Copyright (C) 2007,2012 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation version 2.
  * See the file COPYING.
- *
- * $Revision: 1.2 $
- * $Date: 2007/01/01 11:04:14 $
  */
+
+
+#links {
+}
+
+#links span {
+	text-align: center;
+	width: 5em;
+	border: 1px solid black;
+	background-color: #cccccc;
+	display: inline-block;
+	margin-right: 1em;
+	font-size: x-large;
+	font-weight: bold;
+}
+
+#globe {
+	width: 200px;
+	height: 200px;
+	float: left;
+	border: 2px solid black;
+}
+
+#statBlock {
+	float: right;
+	margin-left: 250px;
+	font-size: x-large;
+	margin-top: 0px;
+}
 
 h1 {
 	color: #aaaaff;
