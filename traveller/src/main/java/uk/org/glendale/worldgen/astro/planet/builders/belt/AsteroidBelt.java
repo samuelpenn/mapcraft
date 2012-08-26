@@ -35,7 +35,6 @@ public class AsteroidBelt extends Belt {
 		planet.setType(getPlanetType());
 		planet.setRadius(Die.d4(2));
 
-		planet.addTradeCode(TradeCode.Va);
 		planet.addTradeCode(TradeCode.As);
 
 		generateResources();

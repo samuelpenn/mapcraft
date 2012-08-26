@@ -68,6 +68,7 @@ public class Cytherean extends BarrenWorld {
 
 		planet.setHydrographics(0);
 		planet.addTradeCode(TradeCode.H5);
+		planet.addTradeCode(TradeCode.Ba);
 		planet.setLifeType(LifeType.None);
 		planet.addFeature(PlanetFeature.DenseClouds);
 		

@@ -25,7 +25,10 @@
 	    	   */
 	    	   
 	    	   for (var i = 0; i < system.stars.length; i++) {
-	    		   $("#systemStars").html("<h2>" + system.stars[i].name + "</h2>");
+	    		   var starName = system.stars[i].name;
+	    		   starName += " (" + system.stars[i].spectralType + " " +
+	    				   system.stars[i].classification + ")";
+	    		   $("#systemStars").html("<h1>" + starName + "</h1>");
 	    		   $("#systemStars").append("<div id='star" + system.stars[i].id + "'></div>");
 
 	    		   $("#systemStars").append("<div id='links'></div>");
@@ -48,7 +51,9 @@
                    }
                    
                    var number = (planet.name+"").replace(/.* /g, "");
-                   
+                   if (planet.id == system.mainWorld.id) {
+                	   number += "*";
+                   }
                    var html = "<span id='link" + planet.id + "' onclick='javascript: showPlanet(" + planet.id + ")'>";
                    html += number;
                    html += "</span>";
@@ -116,7 +121,9 @@
                para += "</table>";
                $("#statBlock").append(para);
                
-               $("#planetData").append("<p>" + planet.description + "</p>")
+               $("#planetData").append("<p id='description'>" + planet.description + "</p>")
+               
+               $("#planetData").append("<p style='clear:both'/>");
 	       }
 	       
 	       function mkTable(labels, data) {
@@ -164,7 +171,7 @@
 	                   $(pid).append("<p>" + para + "</p>");
                    }	    		   
 	    		   
-	    		   $(pid).append("<p>" + planet.description + "</p>");
+	    		   $(pid).append("<p id='description'>" + planet.description + "</p>");
 	    	   }
 	       }
 	       
@@ -236,7 +243,16 @@
 	       }
 	       
 	       function getLawLevel(planet) {
-	    	   return planet.lawLevel;
+	    	   switch (planet.lawLevel) {
+	    	   case 0: return "0 (Lawless)";
+               case 1: return "1 (Libertarian)";
+               case 2: return "2 (Liberal)";
+               case 3: return "3 (Typical)";
+               case 4: return "4 (Strict)";
+               case 5: return "5 (Restrictive)";
+               case 6: return "6 (Authoritarian)";
+	    	   }
+	    	   return "" + planet.lawLevel;
 	       }
 	       
 	       function getTechLevel(planet) {
@@ -292,7 +308,13 @@
 	    			        "po": "Poor",
 	    			        "ba": "Barren",
 	    			        "va": "Vacuum",
-	    			        "de": "Desert"
+	    			        "de": "Desert",
+	    			        "as": "Asteroid Belt",
+	    			        "ic": "Ice-Capped",
+	    			        "wa": "Water World",
+	    			        "fl": "Fluid Oceans",
+	    			        "cp": "Sub-Sector Capital",
+	    			        "cx": "Sector Capital"
 	    	   };
 	    	   
 	    	   var html = "";

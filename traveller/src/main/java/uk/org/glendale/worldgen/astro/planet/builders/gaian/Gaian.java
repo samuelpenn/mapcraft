@@ -112,6 +112,7 @@ public class Gaian extends GaianWorld {
 		
 		generateMap();
 		generateResources();
+		generateDescription();
 /*
 		// Temporary population adding fix.
 		switch (Die.d6(2)) {

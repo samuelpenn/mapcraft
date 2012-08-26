@@ -18,6 +18,7 @@ public class StarTO {
 	public final int distance;
 	public final StarClass classification;
 	public final StarForm  form;
+	public final SpectralType spectralType;
 
 	public StarTO(Star star) {
 		this.id = star.getId();
@@ -26,5 +27,6 @@ public class StarTO {
 		this.parentId = star.getParentId();
 		this.form = star.getForm();
 		this.distance = star.getDistance();
+		this.spectralType = star.getSpectralType();
 	}
 }

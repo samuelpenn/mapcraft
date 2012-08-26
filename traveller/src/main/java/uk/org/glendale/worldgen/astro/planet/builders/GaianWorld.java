@@ -54,6 +54,7 @@ public abstract class GaianWorld extends WorldBuilder {
 		}
 		generateMap();
 		generateResources();
+		generateDescription();
 	}
 	
 	protected void addContinents() {

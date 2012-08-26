@@ -12,6 +12,7 @@ import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.GovernmentType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
+import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.worldgen.astro.star.Temperature;
 
 /**
@@ -39,6 +40,7 @@ public class PlanetTO {
 	public final StarportType starport;
 	public final PlanetType type;
 	public final String description;
+	public final String tradeCodes;
 	
 	public PlanetTO(Planet planet) {
 		this.id = planet.getId();
@@ -62,6 +64,12 @@ public class PlanetTO {
 		this.starport = planet.getStarport();
 		this.type = planet.getType();
 		this.description = (planet.getDescription() == null)?null:planet.getDescription();
+		
+		String tradeCodes = "";
+		for (TradeCode c : planet.getTradeCodeList()) {
+			tradeCodes += c.name() + " ";
+		}
+		this.tradeCodes = tradeCodes.trim();
 	}
 	
 }
