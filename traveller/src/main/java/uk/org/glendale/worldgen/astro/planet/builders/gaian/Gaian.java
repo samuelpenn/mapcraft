@@ -86,7 +86,7 @@ public class Gaian extends GaianWorld {
 		}
 		
 		planet.setHydrographics(15 + Die.d20(4));
-		setHydrographics(planet.getHydrographics());
+		//setHydrographics(planet.getHydrographics());
 		
 		if (planet.getHydrographics() > 50 && planet.getHydrographics() < 85) {
 			populationModifier++;
@@ -106,9 +106,9 @@ public class Gaian extends GaianWorld {
 			planet.setLifeType(LifeType.Extensive);
 		}
 		
-		sea = new Tile("Sea", "#4444aa", true);
-		land = new Tile("Land", "#aaaa44", false);
-		mountains = new Tile("Mountains", "#B0B0B0", false);
+		//sea = new Tile("Sea", "#4444aa", true);
+		//land = new Tile("Land", "#aaaa44", false);
+		//mountains = new Tile("Mountains", "#B0B0B0", false);
 		
 		generateMap();
 		generateResources();
@@ -192,6 +192,7 @@ public class Gaian extends GaianWorld {
 		Tile	desert = new Tile("Desert", "#cccc33", false);
 		Tile	ice = new Tile("Ice", "#f0f0f0", false);
 		
+		/*
 		for (int y=0; y < TILE_HEIGHT; y++) {
 			int		latitude = getLatitude(y, TILE_HEIGHT);
 			for (int x=getWest(y); x < getEast(y); x++) {
@@ -206,6 +207,7 @@ public class Gaian extends GaianWorld {
 				}
 			}
 		}
+		*/
 	}
 	
 	@Override

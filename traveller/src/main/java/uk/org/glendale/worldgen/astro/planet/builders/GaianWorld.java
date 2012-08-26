@@ -8,10 +8,13 @@
  */
 package uk.org.glendale.worldgen.astro.planet.builders;
 
+import java.awt.Point;
+
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.maps.Tile;
+import uk.org.glendale.worldgen.astro.planet.maps.WorldBuilder;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
@@ -19,12 +22,25 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
-public abstract class GaianWorld extends PlanetBuilder {
-	protected Tile sea = new Tile("Sea", "#4444aa", true);
-	protected Tile land = new Tile("Land", "#aaaa44", false);
-	protected Tile mountains = new Tile("Mountains", "#B0B0B0", false);
+public abstract class GaianWorld extends WorldBuilder {
+	protected Tile SEA;
+	protected Tile LAND;
+	protected Tile MOUNTAINS;
+	protected Tile ICE;
 
 	public GaianWorld() {
+		SEA = new Tile("Sea", "#4444aa", true);
+		LAND = new Tile("Land", "#77aa33", false);
+		MOUNTAINS = new Tile("Mountains", "#B0B0B0", false);
+		ICE = new Tile("Ice", "#F0F0F0", false);
+		
+		map = new Tile[model.getTotalHeight()][];
+		for (int y=0; y < model.getTotalHeight(); y++) {
+			map[y] = new Tile[model.getWidthAtY(y)];
+			for (int x=0; x < model.getWidthAtY(y); x++) {
+				map[y][x] = SEA;
+			}
+		}
 	}
 
 	@Override
@@ -32,25 +48,77 @@ public abstract class GaianWorld extends PlanetBuilder {
 		if (planet.getRadius() > 5000) {
 			planet.setAtmosphere(AtmosphereType.Standard);
 			planet.setPressure(AtmospherePressure.Standard);
+		} else {
+			planet.setAtmosphere(AtmosphereType.Standard);
+			planet.setPressure(AtmospherePressure.Thin);			
 		}
 		generateMap();
 		generateResources();
 	}
+	
+	protected void addContinents() {
+		// Ice caps
+		for (int tileY=0; tileY < 12; tileY++) {
+			map[tileY] = new Tile[model.getWidthAtY(tileY)];
+			for (int tileX = 0; tileX < model.getWidthAtY(tileY); tileX++) {
+				if (tileY < 1 || tileY == model.getTotalHeight() -1) {
+					map[tileY][tileX] = ICE;
+				} else if (tileY > 3 && tileY < 8 && Die.d10() == 1) {
+					map[tileY][tileX] = LAND;
+				} else {
+					map[tileY][tileX] = SEA;
+				}
+			}
+		}
+		
+		for (int i=0; i < 5; i++) {
+			Tile[][] tmp = new Tile[12][];
+			
+			for (int tileY=0; tileY < 12; tileY++) {
+				tmp[tileY] = new Tile[model.getWidthAtY(tileY)];
+				for (int tileX = 0; tileX < model.getWidthAtY(tileY); tileX++) {
+					tmp[tileY][tileX] = map[tileY][tileX];
+				}
+			}
+
+			for (int tileY=0; tileY < 12; tileY++) {
+				for (int tileX = 0; tileX < model.getWidthAtY(tileY); tileX++) {
+					if (tmp[tileY][tileX] == LAND) {
+						try {
+							switch (Die.d4()) {
+							case 1:
+								// West.
+								map[tileY][model.getWest(tileX, tileY)] = LAND;
+								break;
+							case 2:
+								// East.
+								map[tileY][model.getEast(tileX, tileY)] = LAND;
+								break;
+							case 3:
+								// North/South.
+								Point p = model.getUpDown(tileX, tileY);
+								map[(int)p.getY()][(int)p.getX()] = LAND;
+								break;
+							default:
+								// Do nothing.
+							}
+						} catch (ArrayIndexOutOfBoundsException e) {
+							//map[tileY][tileX] = red;
+							System.out.println(tileX +", "+ tileY);
+						}
+					}
+				}
+			}
+		}
+
+		
+	}
 
 	@Override
 	public void generateMap() {
-		if (!AppManager.getDrawMap()) {
-			return;
-		}
-		addContinents(sea, land, mountains);
-		addEcology();
+		addContinents();
+		//addEcology();
 
-		// Increase resolution to maximum.
-		map = scaleMap(map, TILE_SIZE);
-
-		if (AppManager.getStretchMap()) {
-			map = stretchMap(map);
-		}
 		getImage();
 	}
 

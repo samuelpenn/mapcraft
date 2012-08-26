@@ -226,13 +226,13 @@ public class PlanetGenerator {
 			break;
 		case Standard:
 			// Earth's orbit.
-			builder = new Gaian();
+			// XXX: builder = new Gaian();
 			break;
 		case Cool:
 			switch (Die.d10()) {
 			case 1:
 			case 2:
-				builder = new Gaian();
+				// XXX: builder = new Gaian();
 				break;
 			case 3:
 			case 4:
