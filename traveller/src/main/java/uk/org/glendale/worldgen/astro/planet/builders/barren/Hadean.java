@@ -51,16 +51,11 @@ public class Hadean extends BarrenWorld {
 
 	@Override
 	public void generateMap() {
-		//base = new Tile("Sea", "#303030", false);
-		//crust = new Tile("Crust", "#504030", false);
-		//mountains = new Tile("Mountains", "#100000", false);
-		//crater = new Tile("Crater", "#303030", false);
-
-		//setNumberOfContinents(25);
-		setCraterNumbers(1000);
-		setCraterSize(10);
+		LIGHT.setRGB("#A09080");
+		DARK.setRGB("#908070");		
+		properties.put(CRATER_COLOUR, "#908070");
 		if (planet.hasFeatureCode(HeavilyCratered)) {
-			setCraterNumbers(1000 + Die.d100(2));
+			properties.put(CRATER_MODIFIER, +4);
 		}
 		super.generateMap();
 	}

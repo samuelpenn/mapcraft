@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.sun.image.codec.jpeg.ImageFormatException;
@@ -260,7 +261,7 @@ public class Icosohedron {
 		}
 	}
 	
-	public SimpleImage draw(Tile[][] map) throws IOException {
+	public SimpleImage draw(Tile[][] map, HashMap<String,Object> properties) throws IOException {
 		SimpleImage image = new SimpleImage(881 * 2, 415 * 2, "#FFFFFF");
 		
 		int baseX = 0;
@@ -270,8 +271,15 @@ public class Icosohedron {
 			for (int tileX=0; tileX < getWidthAtY(tileY); tileX++) {
 				Point	point = getBase(tileX, tileY);
 				int		h = (int)(W * ROOT3 * getDirection(tileX, tileY));
-				image.triangleFill(baseX + (int)point.getX(), baseY + (int)point.getY(), W, h, map[tileY][tileX].getRGB(Die.d8())); 
-				image.triangle(baseX + (int)point.getX(), baseY + (int)point.getY(), W, h, map[tileY][tileX].getRGB(Die.d8())); 
+				
+				int		px = baseX + (int)point.getX();
+				int		py = baseY + (int)point.getY();
+				
+				image.triangleFill(px, py, W, h, map[tileY][tileX].getRGB(Die.d8())); 
+				image.triangle(px, py, W, h, map[tileY][tileX].getRGB(Die.d8()));
+				if (properties != null) {
+					map[tileY][tileX].addDetail(image, px, py, W, h, properties);
+				}
 			}
 			if (tileY > 6) {
 				//break;
@@ -327,6 +335,6 @@ public class Icosohedron {
 		Icosohedron ico = new Icosohedron();
 		
 		ico.random();
-		ico.draw(ico.map);
+		ico.draw(ico.map, null);
 	}
 }

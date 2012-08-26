@@ -8,6 +8,7 @@
  */
 package uk.org.glendale.worldgen.astro.planet.builders.barren;
 
+import static uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature.HeavilyCratered;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
@@ -53,7 +54,12 @@ public class Selenian extends BarrenWorld {
 
 	@Override
 	public void generateMap() {
-		setCraterNumbers(300);
+		LIGHT.setRGB("#D0D0D0");
+		DARK.setRGB("#C0C0C0");		
+		properties.put(CRATER_COLOUR, "#B0B0B0");
+		if (planet.hasFeatureCode(HeavilyCratered)) {
+			properties.put(CRATER_MODIFIER, +3);
+		}
 		super.generateMap();
 	}
 

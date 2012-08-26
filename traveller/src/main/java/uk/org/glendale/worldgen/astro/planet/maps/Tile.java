@@ -8,6 +8,10 @@
  */
 package uk.org.glendale.worldgen.astro.planet.maps;
 
+import java.util.HashMap;
+
+import uk.org.glendale.graphics.SimpleImage;
+
 /**
  * A tile represents a square section of world map. When a world is first
  * mapped, it is done so at a low resolution. Eventually each tile will be
@@ -59,6 +63,17 @@ public class Tile {
 
 	public final boolean isWater() {
 		return isWater;
+	}
+	
+	/**
+	 * Override this method to add complex detail to a tile. This is called
+	 * whenever a tile is plotted on the image.
+	 * 
+	 * @param builder	Reference to map of configuration.
+	 */
+	@SuppressWarnings("rawtypes")
+	public void addDetail(SimpleImage image, int x, int y, int w, int h, HashMap map) {
+		// Empty by default.
 	}
 	
 	public final String toString() {

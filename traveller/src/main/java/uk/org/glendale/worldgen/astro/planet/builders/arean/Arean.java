@@ -8,6 +8,7 @@
  */
 package uk.org.glendale.worldgen.astro.planet.builders.arean;
 
+import static uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature.HeavilyCratered;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
@@ -58,8 +59,12 @@ public class Arean extends BarrenWorld {
 	}
 
 	public void generateMap() {
-		setCraterMinSize(10);
-		setCraterNumbers(50);
+		LIGHT.setRGB("#d8b476");
+		DARK.setRGB("#3c3b36");		
+		properties.put(CRATER_COLOUR, "#d0b070");
+		if (planet.hasFeatureCode(HeavilyCratered)) {
+			properties.put(CRATER_MODIFIER, +4);
+		}
 
 		//base = new Tile("Base", "#3c3b36", false);
 		//crust = new Tile("Crust", "#d8b476", false);

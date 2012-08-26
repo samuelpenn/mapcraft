@@ -8,6 +8,7 @@
  */
 package uk.org.glendale.worldgen.astro.planet.builders.barren;
 
+import static uk.org.glendale.rpg.traveller.systems.codes.PlanetFeature.HeavilyCratered;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.PlanetType;
@@ -41,7 +42,12 @@ public class Vesperian extends BarrenWorld {
 
 	@Override
 	public void generateMap() {
-		setCraterNumbers(200);
+		LIGHT.setRGB("#A09080");
+		DARK.setRGB("#908070");		
+		properties.put(CRATER_COLOUR, "#908070");
+		if (planet.hasFeatureCode(HeavilyCratered)) {
+			properties.put(CRATER_MODIFIER, +2);
+		}
 		super.generateMap();
 	}
 

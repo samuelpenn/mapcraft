@@ -254,20 +254,20 @@ public class PlanetGenerator {
 			// Jupiter, Saturn
 			switch (Die.d4()) {
 			case 1:
-				builder = new EuJovian();
+				// XXX: builder = new EuJovian();
 				break;
 			default:
-				builder = new SubJovian();
+				// XXX: builder = new SubJovian();
 				break;
 			}
 			break;
 		case ExtremelyCold:
 			// Uranus, Neptune.
-			builder = new CryoJovian();
+			// XXX: builder = new CryoJovian();
 			break;
 		case UltraCold:
 			// Kuiper belt
-			builder = new CryoJovian();
+			// XXX: builder = new CryoJovian();
 			break;
 		}
 		builder.setPlanet(planet);

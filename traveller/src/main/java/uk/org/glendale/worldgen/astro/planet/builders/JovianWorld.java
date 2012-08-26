@@ -9,9 +9,11 @@
 package uk.org.glendale.worldgen.astro.planet.builders;
 
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.ice.Europan;
 import uk.org.glendale.worldgen.astro.planet.maps.Tile;
@@ -61,6 +63,21 @@ public abstract class JovianWorld extends WorldBuilder {
 				map[tileY][tileX] = tiles.get(tileY % tiles.size());
 			}
 		}
+	}
+	
+	/**
+	 * Add blurring to the cloud bands. This makes the world look a bit more
+	 * natural.
+	 */
+	protected SimpleImage postProcess(SimpleImage image) {
+		BufferedImage bimg = image.getBufferedImage();
+		
+		int num = Die.d8(4);
+		for (int i = 0; i < num; i++) {
+			blur(bimg);
+		}
+		
+		return new SimpleImage(bimg);
 	}
 
 	@Override

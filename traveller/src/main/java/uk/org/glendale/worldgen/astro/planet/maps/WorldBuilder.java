@@ -9,7 +9,9 @@
 package uk.org.glendale.worldgen.astro.planet.maps;
 
 import java.awt.GraphicsEnvironment;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.HashMap;
 
 import javax.persistence.EntityManager;
 
@@ -54,6 +56,8 @@ public abstract class WorldBuilder implements Builder {
 	protected Star star;
 
 	protected CommodityFactory commodityFactory;
+	
+	protected HashMap<String,Object>	properties = new HashMap<String,Object>();
 
 	/**
 	 * Create a new PlanetBuilder object. Generates a fractal height map for the
@@ -192,11 +196,60 @@ public abstract class WorldBuilder implements Builder {
 	protected static final Tile	OOB = new Tile("OOB", "#FFFFFF", false);
 	protected static final Tile	BLANK = new Tile("BLANK", "#000000", false);
 
+	/**
+	 * Blur the image. Randomly copies pixels to their neighbour, to break
+	 * up and hard geometric patterns. Doesn't touch pure white pixels, since
+	 * these are assumed to be off-map background pixels.
+	 */
+	protected void blur(BufferedImage image) {
+		for (int y=0; y < image.getHeight(); y++) {
+			for (int x=0; x < image.getWidth(); x++) {
+				int c = image.getRGB(x, y) & 0xFFFFFF;
+				if (c == 0xFFFFFF) {
+					continue;
+				}
+				int r = (c >> 16) & 0xFF;
+				int g = (c >> 8) & 0xFF;
+				int b = c & 0xFF;
+				switch (Die.d8()) {
+				case 1:
+					if (y > 0) {
+						c = image.getRGB(x, y-1);
+					}
+					break;
+				case 2:
+					if (y < image.getHeight() - 1) {
+						c = image.getRGB(x, y+1);
+					}
+					break;
+				case 3:
+					if (x > 0) {
+						c = image.getRGB(x-1, y);
+					}
+					break;
+				case 4:
+					if (x < image.getWidth() - 1) {
+						c = image.getRGB(x+1, y);
+					}
+					break;
+				default:
+					break;
+				}
+				if ((c & 0xFFFFFF) != 0xFFFFFF) {
+					image.setRGB(x, y, c);
+				}
+			}
+		}
+	}
+	
+	protected SimpleImage postProcess(SimpleImage image) {
+		return image;
+	}
 
-	public SimpleImage getImage() {
+	public final SimpleImage getImage() {
 		SimpleImage image = null;
 		try {
-			image = model.draw(map);
+			image = postProcess(model.draw(map, properties));
 			MapImage surfaceMap = new MapImage();
 			surfaceMap.setType(MapImage.Projection.Icosohedron);
 			surfaceMap.setData(image.save().toByteArray());
@@ -211,7 +264,8 @@ public abstract class WorldBuilder implements Builder {
 			if (!new File("/tmp/maps").exists()) {
 				new File("/tmp/maps").mkdir();
 			}
-			image.save(new File("/tmp/maps/" + planet.getName() + ".jpg"));
+			image.save(new File("/tmp/maps/" + planet.getId() + "_" + 
+					planet.getType() + ".jpg"));
 
 			if (AppManager.getDrawGlobe()) {
 				MapImage globeMap = new MapImage();

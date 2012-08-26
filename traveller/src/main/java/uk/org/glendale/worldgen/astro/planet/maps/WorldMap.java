@@ -163,7 +163,7 @@ public class WorldMap {
 	
 	public void generate() throws IOException {
 		generateMap();
-		SimpleImage image = model.draw(map);
+		SimpleImage image = model.draw(map, null);
 		
 		BufferedImage	bi = image.getBufferedImage();
 		

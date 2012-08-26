@@ -81,28 +81,21 @@ public class Hermian extends BarrenWorld {
 	public void generateMap() {
 		LIGHT.setRGB("#A09080");
 		DARK.setRGB("#908070");
-		//mountains = new Tile("Mountains", "#C0B0B0", false);
-		//crater = new Tile("Crater", "#887767", false);
-
+		
+		properties.put(CRATER_COLOUR, "#908070");
 		if (planet.hasFeatureCode(PlanetFeature.Dust)) {
-			//base = new Tile("Sea", "#A08070", false);
-			//crust = new Tile("Crust", "#A09080", false);
-			//crater = new Tile("Crater", "#987767", false);
-			setCraterMinSize(20);
+			properties.put(CRATER_MODIFIER, -2);
 		}
 
-		//setNumberOfContinents(15);
-		setCraterSharpness(3);
-		setCraterSize(25);
 
 		if (planet.hasFeatureCode(PlanetFeature.HeavilyCratered)) {
-			setCraterNumbers(600 + Die.d100(3));
+			properties.put(CRATER_MODIFIER, +4);
 		} else if (planet.hasFeatureCode(PlanetFeature.Smooth)) {
-			setCraterNumbers(50 + Die.d100());
+			properties.put(CRATER_MODIFIER, -2);
 		} else if (planet.hasFeatureCode(PlanetFeature.GiantCrater)) {
-			setCraterNumbers(100 + Die.d100());
+			//setCraterNumbers(100 + Die.d100());
 		} else {
-			setCraterNumbers(300 + Die.d100(2));
+			properties.put(CRATER_MODIFIER, +2);
 		}
 
 		System.out.println(getPlanetType());

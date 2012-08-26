@@ -9,7 +9,9 @@
 package uk.org.glendale.worldgen.astro.planet.builders;
 
 import java.awt.Point;
+import java.util.HashMap;
 
+import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.utils.Die;
@@ -26,15 +28,56 @@ import uk.org.glendale.worldgen.server.AppManager;
  */
 public abstract class BarrenWorld extends WorldBuilder {
 	
-	protected static final Tile	LIGHT = new Tile ("Light", "#CCCCCC", false);
-	protected static final Tile	DARK = new Tile("Dark", "#BBBBBB", false);
+	protected final Tile	LIGHT;
+	protected final Tile	DARK;
 	
-	private int numCraters = 150;
-	private int craterSize = 25;
-	private int minCraterSize = 0;
-	private int craterSharpness = 2;
-
+	protected static final String CRATER_COLOUR = "craterColour";
+	protected static final String CRATER_MODIFIER = "craterModifier"; 
+	
 	public BarrenWorld() {
+		LIGHT = new Tile("Light", "#CCCCCC", false) {
+			@SuppressWarnings("rawtypes")
+			public void addDetail(SimpleImage image, int x, int y, int w, int h, HashMap map) {
+				String craterColour = (String)map.get(CRATER_COLOUR);
+				int    craterModifier = (Integer)map.get(CRATER_MODIFIER);
+				int	   radius = w / 3;
+				
+				switch (Die.d6(2) + craterModifier) {
+				case -2: case -1: case 0: case 1:
+				case 2: case 3: case 4: case 5:
+					// No craters.
+					break;
+				case 6: case 7: case 8:
+					// One crater.
+					x += Die.d10() - Die.d10();
+					y += Die.d10() - Die.d10();
+					radius += Die.d10();
+					image.circle(x + w, y + h/2, radius, craterColour);
+					break;
+				case 9: case 10:
+					// Two craters.
+					image.circle(x + w + Die.d10() - Die.d10(), 
+							     y + h/2 + Die.d10(2), radius, craterColour);
+					image.circle(x + w + Die.d10(), 
+						     y + h/3, radius, craterColour);
+					break;
+				case 11:
+					// Double crater.
+					x += Die.d10() - Die.d10();
+					y += Die.d10() - Die.d10();
+					image.circle(x + w, y + h/2, radius, craterColour);
+					x += Die.d10();
+					y += Die.d10();
+					radius -= Die.d4();
+					image.circle(x + w, y + h/2, radius, craterColour);
+					break;
+				default:
+					// Three craters.
+				}
+			}
+		};
+		DARK = new Tile("Dark", "#BBBBBB", false);
+
 		map = new Tile[model.getTotalHeight()][];
 		for (int y=0; y < model.getTotalHeight(); y++) {
 			map[y] = new Tile[model.getWidthAtY(y)];
@@ -42,43 +85,9 @@ public abstract class BarrenWorld extends WorldBuilder {
 				map[y][x] = BLANK;
 			}
 		}
-	}
-
-	/**
-	 * Sets the number of craters to be drawn. Defaults to be 150 if not set.
-	 * 
-	 * @param numCraters
-	 *            Number of craters.
-	 */
-	protected final void setCraterNumbers(int numCraters) {
-		this.numCraters = numCraters;
-	}
-
-	/**
-	 * Sets the average size of craters. Defaults to 25.
-	 * 
-	 * @param craterSize
-	 *            Size of craters.
-	 */
-	protected final void setCraterSize(int craterSize) {
-		this.craterSize = craterSize;
-	}
-
-	/**
-	 * Sets the minimum size of craters. Craters below this size are not drawn.
-	 * Defaults to 0, and should remain so for inactive worlds without an
-	 * atmosphere. Allows for small craters to have been eroded by
-	 * geological/atmospheric processes.
-	 * 
-	 * @param minCraterSize
-	 *            Minimum crater size.
-	 */
-	protected final void setCraterMinSize(int minCraterSize) {
-		this.minCraterSize = minCraterSize;
-	}
-
-	protected final void setCraterSharpness(int craterSharpness) {
-		this.craterSharpness = craterSharpness;
+		
+		properties.put(CRATER_COLOUR, "#C0C0C0");
+		properties.put(CRATER_MODIFIER, 0);
 	}
 
 	@Override
