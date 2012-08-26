@@ -13,20 +13,51 @@
 
 #links span {
 	text-align: center;
-	width: 5em;
+	width: 4em;
 	border: 1px solid black;
 	background-color: #cccccc;
 	display: inline-block;
-	margin-right: 1em;
+	margin-right: 0.5em;
 	font-size: x-large;
 	font-weight: bold;
+	margin-bottom: 0px;
+	border-bottom: 2px solid #cccccc;
+}
+
+#links span.selected {
+	background-color: #777777;
+	border-bottom: 2px solid #777777;
+}
+
+#planetData {
+	margin-top: 0pt;
+	border: 3px solid #777777;
+	width: 60em; 
+}
+
+#planetData h2 {
+	border-bottom: none;
+	margin-left: 1em;
+	font-family: Arial;
+	height: 64px;
+}
+
+#codes {
+	float: right;
+	margin-right: 1em;
+}
+
+#codes img {
+	margin-left: 0.5em;
 }
 
 #globe {
 	width: 200px;
 	height: 200px;
 	float: left;
-	border: 2px solid black;
+	border: 3px solid #777777;
+	border-radius: 1em;
+	margin-left: 10px;
 }
 
 #statBlock {

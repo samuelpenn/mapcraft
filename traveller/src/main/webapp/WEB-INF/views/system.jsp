@@ -49,7 +49,7 @@
                    
                    var number = (planet.name+"").replace(/.* /g, "");
                    
-                   var html = "<span onclick='javascript: showPlanet(" + planet.id + ")'>";
+                   var html = "<span id='link" + planet.id + "' onclick='javascript: showPlanet(" + planet.id + ")'>";
                    html += number;
                    html += "</span>";
                    
@@ -70,7 +70,17 @@
             	   $("#planetData").html("No planet selected");
             	   return;
                }
-               $("#planetData").html("<h2>" + planet.name + " (" + getType(planet) + ")</h2>");
+               
+               $(".selected").removeClass("selected");
+               $("#link"+id).addClass("selected");
+               
+               var fullname = planet.name + " (" + getType(planet) + ")";
+           	   fullname += "<span id='codes'>" + getTradeIcons(planet) + "</span>";
+               $("#planetData").html("<h2>" + fullname + "</h2>");
+               
+               if (planet.starport != "X") {
+            	//    $("#planetData").append("<div id='starport'>" + planet.starport + "</div>");
+               }
                
                $("#planetData").append("<canvas id='globe' width='200px' height='200px'>Not supported</canvas>");
                var texture="/traveller/api/planet/" + id + "/projection.jpg";
@@ -81,7 +91,7 @@
                
                // It's a table. I can't think of a better way of laying this
                // out which doesn't involve a table.
-               var para = "<table class='data'><tr>";
+               var para = "<table class='data'>";
                
                var labels = [ "Distance", "Radius", "Axial Tilt", "Day Length" ];
                var data = [ getDistance(planet), getRadius(planet), 
@@ -94,11 +104,19 @@
                             getHydrographics(planet), getLifeLevel(planet) ];
                
                para += mkTable(labels, data);
-
-               para += "</tr></table>";
+               
+               if (planet.population > 0) {
+	               var labels = [ "Population", "Tech Level", "Government", "Law Level" ];
+	               var data = [ getPopulation(planet), getTechLevel(planet), 
+	                            getGovernment(planet), getLawLevel(planet) ];
+	               
+	               para += mkTable(labels, data);
+               }
+               
+               para += "</table>";
                $("#statBlock").append(para);
                
-	    	   
+               $("#planetData").append("<p>" + planet.description + "</p>")
 	       }
 	       
 	       function mkTable(labels, data) {
@@ -222,6 +240,28 @@
 	       }
 	       
 	       function getTechLevel(planet) {
+	    	   switch (planet.techLevel) {
+	    	   case  0: return "0 (Stone)";
+	    	   case  1: return "1 (Bronze)";
+	    	   case  2: return "2 (Iron)";
+	    	   case  3: return "3 (Medieval)";
+	    	   case  4: return "4 (Renaissance)";
+	    	   case  5: return "5 (Steam)";
+	    	   case  6: return "6 (Mechanical)";
+	    	   case  7: return "7 (Atomic)";
+	    	   case  8: return "8 (Digital)";
+	    	   case  9: return "9 (Interplanetary)";
+               case 10: case 11: 
+            	   return planet.techLevel + " (Interstellar)";
+               case 12: case 13: case 14:
+                   return planet.techLevel + " (Low Imperium)";
+               case 15: case 16: case 17:
+                   return planet.techLevel + " (High Imperium)";
+               case 18: case 19: case 20:
+                   return planet.techLevel + " (Advanced)";
+               default:
+                   return planet.techLevel + " (Magic)";
+	    	   }
 	    	   return planet.techLevel;
 	       }
 	       
@@ -230,7 +270,48 @@
 	       }
 	       
 	       function getStarPort(planet) {
-	    	   return planet.starport;
+	    	   return "" + planet.starport;
+	       }
+	       
+	       function getTradeCodes(planet) {
+	    	   return "" + planet.tradeCodes;
+	       }
+	       
+	       function getTradeIcons(planet) {
+	    	   var codes = getTradeCodes(planet).split(" ");
+	    	   
+	    	   var base = "/traveller/images/symbols/64x64/";
+	    	   
+	    	   var list = { "ag": "Agricultural",
+	    			        "na": "Non-Agricultural",
+	    			        "in": "Industrial",
+	    			        "ni": "Non-Industrial",
+	    			        "hi": "High Population",
+	    			        "lo": "Low Population",
+	    			        "ri": "Rich",
+	    			        "po": "Poor",
+	    			        "ba": "Barren",
+	    			        "va": "Vacuum",
+	    			        "de": "Desert"
+	    	   };
+	    	   
+	    	   var html = "";
+	    	   for (var i=0; i < codes.length; i++) {
+	    		   var code = codes[i].toLowerCase();
+	    		   var text = list[code];
+	    		   
+	    		   if (text != null) {
+	                   var icon = base + "trade_"+code+".png";
+	                   html += "<img src='" + icon + "' title='"+ text + "'/>";
+	    		   }
+	    	   }
+	    	   if (planet.starport != "X") {
+	    		   var icon = base + "port_"+getStarPort(planet).toLowerCase()+".png";
+	    		   var text = "Class " + planet.starport + " Starport";
+	    		   html += "<img src='" + icon + "' title='"+ text + "'/>";
+	    	   }
+	    	   
+	    	   return html;
 	       }
 	       
 	       $(document).ready(function() {
