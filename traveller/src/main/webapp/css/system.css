@@ -11,6 +11,16 @@ h1 {
 	font-family: Arial;
 }
 
+#sidebar {
+    float: left;
+    width: 10em;
+}
+
+#systemBody {
+	margin-left: 1em;
+}
+
+
 #links {
 }
 
@@ -52,6 +62,17 @@ h1 {
 
 #codes img {
 	margin-left: 0.5em;
+}
+
+ul.iconList li {
+	display: inline-block;
+	text-align: center;
+	font-size: x-large;
+	padding-right: 0.5em;
+}
+
+ul.iconList li img {
+	display: block;
 }
 
 #globe {

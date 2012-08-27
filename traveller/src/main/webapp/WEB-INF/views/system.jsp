@@ -90,7 +90,11 @@
                $("#planetData").append("<canvas id='globe' width='200px' height='200px'>Not supported</canvas>");
                var texture="/traveller/api/planet/" + id + "/projection.jpg";
                // TODO: Need to cancel the previous animation. 
-               createSphere(document.getElementById("globe"), texture);
+               if (planet.tradeCodes.indexOf("As") == -1) {
+            	    createSphere(document.getElementById("globe"), texture);
+               } else {
+            	   drawAsteroids(planet, document.getElementById("globe"));
+               }
                
                $("#planetData").append("<div id='statBlock'></div>");
                
@@ -132,16 +136,58 @@
                });
 	       }
 	       
+	       var seed = 1234567;
+	       function rnd(val) {
+	    	   seed = (seed * val)%10000000;
+	    	   return seed;
+	       }
+	       
+	       function drawAsteroids(planet, canvas) {
+	    	   var context = canvas.getContext("2d");
+	    	   
+	    	   if (context == null) {
+	    		   return;
+	    	   }
+	    	   
+               context.strokeStyle = "#222222";
+               context.fillStyle = "#222222";
+               var x = 20;
+               var y = 150;
+               var xx = 300 / (planet.radius + 1);
+               var yy = 5;
+               var r = 5;
+               var v = 7 + planet.id;
+	    	   for (var i=0; i < 2 + planet.radius; i++) {
+		    	   context.beginPath();
+		    	   if (r < 1) {
+		    		   r = 1;
+		    	   }
+		    	   if (v % 3 != 0) {
+			    	   context.arc(x, y, r--, 0, Math.PI * 2, true);
+			    	   context.closePath();
+			    	   context.stroke();
+			    	   context.fill();
+		    	   }
+		    	   x += xx + v % 5;
+		    	   y -= yy + v % 5;
+		    	   xx *= 0.7;
+		    	   yy += 5;
+		    	   v += 1;
+	    	   }
+	       }
+	       
 	       function displayPlanetResources(list) {
 	    	   $("#resources").html("<h3>Resources</h3>");
-	    	   	    	   
+	    	   
+	    	   $("#resources").append("<ul id='r' class='iconList'></ul>");
 	    	   for (var i=0; i < list.length; i++) {
 	    		   var c = list[i];
 	    		   var image = "/traveller/images/trade/" + c.imagePath + ".png";
 	    		   var name = c.name + " " + c.amount + "%";
 	    		   var html = "<img src='"+image+"' width='64' height='64' title='"+name+"'/>";
+	    		   html = html + c.amount + "%";
 	    		   
-	    		   $("#resources").append(html);
+	    		   $("#r").append("<li>" + html + "</li>");
 	    		   
 	    	   }
 	       }
@@ -390,17 +436,6 @@
 	        	
 	        }
 	    </script>
-	    
-	    <style>
-	       #sidebar {
-	           float: left;
-	           width: 10em;
-	       }
-	       
-	       #systemBody {
-	           margin-left: 12em;
-	       }
-	    </style>
 	</head>
 	
 	
@@ -410,12 +445,13 @@
 	   </div>
 
 		<div class="container">
+		    <!-- 
 		    <div id="sidebar">
 				<h2>Systems</h2>
 	
 				<ul id="systemList"></ul>
             </div>
-            			
+            -->		
 			<div id="systemBody">
 			    <div id="systemData">
 			    </div>
