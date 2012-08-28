@@ -130,6 +130,8 @@ public abstract class GaianWorld extends WorldBuilder {
 	 * LifeType of the world.
 	 */
 	protected void addEcologicalResources() {
+		int		base = planet.getHydrographics();
+		
 		switch (planet.getLifeType()) {
 		case None:
 			// No life. Not really a Gaian world then.
@@ -153,8 +155,10 @@ public abstract class GaianWorld extends WorldBuilder {
 			addResource("Cyanobacteria", Die.d12(4));
 			addResource("Algae", Die.d12(3));
 			if (Die.d3() == 1) {
+				// Jellies
 				addResource("Cnidarians", 30 + Die.d20(3));
 			} else {
+				// Jellies and spiny things
 				addResource("Cnidarians", 20 + Die.d20(2));
 				addResource("Echinoderms", 30 + Die.d20(3));
 				if (Die.d2() == 1) {
@@ -163,18 +167,35 @@ public abstract class GaianWorld extends WorldBuilder {
 			}
 			break;
 		case ComplexOcean:
-			addResource("Algae", Die.d6(3));
-			addResource("Cnidarians", 5 + Die.d8(3));
-			addResource("Echinoderms", 10 + Die.d8(4));
-			addResource("Marine Arthropods", 20 + Die.d20(3));
-			addResource("Fish", 20 + Die.d20(3));
+			switch (Die.d6()) {
+			case 1:
+				// Algae forests.
+				addResource("Algae", base + Die.d10(2));
+				addResource("Echinoderms", base / 10 + Die.d10(2));
+				addResource("Marine Arthropods", base / 4 + Die.d10());
+				addResource("Pisces", base / 5 + Die.d10());
+				break;
+			case 2:
+				// Jellies.
+				addResource("Algae", base / 5 + Die.d6(2));
+				addResource("Cnidarians", base + Die.d10(2));
+				addResource("Pisces", base / 5 + Die.d8(2));
+				break;
+			case 3: case 4:
+				// Giant arthropods.
+				addResource("Marine Arthropods", 50 + Die.d10(4));
+				addResource("Pisces", base / 5 + Die.d10());
+				break;
+			case 5: case 6:
+				// Fish.
+				addResource("Marine Arthropods", base / 4 + Die.d6());
+				addResource("Pisces", base);
+				break;
+			}
 			break;
 		case SimpleLand:
-			addResource("Algae", Die.d6(3));
-			addResource("Cnidarians", 5 + Die.d8(3));
-			addResource("Echinoderms", 10 + Die.d8(4));
 			addResource("Marine Arthropods", 10 + Die.d12(4));
-			addResource("Fish", 20 + Die.d20(3));
+			addResource("Pisces", 20 + Die.d20(3));
 			
 			switch (Die.d6(2)) {
 			case 2:
@@ -223,28 +244,18 @@ public abstract class GaianWorld extends WorldBuilder {
 			}
 			break;
 		case ComplexLand:
-			addResource("Algae", Die.d6(2));
-			addResource("Cnidarians", 5 + Die.d8(2));
-			addResource("Echinoderms", 10 + Die.d8(3));
 			addResource("Marine Arthropods", 10 + Die.d12(4));
-			addResource("Fish", 30 + Die.d20(3));
+			addResource("Pisces", 30 + Die.d20(3));
 			addResource("Trees", 40 + Die.d12(4));
 			addResource("Grasses", 40 + Die.d12(4));
-			addResource("Arthropods", Die.d4(2));
-			addResource("Aquafauna", 5 + Die.d6(2));
 			addResource("Microfauna", 20 + Die.d10(3));
 			addResource("Mesofauna", 20 + Die.d10(4));
 			break;
 		case Extensive:
-			addResource("Algae", Die.d6(2));
-			addResource("Cnidarians", 5 + Die.d8(2));
-			addResource("Echinoderms", 10 + Die.d8(3));
 			addResource("Marine Arthropods", 10 + Die.d12(4));
-			addResource("Fish", 30 + Die.d20(3));
+			addResource("Pisces", 30 + Die.d20(3));
 			addResource("Trees", 40 + Die.d12(4));
 			addResource("Grasses", 40 + Die.d12(4));
-			addResource("Arthropods", Die.d4(2));
-			addResource("Aquafauna", 5 + Die.d6(2));
 			addResource("Microfauna", 20 + Die.d10(3));
 			if (Die.d6() == 1) {
 				addResource("Mesofauna", 10 + Die.d10(2));

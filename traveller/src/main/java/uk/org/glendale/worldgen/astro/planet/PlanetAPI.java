@@ -95,6 +95,23 @@ public class PlanetAPI {
 			e.printStackTrace();
 		}
 	}
+
+	@RequestMapping(value="/{id}/orbit", method=RequestMethod.GET)
+	@Transactional
+	public void getOrbitalMap(@PathVariable("id") int id, HttpServletResponse response) {
+		
+		byte[] data = factory.getPlanetImage(id, Projection.Orbital);
+
+		response.setContentType("image/jpeg");
+		response.setContentLength(data.length);
+		try {
+			ServletOutputStream 	out =  response.getOutputStream();
+			out.write(data);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	@RequestMapping(value="/{id}/resources", method=RequestMethod.GET)
 	@ResponseBody

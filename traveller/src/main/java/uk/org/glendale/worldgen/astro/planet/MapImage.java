@@ -27,7 +27,7 @@ public class MapImage {
 	 * Defines possible projection types.
 	 */
 	public enum Projection {
-		Icosohedron, Mercator, Globe;
+		Icosohedron, Mercator, Globe, Orbital;
 	}
 
 	/** Type of projection for this map. */

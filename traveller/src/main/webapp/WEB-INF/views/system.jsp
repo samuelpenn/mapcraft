@@ -87,6 +87,8 @@
             	//    $("#planetData").append("<div id='starport'>" + planet.starport + "</div>");
                }
                
+               var radiusLabel = "Radius";
+               
                $("#planetData").append("<canvas id='globe' width='200px' height='200px'>Not supported</canvas>");
                var texture="/traveller/api/planet/" + id + "/projection.jpg";
                // TODO: Need to cancel the previous animation. 
@@ -94,6 +96,7 @@
             	    createSphere(document.getElementById("globe"), texture);
                } else {
             	   drawAsteroids(planet, document.getElementById("globe"));
+            	   radiusLabel = "Thickness";
                }
                
                $("#planetData").append("<div id='statBlock'></div>");
@@ -102,7 +105,7 @@
                // out which doesn't involve a table.
                var para = "<table class='data'>";
                
-               var labels = [ "Distance", "Radius", "Axial Tilt", "Day Length" ];
+               var labels = [ "Distance", radiusLabel, "Axial Tilt", "Day Length" ];
                var data = [ getDistance(planet), getRadius(planet), 
                             getAxialTilt(planet), getDayLength(planet) ];
                
@@ -143,6 +146,20 @@
 	       }
 	       
 	       function drawAsteroids(planet, canvas) {
+               var context = canvas.getContext("2d");               
+               if (context == null) {
+                   return;
+               }
+               
+               var image = new Image();
+               image.src = "/traveller/api/planet/"+planet.id+"/orbit";
+               image.onload = function () {
+            	    context.drawImage(image, 5, 5, 190, 190);
+               };
+	    	   
+	       }
+	       
+	       function drawAsteroids0(planet, canvas) {
 	    	   var context = canvas.getContext("2d");
 	    	   
 	    	   if (context == null) {
@@ -267,10 +284,16 @@
 	       }
 	       
 	       function getDistance(planet) {
+	    	   if (planet.isMoon) {
+	    		   return addCommas(planet.distance) + " km";
+	    	   }
 	    	   return addCommas(planet.distance) + " MKm";
 	       }
 	       
 	       function getRadius(planet) {
+	    	   if (planet.tradeCodes.indexOf("As") != -1) {
+	    		   return addCommas(planet.radius * 4 + " Mkm");
+	    	   }
 	    	   return addCommas(planet.radius) + " km";
 	       }
 	       
@@ -301,10 +324,16 @@
 	       }
 	       
 	       function getAxialTilt(planet) {
+               if (planet.tradeCodes.indexOf("As") != -1) {
+            	   return "--";
+               }
 	    	   return planet.axialTilt + "&#176;";
 	       }
-	       
+
 	       function getDayLength(planet) {
+               if (planet.tradeCodes.indexOf("As") != -1) {
+                   return "--";
+               }
 	    	   return planet.dayLengthText;
 	       }
 	       

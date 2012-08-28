@@ -246,7 +246,7 @@ public abstract class WorldBuilder implements Builder {
 		return image;
 	}
 
-	public final SimpleImage getImage() {
+	public SimpleImage getImage() {
 		SimpleImage image = null;
 		try {
 			image = postProcess(model.draw(map, properties));

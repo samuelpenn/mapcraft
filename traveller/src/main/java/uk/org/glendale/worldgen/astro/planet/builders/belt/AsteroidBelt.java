@@ -37,6 +37,7 @@ public class AsteroidBelt extends Belt {
 
 		planet.addTradeCode(TradeCode.As);
 
+		generateMap();
 		generateResources();
 		generateDescription();
 	}
