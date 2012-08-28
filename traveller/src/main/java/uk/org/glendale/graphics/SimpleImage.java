@@ -269,6 +269,7 @@ public class SimpleImage implements ImageObserver {
 	public void circle(int x, int y, int radius, String colour) {
 		Graphics2D g = (Graphics2D) image.getGraphics();
 		g.setColor(getColour(colour));
+		// XXX: Bug! The radius is implemented as a diameter!
 		g.fillOval(x - radius / 2, y - radius / 2, radius, radius);
 	}
 
@@ -395,6 +396,11 @@ public class SimpleImage implements ImageObserver {
 		g.drawArc(x, y, size, size, -45, 270);
 	}
 	
+	public void circleOutline(int x, int y, int size, String colour) {
+		Graphics2D g = (Graphics2D) image.getGraphics();
+		g.setColor(getColour(colour));
+		g.drawArc(x-size/2, y-size/2, size, size, 0, 360);
+	}
 	public void save(File path, Image image) throws IOException {
 		BufferedImage bimage = null;
 		int type = BufferedImage.TYPE_INT_RGB;
