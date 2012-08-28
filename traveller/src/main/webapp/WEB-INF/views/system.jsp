@@ -8,11 +8,13 @@
 		<link rel="stylesheet" href="/traveller/css/default.css"/> 
         <link rel="stylesheet" href="/traveller/css/system.css"/> 
 		<script type="text/javascript" src="/traveller/scripts/jquery.js"></script>
+        <script type="text/javascript" src="/traveller/scripts/worldgen.js"></script>
 	    <script type="text/javascript">
 	       var  _system = null;
 	    
 	       function displaySystemData(system) {
 	    	   _system = system;
+	    	   WG.system = system;
 	    	   
 	    	   $("#title").html(system.sectorName + " / " + system.name);
 	    	   
@@ -63,14 +65,7 @@
 	       }
 	       
 	       function showPlanet(id) {
-	    	   var planet = null;
-               for (var i = 0; i < _system.planets.length; i++) {
-                   var p = _system.planets[i];
-                   if (p.id == id) {
-                	   planet = p;
-                       break;
-                   }
-               }
+               var planet = WG.getPlanet(id);
                if (planet == null) {
             	   $("#planetData").html("No planet selected");
             	   return;
@@ -79,8 +74,8 @@
                $(".selected").removeClass("selected");
                $("#link"+id).addClass("selected");
                
-               var fullname = planet.name + " (" + getType(planet) + ")";
-           	   fullname += "<span id='codes'>" + getTradeIcons(planet) + "</span>";
+               var fullname = planet.name + " (" + WG.getType(planet) + ")";
+           	   fullname += "<span id='codes'>" + WG.getTradeIcons(planet) + "</span>";
                $("#planetData").html("<h2>" + fullname + "</h2>");
                
                if (planet.starport != "X") {
@@ -106,21 +101,21 @@
                var para = "<table class='data'>";
                
                var labels = [ "Distance", radiusLabel, "Axial Tilt", "Day Length" ];
-               var data = [ getDistance(planet), getRadius(planet), 
-                            getAxialTilt(planet), getDayLength(planet) ];
+               var data = [ WG.getDistance(planet), WG.getRadius(planet), 
+                            WG.getAxialTilt(planet), WG.getDayLength(planet) ];
                
                para += mkTable(labels, data);
                
                var labels = [ "Temperature", "Atmosphere", "Hydrographics", "Life" ];
-               var data = [ getTemperature(planet), getAtmosphere(planet), 
-                            getHydrographics(planet), getLifeLevel(planet) ];
+               var data = [ WG.getTemperature(planet), WG.getAtmosphere(planet), 
+                            WG.getHydrographics(planet), WG.getLifeLevel(planet) ];
                
                para += mkTable(labels, data);
                
                if (planet.population > 0) {
 	               var labels = [ "Population", "Tech Level", "Government", "Law Level" ];
-	               var data = [ getPopulation(planet), getTechLevel(planet), 
-	                            getGovernment(planet), getLawLevel(planet) ];
+	               var data = [ WG.getPopulation(planet), WG.getTechLevel(planet), 
+	                            WG.getGovernment(planet), WG.getLawLevel(planet) ];
 	               
 	               para += mkTable(labels, data);
                }
