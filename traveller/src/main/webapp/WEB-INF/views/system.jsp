@@ -9,14 +9,17 @@
         <link rel="stylesheet" href="/traveller/css/system.css"/> 
 		<script type="text/javascript" src="/traveller/scripts/jquery.js"></script>
         <script type="text/javascript" src="/traveller/scripts/worldgen.js"></script>
+        <script type="text/javascript" src="/traveller/scripts/star.js"></script>
+        <script type="text/javascript" src="/traveller/scripts/planet.js"></script>
+        <script type="text/javascript" src="/traveller/scripts/system.js"></script>
 	    <script type="text/javascript">
 	       var  _system = null;
 	    
 	       function displaySystemData(system) {
 	    	   _system = system;
-	    	   WG.system = system;
+	    	   WG.system = new StarSystem(system);
 	    	   
-	    	   $("#title").html(system.sectorName + " / " + system.name);
+               $("#title").html(WG.system.getFullName());
 	    	   
 	    	   /*
 	    	   $("#systemData").append("<b>Main world:</b> " + system.mainWorld.name + "<br/>");
@@ -35,7 +38,7 @@
 
 	    		   $("#systemStars").append("<div id='links'></div>");
 	    		   	    		   
-	    		   listPlanetsForStar(system, system.stars[i].id);
+	    		   listPlanetsForStar(WG.system.getPlanets(system.stars[i].id));
 	    	   }
 	    	   
 	    	   $("#systemStars").append("<div id='planetData'></div>");
@@ -45,18 +48,15 @@
 	    	   //$("#sectorMap").html(minX+","+maxX+","+minY+","+maxY);
 	       }
 
-	       function listPlanetsForStar(system, starId) {
-               for (var i = 0; i < system.planets.length; i++) {
-                   var planet = system.planets[i];
-                   if (planet.parentId != starId) {
-                       continue;
-                   }
+	       function listPlanetsForStar(list) {
+               for (var i = 0; i < list.length; i++) {
+                   var planet = list[i];
                    
-                   var number = (planet.name+"").replace(/.* /g, "");
-                   if (planet.id == system.mainWorld.id) {
+                   var number = (planet.getName()+"").replace(/.* /g, "");
+                   if (planet.isMainWorld()) {
                 	   number += "*";
                    }
-                   var html = "<span id='link" + planet.id + "' onclick='javascript: showPlanet(" + planet.id + ")'>";
+                   var html = "<span id='link" + planet.getId() + "' onclick='javascript: showPlanet(" + planet.getId() + ")'>";
                    html += number;
                    html += "</span>";
                    
@@ -74,26 +74,26 @@
                $(".selected").removeClass("selected");
                $("#link"+id).addClass("selected");
                
-               var fullname = planet.name + " (" + WG.getType(planet) + ")";
-           	   fullname += "<span id='codes'>" + WG.getTradeIcons(planet) + "</span>";
+               var fullname = planet.getName() + " (" + planet.getType() + ")";
+           	   fullname += "<span id='codes'>" + planet.getTradeIcons() + "</span>";
                $("#planetData").html("<h2>" + fullname + "</h2>");
                
-               if (planet.starport != "X") {
-            	//    $("#planetData").append("<div id='starport'>" + planet.starport + "</div>");
+               if (planet.getStarPort() != "X") {
+            	    $("#planetData").append("<div id='starport'>" + planet.getStarPort() + "</div>");
                }
                
                var radiusLabel = "Radius";
                
                $("#planetData").append("<canvas id='globe' width='200px' height='200px'>Not supported</canvas>");
-               var texture="/traveller/api/planet/" + id + "/projection.jpg";
+               var texture="/traveller/api/planet/" + planet.getId() + "/projection.jpg";
                // TODO: Need to cancel the previous animation. 
-               if (planet.tradeCodes.indexOf("As") == -1) {
+               if (!planet.isBelt()) {
             	    createSphere(document.getElementById("globe"), texture);
                } else {
             	   drawAsteroids(planet, document.getElementById("globe"));
             	   radiusLabel = "Thickness";
                }
-               
+
                $("#planetData").append("<div id='statBlock'></div>");
                
                // It's a table. I can't think of a better way of laying this
@@ -101,21 +101,21 @@
                var para = "<table class='data'>";
                
                var labels = [ "Distance", radiusLabel, "Axial Tilt", "Day Length" ];
-               var data = [ WG.getDistance(planet), WG.getRadius(planet), 
-                            WG.getAxialTilt(planet), WG.getDayLength(planet) ];
+               var data = [ planet.getDistance(), planet.getRadius(), 
+                            planet.getAxialTilt(), planet.getDayLength() ];
                
                para += mkTable(labels, data);
                
                var labels = [ "Temperature", "Atmosphere", "Hydrographics", "Life" ];
-               var data = [ WG.getTemperature(planet), WG.getAtmosphere(planet), 
-                            WG.getHydrographics(planet), WG.getLifeLevel(planet) ];
+               var data = [ planet.getTemperature(), planet.getAtmosphere(), 
+                            planet.getHydrographics(), planet.getLifeLevel() ];
                
                para += mkTable(labels, data);
                
-               if (planet.population > 0) {
+               if (planet.isPopulated()) {
 	               var labels = [ "Population", "Tech Level", "Government", "Law Level" ];
-	               var data = [ WG.getPopulation(planet), WG.getTechLevel(planet), 
-	                            WG.getGovernment(planet), WG.getLawLevel(planet) ];
+	               var data = [ planet.getPopulation(), planet.getTechLevel(), 
+	                            planet.getGovernment(), planet.getLawLevel() ];
 	               
 	               para += mkTable(labels, data);
                }
@@ -123,23 +123,17 @@
                para += "</table>";
                $("#statBlock").append(para);
                
-               $("#planetData").append("<p id='description'>" + planet.description + "</p>")
+               $("#planetData").append("<p id='description'>" + planet.getDescription() + "</p>")
                
                $("#planetData").append("<p style='clear:both'/>");
 
                $("#planetData").append("<div id='resources'></div>");
                
-               $.getJSON("/traveller/api/planet/" + planet.id + "/resources", function(data) {
+               $.getJSON("/traveller/api/planet/" + planet.getId() + "/resources", function(data) {
                    displayPlanetResources(data);
                });
 	       }
-	       
-	       var seed = 1234567;
-	       function rnd(val) {
-	    	   seed = (seed * val)%10000000;
-	    	   return seed;
-	       }
-	       
+
 	       function drawAsteroids(planet, canvas) {
                var context = canvas.getContext("2d");               
                if (context == null) {
@@ -147,45 +141,11 @@
                }
                
                var image = new Image();
-               image.src = "/traveller/api/planet/"+planet.id+"/orbit";
+               image.src = "/traveller/api/planet/"+planet.getId()+"/orbit";
                image.onload = function () {
             	    context.drawImage(image, 5, 5, 190, 190);
                };
 	    	   
-	       }
-	       
-	       function drawAsteroids0(planet, canvas) {
-	    	   var context = canvas.getContext("2d");
-	    	   
-	    	   if (context == null) {
-	    		   return;
-	    	   }
-	    	   
-               context.strokeStyle = "#222222";
-               context.fillStyle = "#222222";
-               var x = 20;
-               var y = 150;
-               var xx = 300 / (planet.radius + 1);
-               var yy = 5;
-               var r = 5;
-               var v = 7 + planet.id;
-	    	   for (var i=0; i < 2 + planet.radius; i++) {
-		    	   context.beginPath();
-		    	   if (r < 1) {
-		    		   r = 1;
-		    	   }
-		    	   if (v % 3 != 0) {
-			    	   context.arc(x, y, r--, 0, Math.PI * 2, true);
-			    	   context.closePath();
-			    	   context.stroke();
-			    	   context.fill();
-		    	   }
-		    	   x += xx + v % 5;
-		    	   y -= yy + v % 5;
-		    	   xx *= 0.7;
-		    	   yy += 5;
-		    	   v += 1;
-	    	   }
 	       }
 	       
 	       function displayPlanetResources(list) {
@@ -219,213 +179,7 @@
 	       function addData(label, value) {
 	    	   return "<dt>" + label + "</dt> <dd>" + value + "</dd>";
 	       }
-	       
-	       function showPlanetsForStar(system, starId) {
-	    	   for (var i = 0; i < system.planets.length; i++) {
-	    		   var planet = system.planets[i];
-	    		   if (planet.parentId != starId) {
-	    			   continue;
-	    		   }
-	    		   
-	    		   $("#systemStars").append("<div id='planet" + planet.id + "'></div>");
-	    		   var pid = "#planet" + planet.id;
-	    		   
-	    		   $(pid).append("<h2>" + planet.name + " (" + planet.type + ")</h2>");
-	    		   
-	    		   var para = "";
-	    		   para += "<b>Distance: </b>" + getDistance(planet) + "; ";
-                   para += "<b>Radius: </b>" + getRadius(planet) + "; ";
-                   para += "<b>Axial Tilt: </b>" + getAxialTilt(planet) + ";";
-                   para += "<b>Length of Day: </b>" + getDayLength(planet) + ";";
-                   para += "<b>Temperature: </b>" + getTemperature(planet) + "; ";
-                   para += "<b>Atmosphere: </b>" + getAtmosphere(planet) + "; ";
-                   para += "<b>Hydrographics: </b>" + getHydrographics(planet) + ";";
-                   $(pid).append("<p>" + para + "</p>");
-                   
-                   if (planet.population > 0) {
-	                   para = "";
-	                   para += "<b>Population: </b>" + getPopulation(planet) + "; ";
-	                   para += "<b>Government: </b>" + getGovernment(planet) + "; ";
-	                   $(pid).append("<p>" + para + "</p>");
-                   }	    		   
-	    		   
-	    		   $(pid).append("<p id='description'>" + planet.description + "</p>");
-	    	   }
-	       }
-	       
-	       function addCommas(number) {
-	    	    number += '';
-	    	    x = number.split('.');
-	    	    x1 = x[0];
-	    	    x2 = x.length > 1 ? '.' + x[1] : '';
-	    	    var rgx = /(\d+)(\d{3})/;
-	    	    while (rgx.test(x1)) {
-	    	        x1 = x1.replace(rgx, '$1' + ',' + '$2');
-	    	    }
-	    	    return x1 + x2;
-	       }
-	       
-	       function formatEnum(val) {
-	    	   if (val == null) {
-	    		   return "";
-	    	   } else {
-		    	   val = "" + val;
-	               return val.replace(/([A-Z])/g, " $1").trim();
-	    	   }	    	   
-	       }
-	       
-	       function getType(planet) {
-	    	   return formatEnum(planet.type);
-	       }
-	       
-	       function getDistance(planet) {
-	    	   if (planet.isMoon) {
-	    		   return addCommas(planet.distance) + " km";
-	    	   }
-	    	   return addCommas(planet.distance) + " MKm";
-	       }
-	       
-	       function getRadius(planet) {
-	    	   if (planet.tradeCodes.indexOf("As") != -1) {
-	    		   return addCommas(planet.radius * 4 + " Mkm");
-	    	   }
-	    	   return addCommas(planet.radius) + " km";
-	       }
-	       
-	       function getPopulation(planet) {
-	    	   return addCommas(planet.population);
-	       }
-	       
-	       function getAtmosphere(planet) {
-	    	   if (planet.pressure == "None") {
-	    		   return "Vacuum";
-	    	   } else if (planet.pressure == "Standard") {
-	    		   return formatEnum(planet.atmosphere);
-	    	   } else {
-	    		    return formatEnum(planet.pressure + " " + planet.atmosphere);
-	    	   }
-	       }
-	       
-	       function getTemperature(planet) {
-	    	   return formatEnum(planet.temperature);
-	       }
-	       
-	       function getHydrographics(planet) {
-	    	   return planet.hydrographics + "%";
-	       }
-	       
-	       function getGovernment(planet) {
-	    	   return formatEnum(planet.government);
-	       }
-	       
-	       function getAxialTilt(planet) {
-               if (planet.tradeCodes.indexOf("As") != -1) {
-            	   return "--";
-               }
-	    	   return planet.axialTilt + "&#176;";
-	       }
 
-	       function getDayLength(planet) {
-               if (planet.tradeCodes.indexOf("As") != -1) {
-                   return "--";
-               }
-	    	   return planet.dayLengthText;
-	       }
-	       
-	       function getLawLevel(planet) {
-	    	   switch (planet.lawLevel) {
-	    	   case 0: return "0 (Lawless)";
-               case 1: return "1 (Libertarian)";
-               case 2: return "2 (Liberal)";
-               case 3: return "3 (Typical)";
-               case 4: return "4 (Strict)";
-               case 5: return "5 (Restrictive)";
-               case 6: return "6 (Authoritarian)";
-	    	   }
-	    	   return "" + planet.lawLevel;
-	       }
-	       
-	       function getTechLevel(planet) {
-	    	   switch (planet.techLevel) {
-	    	   case  0: return "0 (Stone)";
-	    	   case  1: return "1 (Bronze)";
-	    	   case  2: return "2 (Iron)";
-	    	   case  3: return "3 (Medieval)";
-	    	   case  4: return "4 (Renaissance)";
-	    	   case  5: return "5 (Steam)";
-	    	   case  6: return "6 (Mechanical)";
-	    	   case  7: return "7 (Atomic)";
-	    	   case  8: return "8 (Digital)";
-	    	   case  9: return "9 (Interplanetary)";
-               case 10: case 11: 
-            	   return planet.techLevel + " (Interstellar)";
-               case 12: case 13: case 14:
-                   return planet.techLevel + " (Low Imperium)";
-               case 15: case 16: case 17:
-                   return planet.techLevel + " (High Imperium)";
-               case 18: case 19: case 20:
-                   return planet.techLevel + " (Advanced)";
-               default:
-                   return planet.techLevel + " (Magic)";
-	    	   }
-	    	   return planet.techLevel;
-	       }
-	       
-	       function getLifeLevel(planet) {
-	    	   return formatEnum(planet.lifeLevel);
-	       }
-	       
-	       function getStarPort(planet) {
-	    	   return "" + planet.starport;
-	       }
-	       
-	       function getTradeCodes(planet) {
-	    	   return "" + planet.tradeCodes;
-	       }
-	       
-	       function getTradeIcons(planet) {
-	    	   var codes = getTradeCodes(planet).split(" ");
-	    	   
-	    	   var base = "/traveller/images/symbols/64x64/";
-	    	   
-	    	   var list = { "ag": "Agricultural",
-	    			        "na": "Non-Agricultural",
-	    			        "in": "Industrial",
-	    			        "ni": "Non-Industrial",
-	    			        "hi": "High Population",
-	    			        "lo": "Low Population",
-	    			        "ri": "Rich",
-	    			        "po": "Poor",
-	    			        "ba": "Barren",
-	    			        "va": "Vacuum",
-	    			        "de": "Desert",
-	    			        "as": "Asteroid Belt",
-	    			        "ic": "Ice-Capped",
-	    			        "wa": "Water World",
-	    			        "fl": "Fluid Oceans",
-	    			        "cp": "Sub-Sector Capital",
-	    			        "cx": "Sector Capital"
-	    	   };
-	    	   
-	    	   var html = "";
-	    	   for (var i=0; i < codes.length; i++) {
-	    		   var code = codes[i].toLowerCase();
-	    		   var text = list[code];
-	    		   
-	    		   if (text != null) {
-	                   var icon = base + "trade_"+code+".png";
-	                   html += "<img src='" + icon + "' title='"+ text + "'/>";
-	    		   }
-	    	   }
-	    	   if (planet.starport != "X") {
-	    		   var icon = base + "port_"+getStarPort(planet).toLowerCase()+".png";
-	    		   var text = "Class " + planet.starport + " Starport";
-	    		   html += "<img src='" + icon + "' title='"+ text + "'/>";
-	    	   }
-	    	   
-	    	   return html;
-	       }
-	       
 	       $(document).ready(function() {
 	    	   
 	    	   $.getJSON("/traveller/api/system/${systemId}", function(data) {
@@ -450,16 +204,7 @@
 	    </script>
 	    
 	    <script type="text/javascript" src="/traveller/scripts/samhaslers/requestanimationframe.polyfill.js"></script>
-	    <script type="text/javascript" src="/traveller/scripts/samhaslers/sphere.js"></script>
-	    
-	    <script type="text/javascript">
-	        function go() {
-	        	var texture="http://localhost:8080/traveller/api/planet/440/projection.jpg";
-	        	//createSphere(document.getElementById("sphere"), texture);
-	        	
-	        	
-	        }
-	    </script>
+	    <script type="text/javascript" src="/traveller/scripts/samhaslers/sphere.js"></script>	    
 	</head>
 	
 	
