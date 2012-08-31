@@ -34,6 +34,10 @@ Planet.prototype.isMainWorld = function() {
 	return false;
 };
 
+Planet.prototype.isMoon = function() {
+	return this.planet.isMoon;
+}
+
 /**
  * Gets the type of the planet, pretty formatted.
  * 

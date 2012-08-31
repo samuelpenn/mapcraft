@@ -92,7 +92,7 @@ StarSystem.prototype.getPlanet = function(id) {
 
 StarSystem.prototype.getMoons = function(id) {
 	var a = new Array();
-
+	
 	for (var i=0; i < this.system.planets.length; i++) {
 		if (this.system.planets[i].isMoon == true && 
 				this.system.planets[i].parentId == id) {

@@ -124,7 +124,31 @@ public class PlanetAPI {
 		for (Resource r : planet.getResources()) {
 			list.add(new CommodityTO(r.getCommodity(), r.getDensity()));
 		}
+
+		return list;
+	}
+	
+	/**
+	 * Gets a list of all the moons of the specified planet. If the planet
+	 * does not exist, a null list will be returned. If the planet has no
+	 * moons, then the list will be empty.
+	 * 
+	 * @param id	Id of planet to get moons for.
+	 * @return		List of moons. May be empty or null.
+	 */
+	@RequestMapping(value="/{id}/moons", method=RequestMethod.GET)
+	@ResponseBody
+	@Transactional
+	public List<PlanetTO> getMoons(@PathVariable("id") int id) {
+		Planet		 planet = factory.getPlanet(id);
+		if (planet == null) {
+			return null;
+		}
+		List<PlanetTO> list = new ArrayList<PlanetTO>();
 		
+		for (Planet moon : factory.getMoons(planet)) {
+			list.add(new PlanetTO(moon));
+		}		
 		return list;
 	}
 }

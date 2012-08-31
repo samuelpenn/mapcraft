@@ -79,19 +79,36 @@ WG = {
 		if (system == null) {
 			system = this.system;
 		}
-		return system.getPlanet(id);
-		
-		if (system == null || system.planets == null) {
-			return null;
-		}
-		for (var i=0; i < system.planets.length; i++) {
-			if (system.planets[i].id == id) {
-				return system.planets[i];
+		return system.getPlanet(id);		
+	},
+	
+	/**
+	 * Load the moons for this planet, then display them.
+	 */
+	loadMoons: function(id, func) {
+		var	 p = this.system.getPlanet(id);
+		if (p.planet.gotMoons != true) {
+			$.getJSON("/traveller/api/planet/"+id+"/moons", function(data) {
+				for (var i=0; i < data.length; i++) {
+					WG.system.system.planets.push(data[i]);
+				}
+				if (func != null) {
+					var moons = WG.system.getMoons(id);
+					for (var i=0; i < moons.length; i++) {
+						func(moons[i].getId());
+					}
+				}
+			});
+			// Make sure we only fetch the data once.
+			p.planet.gotMoons = true;
+		} else if (func != null) {
+			var moons = WG.system.getMoons(id);
+			for (var i=0; i < moons.length; i++) {
+				func(moons[i].getId());
 			}
 		}
-		return null;
 	},
-	    
+	
 
 		
 	version: function() {

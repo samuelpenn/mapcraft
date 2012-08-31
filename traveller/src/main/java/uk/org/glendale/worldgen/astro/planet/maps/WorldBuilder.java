@@ -15,7 +15,9 @@ import java.util.HashMap;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;

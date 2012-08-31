@@ -43,7 +43,7 @@
 	    	   
 	    	   $("#systemStars").append("<div id='planetData'></div>");
 	    	   
-	    	   showPlanet(system.mainWorld.id);
+	    	   showPlanetAndMoons(system.mainWorld.id);
 	    	   
 	    	   //$("#sectorMap").html(minX+","+maxX+","+minY+","+maxY);
 	       }
@@ -56,7 +56,7 @@
                    if (planet.isMainWorld()) {
                 	   number += "*";
                    }
-                   var html = "<span id='link" + planet.getId() + "' onclick='javascript: showPlanet(" + planet.getId() + ")'>";
+                   var html = "<span id='link" + planet.getId() + "' onclick='javascript: showPlanetAndMoons(" + planet.getId() + ")'>";
                    html += number;
                    html += "</span>";
                    
@@ -64,37 +64,46 @@
                }
 	       }
 	       
-	       function showPlanet(id) {
+	       function showPlanetAndMoons(id) {
                var planet = WG.getPlanet(id);
                if (planet == null) {
             	   $("#planetData").html("No planet selected");
             	   return;
                }
+               $("#planetData").html("<div class='planet' id='p" + id + "'></div>");
                
                $(".selected").removeClass("selected");
                $("#link"+id).addClass("selected");
+
+               showPlanet(id, planet);
+               
+               WG.loadMoons(id, function (id) { 
+            	   $("#planetData").append("<div class='planet' id='p" + id + "'></div>");
+            	   showPlanet(id, WG.getPlanet(id));
+               });               
+	       }
+	       
+	       function showPlanet(id, planet) {
+               var divId = "#p"+id;
                
                var fullname = planet.getName() + " (" + planet.getType() + ")";
            	   fullname += "<span id='codes'>" + planet.getTradeIcons() + "</span>";
-               $("#planetData").html("<h2>" + fullname + "</h2>");
-               
-               if (planet.getStarPort() != "X") {
-            	    $("#planetData").append("<div id='starport'>" + planet.getStarPort() + "</div>");
-               }
-               
+               $(divId).html("<h2>" + fullname + "</h2>");
+
                var radiusLabel = "Radius";
                
-               $("#planetData").append("<canvas id='globe' width='200px' height='200px'>Not supported</canvas>");
+               $(divId).append("<canvas class='globe' id='globe"+id+"' width='200px' height='200px'>Not supported</canvas>");
                var texture="/traveller/api/planet/" + planet.getId() + "/projection.jpg";
                // TODO: Need to cancel the previous animation. 
-               if (!planet.isBelt()) {
-            	    createSphere(document.getElementById("globe"), texture);
-               } else {
-            	   drawAsteroids(planet, document.getElementById("globe"));
-            	   radiusLabel = "Thickness";
+               if (planet.isMoon() == false) {
+	               if (!planet.isBelt()) {
+	            	    createSphere(document.getElementById("globe"+id), texture);
+	               } else {
+	            	   drawAsteroids(planet, document.getElementById("globe"+id));
+	            	   radiusLabel = "Thickness";
+	               }
                }
-
-               $("#planetData").append("<div id='statBlock'></div>");
+               $(divId).append("<div id='statBlock"+id+"'></div>");
                
                // It's a table. I can't think of a better way of laying this
                // out which doesn't involve a table.
@@ -121,16 +130,16 @@
                }
                
                para += "</table>";
-               $("#statBlock").append(para);
+               $("#statBlock"+id).append(para);
                
-               $("#planetData").append("<p id='description'>" + planet.getDescription() + "</p>")
+               $(divId).append("<p class='description'>" + planet.getDescription() + "</p>");
                
-               $("#planetData").append("<p style='clear:both'/>");
+               $(divId).append("<p style='clear:both'/>");
 
-               $("#planetData").append("<div id='resources'></div>");
+               $(divId).append("<div id='resources"+id+"'></div>");
                
                $.getJSON("/traveller/api/planet/" + planet.getId() + "/resources", function(data) {
-                   displayPlanetResources(data);
+                   displayPlanetResources(id, data);
                });
 	       }
 
@@ -148,10 +157,10 @@
 	    	   
 	       }
 	       
-	       function displayPlanetResources(list) {
-	    	   $("#resources").html("<h3>Resources</h3>");
+	       function displayPlanetResources(id, list) {
+	    	   $("#resources"+id).html("<h3>Resources</h3>");
 	    	   
-	    	   $("#resources").append("<ul id='r' class='iconList'></ul>");
+	    	   $("#resources"+id).append("<ul id='r"+id+"' class='iconList'></ul>");
 	    	   for (var i=0; i < list.length; i++) {
 	    		   var c = list[i];
 	    		   var image = "/traveller/images/trade/" + c.imagePath + ".png";
@@ -159,7 +168,7 @@
 	    		   var html = "<img src='"+image+"' width='64' height='64' title='"+name+"'/>";
 	    		   html = html + c.amount + "%";
 	    		   
-	    		   $("#r").append("<li>" + html + "</li>");
+	    		   $("#r"+id).append("<li>" + html + "</li>");
 	    		   
 	    	   }
 	       }

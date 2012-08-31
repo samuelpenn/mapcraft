@@ -1,4 +1,14 @@
+/*
+ * Copyright (C) 2012 Samuel Penn, sam@glendale.org.uk
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; version 2.
+ * See the file COPYING.
+ */
 package uk.org.glendale.worldgen.astro.planet.builders;
+
+import java.awt.Point;
 
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
@@ -6,6 +16,7 @@ import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetType;
 import uk.org.glendale.worldgen.astro.planet.maps.Tile;
+import uk.org.glendale.worldgen.astro.planet.maps.WorldBuilder;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
@@ -15,48 +26,24 @@ import uk.org.glendale.worldgen.server.AppManager;
  * 
  * @author Samuel Penn
  */
-public abstract class IceWorld extends PlanetBuilder {
-	protected Tile	base = new Tile("Sea", "#D0D0D7", false);
-	protected Tile	crust = new Tile("Crust", "#E9E9E9", false);
-	protected Tile	mountains = new Tile("Mountains", "#FAFAFA", false);
-	
-	private int		numCraters = 150;
-	private int		craterSize = 25;
-	private int		minCraterSize = 0;
-	
+public abstract class IceWorld extends WorldBuilder {
+	protected final Tile	LIGHT;
+	protected final Tile	DARK;
+
+	protected static final String CRATER_COLOUR = "craterColour";
+	protected static final String CRATER_MODIFIER = "craterModifier"; 
+
 	public IceWorld() {
-	}
-	
-	/**
-	 * Sets the number of craters to be drawn. Defaults to be 150
-	 * if not set.
-	 * 
-	 * @param numCraters		Number of craters.
-	 */
-	protected void setCraterNumbers(int numCraters) {
-		this.numCraters = numCraters;
-	}
-	
-	/**
-	 * Sets the average size of craters. Defaults to 25.
-	 * 
-	 * @param craterSize		Size of craters.
-	 */
-	protected void setCraterSize(int craterSize) {
-		this.craterSize = craterSize;
-	}
-	
-	/**
-	 * Sets the minimum size of craters. Craters below this size
-	 * are not drawn. Defaults to 0, and should remain so for
-	 * inactive worlds without an atmosphere. Allows for small
-	 * craters to have been eroded by geological/atmospheric
-	 * processes.
-	 * 
-	 * @param minCraterSize		Minimum crater size.
-	 */
-	protected void setCraterMinSize(int minCraterSize) {
-		this.minCraterSize = minCraterSize;
+		LIGHT = new Tile("Light", "#F0F0F0", false);
+		DARK = new Tile("Dark", "#E8E8F0", false);
+
+		map = new Tile[model.getTotalHeight()][];
+		for (int y=0; y < model.getTotalHeight(); y++) {
+			map[y] = new Tile[model.getWidthAtY(y)];
+			for (int x=0; x < model.getWidthAtY(y); x++) {
+				map[y][x] = BLANK;
+			}
+		}
 	}
 
 	@Override
@@ -69,51 +56,61 @@ public abstract class IceWorld extends PlanetBuilder {
 		generateResources();
 	}
 
-	@Override
-	public void generateMap() {
-		if (!AppManager.getDrawMap()) {
-			return;
-		}
-		setHydrographics(5 + Die.d20(3));
-		addContinents(base, crust, mountains);
-		
-		// Increase resolution to maximum.
-		map = scaleMap(map, TILE_SIZE);
-		addCraters();
-		
-		if (AppManager.getStretchMap()) {
-			map = stretchMap(map);
-		}
-		getImage();
-	}
-		
-	private void addCraters() {
-		Tile	crater = new Tile("Crater", "#D0D0D0", false);
-		for (int c=0; c < numCraters; c++) {
-			// We don't want a crater right on the poles.
-			int	y = Die.rollZero((int)(MAP_HEIGHT * 0.9)) + (int)(MAP_HEIGHT * 0.05);
-			int x = Die.rollZero(getEast(y, MAP_HEIGHT) - getWest(y, MAP_HEIGHT)) + getWest(y, MAP_HEIGHT);
-			
-			int	r = Die.rollZero(craterSize);
-			if (r < minCraterSize) {
-				continue;
-			}
-			for (int yy=y-r; yy < y+r; yy++) {
-				if (yy < 0 || yy >= MAP_HEIGHT) {
-					continue;
+	private void drawRandomIceWorld() {
+		for (int tileY=0; tileY < 12; tileY++) {
+			map[tileY] = new Tile[model.getWidthAtY(tileY)];
+			for (int tileX = 0; tileX < model.getWidthAtY(tileY); tileX++) {
+				if (Die.d20() == 1) {
+					map[tileY][tileX] = DARK;
+				} else {
+					map[tileY][tileX] = LIGHT;
 				}
-				for (int xx=x-r; xx < x+r; xx++) {
-					if (xx < 0 || xx >= MAP_WIDTH) {
-						continue;
-					}
-					if (Math.hypot(x-xx, y-yy) < (r + Die.die(r))/2) {
-						if (map[yy][xx] != crater && map[yy][xx] != OUT_OF_BOUNDS) {
-							heightMap[yy][xx] -= r;
-							map[yy][xx] = crater;
+			}
+		}
+
+		for (int i=0; i < 3; i++) {
+			Tile[][] tmp = new Tile[12][];
+			
+			for (int tileY=0; tileY < 12; tileY++) {
+				tmp[tileY] = new Tile[model.getWidthAtY(tileY)];
+				for (int tileX = 0; tileX < model.getWidthAtY(tileY); tileX++) {
+					tmp[tileY][tileX] = map[tileY][tileX];
+				}
+			}
+
+			for (int tileY=0; tileY < 12; tileY++) {
+				for (int tileX = 0; tileX < model.getWidthAtY(tileY); tileX++) {
+					if (tmp[tileY][tileX] == DARK) {
+						try {
+							switch (Die.d3()) {
+							case 1:
+								// West.
+								map[tileY][model.getWest(tileX, tileY)] = DARK;
+								break;
+							case 2:
+								// East.
+								map[tileY][model.getEast(tileX, tileY)] = DARK;
+								break;
+							case 3:
+								// North/South.
+								Point p = model.getUpDown(tileX, tileY);
+								map[(int)p.getY()][(int)p.getX()] = DARK;
+								break;
+							}
+						} catch (ArrayIndexOutOfBoundsException e) {
+							//map[tileY][tileX] = red;
+							System.out.println(tileX +", "+ tileY);
 						}
 					}
 				}
 			}
 		}
+	}
+
+	@Override
+	public void generateMap() {
+		drawRandomIceWorld();
+		
+		getImage();
 	}
 }

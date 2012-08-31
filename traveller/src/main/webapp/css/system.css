@@ -75,7 +75,7 @@ ul.iconList li img {
 	display: block;
 }
 
-#globe {
+.globe {
 	width: 200px;
 	height: 200px;
 	float: left;
@@ -114,13 +114,15 @@ table.data tr td {
     padding-right: 5px;
 }
 
-#description {
+.description {
 	font-family: Arial;
 	font-size: large;
 	margin-left: 220px;
 }
 
-
+.planet {
+	border-bottom: 3px solid #777777;
+}
 
 
 

@@ -49,8 +49,8 @@ public class PlanetGenerator {
 	private PlanetFactory	planetFactory;
 	private StarSystem		system;
 	private Star			star;
-	private PlanetBuilder	builder	= null;
-	private WorldBuilder	worldBuilder = null;
+	private Builder			builder	= null;
+	private WorldBuilder	lastBuilder = null;
 
 	/**
 	 * Create a new PlanetGenerator for a given star in a star system.
@@ -85,6 +85,10 @@ public class PlanetGenerator {
 			Builder builder) {
 		Temperature orbitTemperature = StarAPI.getOrbitTemperature(star,
 				distance);
+		
+		if (builder instanceof WorldBuilder) {
+			this.lastBuilder = (WorldBuilder) builder;
+		}
 
 		if (name == null || name.trim().length() == 0) {
 			throw new IllegalArgumentException("Planet name cannot be empty");
@@ -289,26 +293,26 @@ public class PlanetGenerator {
 	 */
 	public List<Planet> generateMoons(Planet planet, Set<SectorCode> codes) {
 		List<Planet> moons = new ArrayList<Planet>();
-		PlanetBuilder[] builders = builder.getMoonBuilders();
+		Builder[] builders = lastBuilder.getMoonBuilders();
 
 		if (builders != null) {
 			// If this is a sparse sector, halve number of moons.
 			if (codes.contains(SectorCode.Sp) && builders.length > 1) {
-				PlanetBuilder[] nb = new PlanetBuilder[builders.length / 2];
+				WorldBuilder[] nb = new WorldBuilder[builders.length / 2];
 				for (int i = 0; i < nb.length; i++) {
-					nb[i] = builders[i];
+					nb[i] = (WorldBuilder) builders[i];
 				}
 				builders = nb;
 			}
 
 			String[] names = { "a", "b", "c", "d", "e", "f", "g", "h", "i",
 					"j", "k", "l", "m", "n", "o", "p" };
-			int distance = builder.getFirstMoonDistance();
+			int distance = lastBuilder.getFirstMoonDistance();
 			for (int i = 0; i < builders.length; i++) {
 				Temperature orbitTemperature = StarAPI.getOrbitTemperature(
 						star, planet.getDistance());
 
-				PlanetBuilder moonBuilder = builders[i];
+				WorldBuilder moonBuilder = (WorldBuilder) builders[i];
 				String moonName = planet.getName() + "/" + names[i];
 				System.out.println(moonName);
 				Planet moon = new Planet(planet.getSystem(), planet.getId(),
@@ -317,7 +321,12 @@ public class PlanetGenerator {
 				moon.setTemperature(orbitTemperature);
 				moonBuilder.setPlanet(moon);
 				moonBuilder.setStar(star);
+				moonBuilder.setCommodityFactory(planetFactory.getCommodityFactory());
 				moonBuilder.generate();
+				
+				PlanetDescription  description = new PlanetDescription(moonBuilder);
+				moon.setDescription(description.getFullDescription());
+
 				moons.add(moon);
 
 				distance *= 1.5;

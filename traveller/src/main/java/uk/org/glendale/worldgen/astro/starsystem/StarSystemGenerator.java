@@ -234,6 +234,11 @@ public class StarSystemGenerator {
 		}
 		system.addPlanet(planet);
 		factory.persist(system);
+		List<Planet> moons = generator.generateMoons(planet, sector.getCodes());
+		for (Planet moon : moons) {
+			system.addPlanet(moon);
+		}
+		factory.persist(system);
 		
 		System.out.println(system.getId()+": "+system.getStars().get(0).getId());
 		

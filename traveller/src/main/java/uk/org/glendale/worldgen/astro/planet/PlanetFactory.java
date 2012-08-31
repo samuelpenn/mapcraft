@@ -93,8 +93,8 @@ public class PlanetFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Planet>	getMoons(Planet planet) {
-		Query query = em.createQuery("SELECT p FROM Planet p WHERE p.parent_id = :planet");
-		query.setParameter("planet", planet);
+		Query query = em.createQuery("SELECT p FROM Planet p WHERE p.parentId = :planet AND isMoon = true");
+		query.setParameter("planet", planet.getId());
 
 		return query.getResultList();
 	}

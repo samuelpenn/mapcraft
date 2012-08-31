@@ -149,7 +149,6 @@ public abstract class BarrenWorld extends WorldBuilder {
 				}
 			}
 		}
-		
 	}
 
 	@Override

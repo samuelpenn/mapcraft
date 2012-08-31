@@ -8,7 +8,6 @@
  */
 package uk.org.glendale.worldgen.astro.planet.builders;
 
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,6 @@ import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.builders.ice.Europan;
 import uk.org.glendale.worldgen.astro.planet.maps.Tile;
 import uk.org.glendale.worldgen.astro.planet.maps.WorldBuilder;
-import uk.org.glendale.worldgen.server.AppManager;
 
 /**
  * Abstract class for creating Jovian worlds such as Jupiter or Saturn. There
@@ -105,15 +103,13 @@ public abstract class JovianWorld extends WorldBuilder {
 		}
 		int numMoons = Die.d3(2);
 
-		System.out.println("JovianWorlds: Adding " + numMoons + " moons");
-		moonBuilders = new WorldBuilder[0];
-		/*
-		moonBuilders = new PlanetBuilder[numMoons];
+		System.out.println("JovianWorlds: Adding " + numMoons + " moons");		
+		moonBuilders = new WorldBuilder[numMoons];
 
 		for (int i = 0; i < numMoons; i++) {
 			moonBuilders[i] = new Europan();
 		}
-		*/
+		
 
 		return moonBuilders;
 	}
