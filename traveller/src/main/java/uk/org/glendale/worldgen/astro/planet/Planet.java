@@ -635,4 +635,12 @@ public class Planet {
 	public boolean hasTradeCode(TradeCode ag) {
 		return tradeCodes.contains(ag);
 	}
+	
+	public int getBeltWidth() {
+		if (getType().isBelt()) {
+			return radius * 4;
+		} else {
+			throw new IllegalStateException("Only asteroid belts have a width");
+		}
+	}
 }

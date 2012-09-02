@@ -193,6 +193,10 @@ public class StarSystemGenerator {
 			planet = generator.generatePlanet(planetName, position, distance, new Hermian());
 			system.addPlanet(planet);
 			factory.persist(system);
+		} else if (Die.d2() == 1) {
+			planetName = system.getName() + " " + getOrbitNumber(++position);
+			distance = 35 + Die.d10(3);
+			planet = generator.generatePlanet(planetName, position, distance, new AsteroidBelt());
 		}
 		
 		// Venus planet.
