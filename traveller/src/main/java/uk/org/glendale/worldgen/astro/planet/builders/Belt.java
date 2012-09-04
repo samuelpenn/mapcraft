@@ -26,6 +26,10 @@ import uk.org.glendale.worldgen.server.AppManager;
  * @author Samuel Penn
  */
 public abstract class Belt extends WorldBuilder {
+	public static final String ARC_SIZE = "ARC_SIZE";
+	public static final String DENSITY = "DENSITY";
+	public static final String THICKNESS = "THICKNESS";
+	
 	public Belt() {
 	}
 
@@ -54,16 +58,60 @@ public abstract class Belt extends WorldBuilder {
 		
 		int		distance = planet.getDistance();
 		int		thickness = planet.getRadius();
+		if (properties.containsKey(THICKNESS)) {
+			thickness = (Integer) properties.get(THICKNESS);
+		}
+
+		int		arc = 360;
+		if (properties.containsKey(ARC_SIZE)) {
+			arc = (Integer) properties.get(ARC_SIZE);
+		}
 		
-		double  scale = 800.0 / distance;
+		int		density = 100;
+		if (properties.containsKey(DENSITY)) {
+			density = (Integer) properties.get(DENSITY);
+		}
+		density = (density * distance * arc / 2) / 100;
+
+		double  scale = 400.0 / distance;
 		
-		image.circle(512, 512, (int) ((distance + thickness*3) * scale), "#AAAAAA");
-		image.circle(512, 512, (int) ((distance + thickness) * scale), "#777777");
-		image.circle(512, 512, (int) ((distance - thickness) * scale), "#AAAAAA");
-		image.circle(512, 512, (int) ((distance - thickness*3) * scale), "#FFFFFF");
+		for (int i=0; i < density; i++) {
+			double x = 0;
+			double y = distance + Die.die(thickness, 4) - Die.die(thickness, 4);
+			double r = 2.0 * Math.PI;
+
+			if (arc == 360) {
+				r *= Die.rollZero(arc * 100) / 36000.0;
+			} else {
+				double a = Die.die(arc * 25, 2) - Die.die(arc * 25, 2);
+				// Ensure the thickest part is near the middle.
+				y -= distance;
+				y *= 1.0 - (Math.abs(a) / (arc * 50));
+				y += distance;
+				
+				a += arc * 100;
+				r *= a / 36000.0;
+			}
+			y *=  scale;
+			
+			int x1 = (int)(x * Math.cos(r) - y * Math.sin(r)) + 512;
+			int y1 = (int)(y * Math.cos(r) + x * Math.sin(r)) + 512;
+			
+			switch (Die.d6()) {
+			case 1: case 2: case 3:
+				image.rectangle(x1, y1, 0, 0, "#999999");
+				break;
+			case 4: case 5:
+				image.rectangle(x1, y1, 0, 0, "#555555");
+				break;
+			case 6:
+				image.rectangle(x1, y1, 0, 0, "#000000");
+				break;
+			}
+		}
 		
 		// Show 1 AU to scale.		
-		image.circleOutline(512, 512, (int)(150 * scale), "#999999");
+		image.circleOutline(512, 512, (int)(150 * scale), "#FF0000");
 
 		// Show the star.
 		image.circle(512, 512, 10, "#997700");

@@ -31,6 +31,7 @@ import uk.org.glendale.worldgen.astro.planet.PlanetType;
 import uk.org.glendale.worldgen.astro.planet.builders.MapDrawer;
 import uk.org.glendale.worldgen.astro.planet.builders.PlanetDescription;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
+import uk.org.glendale.worldgen.astro.planet.builders.belt.AsteroidBelt;
 import uk.org.glendale.worldgen.astro.planet.maps.Tile;
 import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.civ.commodity.Commodity;
@@ -317,11 +318,12 @@ public abstract class WorldBuilder implements Builder {
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(GraphicsEnvironment.isHeadless());
-		/*
-		PlanetBuilder barren = new Hermian();
+		
+		WorldBuilder barren = new AsteroidBelt();
+		barren.setStar(new Star());
 		barren.setPlanet(new Planet());
 		barren.generate();
-		*/
+		
 		System.exit(0);
 
 		/*

@@ -16,6 +16,7 @@ public enum AtmosphereType {
 	Standard(1.0, 1.0, 0, 0), 
 	Chlorine(0.0, 1.0, 5, 40), 
 	Flourine(0.0, 1.0, 5, 60), 
+	Oxygen(0.1, 0.25, 2, 10),
 	SulphurCompounds(0.0, 0.9, 2, 15), 
 	NitrogenCompounds(0.0, 0.8, 2, 15), 
 	OrganicToxins(0.5, 1.0, 1, 3),
