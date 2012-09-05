@@ -59,9 +59,9 @@ public class Arean extends BarrenWorld {
 	}
 
 	public void generateMap() {
-		LIGHT.setRGB("#d8b476");
+		LIGHT.setRGB("#f8b476");
 		DARK.setRGB("#3c3b36");		
-		properties.put(CRATER_COLOUR, "#d0b070");
+		properties.put(CRATER_COLOUR, "#f0b070");
 		if (planet.hasFeatureCode(HeavilyCratered)) {
 			properties.put(CRATER_MODIFIER, +4);
 		}
