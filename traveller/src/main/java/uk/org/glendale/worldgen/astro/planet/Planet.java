@@ -643,4 +643,12 @@ public class Planet {
 			throw new IllegalStateException("Only asteroid belts have a width");
 		}
 	}
+	
+	public long getNextEventTime() {
+		return nextEvent;
+	}
+	
+	public void setNextEventTime(long nextEvent) {
+		this.nextEvent = nextEvent;
+	}
 }

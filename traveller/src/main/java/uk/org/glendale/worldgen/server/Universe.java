@@ -90,4 +90,17 @@ public class Universe {
 	public void setRealTime(long timeInMs) {
 		setNumber(Property.REALTIME, timeInMs);
 	}
+	
+	/**
+	 * Gets the speed at which the simulation is running.
+	 * 
+	 * @return	Multiplier to real time. Always strictly positive.
+	 */
+	public long getTimescale() {
+		return getNumber(Property.TIMESCALE).getValue();
+	}
+	
+	public long getSecondsInDay() {
+		return getNumber(Property.SECONDS_IN_DAY).getValue();
+	}
 }

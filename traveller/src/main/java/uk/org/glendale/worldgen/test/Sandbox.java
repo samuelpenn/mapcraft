@@ -145,8 +145,7 @@ public class Sandbox {
 		*/
 	}
 	
-	public void addToSandbox() {
-		/*
+	public void addManyToSandbox() {
 		List<Sector> sectors = sectorFactory.getAllSectors();
 		for (Sector sector : sectors) {
 			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
@@ -155,7 +154,15 @@ public class Sandbox {
 			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
 			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
 		}
-		*/
+	}
+
+	public void addToCore() {
+		String sectorName = "Sol";
+		Sector	sandbox = sectorFactory.getSector(sectorName);
+		starSystemGenerator.createSimpleSystem(sandbox, null, Die.d8(), Die.d10());
+	}
+
+	public void addToSandbox() {
 		String sectorName = "Aquila";
 		int	   sectorId = Die.die(9);
 		Sector	sandbox = sectorFactory.getSector(sectorId);
@@ -186,6 +193,17 @@ public class Sandbox {
 		int status = client.executeMethod(get);
 		System.out.println(status);
 		*/
+		/*
+		 delete from planet_maps;
+		 delete from planet_features;
+		 delete from planet_codes;
+		 delete from facilities;
+		 delete from planet;
+		 delete from star;
+		 delete from system;
+		 delete from facility;
+		 delete from commodity;
+		 */
 		
 	}
 
@@ -203,8 +221,9 @@ public class Sandbox {
 		//sb.importCommodities();
 		//sb.importFacilities();
 		//sb.addToSandbox();
+		//sb.addToCore();
 		
-		sb.testSimulation(1098);
-		//sb.testSimulation();
+		//sb.testSimulation(1098);
+		sb.testSimulation();
 	}
 }

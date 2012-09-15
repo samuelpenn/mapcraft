@@ -67,7 +67,7 @@ public class Civilisation {
 	}
 	
 	public void simulate() {
-		if (planet.getNextEvent() == 0) {
+		if (planet.getNextEvent() <= 1) {
 			// Planet has never been simulated before.
 			processWeek(false);
 			// processWeek(false);

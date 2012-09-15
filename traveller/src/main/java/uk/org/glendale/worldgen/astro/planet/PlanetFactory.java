@@ -118,4 +118,14 @@ public class PlanetFactory {
 		em.persist(planet);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Planet> getPlanetsWithEvent(long eventTime, int maxNumber) {
+		Query  query = em.createQuery("SELECT p FROM Planet p WHERE p.nextEvent > 0 AND p.nextEvent < :t");
+		query.setParameter("t", eventTime);
+		if (maxNumber > 0) {
+			query.setMaxResults(maxNumber);
+		}
+		return query.getResultList();
+	}
+	
 }

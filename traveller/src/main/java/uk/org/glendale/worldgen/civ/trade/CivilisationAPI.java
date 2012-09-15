@@ -43,9 +43,14 @@ public class CivilisationAPI {
 	 */
 	public void simulate(int planetId) {
 		Planet			planet = planetFactory.getPlanet(planetId);
+		simulate(planet);
+	}
+	
+	public void simulate(Planet planet) {
 		Civilisation	civ = factory.getCivilisation(planet);
-		List<Inventory>	inventory = factory.getPlanetInventory(planet);
+		//List<Inventory>	inventory = factory.getPlanetInventory(planet);
 		
+		System.out.println("Simulating [" + planet.getName() + "]");
 		civ.simulate();
 		
 		factory.persist(civ.getInventory());
@@ -59,9 +64,24 @@ public class CivilisationAPI {
 		long	currentRealTime = System.currentTimeMillis();
 		
 		if (currentRealTime > lastRealTime) {
+			long	realTimePassed = currentRealTime - lastRealTime;
+			long	timePassed = (universe.getTimescale() * realTimePassed) / 1000;
+			long	secondsInDay = universe.getSecondsInDay();
+			long	daysPassed = timePassed / secondsInDay;
+			long	currentTime = universe.getCurrentTime() + timePassed;
+			
+			System.out.println("Days passed: " + daysPassed);
+			
+			List<Planet> planets = planetFactory.getPlanetsWithEvent(currentTime, 10);
+			for (Planet p : planets) {
+				simulate(p);
+				p.setNextEventTime(currentTime + secondsInDay * 7);
+				planetFactory.persist(p);
+			}
 			
 			// And finally...
-			universe.setRealTime(System.currentTimeMillis());
+			universe.setCurrentTime(currentTime);
+			universe.setRealTime(currentRealTime);
 		}
 	}
 }

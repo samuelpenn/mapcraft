@@ -72,7 +72,7 @@ public enum CommodityCode {
 	BldA("Advanced building materials"),
 	BldU("Ultratech building materials"),
 	// Household goods (needed/produced by residential)
-	HoTl("Household tools"),
+	HoTo("Household tools"),
 	HoCk("Cooking utensils"),
 	HoLu("Artistic items"),
 	HoCl("Household cloths, blankets etc"),

@@ -55,61 +55,71 @@ import uk.org.glendale.worldgen.text.Names;
  */
 @Controller
 public class StarSystemGenerator {
-	
+
 	@Autowired
-	private StarSystemFactory		factory;
-	
+	private StarSystemFactory factory;
+
 	@Autowired
-	private PlanetFactory			planetFactory;
-	
+	private PlanetFactory planetFactory;
+
 	@Autowired
-	private StarFactory				starFactory;
-	
+	private StarFactory starFactory;
+
 	@Autowired
-	private StarSystemAPI			starSystemAPI;
-	
+	private StarSystemAPI starSystemAPI;
+
 	@Autowired
-	private FacilityFactory			facilityFactory;
-	
+	private FacilityFactory facilityFactory;
+
 	public StarSystemGenerator() {
 	}
-	
+
 	/**
 	 * Generate a new StarSystem object, without persisting it. This is a
 	 * wrapper to the normal constructor, and if the name or coordinates are
 	 * invalid then random options are selected instead.
 	 * 
-	 * @param sector	Sector to generate system in.
-	 * @param name		Name of the system.
-	 * @param x			X coordinate, 1-32.
-	 * @param y			Y coordinate, 1-40.
-	 * @return			Star system object.
+	 * @param sector
+	 *            Sector to generate system in.
+	 * @param name
+	 *            Name of the system.
+	 * @param x
+	 *            X coordinate, 1-32.
+	 * @param y
+	 *            Y coordinate, 1-40.
+	 * @return Star system object.
 	 */
-	private StarSystem generateSystemTemplate(Sector sector, String name, int x, int y) {
-		StarSystem		template = null;
-		
+	private StarSystem generateSystemTemplate(Sector sector, String name,
+			int x, int y) {
+		StarSystem template = null;
+
 		if (x == 0 || y == 0 || x > 32 || y > 40) {
-			Set<String>	 locations = new HashSet<String>();
-			List<StarSystem> existingSystems = factory.getStarSystemsInSector(sector);
-			
-			for (int xx=1; xx <= 32; xx++) {
-				for (int yy=1; yy <= 40; yy++) {
+			Set<String> locations = new HashSet<String>();
+			List<StarSystem> existingSystems = factory
+					.getStarSystemsInSector(sector);
+
+			for (int xx = 1; xx <= 32; xx++) {
+				for (int yy = 1; yy <= 40; yy++) {
 					locations.add(String.format("%02d%02d", xx, yy));
 				}
 			}
 			for (StarSystem system : existingSystems) {
 				locations.remove(system.getXY());
 			}
-			
-			System.out.println("Remaining locations: "+locations.size());
+
+			System.out.println("Remaining locations: " + locations.size());
 			if (locations.size() == 0) {
-				throw new IllegalStateException("No free locations in this sector");
+				throw new IllegalStateException(
+						"No free locations in this sector");
 			} else {
-				String coord = locations.toArray(new String[0])[Die.rollZero(locations.size())];
-				System.out.println("Random location is: "+coord);
+				String coord = locations.toArray(new String[0])[Die
+						.rollZero(locations.size())];
+				System.out.println("Random location is: " + coord);
 				x = Integer.parseInt(coord.substring(0, 2));
 				y = Integer.parseInt(coord.substring(2, 4));
 			}
+		} else if (factory.getStarSystem(sector, x, y) != null) {
+			return null;
 		}
 		if (name == null || name.trim().length() == 0) {
 			try {
@@ -117,14 +127,13 @@ public class StarSystemGenerator {
 				name = names.getPlanetName();
 			} catch (MalformedURLException e) {
 				// Only thrown if giving it a URL, which we're not.
-				name = "NGC "+Die.die(1000000);
+				name = "NGC " + Die.die(1000000);
 			}
 		}
 		template = new StarSystem(sector, name.trim(), x, y);
-		
+
 		return template;
 	}
-
 
 	/**
 	 * Creates an empty star system with no stars or planets. Not generally used
@@ -151,59 +160,77 @@ public class StarSystemGenerator {
 
 		return system;
 	}
-	
+
 	/**
 	 * Create a simple star system with a single star and a few planets.
 	 * 
-	 * @param sector	Sector to create system in.
-	 * @param name		Name to give to the system.
-	 * @param x			X coordinate, 1-32.
-	 * @param y			Y coordinate, 1-40.
-	 * @return			Newly created star system.
+	 * @param sector
+	 *            Sector to create system in.
+	 * @param name
+	 *            Name to give to the system.
+	 * @param x
+	 *            X coordinate, 1-32.
+	 * @param y
+	 *            Y coordinate, 1-40.
+	 * @return Newly created star system.
 	 */
 	@Transactional
 	public int createSimpleSystem(Sector sector, String name, int x, int y) {
-		System.out.println("Creating simple system ["+name+"]");
-		
+		System.out.println("Creating simple system [" + name + "]");
+
 		StarSystem system = generateSystemTemplate(sector, name, x, y);
+		if (system == null) {
+			// If a system exists at that location, select another random
+			// location somewhere in that sector.
+			system = generateSystemTemplate(sector, name, 0, 0);
+			if (system == null) {
+				// No more space.
+				throw new IllegalStateException("No more free locations in [" +
+						sector.getName() + "]");
+			}
+		}
 		system.setAllegiance("Un");
 		system.setZone(Zone.Green);
 
-		Star primary = new Star();//starGenerator.generateSimplePrimary();
+		Star primary = new Star();// starGenerator.generateSimplePrimary();
 		primary.setSystem(system);
 		primary.setName(system.getName());
 		primary.setClassification(StarClass.V);
 		primary.setSpectralType(SpectralType.G2);
-		primary.setForm(StarForm.Star);		
+		primary.setForm(StarForm.Star);
 		system.addStar(primary);
 		factory.persist(system);
-		
-		String			planetName;
-		int				position = 0;
-		int				distance = 0;
-		
+
+		String planetName;
+		int position = 0;
+		int distance = 0;
+
 		// Setup a new planet generator for this star system.
-		PlanetGenerator	generator = new PlanetGenerator(planetFactory, system, primary);
-		Planet			planet = null;
-		
+		PlanetGenerator generator = new PlanetGenerator(planetFactory, system,
+				primary);
+		Planet planet = null;
+
 		// Mercury planet.
 		if (Die.d2() == 1) {
 			planetName = system.getName() + " " + getOrbitNumber(++position);
 			distance = 40 + Die.d10(2);
-			planet = generator.generatePlanet(planetName, position, distance, new Hermian());
+			planet = generator.generatePlanet(planetName, position, distance,
+					new Hermian());
 			system.addPlanet(planet);
 			factory.persist(system);
 		} else if (Die.d2() == 1) {
 			planetName = system.getName() + " " + getOrbitNumber(++position);
 			distance = 35 + Die.d10(3);
-			planet = generator.generatePlanet(planetName, position, distance, new AsteroidBelt());
+			planet = generator.generatePlanet(planetName, position, distance,
+					new AsteroidBelt());
 		}
-		
+
 		// Venus planet.
 		if (Die.d2() == 1) {
 			planetName = system.getName() + " " + getOrbitNumber(++position);
 			distance = 80 + Die.d10(2);
-			planet = generator.generatePlanet(planetName, position, distance, new Cytherean());
+			planet = generator.generatePlanet(planetName, position, distance,
+					new Cytherean());
 			system.addPlanet(planet);
 			factory.persist(system);
 		}
@@ -211,19 +238,22 @@ public class StarSystemGenerator {
 		// Earth planet.
 		planetName = system.getName() + " " + getOrbitNumber(++position);
 		distance = 130 + Die.d20(2);
-		planet = generator.generatePlanet(planetName, position, distance, new Gaian());
+		planet = generator.generatePlanet(planetName, position, distance,
+				new Gaian());
 		system.addPlanet(planet);
 		factory.persist(system);
-		
+
 		// Mars or Belt
 		if (Die.d3() == 1) {
 			planetName = system.getName() + " " + getOrbitNumber(++position);
 			distance = 200 + Die.d20(3);
-			planet = generator.generatePlanet(planetName, position, distance, new Arean());
+			planet = generator.generatePlanet(planetName, position, distance,
+					new Arean());
 		} else {
 			planetName = system.getName() + " " + getOrbitNumber(++position);
 			distance = 200 + Die.d20(3);
-			planet = generator.generatePlanet(planetName, position, distance, new AsteroidBelt());
+			planet = generator.generatePlanet(planetName, position, distance,
+					new AsteroidBelt());
 		}
 		system.addPlanet(planet);
 		factory.persist(system);
@@ -232,9 +262,11 @@ public class StarSystemGenerator {
 		planetName = system.getName() + " " + getOrbitNumber(++position);
 		distance = 700 + Die.d100(2);
 		if (Die.d2() == 1) {
-			planet = generator.generatePlanet(planetName, position, distance, new EuJovian());
+			planet = generator.generatePlanet(planetName, position, distance,
+					new EuJovian());
 		} else {
-			planet = generator.generatePlanet(planetName, position, distance, new SubJovian());
+			planet = generator.generatePlanet(planetName, position, distance,
+					new SubJovian());
 		}
 		system.addPlanet(planet);
 		factory.persist(system);
@@ -243,9 +275,10 @@ public class StarSystemGenerator {
 			system.addPlanet(moon);
 		}
 		factory.persist(system);
-		
-		System.out.println(system.getId()+": "+system.getStars().get(0).getId());
-		
+
+		System.out.println(system.getId() + ": "
+				+ system.getStars().get(0).getId());
+
 		return system.getId();
 	}
 
@@ -372,19 +405,20 @@ public class StarSystemGenerator {
 			numPlanets /= 2;
 		}
 
-		PlanetGenerator planetGenerator = new PlanetGenerator(planetFactory, system, star);
+		PlanetGenerator planetGenerator = new PlanetGenerator(planetFactory,
+				system, star);
 		for (int p = 0; p < numPlanets; p++) {
 			String planetName = star.getName() + " " + getOrbitNumber(p + 1);
 			Planet planet = planetGenerator.generatePlanet(planetName, p,
 					distance);
-			//entityManager.persist(planet);
+			// entityManager.persist(planet);
 			System.out.println("Persisted planet [" + planet.getId() + "] ["
 					+ planet.getName() + "]");
 
 			List<Planet> moons = planetGenerator.generateMoons(planet, codes);
 			for (Planet moon : moons) {
 				System.out.println("Persisting [" + moon.getName() + "]");
-				//entityManager.persist(moon);
+				// entityManager.persist(moon);
 				System.out.println("Persisted moon [" + moon.getId() + "] ["
 						+ moon.getName() + "]");
 			}

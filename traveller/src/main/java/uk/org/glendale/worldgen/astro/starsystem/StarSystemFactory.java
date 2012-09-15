@@ -64,6 +64,32 @@ public class StarSystemFactory {
 			return null;
 		}
 	}
+	
+	/**
+	 * Gets the star system at the specified location. If there is no
+	 * star system there, then null is returned.
+	 * 
+	 * @param sector	Sector to look in.
+	 * @param x			X coordinate, 1-32.
+	 * @param y			Y coordinate, 1-40.
+	 * @return			Star system if found, or null.
+	 */
+	@Transactional
+	public StarSystem getStarSystem(Sector sector, int x, int y) {
+		Query	query = em.createQuery("SELECT s FROM StarSystem s WHERE sector = :sector AND x = :x AND y = :y");
+		query.setParameter("sector", sector);
+		query.setParameter("x", x);
+		query.setParameter("y", y);
+
+		try {
+			StarSystem system = (StarSystem) query.getSingleResult();
+			system.getId();
+			system.getStars();
+			return system;
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
 
 	public void persist(StarSystem system) {
 		em.persist(system);
