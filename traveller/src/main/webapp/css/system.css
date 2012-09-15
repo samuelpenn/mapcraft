@@ -137,3 +137,15 @@ div.moon h4 {
 	background-color: #ccccff;
 	color: #555555;
 }
+
+table.inventory {
+	width: 80%;
+	margin-left: 10%;
+	text-align: left;
+}
+
+table.inventory th {
+	background-color: #7777FF;
+	color: black;
+	padding-left: 0.5em;
+}

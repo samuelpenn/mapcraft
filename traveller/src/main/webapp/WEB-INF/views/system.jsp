@@ -201,14 +201,14 @@
 	    		   var item = planet.planet.inventory[i];
 	    		   var row = "";
 	    		   row += "<td>" + item.commodity.name + "</td>";
-                   row += "<td>" + item.amount + "</td>";
-                   row += "<td>" + item.price + "</td>";
-                   row += "<td>" + item.weeklyIn + "</td>";
-                   row += "<td>" + item.weeklyOut + "</td>";
-                   row += "<td>" + item.produced + "</td>";
-                   row += "<td>" + item.consumed + "</td>";
-                   row += "<td>" + item.bought + "</td>";
-                   row += "<td>" + item.sold + "</td>";
+                   row += "<td>" + WG.addCommas(item.amount) + "</td>";
+                   row += "<td>" + WG.addCommas(item.price) + "</td>";
+                   row += "<td>" + WG.addCommas(item.weeklyIn) + "</td>";
+                   row += "<td>" + WG.addCommas(item.weeklyOut) + "</td>";
+                   row += "<td>" + WG.addCommas(item.produced) + "</td>";
+                   row += "<td>" + WG.addCommas(item.consumed) + "</td>";
+                   row += "<td>" + WG.addCommas(item.bought) + "</td>";
+                   row += "<td>" + WG.addCommas(item.sold) + "</td>";
 	    		   
 	    		   $(id).append("<tr>" + row + "</tr>");
 	    	   }
