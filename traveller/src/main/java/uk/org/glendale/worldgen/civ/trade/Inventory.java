@@ -74,6 +74,19 @@ public class Inventory {
 		this.planet = planet;
 		this.commodity = commodity;
 	}
+	
+	/**
+	 * Gets the unique internal id for this inventory item.
+	 * 
+	 * @return	Unique database id.
+	 */
+	int getId() {
+		return id;
+	}
+	
+	Planet getPlanet() {
+		return planet;
+	}
 
 	/**
 	 * Gets the commodity represented by this inventory item.

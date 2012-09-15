@@ -109,6 +109,23 @@ WG = {
 		}
 	},
 	
+	loadInventory: function(id, func) {
+		var	p = this.system.getPlanet(id);
+		if (p.planet.gotInventory != true) {
+			p.planet.inventory = new Array();
+			$.getJSON("/traveller/api/planet/" + id + "/inventory", function (data) {
+				for (var i=0; i < data.length; i++) {
+					p.planet.inventory.push(data[i]);
+				}
+				if (func != null) {
+					func(p);
+				}
+			});
+			p.planet.gotInventory = true;
+		} else if (func != null) {
+			func(p);
+		}
+	},
 
 		
 	version: function() {

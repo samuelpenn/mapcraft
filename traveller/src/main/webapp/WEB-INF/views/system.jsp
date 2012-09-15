@@ -98,6 +98,8 @@
                if (planet.isMoon() == false) {
 	               if (!planet.isBelt()) {
 	            	    createSphere(document.getElementById("globe"+id), texture);
+	            	    //var s = new Sphere(document.getElementById("globe"+id), texture);
+	            	    //s.draw();
 	               } else {
 	            	   drawAsteroids(planet, document.getElementById("globe"+id));
 	            	   radiusLabel = "Thickness";
@@ -141,6 +143,9 @@
                $.getJSON("/traveller/api/planet/" + planet.getId() + "/resources", function(data) {
                    displayPlanetResources(id, data);
                });
+               
+               $(divId).append("<div id='inventory"+id+"'></div>");
+               WG.loadInventory(id, displayPlanetInventory);
 	       }
 
 	       function drawAsteroids(planet, canvas) {
@@ -171,6 +176,43 @@
 	    		   $("#r"+id).append("<li>" + html + "</li>");
 	    		   
 	    	   }
+	       }
+	       
+	       function displayPlanetInventory(planet) {
+	    	   
+	    	   $("#inventory"+planet.getId()).html("<h3>Inventory</h3>");
+	    	   
+	    	   var id = "tableInv" + planet.getId();
+	    	   $("#inventory"+planet.getId()).append("<table class='inventory' id='"+id+"'></table>");
+	    	   id = "#" + id;
+	    	   
+	    	   $(id).append("<tr></tr>");
+	    	   $(id + " tr").append("<th>Name</th>");
+               $(id + " tr").append("<th>Quantity</th>");
+	    	   $(id + " tr").append("<th>Price</th>");
+               $(id + " tr").append("<th>Weekly In</th>");
+               $(id + " tr").append("<th>Weekly Out</th>");
+               $(id + " tr").append("<th>Produced</th>");
+               $(id + " tr").append("<th>Consumed</th>");
+               $(id + " tr").append("<th>Bought</th>");
+               $(id + " tr").append("<th>Sold</th>");
+	    	   
+	    	   for (var i=0; i < planet.planet.inventory.length; i++) {
+	    		   var item = planet.planet.inventory[i];
+	    		   var row = "";
+	    		   row += "<td>" + item.commodity.name + "</td>";
+                   row += "<td>" + item.amount + "</td>";
+                   row += "<td>" + item.price + "</td>";
+                   row += "<td>" + item.weeklyIn + "</td>";
+                   row += "<td>" + item.weeklyOut + "</td>";
+                   row += "<td>" + item.produced + "</td>";
+                   row += "<td>" + item.consumed + "</td>";
+                   row += "<td>" + item.bought + "</td>";
+                   row += "<td>" + item.sold + "</td>";
+	    		   
+	    		   $(id).append("<tr>" + row + "</tr>");
+	    	   }
+	    	   
 	       }
 	       
 	       function mkTable(labels, data) {

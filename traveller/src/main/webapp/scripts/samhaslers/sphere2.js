@@ -13,45 +13,51 @@
 // It calculates the surface of the sphere instead of approximating it with triangles.
 
 /*jshint laxcomma: true, laxbreak: true, browser: true */
-(function() {
-  "use strict";
 
-  var opts = { tilt: 40
-             , turn: 20
-             , fpr : 128
-             };
+function Sphere(canvas, image) {
+	"use strict";
+
+  this.opts = { tilt: 40, turn: 20, fpr : 128 };
+  this.textureUrl = image;
 
   // frame count, current angle of rotation. inc/dec to turn.
-  var frame_count = 10000;
-  var gCanvas, gCtx;
-  var gImage, gCtxImg;
+  this.frame_count = 10000;
+  this.gCanvas = canvas;
+  this.gCtx = null;
+  this.gImage = image;
+  this.gCtxImg = null;
 
   //Variable to hold the size of the canvas
-  var size;
+  this.size = 0;
 
-  var canvasImageData, textureImageData;
+  this.canvasImageData;
+  this.textureImageData;
 
   // Number of frames for one complete rotation.
-  var fpr = 800;
+  this.fpr = 800;
   
-  // Constants for indexing dimentions
-  var X=0, Y=1, Z=2;
+  // Constants for indexing dimensions
+  this.X=0;
+  this.Y=1;
+  this.Z=2;
 
   // vertical and horizontal position on canvas
-  var v, h;
+  this.v = 0;
+  this.h = 0;
 
-  var textureWidth, textureHeight;
+  this.textureWidth = 0;
+  this.textureHeight = 0;
 
-  var hs=30;            // Horizontal scale of viewing area
-  var vs=30;            // Vertical scale of viewing area
+  this.hs=30;            // Horizontal scale of viewing area
+  this.vs=30;            // Vertical scale of viewing area
 
   // NB    The viewing area is an abstract rectangle in the 3d world and is not
   //    the same as the canvas used to display the image.
 
-  var F = [0,0,0];    // Focal point of viewer
-  var S = [0,30,0];    // Centre of sphere/planet
+  this.F = [0,0,0];    // Focal point of viewer
+  this.S = [0,30,0];    // Centre of sphere/planet
 
-  var r=12;            // Radius of sphere/planet
+  this.r=12;            // Radius of sphere/planet
 
   // Distance of the viewing area from the focal point. This seems
   // to give strange results if it is not equal to S[Y]. It should
@@ -61,7 +67,7 @@
   // as this will result in overflow errors which are not traped
   // and do not stop the script but will result in incorrect
   // displaying of the texture upon the sphere.
-  var f = 30;
+  this.f = 30;
 
 
   // There may be a solution to the above problem by finding L in
@@ -75,75 +81,78 @@
   // This is essentialy the same problem but I belive/hope it will
   // not result in the same exact solution. I have hunch that the
   // math will not result in such big numbers. Since this abstract
-  // plane will be spinning, it may be posilbe to use the symetry
-  // of the arangement to reuse 1/4 of the calculations.
+  // plane will be spinning, it may be possible to use the symmetry
+  // of the arrangement to reuse 1/4 of the calculations.
 
 
 
   // Variables to hold rotations about the 3 axis
-  var RX = 0,RY,RZ;
+  this.RX = 0;
+  this.RY = 0;
+  this.RZ = 0;
   // Temp variables to hold them whilst rendering so they won't get updated.
-  var rx,ry,rz;
+  this.rx = 0;
+  this.ry = 0;
+  this.rz = 0;
 
-  var a;
-  var b;
-  var b2;            // b squared
-  var bx=F[X]-S[X];    // = 0 for current values of F and S
-  var by=F[Y]-S[Y];
-  var bz=F[Z]-S[Z];    // = 0 for current values of F and S
+  this.a = 0;
+  this.b = 0;
+  this.b2 = 0;            // b squared
+  this.bx = this.F[this.X] - this.S[this.X];    // = 0 for current values of F and S
+  this.by = this.F[this.Y] - this.S[this.Y];
+  this.bz = this.F[this.Z] - this.S[this.Z];    // = 0 for current values of F and S
 
   // c = Fx^2 + Sx^2 -2FxSx + Fy^2 + Sy^2 -2FySy + Fz^2 + Sz^2 -2FzSz - r^2
   // for current F and S this means c = Sy^2 - r^2
 
-  var c = F[X]*F[X] + S[X]*S[X]
-        + F[Y]*F[Y] + S[Y]*S[Y]
-        + F[Z]*F[Z] + S[Z]*S[Z]
-        - 2*(F[X]*S[X] + F[Y]*S[Y] + F[Z]*S[Z])
-        - r*r
+  this.c = this.F[this.X] * this.F[this.X] + this.S[this.X] * this.S[this.X]
+        + this.F[this.Y] * this.F[this.Y] + this.S[this.Y] * this.S[this.Y]
+        + this.F[this.Z] * this.F[this.Z] + this.S[this.Z] * this.S[this.Z]
+        - 2*(this.F[this.X]*this.S[this.X] + this.F[this.Y]*this.S[this.Y] + this.F[this.Z]*this.S[this.Z])
+        - this.r*this.r
         ;
 
-  var c4 = c*4;        // save a bit of time maybe during rendering
+  this.c4 = this.c*4;        // save a bit of time maybe during rendering
 
-  var s;
+  this.s = 0;
 
-  var m1 = 0;
+  this.m1 = 0;
   //double m2 = 0;
 
   // The following are use to calculate the vector of the current pixel to be
   // drawn from the focus position F
 
-  var hs_ch;                // horizontal scale divided by canvas width
-  var vs_cv;                // vertical scale divided by canvas height
-  var hhs = 0.5*hs;    // half horizontal scale
-  var hvs = 0.5*vs;    // half vertical scale
+  this.hs_ch = 1;                // horizontal scale divided by canvas width
+  this.vs_cv = 1;                // vertical scale divided by canvas height
+  this.hhs = 0.5 * this.hs;    // half horizontal scale
+  this.hvs = 0.5 * this.vs;    // half vertical scale
 
-  var V = new Array(3);    // vector for storing direction of each pixel from F
-  var L = new Array(3);    // Location vector from S that pixel 'hits' sphere
+  this.V = new Array(3);    // vector for storing direction of each pixel from F
+  this.L = new Array(3);    // Location vector from S that pixel 'hits' sphere
 
-  var VY2=f*f;            // V[Y] ^2  NB May change if F changes
+  this.VY2= this.f * this.f;            // V[Y] ^2  NB May change if F changes
+  this.rotCache = {};
+};
 
-  
-      var rotCache = {};
-    function calcL (lx,ly,rz){
+Sphere.prototype.calcL = function(lx, ly, lz) {
 //      var L = new Array(3);
 //      L[X]=lx*Math.cos(rz)-ly*Math.sin(rz);
 //      L[Y]=lx*Math.sin(rz)+ly*Math.cos(rz);
 
       var key = ""+ lx +","+ ly +","+ rx;
-      if (rotCache[key] == null){
-        rotCache[key] = 1;
+      if (this.rotCache[key] == null){
+        this.rotCache[key] = 1;
       } else {
-        rotCache[key] = rotCache[key]+1;
+        this.rotCache[key] = this.rotCache[key]+1;
       }
-    }
+};
     
-
-  var calculateVector = function(h,v){
+Sphere.prototype.calculateVector = function(h, v) {
     // Calculate vector from focus point (Origin, so can ignor) to pixel
-    V[X]=(hs_ch*h)-hhs;
+    this.V[this.X] = (this.hs_ch * h) - this.hhs;
 
     // V[Y] always the same as view frame doesn't mov
-    V[Z]=(vs_cv*v)-hvs;
+    this.V[this.Z] = (this.vs_cv * v) - this.hvs;
 
     // Vector (L) from S where m*V (m is an unknown scalar) intersects
     // surface of sphere is as follows
@@ -208,10 +217,9 @@
     // closest intersection is wanted. The other solution to m would give
     // the intersection of the 'back' of the sphere.
 
-    a=V[X]*V[X]+VY2+V[Z]*V[Z];
+    this.a = this.V[this.X] * this.V[this.X] + this.VY2 + this.V[this.Z] * this.V[this.Z];
 
-
-    s=(b2-a*c4);    // the square root term
+    this.s = (this.b2 - this.a * this.c4);    // the square root term
 
     // if s is negative then there are no solutions to m and the
     // sphere is not visible on the current pixel on the canvas
@@ -221,53 +229,52 @@
     // of the two solutions m1 & m2 the nearest is m1, m2 being the
     // far side of the sphere.
 
-    if (s > 0) {
+    if (this.s > 0) {
 
-      m1 = ((-b)-(Math.sqrt(s)))/(2*a);
+      this.m1 = ((-this.b)-(Math.sqrt(this.s)))/(2*this.a);
 
-      L[X]=m1*V[X];        //    bx+m1*V[X];
-      L[Y]=by+(m1*V[Y]);
-      L[Z]=m1*V[Z];        //    bz+m1*V[Z];
+      this.L[this.X]=this.m1*this.V[this.X];        //    bx+m1*V[X];
+      this.L[this.Y]=this.by+(this.m1*this.V[this.Y]);
+      this.L[this.Z]=this.m1*this.V[this.Z];        //    bz+m1*V[Z];
 
       // Do a couple of rotations on L
 
-      var lx=L[X];
-      var srz = Math.sin(rz);
-      var crz = Math.cos(rz);
-      L[X]=lx*crz-L[Y]*srz;
-      L[Y]=lx*srz+L[Y]*crz;
+      this.lx=this.L[this.X];
+      this.srz = Math.sin(this.rz);
+      this.crz = Math.cos(this.rz);
+      this.L[this.X]=this.lx*this.crz-this.L[this.Y]*this.srz;
+      this.L[this.Y]=this.lx*this.srz+this.L[this.Y]*this.crz;
 
 //      calcL(lx, L[Y], rz);
 
-      var lz;
-      lz=L[Z];
-      var sry = Math.sin(ry);
-      var cry = Math.cos(ry);
-      L[Z]=lz*cry-L[Y]*sry;
-      L[Y]=lz*sry+L[Y]*cry;
+      this.lz=this.L[this.Z];
+      this.sry = Math.sin(this.ry);
+      this.cry = Math.cos(this.ry);
+      this.L[this.Z]=this.lz*this.cry-this.L[this.Y]*this.sry;
+      this.L[this.Y]=this.lz*this.sry+this.L[this.Y]*this.cry;
 
  //     calcL(lz, L[Y], ry);
 
       // Calculate the position that this location on the sphere
       // coresponds to on the texture
 
-      var lh = textureWidth + textureWidth * (  Math.atan2(L[Y],L[X]) + Math.PI ) / (2*Math.PI);
+      var lh = this.textureWidth + this.textureWidth * (  Math.atan2(this.L[this.Y],this.L[this.X]) + Math.PI ) / (2*Math.PI);
 
       // %textureHeight at end to get rid of south pole bug. probaly means that one
       // pixel may be a color from the opposite pole but as long as the
       // poles are the same color this won't be noticed.
 
-      var lv = textureWidth * Math.floor(textureHeight-1-(textureHeight*(Math.acos(L[Z]/r)/Math.PI)%textureHeight));
+      var lv = this.textureWidth * Math.floor(this.textureHeight-1-(this.textureHeight*(Math.acos(this.L[this.Z]/this.r)/Math.PI)%this.textureHeight));
       return {lv:lv,lh:lh};
     }
     return null;
-  };
+};
 
   
   /**
    * Create the sphere function opject
    */
-  var sphere = function(){
+Sphere.prototype.sphere = function() {
 
     var textureData = textureImageData.data;
     var canvasData = canvasImageData.data;
@@ -381,59 +388,110 @@
         }
       }
       gCtx.putImageData(canvasImageData, 0, 0);
-    }};
-  };
+  }};
+};
 
-  function copyImageToBuffer(aImg)
-  {
-      gImage = document.createElement('canvas');
-      textureWidth = aImg.naturalWidth;
-      textureHeight = aImg.naturalHeight;
-      gImage.width = textureWidth;
-      gImage.height = textureHeight;
+Sphere.prototype.copyImageToBuffer = function () {
+      this.gImage = document.createElement('canvas');
+      this.textureWidth = this.img.naturalWidth;
+      this.textureHeight = this.img.naturalHeight;
+      this.gImage.width = this.textureWidth;
+      this.gImage.height = this.textureHeight;
 
-      gCtxImg = gImage.getContext("2d");
-      gCtxImg.clearRect(0, 0, textureHeight, textureWidth);
-      gCtxImg.drawImage(aImg, 0, 0);
-      textureImageData = gCtxImg.getImageData(0, 0, textureHeight, textureWidth);
+      this.gCtxImg = this.gImage.getContext("2d");
+      this.gCtxImg.clearRect(0, 0, this.textureHeight, this.textureWidth);
+      this.gCtxImg.drawImage(this.img, 0, 0);
+      this.textureImageData = this.gCtxImg.getImageData(0, 0, this.textureHeight, this.textureWidth);
 
-      hs_ch = (hs / size);
-      vs_cv = (vs / size);
-  }
+      this.hs_ch = (this.hs / this.size);
+      this.vs_cv = (this.vs / this.size);
+};
 
-  this.createSphere = function (gCanvas, textureUrl) {
-    size = Math.min(gCanvas.width, gCanvas.height);
-    gCtx = gCanvas.getContext("2d");
-    canvasImageData = gCtx.createImageData(size, size);
+Sphere.prototype.drawImage = function() {
+	//this.gCtx.fillStyle="#FF0000";
+	//this.gCtx.fillRect(0,0,150,75);
+	this.gCtx.drawImage(this.img, 0, 0, 100, 100);
+};
 
-    ry=90+opts.tilt;
-    rz=180+opts.turn;
+var gSphere = null;
 
-    RY = (90-ry);
-    RZ = (180-rz);
+Sphere.prototype.draw = function () {
+	this.size = Math.min(this.gCanvas.width, this.gCanvas.height);
+	this.gCtx = this.gCanvas.getContext("2d");
+	this.canvasImageData = this.gCtx.createImageData(this.size, this.size);
 
-    hs_ch = (hs / size);
-    vs_cv = (vs / size);
+	this.ry=90+this.opts.tilt;
+	this.rz=180+this.opts.turn;
 
-    V[Y]=f;
+	this.RY = (90-this.ry);
+	this.RZ = (180-this.rz);
+
+	this.hs_ch = (this.hs / this.size);
+	this.vs_cv = (this.vs / this.size);
+
+	this.V[this.Y]=this.f;
+
+	this.b=(2*(-this.f*this.V[this.Y]));
+	this.b2=Math.pow(this.b,2);
+    this.img = new Image();
+    
+    gSphere = this;
+    
+    this.img.onload = 
+    	function() {
+    	gSphere.copyImageToBuffer();
+    	var earth = sphere();
+    	var renderAnimationFrame = function(time){
+    		earth.renderFrame(time);
+    		// window.requestAnimationFrame(renderAnimationFrame);
+    	};
+
+    	// Best! only renders frames that will be seen. stats.js runs at 60FPS on my desktop
+    	window.requestAnimationFrame(renderAnimationFrame);
+    	
+    };
+    this.img.setAttribute("src", this.textureUrl);
+};
+
+
+function Sphere2(canvas, textureUrl, tilt, period) {
+	this.canvas = canvas;
+	this.textureUrl = textureUrl;
+	this.tilt = tilt;
+	this.period = period;
+
+	this.size = Math.min(this.canvas.width, this.canvas.height);
+    this.gCtx = canvas.getContext("2d");
+    this.canvasImageData = gCtx.createImageData(this.size, this.size);
+
+    this.ry = 90 + this.tilt;
+    this.rz = 180 + opts.turn;
+
+    this.RY = (90-this.ry);
+    this.RZ = (180-this.rz);
+
+    this.hs_ch = (this.hs / this.size);
+    this.vs_cv = (this.vs / this.size);
+
+    this.V[Y]=f;
 
     b=(2*(-f*V[Y]));
     b2=Math.pow(b,2);
 
-    var img = new Image();
-    img.onload = function() {
-      copyImageToBuffer(img);
-      var earth = sphere();
-      var renderAnimationFrame = function(/* time */ time){
-          /* time ~= +new Date // the unix time */
-          earth.renderFrame(time);
-          //window.requestAnimationFrame(renderAnimationFrame);
-      };
+    this.img = new Image();
+    this.img.setAttribute("src", textureUrl);
+    
+    this.img.onload = function() {
+        copyImageToBuffer(this.img);
+        var earth = sphere();
+        var renderAnimationFrame = function(/* time */ time){
+            /* time ~= +new Date // the unix time */
+            earth.renderFrame(time);
+        };
 
-      // Best! only renders frames that will be seen. stats.js runs at 60FPS on my desktop
-      window.requestAnimationFrame(renderAnimationFrame);
+        // Best! only renders frames that will be seen. stats.js runs at 60FPS on my desktop
+        window.requestAnimationFrame(renderAnimationFrame);
+        img.setAttribute("src", textureUrl);
 
-    };
-    img.setAttribute("src", textureUrl);
-  };
-}).call(this);
+   };
+};

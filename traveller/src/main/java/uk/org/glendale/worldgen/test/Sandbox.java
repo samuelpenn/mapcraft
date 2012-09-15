@@ -202,9 +202,9 @@ public class Sandbox {
 		//sb.createSectors();
 		//sb.importCommodities();
 		//sb.importFacilities();
-		sb.addToSandbox();
+		//sb.addToSandbox();
 		
-		//sb.testSimulation(172);
+		sb.testSimulation(1098);
 		//sb.testSimulation();
 	}
 }
