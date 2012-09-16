@@ -19,7 +19,7 @@
     </group>
 
     <group name="Metallic Ores" base="minerals">
-        <commodity name="Ferric Ore" parent="Minerals">
+        <commodity name="Ferric ore" parent="Minerals">
             <cost volume="1000000">150</cost>
             <production tech="1" law="6" pr="10" cr="11">
                 <output mode="Mine" tech="1" efficiency="100">Bronze</output>
@@ -28,7 +28,7 @@
             <codes source="Mi">Or Me</codes>
         </commodity>
 
-        <commodity name="Rare Metals" parent="Ferric Ore">
+        <commodity name="Rare metals" parent="Ferric Ore">
             <cost volume="1000000">750</cost>
             <production tech="4" law="6" pr="11" cr="12">
                 <output mode="Mine" tech="7" efficiency="100">Scandium</output>
@@ -38,7 +38,7 @@
             <codes source="Mi">Or Me</codes>
         </commodity>
 
-        <commodity name="Precious Metals" parent="Ferric Ore">
+        <commodity name="Precious metals" parent="Ferric Ore">
             <cost volume="1000">1500</cost>
             <production tech="1" law="6" pr="15" cr="14">
                 <output mode="Mine" tech="0" efficiency="10">Gold</output>
@@ -48,7 +48,7 @@
             <codes source="Mi">Or Me</codes>
         </commodity>
 
-        <commodity name="Heavy Metals" parent="Ferric Ore">
+        <commodity name="Heavy metals" parent="Ferric Ore">
             <cost volume="1000000">350</cost>
             <production tech="2" law="6" pr="11" cr="11"/>
             <codes source="Mi">Or Me</codes>
@@ -98,7 +98,7 @@
     </group>
 
     <group name="Silicate Ores" base="minerals">
-		<commodity name="Silicate Ore" parent="Minerals">
+		<commodity name="Silicate ore" parent="Minerals">
 		    <cost volume="1000000">50</cost>
 		    <production tech="0" law="6" pr="0" cr="0">
                 <output mode="Quarry" tech="0" efficiency="50">Stone</output>
@@ -110,7 +110,7 @@
 		    <codes source="Mi">Or</codes>
 		</commodity>
 
-		<commodity name="Silicate Crystals" parent="Silicate Ore">
+		<commodity name="Silicate crystals" parent="Silicate Ore">
             <cost volume="1000000">100</cost>
             <production tech="0" law="6" pr="0" cr="0">
                 <output mode="Mine" tech="3" efficiency="100">Olivine</output>
@@ -158,13 +158,13 @@
     </group>
 
     <group name="Carbonic Ores" base="minerals">
-	    <commodity name="Carbonic Ore" parent="Minerals">
+	    <commodity name="Carbonic ore" parent="Minerals">
 	        <cost volume="1000000">100</cost>
 	        <production tech="2" law="6" pr="10" cr="11"/>
 	        <codes source="Mi">Or</codes>
 	    </commodity>
 
-        <commodity name="Carbonic Crystals" parent="Carbonic Ore">
+        <commodity name="Carbonic crystals" parent="Carbonic Ore">
             <cost volume="1000000">500</cost>
             <production tech="2" law="6" pr="12" cr="12"/>
             <codes source="Mi">Or</codes>
@@ -178,37 +178,37 @@
 	        <codes source="Mi">Vi Re In Ag</codes>
 	    </commodity>
 
-	    <commodity name="Inert Gases" parent="Minerals">
+	    <commodity name="Inert gases" parent="Minerals">
 	        <cost volume="1000000">3</cost>
 	        <production tech="0" law="6" pr="12" cr="14"/>
 	        <codes source="Mi">Va Re</codes>
 	    </commodity>
 
-		<commodity name="Organic Gases" parent="Inert Gases">
+		<commodity name="Organic gases" parent="Inert Gases">
 		    <cost volume="1000000">30</cost>
 		    <production tech="4" law="6" pr="12" cr="13"/>
 		    <codes source="Mi">In</codes>
 		</commodity>
 
-        <commodity name="Organic Chemicals" parent="Water">
+        <commodity name="Organic chemicals" parent="Water">
             <cost volume="1000000">60</cost>
             <production tech="4" law="6" pr="11" cr="12"/>
             <codes source="Mi">In</codes>
         </commodity>
 
-		<commodity name="Exotic Gases" parent="Inert Gases">
+		<commodity name="Exotic gases" parent="Inert Gases">
 		    <cost volume="1000000">200</cost>
             <production tech="7" law="6" pr="12" cr="15"/>
 		    <codes source="Mi">In</codes>
 		</commodity>
 
-		<commodity name="Corrosive Gases" parent="Inert Gases">
+		<commodity name="Corrosive gases" parent="Inert Gases">
 		    <cost volume="1000000">200</cost>
             <production tech="6" law="5" pr="14" cr="14"/>
 		    <codes source="Mi">Hz In</codes>
 		</commodity>
 
-		<commodity name="Corrosive Chemicals" parent="Water">
+		<commodity name="Corrosive chemicals" parent="Water">
 		    <cost volume="1000000">1200</cost>
             <production tech="5" law="13" pr="13" cr="7"/>
             <codes source="Mi">Hz In Mi</codes>
@@ -276,7 +276,7 @@
             </description>
         </commodity>
 
-        <commodity name="Steel Alloy" parent="Alloys">
+        <commodity name="Steel alloy" parent="Alloys">
             <cost volume="1000000">1800</cost>
             <production tech="6" law="6" pr="3" cr="4"/>
             <codes source="In">In</codes>

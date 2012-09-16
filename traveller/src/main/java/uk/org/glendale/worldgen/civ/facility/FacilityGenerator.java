@@ -307,7 +307,7 @@ public class FacilityGenerator {
 		String culture = getOneOption(size, h);
 		
 		// XXX: Force to be this for testing.
-		culture = "neolithicTribes";
+		culture = "warriorKingdoms";
 		
 		System.out.println("  " + size + ", " + culture);
 		

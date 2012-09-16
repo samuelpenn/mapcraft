@@ -145,14 +145,18 @@ public class Sandbox {
 		*/
 	}
 	
-	public void addManyToSandbox() {
+	/**
+	 * Add the specified number of star systems to each of the available
+	 * sectors. Each star system is placed completely randomly in the sector.
+	 * 
+	 * @param number	Number of star systems to add to each sector.
+	 */
+	public void addManyToSandbox(int number) {
 		List<Sector> sectors = sectorFactory.getAllSectors();
 		for (Sector sector : sectors) {
-			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
-			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
-			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
-			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
-			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
+			for (int i=0; i < number; i++) {
+				starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
+			}
 		}
 	}
 
@@ -194,15 +198,15 @@ public class Sandbox {
 		System.out.println(status);
 		*/
 		/*
-		 delete from planet_maps;
-		 delete from planet_features;
-		 delete from planet_codes;
-		 delete from facilities;
-		 delete from planet;
-		 delete from star;
-		 delete from system;
-		 delete from facility;
-		 delete from commodity;
+ delete from planet_maps;
+ delete from planet_features;
+ delete from planet_codes;
+ delete from facilities;
+ truncate planet;
+ truncate star;
+ truncate system;
+ truncate facility;
+ truncate commodity;
 		 */
 		
 	}
@@ -218,10 +222,13 @@ public class Sandbox {
 		
 		Sandbox sb = new Sandbox(context);
 		//sb.createSectors();
-		//sb.importCommodities();
-		//sb.importFacilities();
+		if (sb.commodityFactory.getCommodity(1) == null) {
+			sb.importCommodities();
+			sb.importFacilities();
+			sb.addManyToSandbox(1);
+		}
 		//sb.addToSandbox();
-		//sb.addToCore();
+		sb.addToCore();
 		
 		//sb.testSimulation(1098);
 		sb.testSimulation();

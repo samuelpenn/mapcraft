@@ -182,6 +182,10 @@ public class Facility {
 		}
 		this.type = type;
 	}
+	
+	public String getImagePath() {
+		return imagePath;
+	}
 
 	public void addOperation(String name) {
 		addOperation(name, 100);

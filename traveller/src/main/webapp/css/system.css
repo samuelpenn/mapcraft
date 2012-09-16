@@ -149,3 +149,16 @@ table.inventory th {
 	color: black;
 	padding-left: 0.5em;
 }
+
+table.inventory td {
+	text-align: right;
+}
+
+table.inventory td.name {
+    text-align: left;
+    font-weight: bold;
+}
+
+table.inventory tr.shade {
+	background-color: #EEEEEE;
+}

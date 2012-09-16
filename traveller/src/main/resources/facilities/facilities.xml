@@ -29,27 +29,27 @@
                 Stone age tribes living as hunter gatherers.
             </description>
             <codes>T0 P3 P4 P5 H0 H1</codes>
-            <require>Fo ClCv HoTl</require>
-            <consume>HoLu HoCl WpnH</consume>
+            <require>Fo</require>
+            <consume>HoTo HoLu HoCl ClCv HoCk WpnH</consume>
             <map from="Animal products" to="Animal skins" level="100"/>
-            <map from="Flint" to="Stone tools" level="100"/>
+            <map from="Flint" to="Neolithic tools" level="100"/>
             <map from="Flint" to="Stone weapons" level="100"/>
-            <map from="Stone" to="Neolithic pottery" level="50"/>
-            <map from="Stone" to="Neolithic art" level="25"/>
+            <map from="Stone" to="Primitive pottery" level="50"/>
+            <map from="Stone" to="Neolithic artwork" level="25"/>
         </facility>
 
         <facility name="neolithicFarming" type="Agriculture">
             <title>Neolithic Farming</title>
             <codes>T0 P3 P4 P5 P6 P7 P8 H0 H1</codes>
-            <require>ToAg</require>
+            <require>HoTo</require>
             <operation level="100">AgFa</operation>
             <operation level="25">Quarry</operation>
         </facility>
 
         <facility name="primitiveMining" type="Agriculture">
-            <title>Primitive Farming</title>
+            <title>Primitive Mining</title>
             <codes>T0 T1 T2 T3 P3 P4 P5 P6 P7 P8 H0 H1</codes>
-            <require>To</require>
+            <require>HoTo</require>
             <operation level="100">Mine</operation>
         </facility>
 
@@ -59,14 +59,13 @@
                 Stone age primitive farmers.
             </description>
             <codes>T0 P3 P4 P5 H0 H1</codes>
-            <require>Fo ClCv HoTl</require>
+            <require>Fo ClCv HoTo</require>
             <consume>HoLu HoCl WpnH</consume>
             <map from="Animal products" to="Animal skins" level="100"/>
-            <map from="Flint" to="Stone tools" level="100"/>
+            <map from="Flint" to="Neolithic tools" level="100"/>
             <map from="Flint" to="Stone weapons" level="100"/>
-            <map from="Stone" to="Neolithic pottery" level="75"/>
+            <map from="Stone" to="Primitive pottery" level="75"/>
             <map from="Stone" to="Neolithic art" level="50"/>
-            <map from="Stone" to="Primitive farm tools" level="100"/>
         </facility>
 
         <facility name="primitiveFarming" type="Agriculture">
@@ -80,47 +79,54 @@
         <facility name="primitiveTribes" type="Residential">
             <title>Primitive Tribes</title>
             <codes>T1 P3 P4 P5 H0 H1</codes>
-            <require>Fo ClCv HoTl</require>
+            <require>Fo ClCv HoTo</require>
             <consume>HoLu HoCl WpnH</consume>
             <map from="Animal products" to="Leather clothing" level="100"/>
             <map from="Bronze" to="Bronze tools" level="100"/>
-            <map from="Bronze ore" to="Bronze jewellery" level="10"/>
-            <map from="Bronze ore" to="Bronze weapons" level="50"/>
+            <map from="Bronze" to="Bronze jewellery" level="10"/>
+            <map from="Bronze" to="Bronze weapons" level="50"/>
             <map from="Stone" to="Primitive farm tools" level="100"/>
         </facility>
 
         <facility name="tribalStates" type="Residential">
             <title>Tribal States</title>
             <codes>T1 P5 P6 P7 H0 H1</codes>
-            <require>Fo ClCv HoTl</require>
+            <require>Fo ClCv HoTo</require>
             <consume>HoLu HoCl WpnH</consume>
             <map from="Animal products" to="Leather clothing" level="25"/>
-            <map from="Ferric ore" to="Bronze tools" level="100"/>
-            <map from="Ferric ore" to="Bronze jewellery" level="20"/>
-            <map from="Ferric ore" to="Bronze weapons" level="50"/>
+            <map from="Bronze" to="Bronze tools" level="100"/>
+            <map from="Bronze" to="Bronze jewellery" level="20"/>
+            <map from="Bronze" to="Bronze weapons" level="50"/>
         </facility>
 
         <facility name="warriorKingdoms" type="Residential">
             <title>Warrior Kingdoms</title>
             <codes>T2 P4 P5 P6 P7 P8</codes>
-            <require>Fo ClCv HoTl</require>
-            <consume>HoLu HoCl WpnH</consume>
-            <map from="Ferric ore" to="Iron tools" level="100"/>
-            <map from="Ferric ore" to="Metal jewellery" level="20"/>
-            <map from="Ferric ore" to="Iron weapons" level="50"/>
-            <map from="Silicate ore" to="Bricks" level="10"/>
+            <require>Fo ClCv HoTo</require>
+            <consume>HoLu HoCl WpnH BldL</consume>
+            <map from="Iron" to="Iron tools" level="100"/>
+            <map from="Iron" to="Metal jewellery" level="20"/>
+            <map from="Iron" to="Iron weapons" level="50"/>
+            <map from="Trees" to="Wood" level="100"/>
+            <map from="Stone" to="Primitive pottery" level="50"/>
+            <map from="Stone" to="Crafted goods" level="50"/>
+            <map from="Animal products" to="Simple clothes" level="100"/>
         </facility>
 
         <facility name="feudalKingdoms" type="Residential">
             <title>Feudal Kingdoms</title>
-            <codes>T2 P4 P5 P6 P7 P8</codes>
-            <require>Fo ClCv HoTl</require>
-            <consume>HoLu HoCl WpnH</consume>
-            <map from="Ferric ore" to="Iron tools" level="100"/>
-            <map from="Ferric ore" to="Metal jewellery" level="20"/>
-            <map from="Ferric ore" to="Iron weapons" level="100"/>
-            <map from="Ferric ore" to="Steel weapons" level="25"/>
-            <map from="Silicate ore" to="Bricks" level="50"/>
+            <codes>T3 P4 P5 P6 P7 P8</codes>
+            <require>Fo ClCv HoTo</require>
+            <consume>HoLu HoCl WpnH BldL BldH</consume>
+            <map from="Iron" to="Iron tools" level="100"/>
+            <map from="Iron" to="Metal jewellery" level="20"/>
+            <map from="Iron" to="Iron weapons" level="100"/>
+            <map from="Iron" to="Steel weapons" level="25"/>
+            <map from="Iron" to="Bricks" level="50"/>
+            <map from="Trees" to="Wood" level="100"/>
+            <map from="Stone" to="Primitive pottery" level="50"/>
+            <map from="Stone" to="Crafted goods" level="75"/>
+            <map from="Animal products" to="Simple clothes" level="100"/>
         </facility>
 
 
@@ -128,7 +134,7 @@
         <facility name="agrarianColony" type="Residential">
             <title>Agrarian Colony</title>
             <codes>T3 T4 T5 T6 T7 P4 P5 P6 P7 P8</codes>
-            <require>Fo ClCv HoTl</require>
+            <require>Fo ClCv HoTo</require>
             <consume>HoLu HoCl WpnH</consume>
         </facility>
 
@@ -158,7 +164,7 @@
         <facility name="merchantKingdoms" type="Residential">
             <title>Merchant Kingdoms</title>
             <codes>T4 P4 P5 P6 P7 P8</codes>
-            <require>Fo ClCv HoTl</require>
+            <require>Fo ClCv HoTo</require>
             <consume>HoLu HoCl WpnH</consume>
             <map from="Iron" to="Iron tools" level="100"/>
             <map from="Iron" to="Metal jewellery" level="20"/>
@@ -170,7 +176,7 @@
         <facility name="industrialState" type="Residential">
             <title>Industrial State</title>
             <codes>T5 P6 P7 P8</codes>
-            <require>Fo ClCv HoTl</require>
+            <require>Fo ClCv HoTo</require>
             <consume>HoLu HoCl WpnH</consume>
             <map from="Ferric ore" to="Iron tools" level="100"/>
             <map from="Ferric ore" to="Metal jewellery" level="20"/>

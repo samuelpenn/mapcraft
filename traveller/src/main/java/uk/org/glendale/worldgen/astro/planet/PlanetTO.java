@@ -8,12 +8,16 @@
  */
 package uk.org.glendale.worldgen.astro.planet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import uk.org.glendale.rpg.traveller.systems.codes.AtmospherePressure;
 import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.GovernmentType;
 import uk.org.glendale.rpg.traveller.systems.codes.LifeType;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.worldgen.astro.star.Temperature;
+import uk.org.glendale.worldgen.civ.facility.FacilityTO;
 
 /**
  * Simplest representation of a Planet for use by REST interfaces.
@@ -41,6 +45,7 @@ public class PlanetTO {
 	public final PlanetType type;
 	public final String description;
 	public final String tradeCodes;
+	public final List<FacilityTO> facilities = new ArrayList<FacilityTO>();
 	
 	public PlanetTO(Planet planet) {
 		this.id = planet.getId();
@@ -70,6 +75,10 @@ public class PlanetTO {
 			tradeCodes += c.name() + " ";
 		}
 		this.tradeCodes = tradeCodes.trim();
+		
+		for (Installation in : planet.getFacilities()) {
+			facilities.add(new FacilityTO(in.getFacility(), in.getSize()));
+		}
 	}
 	
 }

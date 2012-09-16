@@ -101,7 +101,7 @@ public abstract class JovianWorld extends WorldBuilder {
 		if (moonBuilders != null) {
 			return moonBuilders;
 		}
-		int numMoons = Die.d3(2);
+		int numMoons = Die.d3();
 
 		System.out.println("JovianWorlds: Adding " + numMoons + " moons");		
 		moonBuilders = new WorldBuilder[numMoons];

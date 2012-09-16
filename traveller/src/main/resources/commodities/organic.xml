@@ -11,7 +11,7 @@
             <codes source="Ag">Fo Pe</codes>
         </commodity>
 
-        <commodity name="Synthetic Green" parent="Food">
+        <commodity name="Synthetic green" parent="Food">
             <cost volume="1000000">10</cost>
             <production tech="6" law="6" pr="2" cr="3"/>
             <codes source="In">Fo Pe Lq</codes>
@@ -22,7 +22,7 @@
             </description>
         </commodity>
 
-        <commodity name="Synthetic Red" parent="Food">
+        <commodity name="Synthetic red" parent="Food">
             <cost volume="1000000">25</cost>
             <production tech="8" law="6" pr="2" cr="4"/>
             <codes source="In">Fo Pe Lq</codes>
@@ -108,7 +108,7 @@
 	    	</description>
 	    </commodity>
 
-	    <commodity name="Marine Arthropods" parent="Food">
+	    <commodity name="Marine arthropods" parent="Food">
 	    	<cost volume="1000000">75</cost>
 	    	<production tech="1" law="6" pr="4" cr="4">
 	    	    <output mode="FiDs">Shellfish</output>

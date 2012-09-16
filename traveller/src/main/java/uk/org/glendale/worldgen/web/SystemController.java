@@ -48,6 +48,9 @@ public class SystemController {
 		model.addAttribute("systemId", id);
 
 		StarSystem system = starSystemFactory.getStarSystem(id);
+		if (system == null) {
+			return null;
+		}
 		Sector	   sector = system.getSector();
 		
 		model.addAttribute("sector", sector);

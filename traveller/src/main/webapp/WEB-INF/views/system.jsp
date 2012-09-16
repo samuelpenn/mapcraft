@@ -144,8 +144,14 @@
                    displayPlanetResources(id, data);
                });
                
+               if (planet.planet.facilities.length > 0) {
+                   $(divId).append("<div id='facilities"+id+"'</div>'");
+                   displayPlanetFacilities(planet);
+               }
+
                $(divId).append("<div id='inventory"+id+"'></div>");
                WG.loadInventory(id, displayPlanetInventory);
+               
 	       }
 
 	       function drawAsteroids(planet, canvas) {
@@ -178,7 +184,23 @@
 	    	   }
 	       }
 	       
+	       function displayPlanetFacilities(planet) {
+	    	   var id = planet.getId();
+	    	   $("#facilities"+id).html("<h3>Facilities</h3>");
+	    	   
+               $("#facilities"+id).append("<ul id='f"+id+"'></ul>");
+               for (var i=0; i < planet.planet.facilities.length; i++) {
+            	   var f = planet.planet.facilities[i];
+            	   $("#f"+id).append("<li>" + f.title + " - " + f.installation_size + "</li>");
+               }
+	    	   
+	       }
+	       
 	       function displayPlanetInventory(planet) {
+	    	   if (planet.planet.inventory == null ||
+	    			   planet.planet.inventory.length == 0) {
+	    		   return;
+	    	   }
 	    	   
 	    	   $("#inventory"+planet.getId()).html("<h3>Inventory</h3>");
 	    	   
@@ -200,7 +222,7 @@
 	    	   for (var i=0; i < planet.planet.inventory.length; i++) {
 	    		   var item = planet.planet.inventory[i];
 	    		   var row = "";
-	    		   row += "<td>" + item.commodity.name + "</td>";
+	    		   row += "<td class='name'>" + item.commodity.name + "</td>";
                    row += "<td>" + WG.addCommas(item.amount) + "</td>";
                    row += "<td>" + WG.addCommas(item.price) + "</td>";
                    row += "<td>" + WG.addCommas(item.weeklyIn) + "</td>";
@@ -210,7 +232,11 @@
                    row += "<td>" + WG.addCommas(item.bought) + "</td>";
                    row += "<td>" + WG.addCommas(item.sold) + "</td>";
 	    		   
-	    		   $(id).append("<tr>" + row + "</tr>");
+                   var shade="";
+                   if (i%2 == 1) {
+                       shade="class='shade'";                	   
+                   }
+	    		   $(id).append("<tr "+shade+">" + row + "</tr>");
 	    	   }
 	    	   
 	       }

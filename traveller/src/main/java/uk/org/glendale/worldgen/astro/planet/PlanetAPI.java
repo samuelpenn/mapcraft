@@ -176,7 +176,7 @@ public class PlanetAPI {
 			return null;
 		}
 		List<InventoryTO>	list = new ArrayList<InventoryTO>();
-		
+
 		for (Inventory item : civilisationFactory.getPlanetInventory(planet)) {
 			list.add(new InventoryTO(item));
 		}
