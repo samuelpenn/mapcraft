@@ -381,7 +381,7 @@ public class Civilisation {
 				if (m.getTechLevel() > planet.getTechLevel()) {
 					continue;
 				}
-				System.out.println("processMiAg: [" + c.getName() + 
+				System.out.println("  processMiAg: [" + c.getName() + 
 						" -> " + operation + " [" + rate + "%] -> [" 
 						+ m.getOutput().getName() + "]");
 
@@ -391,8 +391,19 @@ public class Civilisation {
 				long produced = getWeeklyProduction(m.getOutput(), cap);
 				
 				if (produced > 0) {
+					Inventory item = getInventoryItem(m.getOutput());
+					if (item.getAmount() > item.getWeeklyOut()) {
+						// Reduce the production rate if we are creating this
+						// commodity faster than it is being used.
+						if (item.getWeeklyOut() == 0) {
+							produced = 0;
+						} else {
+							double e = (double)item.getAmount() / (double)item.getWeeklyOut();
+							produced /= (e * e * e);
+						}
+					}
 					System.out.println("    + " + produced);
-					getInventoryItem(m.getOutput()).produce(produced);
+					item.produce(produced);
 				}
 			}
 		}

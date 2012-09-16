@@ -105,11 +105,10 @@
             <require>Fo ClCv HoTo</require>
             <consume>HoLu HoCl WpnH BldL</consume>
             <map from="Iron" to="Iron tools" level="100"/>
-            <map from="Iron" to="Metal jewellery" level="20"/>
-            <map from="Iron" to="Iron weapons" level="50"/>
-            <map from="Trees" to="Wood" level="100"/>
-            <map from="Stone" to="Primitive pottery" level="50"/>
-            <map from="Stone" to="Crafted goods" level="50"/>
+            <map from="Iron" to="Metal jewellery" level="100"/>
+            <map from="Iron" to="Iron weapons" level="100"/>
+            <map from="Stone" to="Primitive pottery" level="100"/>
+            <map from="Stone" to="Crafted goods" level="100"/>
             <map from="Animal products" to="Simple clothes" level="100"/>
         </facility>
 
@@ -123,7 +122,6 @@
             <map from="Iron" to="Iron weapons" level="100"/>
             <map from="Iron" to="Steel weapons" level="25"/>
             <map from="Iron" to="Bricks" level="50"/>
-            <map from="Trees" to="Wood" level="100"/>
             <map from="Stone" to="Primitive pottery" level="50"/>
             <map from="Stone" to="Crafted goods" level="75"/>
             <map from="Animal products" to="Simple clothes" level="100"/>

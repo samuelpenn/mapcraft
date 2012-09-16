@@ -166,7 +166,7 @@
 
         <commodity name="Wood">
             <cost volume="1000000">5</cost>
-            <production tech="0" law="6" pr="4" cr="5"/>
+            <production tech="0" law="6" pr="5" cr="6"/>
             <codes source="Re">BldL</codes>
             <description>
                 Basic building materials.
@@ -189,7 +189,7 @@
 
         <commodity name="Simple clothes" parent="Clothes">
             <cost volume="1000000">25</cost>
-            <production tech="2" law="6" pr="5" cr="6"/>
+            <production tech="2" law="6" pr="6" cr="7"/>
             <codes source="Re">ClCv Tp Tm</codes>
         </commodity>
 

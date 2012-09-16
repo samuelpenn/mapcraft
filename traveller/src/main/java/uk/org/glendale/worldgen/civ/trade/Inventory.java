@@ -73,6 +73,7 @@ public class Inventory {
 	Inventory(final Planet planet, final Commodity commodity) {
 		this.planet = planet;
 		this.commodity = commodity;
+		this.price = commodity.getCost();
 	}
 	
 	/**

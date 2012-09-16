@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
+import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
 import uk.org.glendale.worldgen.server.Universe;
@@ -75,7 +76,11 @@ public class CivilisationAPI {
 			List<Planet> planets = planetFactory.getPlanetsWithEvent(currentTime, 10);
 			for (Planet p : planets) {
 				simulate(p);
-				p.setNextEventTime(currentTime + secondsInDay * 7);
+				long nextTime = p.getNextEventTime() + secondsInDay * 6 + Die.die((int)secondsInDay, 2);
+				if (nextTime < currentTime) {
+					nextTime += (currentTime - nextTime) / 2;
+				}
+				p.setNextEventTime(nextTime);
 				planetFactory.persist(p);
 			}
 			

@@ -246,7 +246,7 @@
 
         <commodity name="Beer" parent="Food">
             <cost volume="1000000">20</cost>
-            <production tech="0" law="6" pr="2" cr="2"/>
+            <production tech="0" law="6" pr="3" cr="2"/>
             <codes source="Ag">Fo Pe</codes>
             <description>
                 Beer.
@@ -255,7 +255,7 @@
 
         <commodity name="Wine" parent="Food">
             <cost volume="1000000">120</cost>
-            <production tech="0" law="6" pr="3" cr="3"/>
+            <production tech="0" law="6" pr="4" cr="3"/>
             <codes source="Ag">Fo Pe</codes>
             <description>
                 Wine.
