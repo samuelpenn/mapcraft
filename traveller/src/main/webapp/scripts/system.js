@@ -28,6 +28,10 @@ StarSystem.prototype.getSectorName = function() {
 	return this.system.sectorName;
 };
 
+StarSystem.prototype.getId = function() {
+	return this.system.id;
+};
+
 StarSystem.prototype.getName = function() {
 	return this.system.name;
 };
@@ -38,6 +42,19 @@ StarSystem.prototype.getX = function() {
 
 StarSystem.prototype.getY = function() {
 	return this.system.y;
+};
+
+StarSystem.prototype.getCoords = function() {
+	var xx = this.system.x;
+	var yy = this.system.y;
+	
+	if (xx < 10) {
+		xx = "0" + xx;
+	}
+	if (yy < 10) {
+		yy = "0" + yy;
+	}
+	return ""+xx+""+yy;
 };
 
 StarSystem.prototype.getStars = function() {

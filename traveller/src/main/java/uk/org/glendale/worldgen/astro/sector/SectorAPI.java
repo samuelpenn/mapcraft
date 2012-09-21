@@ -105,6 +105,40 @@ public class SectorAPI {
 		
 		return list;
 	}
+
+	@Transactional
+	@ResponseBody
+	@RequestMapping(value="/{name}/data", method=RequestMethod.GET)
+	public SectorTO getSectorData(@PathVariable("name") String name) {
+		System.out.println("Looking for [" + name + "]");
+		
+		Sector	sector = null;
+		if (name.matches("[0-9]+")) {
+			try {
+				int	id = Integer.parseInt(name);
+				sector = factory.getSector(id);
+			} catch (NumberFormatException e) {
+				// Not a number. Fall back to getting by name.
+				sector = factory.getSector(name);
+			}
+		}
+		if (sector == null) {
+			return null;
+		}
+		
+		List<StarSystemTO> systems  = new ArrayList<StarSystemTO>();
+		for (StarSystem system : starSystemFactory.getStarSystemsInSector(sector)) {
+			System.out.println(system.getName());
+			system.getStars();
+			for (Planet planet : system.getPlanets()) {
+				System.out.println("  " + planet.getName());
+			}
+			systems.add(new StarSystemTO(system));
+		}
+		SectorTO	data = new SectorTO(sector, systems);
+		
+		return data;
+	}
 	
 	//@ResponseBody
 	@RequestMapping(value="/{name}/image", method=RequestMethod.GET)

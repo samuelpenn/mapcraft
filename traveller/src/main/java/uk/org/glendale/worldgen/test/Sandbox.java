@@ -228,7 +228,7 @@ public class Sandbox {
 			sb.addManyToSandbox(1);
 		}
 		//sb.addToSandbox();
-		sb.addToCore();
+		//sb.addToCore();
 		
 		//sb.testSimulation(1098);
 		sb.testSimulation();

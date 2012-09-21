@@ -43,8 +43,6 @@ public class SystemController {
 	
 	@RequestMapping("/{id}")
 	public String homePage(Model model, @PathVariable int id) {
-		System.out.println("systemController:");
-		
 		model.addAttribute("systemId", id);
 
 		StarSystem system = starSystemFactory.getStarSystem(id);

@@ -12,11 +12,6 @@
  * objects and REST interfaces.
  */
 
-
-
-
-
-
 WG = {
 	system: null,
 	sector: null,
