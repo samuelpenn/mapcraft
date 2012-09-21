@@ -18,14 +18,15 @@
 	    	   WG.sector = new Sector(sectorData);
 	    	   
                $("#title").html("${sectorName} (${sectorX}, ${sectorY})");
-
+ 
                // Display subsector information.
                for (var i = 0; i < 16; i++) {
             	   $("#data").append("<h2>" + WG.sector.subSectors[i] + "</h2>");
             	   
             	   var mx = 1 + (i % 4) * 8;
-            	   var my = 1 + (i / 4) * 10;
+            	   var my = 1 + Math.floor(i / 4) * 10;
             	   
+            	   $("#data").append("<canvas id='map"+i+"' width='660px' height='940px'></canvas>");
             	   $("#data").append("<ul id='ss_" + i + "'></ul>");
             	   var si = "#ss_" + i;
             	   for (var s = 0; s < WG.sector.systems.length; s++) {
@@ -39,9 +40,10 @@
             		   var href = "/traveller/ui/system/" + sys.getId();
             		   
             		   $(si).append("<li>" + sys.getCoords() + " <a href='"+href+"'>" + sys.getName() + "</a></li>");
+            		   drawSubSectorMap(i);
             	   }
                }
-	    	   drawSectorMap();
+	    	   //drawSectorMap();
 	    	   
 	       }
 	       var COS30 = Math.sqrt(3.0)/2.0;
@@ -73,16 +75,16 @@
 	    	   context.stroke();
 	       }
 	       
-	       var LEFT_MARGIN = 25;
-	       var TOP_MARGIN = 48;
+	       var LEFT_MARGIN = 1;
+	       var TOP_MARGIN = 2;
 	       var SCALE = 20;
 	       
-	       function getX(x, y) {
-               return LEFT_MARGIN + (x*(SCALE * 1.5));
+	       function getX(x, y, s) {
+               return (LEFT_MARGIN * s) + (x*(s * 1.5));
 	       }
 	       
-	       function getY(x, y) {
-               return (TOP_MARGIN + (x%2)*(SCALE*SIN60) + y*(SIN60*2*SCALE));
+	       function getY(x, y, s) {
+               return ((TOP_MARGIN * s) + (x%2)*(s*SIN60) + y*(SIN60*2*s));
 	       }
 	       
 	       function drawSectorMap() {
@@ -94,21 +96,57 @@
                               
                for (var y=0; y < 40; y++) {
             	   for (var x=0; x < 32; x++) {
-            		   drawHex(context, getX(x,y), getY(x,y), SCALE);
+            		   drawHex(context, getX(x,y,SCALE), getY(x,y,SCALE), SCALE);
             	   }
                }
                
                context.fillStyle = "#FF9900";
                for (var i = 0; i < WG.sector.systems.length; i++) {
             	   var sys = WG.sector.systems[i];
-            	   var x = sys.getX() - 1;
-            	   var y = sys.getY() - 1;
+            	   var x = sys.getX()-1;
+            	   var y = sys.getY()-2;
                    context.beginPath();
-                   context.arc(getX(x,y) + SCALE/2, getY(x,y) + SCALE/1.2, SCALE/3, 0, 2*Math.PI);
+                   context.arc(getX(x,y,SCALE) + SCALE/2, getY(x,y,SCALE) + SCALE/1.2, SCALE/3, 0, 2*Math.PI);
                    context.closePath();
                    context.fill();
                }
 
+	       }
+	       
+	       function drawSubSectorMap(i) {
+               var canvas = document.getElementById("map"+i);
+               var context = canvas.getContext("2d");
+               
+               context.strokeStyle = "#000000";
+               context.fillStyle = "#FFFFFF";
+               
+               var scale = 50;
+               for (var y=0; y < 10; y++) {
+                   for (var x=0; x < 8; x++) {
+                       drawHex(context, getX(x,y,scale), getY(x,y,scale), scale);
+                   }
+               }
+               
+               context.fillStyle = "#FF9900";
+
+               var mx = 1 + (i % 4) * 8;
+               var my = 1 + Math.floor(i / 4) * 10;
+               for (var s = 0; s < WG.sector.systems.length; s++) {
+                   var sys = WG.sector.systems[s];
+                   if (sys.getX() < mx || sys.getX() > mx + 7) {
+                       continue;
+                   }
+                   if (sys.getY() < my || sys.getY() > my + 9) {
+                       continue;
+                   }
+                   var x = sys.getX() - mx;
+                   var y = sys.getY() - my - 1;
+                   context.beginPath();
+                   context.arc(getX(x,y,scale) + scale/2, getY(x,y,scale) + scale/1.2, scale/3, 0, 2*Math.PI);
+                   context.closePath();
+                   context.fill();
+               }
+	    	   
 	       }
 
 	       $(document).ready(function() {

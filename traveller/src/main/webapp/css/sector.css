@@ -1,8 +1,16 @@
 
 h2 {
 	border: 0px;
+	clear: left;
 }
 
-canvas#map {
+canvas {
 	border: 1px solid black;
+	float: left;
+	margin-right: 32px;
+	margin-left: 16px;
+}
+
+#map {
+	display: none;
 }
