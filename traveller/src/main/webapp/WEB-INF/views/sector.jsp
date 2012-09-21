@@ -41,244 +41,80 @@
             		   $(si).append("<li>" + sys.getCoords() + " <a href='"+href+"'>" + sys.getName() + "</a></li>");
             	   }
                }
+	    	   drawSectorMap();
 	    	   
-	    	   
-	    	   $("#systemStars").append("<div id='planetData'></div>");
-	    	   
-	    	   showPlanetAndMoons(system.mainWorld.id);
-	    	   
-	    	   //$("#sectorMap").html(minX+","+maxX+","+minY+","+maxY);
 	       }
-
-	       function listPlanetsForStar(list) {
-               for (var i = 0; i < list.length; i++) {
-                   var planet = list[i];
-                   
-                   var number = (planet.getName()+"").replace(/.* /g, "");
-                   if (planet.isMainWorld()) {
-                	   number += "*";
-                   }
-                   var html = "<span id='link" + planet.getId() + "' onclick='javascript: showPlanetAndMoons(" + planet.getId() + ")'>";
-                   html += number;
-                   html += "</span>";
-                   
-                   $("#links").append(html);
-               }
+	       var COS30 = Math.sqrt(3.0)/2.0;
+	       var COS60 = 0.5;
+	       var SIN60 = Math.sqrt(3.0)/2.0;
+	       var SIN30 = 0.5;
+	       var ROOT_TWO = Math.sqrt(2.0);
+	       
+	       function drawHex(context, x, y, size) {
+	    	   x = 1.0 * x;
+	    	   y = 1.0 * y;
+	    	   var    topLeft_x = x;
+	    	   var    top_y = y;
+	    	   var    topRight_x = x + size;
+	    	   var    right_x = topRight_x + (size * COS60);
+	    	   var    middle_y = y - (size * SIN60);
+	    	   var    bottom_y = y - 2 * (size * SIN60);
+	    	   var    left_x = x - (size * COS60);
+	    	   
+	    	   context.beginPath();
+	    	   context.lineWidth = 1;
+	    	   context.moveTo(topLeft_x, top_y);
+	    	   context.lineTo(topRight_x, top_y);
+	    	   context.lineTo(right_x, middle_y);
+	    	   context.lineTo(topRight_x, bottom_y);
+	    	   context.lineTo(topLeft_x, bottom_y);
+	    	   context.lineTo(left_x, middle_y);
+	    	   context.closePath();
+	    	   context.stroke();
 	       }
 	       
-	       function showPlanetAndMoons(id) {
-               var planet = WG.getPlanet(id);
-               if (planet == null) {
-            	   $("#planetData").html("No planet selected");
-            	   return;
-               }
-               $("#planetData").html("<div class='planet' id='p" + id + "'></div>");
-               
-               $(".selected").removeClass("selected");
-               $("#link"+id).addClass("selected");
-
-               showPlanet(id, planet);
-               
-               WG.loadMoons(id, function (id) { 
-            	   $("#planetData").append("<div class='planet' id='p" + id + "'></div>");
-            	   showPlanet(id, WG.getPlanet(id));
-               });               
+	       var LEFT_MARGIN = 25;
+	       var TOP_MARGIN = 48;
+	       var SCALE = 20;
+	       
+	       function getX(x, y) {
+               return LEFT_MARGIN + (x*(SCALE * 1.5));
 	       }
 	       
-	       function showPlanet(id, planet) {
-               var divId = "#p"+id;
+	       function getY(x, y) {
+               return (TOP_MARGIN + (x%2)*(SCALE*SIN60) + y*(SIN60*2*SCALE));
+	       }
+	       
+	       function drawSectorMap() {
+               var canvas = document.getElementById("map");
+               var context = canvas.getContext("2d");
                
-               var fullname = planet.getName() + " (" + planet.getType() + ")";
-           	   fullname += "<span id='codes'>" + planet.getTradeIcons() + "</span>";
-               $(divId).html("<h2>" + fullname + "</h2>");
-
-               var radiusLabel = "Radius";
-               
-               $(divId).append("<canvas class='globe' id='globe"+id+"' width='200px' height='200px'>Not supported</canvas>");
-               var texture="/traveller/api/planet/" + planet.getId() + "/projection.jpg";
-               // TODO: Need to cancel the previous animation. 
-               if (planet.isMoon() == false) {
-	               if (!planet.isBelt()) {
-	            	    createSphere(document.getElementById("globe"+id), texture);
-	            	    //var s = new Sphere(document.getElementById("globe"+id), texture);
-	            	    //s.draw();
-	               } else {
-	            	   drawAsteroids(planet, document.getElementById("globe"+id));
-	            	   radiusLabel = "Thickness";
-	               }
-               }
-               $(divId).append("<div id='statBlock"+id+"'></div>");
-               
-               // It's a table. I can't think of a better way of laying this
-               // out which doesn't involve a table.
-               var para = "<table class='data'>";
-               
-               var labels = [ "Distance", radiusLabel, "Axial Tilt", "Day Length" ];
-               var data = [ planet.getDistance(), planet.getRadius(), 
-                            planet.getAxialTilt(), planet.getDayLength() ];
-               
-               para += mkTable(labels, data);
-               
-               var labels = [ "Temperature", "Atmosphere", "Hydrographics", "Life" ];
-               var data = [ planet.getTemperature(), planet.getAtmosphere(), 
-                            planet.getHydrographics(), planet.getLifeLevel() ];
-               
-               para += mkTable(labels, data);
-               
-               if (planet.isPopulated()) {
-	               var labels = [ "Population", "Tech Level", "Government", "Law Level" ];
-	               var data = [ planet.getPopulation(), planet.getTechLevel(), 
-	                            planet.getGovernment(), planet.getLawLevel() ];
-	               
-	               para += mkTable(labels, data);
+               context.strokeStyle = "#000000";
+               context.fillStyle = "#FFFFFF";
+                              
+               for (var y=0; y < 40; y++) {
+            	   for (var x=0; x < 32; x++) {
+            		   drawHex(context, getX(x,y), getY(x,y), SCALE);
+            	   }
                }
                
-               para += "</table>";
-               $("#statBlock"+id).append(para);
-               
-               $(divId).append("<p class='description'>" + planet.getDescription() + "</p>");
-               
-               $(divId).append("<p style='clear:both'/>");
-
-               $(divId).append("<div id='resources"+id+"'></div>");
-               
-               $.getJSON("/traveller/api/planet/" + planet.getId() + "/resources", function(data) {
-                   displayPlanetResources(id, data);
-               });
-               
-               if (planet.planet.facilities.length > 0) {
-                   $(divId).append("<div id='facilities"+id+"'</div>'");
-                   displayPlanetFacilities(planet);
+               context.fillStyle = "#FF9900";
+               for (var i = 0; i < WG.sector.systems.length; i++) {
+            	   var sys = WG.sector.systems[i];
+            	   var x = sys.getX() - 1;
+            	   var y = sys.getY() - 1;
+                   context.beginPath();
+                   context.arc(getX(x,y) + SCALE/2, getY(x,y) + SCALE/1.2, SCALE/3, 0, 2*Math.PI);
+                   context.closePath();
+                   context.fill();
                }
 
-               $(divId).append("<div id='inventory"+id+"'></div>");
-               WG.loadInventory(id, displayPlanetInventory);
-               
-	       }
-
-	       function drawAsteroids(planet, canvas) {
-               var context = canvas.getContext("2d");               
-               if (context == null) {
-                   return;
-               }
-               
-               var image = new Image();
-               image.src = "/traveller/api/planet/"+planet.getId()+"/orbit";
-               image.onload = function () {
-            	    context.drawImage(image, 5, 5, 190, 190);
-               };
-	    	   
-	       }
-	       
-	       function displayPlanetResources(id, list) {
-	    	   $("#resources"+id).html("<h3>Resources</h3>");
-	    	   
-	    	   $("#resources"+id).append("<ul id='r"+id+"' class='iconList'></ul>");
-	    	   for (var i=0; i < list.length; i++) {
-	    		   var c = list[i];
-	    		   var image = "/traveller/images/trade/" + c.imagePath + ".png";
-	    		   var name = c.name + " " + c.amount + "%";
-	    		   var html = "<img src='"+image+"' width='64' height='64' title='"+name+"'/>";
-	    		   html = html + c.amount + "%";
-	    		   
-	    		   $("#r"+id).append("<li>" + html + "</li>");
-	    		   
-	    	   }
-	       }
-	       
-	       function displayPlanetFacilities(planet) {
-	    	   var id = planet.getId();
-	    	   $("#facilities"+id).html("<h3>Facilities</h3>");
-	    	   
-               $("#facilities"+id).append("<ul id='f"+id+"'></ul>");
-               for (var i=0; i < planet.planet.facilities.length; i++) {
-            	   var f = planet.planet.facilities[i];
-            	   $("#f"+id).append("<li>" + f.title + " - " + f.installation_size + "</li>");
-               }
-	    	   
-	       }
-	       
-	       function displayPlanetInventory(planet) {
-	    	   if (planet.planet.inventory == null ||
-	    			   planet.planet.inventory.length == 0) {
-	    		   return;
-	    	   }
-	    	   
-	    	   $("#inventory"+planet.getId()).html("<h3>Inventory</h3>");
-	    	   
-	    	   var id = "tableInv" + planet.getId();
-	    	   $("#inventory"+planet.getId()).append("<table class='inventory' id='"+id+"'></table>");
-	    	   id = "#" + id;
-	    	   
-	    	   $(id).append("<tr></tr>");
-	    	   $(id + " tr").append("<th>Name</th>");
-               $(id + " tr").append("<th>Quantity</th>");
-	    	   $(id + " tr").append("<th>Price</th>");
-               $(id + " tr").append("<th>Weekly In</th>");
-               $(id + " tr").append("<th>Weekly Out</th>");
-               $(id + " tr").append("<th>Produced</th>");
-               $(id + " tr").append("<th>Consumed</th>");
-               $(id + " tr").append("<th>Bought</th>");
-               $(id + " tr").append("<th>Sold</th>");
-	    	   
-	    	   for (var i=0; i < planet.planet.inventory.length; i++) {
-	    		   var item = planet.planet.inventory[i];
-	    		   var row = "";
-	    		   row += "<td class='name'>" + item.commodity.name + "</td>";
-                   row += "<td>" + WG.addCommas(item.amount) + "</td>";
-                   row += "<td>" + WG.addCommas(item.price) + "</td>";
-                   row += "<td>" + WG.addCommas(item.weeklyIn) + "</td>";
-                   row += "<td>" + WG.addCommas(item.weeklyOut) + "</td>";
-                   row += "<td>" + WG.addCommas(item.produced) + "</td>";
-                   row += "<td>" + WG.addCommas(item.consumed) + "</td>";
-                   row += "<td>" + WG.addCommas(item.bought) + "</td>";
-                   row += "<td>" + WG.addCommas(item.sold) + "</td>";
-	    		   
-                   var shade="";
-                   if (i%2 == 1) {
-                       shade="class='shade'";                	   
-                   }
-	    		   $(id).append("<tr "+shade+">" + row + "</tr>");
-	    	   }
-	    	   
-	       }
-	       
-	       function mkTable(labels, data) {
-	    	   var    th = "";
-	    	   var    td = "";
-	    	   
-	    	   for (var i=0; i < labels.length; i++) {
-	    		   th += "<th>" + labels[i] + "</th>";
-	    		   td += "<td>" + data[i] + "</td>"; 
-	    	   }
-	    	   
-	    	   return "<tr>" + th + "</tr><tr>" + td + "</tr>";
-	       }
-	       
-	       function addData(label, value) {
-	    	   return "<dt>" + label + "</dt> <dd>" + value + "</dd>";
 	       }
 
 	       $(document).ready(function() {
-	    	   
 	    	   $.getJSON("/traveller/api/sector/${sectorId}/data", function(data) {
 	               displaySectorData(data);
 	    	   });
-	    	   
-	    	   /*
-               var canvas = document.getElementById("sphere");
-               var context = canvas.getContext("2d");
-               context.strokeStyle = "#000000";
-               context.fillStyle = "#FFFF00";
-               context.beginPath();
-               context.arc(100,100,50,0,Math.PI*2,true);
-               context.closePath();
-               context.stroke();
-               context.fill();
-               */
-               //var texture="http://localhost:8080/traveller/api/planet/488/projection.jpg";
-               //var texture="http://localhost:8080/traveller/images/earth1024x1024.jpg";
-               //createSphere(document.getElementById("globe"), texture);
 	       });
 	    </script>	    
 	</head>
@@ -291,10 +127,10 @@
 
 		<div class="container">
 			<div id="sectorBody">
+                <canvas id="map" width="1000px" height="1440px">
+                </canvas>
                 <div id="data">
                 </div>
-			    <canvas id="map">
-			    </canvas>
 			</div>			
 		</div>
 	</body>
