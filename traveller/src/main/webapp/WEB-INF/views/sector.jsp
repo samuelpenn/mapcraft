@@ -26,7 +26,8 @@
             	   var mx = 1 + (i % 4) * 8;
             	   var my = 1 + Math.floor(i / 4) * 10;
             	   
-            	   $("#data").append("<canvas id='map"+i+"' width='660px' height='940px'></canvas>");
+            	   //$("#data").append("<canvas id='map"+i+"' width='660px' height='940px'></canvas>");
+                   $("#data").append("<canvas id='map"+i+"' width='1320px' height='1880px'></canvas>");
             	   $("#data").append("<ul id='ss_" + i + "'></ul>");
             	   var si = "#ss_" + i;
             	   for (var s = 0; s < WG.sector.systems.length; s++) {
@@ -117,20 +118,33 @@
                var canvas = document.getElementById("map"+i);
                var context = canvas.getContext("2d");
                
-               context.strokeStyle = "#000000";
-               context.fillStyle = "#FFFFFF";
                
-               var scale = 50;
+               var mx = 1 + (i % 4) * 8;
+               var my = 1 + Math.floor(i / 4) * 10;
+
+               var scale = 100;
                for (var y=0; y < 10; y++) {
                    for (var x=0; x < 8; x++) {
+                       context.strokeStyle = "#000000";
+                       context.fillStyle = "#FFFFFF";
                        drawHex(context, getX(x,y,scale), getY(x,y,scale), scale);
+                       
+                       var xx = mx + x;
+                       var yy = my + y;
+                       if (xx < 10) xx = "0" + xx;
+                       if (yy < 10) yy = "0" + yy;
+                       var coord = xx + "" + yy;
+                       
+                       context.strokeStyle = "#000000";
+                       context.fillStyle = "#777777";
+                       context.font = "20pt Arial";
+                       var px = getX(x,y,scale) + scale * 0.25;
+                       var py = getY(x,y,scale) - scale * 1.4;
+                       context.fillText(coord, px, py);
                    }
                }
                
-               context.fillStyle = "#FF9900";
 
-               var mx = 1 + (i % 4) * 8;
-               var my = 1 + Math.floor(i / 4) * 10;
                for (var s = 0; s < WG.sector.systems.length; s++) {
                    var sys = WG.sector.systems[s];
                    if (sys.getX() < mx || sys.getX() > mx + 7) {
@@ -140,11 +154,20 @@
                        continue;
                    }
                    var x = sys.getX() - mx;
-                   var y = sys.getY() - my - 1;
+                   var y = sys.getY() - my;
                    context.beginPath();
-                   context.arc(getX(x,y,scale) + scale/2, getY(x,y,scale) + scale/1.2, scale/3, 0, 2*Math.PI);
+                   context.fillStyle = "#FF9900";
+                   context.arc(getX(x,y,scale) + scale/2, getY(x,y,scale) - scale/1.2, scale/5, 0, 2*Math.PI);
                    context.closePath();
                    context.fill();
+                   
+                   // Display system name.
+                   context.fillStyle = "#000000";
+                   context.font = "20pt Arial";
+                   var textWidth = context.measureText(sys.getName()).width;
+                   var px = getX(x,y,scale) + scale * 0.5 - textWidth/2;
+                   var py = getY(x,y,scale) - scale * 0.3;
+                   context.fillText(sys.getName(), px, py);
                }
 	    	   
 	       }
