@@ -117,6 +117,11 @@ public class PlanetDescription {
 		}
 		readResources();
 	}
+	
+	public PlanetDescription(Planet planet, Properties phrases) {
+		this.planet = planet;
+		this.phrases = phrases;
+	}
 
 	/**
 	 * Get a random phrase from the text fragment. The text may be bounded by [

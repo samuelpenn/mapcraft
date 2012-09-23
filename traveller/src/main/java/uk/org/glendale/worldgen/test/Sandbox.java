@@ -160,6 +160,13 @@ public class Sandbox {
 		}
 	}
 
+	public void addManyToSandbox(int sectorId, int number) {
+		Sector sector = sectorFactory.getSector(sectorId);
+		for (int i=0; i < number; i++) {
+			starSystemGenerator.createSimpleSystem(sector, null, 0, 0);
+		}
+	}
+
 	public void addToCore() {
 		String sectorName = "Sol";
 		Sector	sandbox = sectorFactory.getSector(sectorName);
@@ -229,6 +236,7 @@ public class Sandbox {
 		}
 		//sb.addToSandbox();
 		//sb.addToCore();
+		sb.addManyToSandbox(1, 20);
 		
 		//sb.testSimulation(1098);
 		sb.testSimulation();

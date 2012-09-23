@@ -40,6 +40,7 @@ import uk.org.glendale.worldgen.astro.planet.PlanetType;
  * 
  * @author Samuel Penn
  */
+@Deprecated
 public class PlanetDescription {
 	private StringBuffer		buffer = new StringBuffer();
 	private Planet				planet = null;
