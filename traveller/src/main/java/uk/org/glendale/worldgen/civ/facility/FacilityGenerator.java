@@ -8,6 +8,7 @@
  */
 package uk.org.glendale.worldgen.civ.facility;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -214,6 +215,7 @@ public class FacilityGenerator {
 		}
 	}
 	
+	private static final String BASE = "uk.org.glendale.worldgen.civ.facility.facilities";
 	private Properties	config;
 	
 	/**
@@ -223,11 +225,16 @@ public class FacilityGenerator {
 	private void readConfig() {
 		if (config == null) {
 			config = new Properties();
-			ResourceBundle	bundle = ResourceBundle.getBundle("uk.org.glendale.worldgen.civ.facility.facilities");
+			ResourceBundle	bundle = ResourceBundle.getBundle(BASE);
 			Enumeration<String>		e = bundle.getKeys();
 			while (e.hasMoreElements()) {
 				String	key = e.nextElement();
 				config.setProperty(key, bundle.getString(key));
+				
+				if (key.startsWith(".")) {
+					String fqcn = BASE + ".builders" + key;
+					String name = key.replaceAll(".*\\.", ""); 
+				}
 			}
 		}
 	}
