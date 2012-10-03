@@ -153,10 +153,10 @@ public class PlanetGenerator {
 		}
 		planetFactory.getFacilityGenerator().generateFacilities(planet, size);
 		System.out.println("TechLevel: "+planet.getTechLevel());
-		
+
 		PlanetDescription  description = new PlanetDescription(builder);
 		planet.setDescription(description.getFullDescription());
-		
+
 		return planet;
 	}
 

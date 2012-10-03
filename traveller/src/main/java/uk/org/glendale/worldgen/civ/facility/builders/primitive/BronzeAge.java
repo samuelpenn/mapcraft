@@ -10,17 +10,18 @@ package uk.org.glendale.worldgen.civ.facility.builders.primitive;
 
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PopulationSize;
+import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
 import uk.org.glendale.worldgen.civ.facility.builders.FacilityBuilder;
 
 public class BronzeAge extends FacilityBuilder {
 
-	public BronzeAge(Planet planet, PopulationSize population) {
-		super(planet, population);
+	public BronzeAge(FacilityFactory factory, Planet planet, PopulationSize population) {
+		super(factory, planet, population);
 	}
 	
 	public static void main(String[] args) {
-		NeolithicTribes n = new NeolithicTribes(null, null);
-		BronzeAge b = new BronzeAge(null, null);
+		NeolithicTribes n = new NeolithicTribes(null, null, null);
+		BronzeAge b = new BronzeAge(null, null, null);
 
 	}
 
