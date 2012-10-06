@@ -46,7 +46,7 @@
             <operation level="25">Quarry</operation>
         </facility>
 
-        <facility name="primitiveMining" type="Agriculture">
+        <facility name="primitiveMining" type="Mining">
             <title>Primitive Mining</title>
             <codes>T0 T1 T2 T3 P3 P4 P5 P6 P7 P8 H0 H1</codes>
             <require>HoTo</require>

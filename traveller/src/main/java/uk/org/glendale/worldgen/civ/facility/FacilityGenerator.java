@@ -77,7 +77,6 @@ public class FacilityGenerator {
 		if (base.isDirectory()) {
 			// Add all files in the directory.
 			File[] files = base.listFiles(new FilenameFilter() {
-				@Override
 				public boolean accept(File dir, String name) {
 					return name.endsWith(".xml");
 				}
@@ -218,8 +217,8 @@ public class FacilityGenerator {
 		}
 	}
 	
-	private static final String BASE = "uk.org.glendale.worldgen.civ.facility.facilities";
-	private Properties	config;
+	private static final String 	BASE = "uk.org.glendale.worldgen.civ.facility";
+	private static Properties		config;
 	
 	private static HashMap<String, Map<String,String>>  
 		facilityBuilders = new HashMap<String, Map<String,String>>();
@@ -228,10 +227,10 @@ public class FacilityGenerator {
 	 * Read all the configuration properties from the resource file.
 	 * If the file has already been read, then don't read it again.
 	 */
-	private void readConfig() {
+	private static void readConfig() {
 		if (config == null) {
 			config = new Properties();
-			ResourceBundle	bundle = ResourceBundle.getBundle(BASE);
+			ResourceBundle	bundle = ResourceBundle.getBundle(BASE + ".facilities");
 			Enumeration<String>		e = bundle.getKeys();
 			while (e.hasMoreElements()) {
 				String	key = e.nextElement();
@@ -248,6 +247,7 @@ public class FacilityGenerator {
 						}
 						Map<String, String> map = facilityBuilders.get(culture);
 						map.put(name, fqcn);
+						System.out.println("Adding [" + fqcn + "] to [" + culture + "]");
 					}
 				}
 			}
@@ -255,6 +255,7 @@ public class FacilityGenerator {
 	}
 	
 	public static Map<String,String> getCultureBuilders(String culture) {
+		readConfig();
 		return facilityBuilders.get(culture);
 	}
 	

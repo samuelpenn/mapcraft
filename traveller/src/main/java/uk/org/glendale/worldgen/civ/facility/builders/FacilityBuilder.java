@@ -32,6 +32,8 @@ public abstract class FacilityBuilder {
 	protected FacilityFactory	factory;
 	
 	private   Properties	config = new Properties();
+	
+	protected String			description;
 
 	/**
 	 * Read all the configuration properties from the resource file.
@@ -39,6 +41,12 @@ public abstract class FacilityBuilder {
 	 */
 	private void readConfig() throws MissingResourceException {
 		String	resourceName = this.getClass().getName();
+		
+		if (config.size() > 0) {
+			return;
+		}
+		
+		System.out.println("Reading resource [" + resourceName + "]");
 
 		ResourceBundle	bundle = ResourceBundle.getBundle(resourceName);
 		Enumeration<String>		e = bundle.getKeys();
@@ -48,8 +56,12 @@ public abstract class FacilityBuilder {
 		}
 	}
 	
-	protected PlanetDescription getDescription() {
+	protected final PlanetDescription getDescription() {
 		return new PlanetDescription(planet, config);
+	}
+	
+	public final String getDescriptionText() {
+		return description;
 	}
 	
 	/**
@@ -86,26 +98,42 @@ public abstract class FacilityBuilder {
 	
 	protected long getPopulation() {
 		long	number = 0;
+		long	maximum = 0;
+		long	attempts = 1;
+		long	divisor = 1;
+		String  option = getOptionByPopulation("population");
+		// Allow for a '+' suffix to get the highest of two rolls, or a '-' to
+		// generate smaller numbers.
+		if (option.indexOf("+") > -1) {
+			attempts = 2;
+		} else if (option.indexOf("-") > -1) {
+			divisor = 2;
+		}
+		option = option.replaceAll("[^0-9]", "");
 		int	  	code = Integer.parseInt(getOptionByPopulation("population"));
 
 		// Population is given as a power of 10. Randomly generate a suitable
 		// number to 4 significant figures.
-		switch (code) {
-		case 0:
-			planet.setPopulation(Die.die(9));
-			break;
-		case 1:
-			planet.setPopulation(10 + Die.rollZero(90));
-			break;
-		case 2:
-			planet.setPopulation(100 + Die.rollZero(900));
-			break;
-		default:
-			planet.setPopulation((1000 + Die.rollZero(9000)) * (long)Math.pow(10, code - 3));
-			break;
+		for (int i = 0; i < attempts; i++) {
+			switch (code) {
+			case 0:
+				number = Die.die(9) / divisor;
+				break;
+			case 1:
+				number = 10 + Die.rollZero(90) / divisor;
+				break;
+			case 2:
+				number = 100 + Die.rollZero(900) / divisor;
+				break;
+			default:
+				number = (1000 + Die.rollZero(9000) / divisor) * (long)Math.pow(10, code - 3);
+				break;
+			}
+			if (number > maximum) {
+				maximum = number;
+			}
 		}
-
-		return number;
+		return maximum;
 	}
 	
 	/**
@@ -142,7 +170,7 @@ public abstract class FacilityBuilder {
 		default:
 			residentialSize += planet.getTechLevel() * 2;
 		}
-		
+		System.out.println("addResidential: [" + residential.getName() + "]");
 		planet.addFacility(residential, residentialSize);
 	}
 	
@@ -184,6 +212,7 @@ public abstract class FacilityBuilder {
 	}
 	
 	public void generate() {
+		readConfig();
 		planet.setGovernment(getGovernment());
 		planet.setTechLevel(getTechLevel());
 		planet.setLawLevel(getLawLevel());
@@ -208,14 +237,15 @@ public abstract class FacilityBuilder {
 	 * @return			One of the listed options from the value.
 	 */
 	protected String getOneOption(String key) {
-		String value = config.getProperty(key, "");
-		if (value.trim().length() > 0) {
+		String value = config.getProperty(key);
+		if ( value != null && value.trim().length() > 0) {
 			String[] options = value.split(" ");
 			if (options.length > 1) {
 				value = options[Die.rollZero(options.length)];
 			}
+			return value.trim();
 		}
-		return value.trim();
+		return null;
 	}
 	
 	protected String[] getAllOptions(String key) {

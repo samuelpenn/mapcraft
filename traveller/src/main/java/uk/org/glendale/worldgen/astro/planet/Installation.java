@@ -46,7 +46,7 @@ public class Installation {
 	 * @param size
 	 *            Size of facility, must be 1+, maximum around 100.
 	 */
-	Installation(final Facility facility, final int size) {
+	public Installation(final Facility facility, final int size) {
 		if (facility == null) {
 			throw new IllegalArgumentException("Facility must be set");
 		}

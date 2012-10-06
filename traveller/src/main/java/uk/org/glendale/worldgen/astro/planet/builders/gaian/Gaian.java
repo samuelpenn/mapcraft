@@ -246,12 +246,17 @@ public class Gaian extends GaianWorld {
 		if (name == null) {
 			name = getOneOption(properties, "culture." + level);
 		}
+		System.out.println("getFacilityBuilderName: [" + name + "]");
 		if (name == null) {
 			// No valid facility builders for this combination.
 			return null;
 		}
 
 		Map<String,String> map = FacilityGenerator.getCultureBuilders("Imperium");
+		if (map == null) {
+			System.out.println("Cannot find culture map for [Imperium]");
+			return null;
+		}
 		String className = map.get(name);
 		
 		return className;

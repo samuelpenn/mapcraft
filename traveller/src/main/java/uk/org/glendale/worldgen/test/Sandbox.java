@@ -223,11 +223,11 @@ public class Sandbox {
 			sb.importFacilities();
 			sb.addManyToSandbox(1);
 		}
-		//sb.addToSandbox();
+		sb.addToSandbox();
 		//sb.addToCore();
-		sb.addManyToSandbox(1, 20);
+		//sb.addManyToSandbox(1, 20);
 		
 		//sb.testSimulation(1098);
-		sb.testSimulation();
+		//sb.testSimulation();
 	}
 }

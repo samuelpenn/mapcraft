@@ -322,7 +322,6 @@ public class CommodityFactory {
 		if (base.isDirectory()) {
 			// Add all files in the directory.
 			File[] files = base.listFiles(new FilenameFilter() {
-				@Override
 				public boolean accept(File dir, String name) {
 					return name.endsWith(".xml");
 				}

@@ -8,6 +8,7 @@
  */
 package uk.org.glendale.worldgen.civ.facility.builders.primitive;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,19 +21,21 @@ import uk.org.glendale.worldgen.civ.facility.Facility;
 import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
 import uk.org.glendale.worldgen.civ.facility.builders.FacilityBuilder;
 
-public class BronzeAge extends FacilityBuilder {
-
+/**
+ * Defines Iron Age cultures.
+ */
+public class IronAge extends FacilityBuilder {
+	
 	// Residential.
-	private static final String R_TRIBAL_STATES = "tribalStates";
+	private static final String R_WARRIOR_KINGDOMS = "warriorKingdoms";
 	
 	// Agriculture.
-	private static final String A_HUNTER_GATHERER = "hunterGatherer";
 	private static final String A_PRIMITIVE_FARMING = "primitiveFarming";
 	
 	// Mining.
 	private static final String M_PRIMITIVE_MINING = "primitiveMining";
-
-	public BronzeAge(FacilityFactory factory, Planet planet, PopulationSize population) {
+	
+	public IronAge(FacilityFactory factory, Planet planet, PopulationSize population) {
 		super(factory, planet, population);
 		
 		switch (population) {
@@ -44,11 +47,11 @@ public class BronzeAge extends FacilityBuilder {
 			throw new IllegalStateException("Population [" + population + "] too large");
 		}
 	}
-
+	
 	public void generate() {
 		super.generate();
 		
-		String	 residentialName = R_TRIBAL_STATES;
+		String	 residentialName = R_WARRIOR_KINGDOMS;
 		int		 residentialSize = 93 + Die.d6(2);
 
 		// Main residential facility.

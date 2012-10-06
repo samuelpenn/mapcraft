@@ -8,6 +8,7 @@
  */
 package uk.org.glendale.worldgen.astro.planet;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,8 @@ import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.star.StarAPI;
 import uk.org.glendale.worldgen.astro.star.Temperature;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
+import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
+import uk.org.glendale.worldgen.civ.facility.FacilityGenerator;
 import uk.org.glendale.worldgen.civ.facility.builders.FacilityBuilder;
 import uk.org.glendale.worldgen.server.AppManager;
 
@@ -153,19 +156,50 @@ public class PlanetGenerator {
 			}
 			break;
 		}
-		String culture = lastBuilder.getFacilityBuilderName(size, level);
 		FacilityBuilder facilityBuilder = null;
-		
-		//facilityBuilder.generate();
-		System.out.println(culture);
-		
-		planetFactory.getFacilityGenerator().generateFacilities(planet, size);
-		System.out.println("TechLevel: "+planet.getTechLevel());
+		String 			culture = lastBuilder.getFacilityBuilderName(size, level);
+		if (culture != null) {
+			System.out.println(culture);
+			facilityBuilder = getFacilityBuilder(culture, planet, size);
+			if (facilityBuilder != null) {
+				facilityBuilder.generate();
+			} else {
+				System.out.println("!! No builder for culture");
+			}
+		}
+		//planetFactory.getFacilityGenerator().generateFacilities(planet, size);
+		//System.out.println("TechLevel: "+planet.getTechLevel());
 
 		PlanetDescription  description = new PlanetDescription(builder);
-		planet.setDescription(description.getFullDescription());
+		String text = description.getFullDescription();
+		
+		if (facilityBuilder != null) {
+			text += " " + facilityBuilder.getDescriptionText();
+		}
+		planet.setDescription(text);
 
 		return planet;
+	}
+	
+	private FacilityBuilder getFacilityBuilder(String className, Planet planet, PopulationSize size) {
+		FacilityBuilder builder = null;
+		
+		try {
+			Constructor c = Class.forName(className).getConstructor(new Class[] {
+					FacilityFactory.class,
+					Planet.class,
+					PopulationSize.class
+			});
+			builder = (FacilityBuilder) c.newInstance(new Object[] {
+					planetFactory.getFacilityFactory(),
+					planet,
+					size
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return builder;
 	}
 
 
