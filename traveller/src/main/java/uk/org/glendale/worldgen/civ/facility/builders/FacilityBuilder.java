@@ -183,7 +183,7 @@ public abstract class FacilityBuilder {
 		}
 	}
 	
-	protected void generate() {
+	public void generate() {
 		planet.setGovernment(getGovernment());
 		planet.setTechLevel(getTechLevel());
 		planet.setLawLevel(getLawLevel());

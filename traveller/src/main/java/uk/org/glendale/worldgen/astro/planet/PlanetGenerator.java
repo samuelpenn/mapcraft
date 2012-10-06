@@ -33,6 +33,7 @@ import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.astro.star.StarAPI;
 import uk.org.glendale.worldgen.astro.star.Temperature;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
+import uk.org.glendale.worldgen.civ.facility.builders.FacilityBuilder;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
@@ -85,7 +86,7 @@ public class PlanetGenerator {
 			Builder builder) {
 		Temperature orbitTemperature = StarAPI.getOrbitTemperature(star,
 				distance);
-		
+
 		if (builder instanceof WorldBuilder) {
 			this.lastBuilder = (WorldBuilder) builder;
 		}
@@ -112,6 +113,7 @@ public class PlanetGenerator {
 		Habitability h = Habitability.getHabitability(planet);
 		System.out.println(planet.getName() + ": " + planet.getType() + ", " + h);
 		PopulationSize		size = PopulationSize.None;
+		TechnologyLevel		level = TechnologyLevel.Primitive;
 		switch (h) {
 		case Ideal:
 			// Ideal worlds, tend to have very large populations.
@@ -151,6 +153,12 @@ public class PlanetGenerator {
 			}
 			break;
 		}
+		String culture = lastBuilder.getFacilityBuilderName(size, level);
+		FacilityBuilder facilityBuilder = null;
+		
+		//facilityBuilder.generate();
+		System.out.println(culture);
+		
 		planetFactory.getFacilityGenerator().generateFacilities(planet, size);
 		System.out.println("TechLevel: "+planet.getTechLevel());
 

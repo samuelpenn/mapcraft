@@ -17,7 +17,10 @@ import uk.org.glendale.rpg.traveller.systems.codes.AtmosphereType;
 import uk.org.glendale.rpg.traveller.systems.codes.TradeCode;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.MapImage;
+import uk.org.glendale.worldgen.astro.planet.PopulationSize;
+import uk.org.glendale.worldgen.astro.planet.TechnologyLevel;
 import uk.org.glendale.worldgen.astro.planet.maps.WorldBuilder;
+import uk.org.glendale.worldgen.civ.facility.builders.FacilityBuilder;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
@@ -129,5 +132,12 @@ public abstract class Belt extends WorldBuilder {
 		}
 		
 		return image;
+	}
+
+	/**
+	 * By default, worlds of this type have no population.
+	 */
+	public String getFacilityBuilderName(PopulationSize size, TechnologyLevel level) {
+		return null;
 	}
 }

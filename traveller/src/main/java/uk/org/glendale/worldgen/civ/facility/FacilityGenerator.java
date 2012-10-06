@@ -14,7 +14,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -42,6 +44,7 @@ import uk.org.glendale.worldgen.astro.planet.StarportType;
 import uk.org.glendale.worldgen.civ.commodity.Commodity;
 import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
 import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
+import uk.org.glendale.worldgen.civ.facility.builders.FacilityBuilder;
 
 /**
  * Generates facilities from XML configuration files.
@@ -52,7 +55,7 @@ import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
 @Service
 public class FacilityGenerator {
 	@Autowired
-	private FacilityFactory	factory;
+	private FacilityFactory		factory;
 	@Autowired
 	private CommodityFactory	commodityFactory;
 
@@ -218,6 +221,9 @@ public class FacilityGenerator {
 	private static final String BASE = "uk.org.glendale.worldgen.civ.facility.facilities";
 	private Properties	config;
 	
+	private static HashMap<String, Map<String,String>>  
+		facilityBuilders = new HashMap<String, Map<String,String>>();
+	
 	/**
 	 * Read all the configuration properties from the resource file.
 	 * If the file has already been read, then don't read it again.
@@ -234,9 +240,22 @@ public class FacilityGenerator {
 				if (key.startsWith(".")) {
 					String fqcn = BASE + ".builders" + key;
 					String name = key.replaceAll(".*\\.", ""); 
+					String lists = bundle.getString(key);
+					
+					for (String culture : lists.split(" ")) {
+						if (facilityBuilders.get(culture) == null) {
+							facilityBuilders.put(culture, new HashMap<String,String>());
+						}
+						Map<String, String> map = facilityBuilders.get(culture);
+						map.put(name, fqcn);
+					}
 				}
 			}
 		}
+	}
+	
+	public static Map<String,String> getCultureBuilders(String culture) {
+		return facilityBuilders.get(culture);
 	}
 	
 	/**
@@ -284,6 +303,22 @@ public class FacilityGenerator {
 	
 	private String[] getAllOptions(Object key, Object subKey) {
 		return getAllOptions(key + "." + subKey);
+	}
+	
+	public FacilityBuilder getFacilityBuilder(Planet planet, PopulationSize size) {
+		readConfig();
+		
+		if (size == null || size == PopulationSize.None) {
+			return null;
+		}
+		Habitability	h = Habitability.getHabitability(planet);
+		String 			culture = getOneOption(size, h);
+
+		FacilityBuilder		builder = null;
+		
+		
+		
+		return builder;
 	}
 	
 	/**

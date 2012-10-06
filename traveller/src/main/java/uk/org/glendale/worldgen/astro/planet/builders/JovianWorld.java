@@ -14,9 +14,12 @@ import java.util.List;
 
 import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.planet.PopulationSize;
+import uk.org.glendale.worldgen.astro.planet.TechnologyLevel;
 import uk.org.glendale.worldgen.astro.planet.builders.ice.Europan;
 import uk.org.glendale.worldgen.astro.planet.maps.Tile;
 import uk.org.glendale.worldgen.astro.planet.maps.WorldBuilder;
+import uk.org.glendale.worldgen.civ.facility.builders.FacilityBuilder;
 
 /**
  * Abstract class for creating Jovian worlds such as Jupiter or Saturn. There
@@ -112,6 +115,13 @@ public abstract class JovianWorld extends WorldBuilder {
 		
 
 		return moonBuilders;
+	}
+	
+	/**
+	 * By default, worlds of this type have no population.
+	 */
+	public String getFacilityBuilderName(PopulationSize size, TechnologyLevel level) {
+		return null;
 	}
 
 }

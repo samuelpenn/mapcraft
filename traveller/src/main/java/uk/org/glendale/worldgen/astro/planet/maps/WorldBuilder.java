@@ -11,7 +11,11 @@ package uk.org.glendale.worldgen.astro.planet.maps;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.MissingResourceException;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.persistence.EntityManager;
 
@@ -28,7 +32,10 @@ import uk.org.glendale.worldgen.astro.planet.Builder;
 import uk.org.glendale.worldgen.astro.planet.MapImage;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetType;
+import uk.org.glendale.worldgen.astro.planet.PopulationSize;
+import uk.org.glendale.worldgen.astro.planet.TechnologyLevel;
 import uk.org.glendale.worldgen.astro.planet.builders.MapDrawer;
+import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
 import uk.org.glendale.worldgen.astro.planet.builders.PlanetDescription;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
 import uk.org.glendale.worldgen.astro.planet.builders.belt.AsteroidBelt;
@@ -36,6 +43,7 @@ import uk.org.glendale.worldgen.astro.planet.maps.Tile;
 import uk.org.glendale.worldgen.astro.star.Star;
 import uk.org.glendale.worldgen.civ.commodity.Commodity;
 import uk.org.glendale.worldgen.civ.commodity.CommodityFactory;
+import uk.org.glendale.worldgen.civ.facility.builders.FacilityBuilder;
 import uk.org.glendale.worldgen.server.AppManager;
 
 /**
@@ -130,6 +138,59 @@ public abstract class WorldBuilder implements Builder {
 		return planet;
 	}
 
+	/**
+	 * Get one option from the configuration. A configuration value may consist
+	 * of multiple space separated options. If there is more than one, chose one
+	 * at random and return that. If the key is unset, returns null.
+	 * 
+	 * @param key		Key to retrieve from the configuration.
+	 * @return			One of the listed options from the value.
+	 */
+	protected String getOneOption(Properties properties, String key) {
+		String value = properties.getProperty(key);
+		if (value == null) {
+			return null;
+		} else if (value.trim().length() > 0) {
+			String[] options = value.split(" ");
+			if (options.length > 1) {
+				value = options[Die.rollZero(options.length)];
+			}
+		}
+		return value.trim();
+	}
+	
+	protected Properties getProperties() {
+		Class<?> cls = getClass();
+		ResourceBundle bundle = null;
+
+		Properties properties = new Properties();
+
+		while (cls != null) {
+			try {
+				bundle = ResourceBundle.getBundle(cls.getName());
+			} catch (MissingResourceException e) {
+				// If a bundle is missing, just skip to the next one.
+				cls = cls.getSuperclass();
+				continue;
+			}
+			Enumeration<String> e = bundle.getKeys();
+			while (e.hasMoreElements()) {
+				String key = e.nextElement();
+				String value = bundle.getString(key);
+				if (properties.getProperty(key) == null) {
+					properties.setProperty(key, value);
+				}
+			}
+			if (cls.getSimpleName().equals(PlanetBuilder.class.getSimpleName())) {
+				// The PlanetBuilder should be the top level.
+				break;
+			}
+			cls = cls.getSuperclass();
+		}
+		return properties;
+	}
+	
+	
 	/**
 	 * Checks that all the necessary setters have been called. If anything is
 	 * missing, then an exception is thrown. Should be called by public methods
@@ -315,6 +376,8 @@ public abstract class WorldBuilder implements Builder {
 		}
 		return 0;
 	}
+
+	public abstract String getFacilityBuilderName(PopulationSize size, TechnologyLevel level);
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(GraphicsEnvironment.isHeadless());

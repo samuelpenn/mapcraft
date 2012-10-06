@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Samuel Penn, sam@glendale.org.uk
+ * Copyright (C) 2012 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -9,21 +9,10 @@
 package uk.org.glendale.worldgen.test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
 
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
@@ -42,7 +31,7 @@ import uk.org.glendale.worldgen.civ.trade.CivilisationAPI;
 import uk.org.glendale.worldgen.civ.trade.CivilisationFactory;
 
 /**
- * Create a sandbox universe for testing purposes.
+ * Create a sand box universe for testing purposes.
  * Initiates the spring context and wires everything as required.
  * 
  * @author Samuel Penn

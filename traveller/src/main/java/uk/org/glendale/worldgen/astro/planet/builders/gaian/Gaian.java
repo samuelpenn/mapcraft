@@ -8,13 +8,24 @@
  */
 package uk.org.glendale.worldgen.astro.planet.builders.gaian;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.Properties;
+
 import uk.org.glendale.rpg.traveller.systems.codes.*;
 import uk.org.glendale.rpg.utils.Die;
+import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetType;
+import uk.org.glendale.worldgen.astro.planet.PopulationSize;
 import uk.org.glendale.worldgen.astro.planet.StarportType;
+import uk.org.glendale.worldgen.astro.planet.TechnologyLevel;
 import uk.org.glendale.worldgen.astro.planet.builders.GaianWorld;
 import uk.org.glendale.worldgen.astro.planet.maps.Tile;
 import uk.org.glendale.worldgen.astro.star.Temperature;
+import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
+import uk.org.glendale.worldgen.civ.facility.FacilityGenerator;
+import uk.org.glendale.worldgen.civ.facility.builders.FacilityBuilder;
 
 /**
  * Generate an Earth-like world. These are the most suitable planets for
@@ -223,6 +234,27 @@ public class Gaian extends GaianWorld {
 		addResource("Ferric Ore", 10 + Die.d8(3));
 		addResource("Carbonic Ore", 10 + Die.d10(3));
 		addEcologicalResources();
+	}
+	
+	/**
+	 * This type of world often has a population.
+	 */
+	public String getFacilityBuilderName(PopulationSize size, TechnologyLevel level) {
+		Properties			properties = getProperties();
+		
+		String name = getOneOption(properties,"culture." + size + "." + level);
+		if (name == null) {
+			name = getOneOption(properties, "culture." + level);
+		}
+		if (name == null) {
+			// No valid facility builders for this combination.
+			return null;
+		}
+
+		Map<String,String> map = FacilityGenerator.getCultureBuilders("Imperium");
+		String className = map.get(name);
+		
+		return className;
 	}
 
 }
