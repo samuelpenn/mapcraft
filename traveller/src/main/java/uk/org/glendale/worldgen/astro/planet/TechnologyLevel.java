@@ -8,6 +8,12 @@
  */
 package uk.org.glendale.worldgen.astro.planet;
 
+/**
+ * Rough guide to the level of technology desired. Breaks the levels down
+ * into groups of three.
+ * 
+ * @author Samuel Penn
+ */
 public enum TechnologyLevel {
 	// TL 0 - 2
 	Primitive,
@@ -15,8 +21,8 @@ public enum TechnologyLevel {
 	LowTech,
 	// TL 6 - 8
 	HighTech,
-	// TL 9 - 12
+	// TL 9 - 11
 	Interplanetary,
-	// TL 13+
+	// TL 12+
 	Interstellar;
 }

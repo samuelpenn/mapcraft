@@ -110,7 +110,7 @@ public abstract class FacilityBuilder {
 			divisor = 2;
 		}
 		option = option.replaceAll("[^0-9]", "");
-		int	  	code = Integer.parseInt(getOptionByPopulation("population"));
+		int	  	code = Integer.parseInt(option);
 
 		// Population is given as a power of 10. Randomly generate a suitable
 		// number to 4 significant figures.

@@ -116,7 +116,7 @@ public class PlanetGenerator {
 		Habitability h = Habitability.getHabitability(planet);
 		System.out.println(planet.getName() + ": " + planet.getType() + ", " + h);
 		PopulationSize		size = PopulationSize.None;
-		TechnologyLevel		level = TechnologyLevel.Primitive;
+		TechnologyLevel		level = TechnologyLevel.LowTech;
 		switch (h) {
 		case Ideal:
 			// Ideal worlds, tend to have very large populations.
@@ -154,6 +154,9 @@ public class PlanetGenerator {
 				size = PopulationSize.Gigantic;
 				break;
 			}
+			break;
+		default:
+			size = PopulationSize.None;
 			break;
 		}
 		FacilityBuilder facilityBuilder = null;
