@@ -18,7 +18,10 @@
 	    		   maxX = Math.max(maxX, sectors[i].x);
 	    		   minY = Math.min(minY, sectors[i].y);
 	    		   maxY = Math.max(maxY, sectors[i].y);
-	    		   $("#sectorList").append("<li>" + sectors[i].name + " (" + 
+	    		   
+	    		   var href = "/traveller/ui/sector/" + sectors[i].id;
+	    		   $("#sectorList").append("<li><a href='" + href + "'>" + 
+	    				   sectors[i].name + "</a> (" + 
 	    				   sectors[i].x + "," + sectors[i].y + ")</li>");
 	    	   }
 	    	   
@@ -35,7 +38,8 @@
 	    		   $("#sectorTable").append("<tr id='"+rowId+"'><th>"+y+"</th></tr>");
 		    	   for (var x = minX; x <= maxX; x++) {
 		    		   var sector = sectors[i++];
-		    		   $("#"+rowId).append("<td><img src='/traveller/api/sector/"+sector.name+"/image' title='"+sector.name+"'/></td>");
+	                   var href = "/traveller/ui/sector/" + sector.id;
+		    		   $("#"+rowId).append("<td><a href='" + href + "'><img src='/traveller/api/sector/"+sector.name+"/image' title='"+sector.name+"'/></a></td>");
 		    	   }
 	    	   }
 	    	   
