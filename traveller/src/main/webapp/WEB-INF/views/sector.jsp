@@ -39,10 +39,9 @@
             			   continue;
             		   }
             		   var href = "/traveller/ui/system/" + sys.getId();
-            		   
             		   $(si).append("<li>" + sys.getCoords() + " <a href='"+href+"'>" + sys.getName() + "</a></li>");
-            		   drawSubSectorMap(i);
             	   }
+                   drawSubSectorMap(i);
                }
 	    	   //drawSectorMap();
 	    	   
