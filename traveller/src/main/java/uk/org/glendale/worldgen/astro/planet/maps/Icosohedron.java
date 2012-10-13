@@ -23,9 +23,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.sun.image.codec.jpeg.ImageFormatException;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
+import javax.imageio.ImageIO;
+
+//import com.sun.image.codec.jpeg.ImageFormatException;
+//import com.sun.image.codec.jpeg.JPEGCodec;
+//import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 import uk.org.glendale.graphics.SimpleImage;
 import uk.org.glendale.rpg.utils.Die;
@@ -324,8 +326,9 @@ public class Icosohedron {
 		SimpleImage si = new SimpleImage(i);
 		b = si.getBufferedImage();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-		encoder.encode(b);
+		//JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+		//encoder.encode(b);
+		ImageIO.write(b, "jpg", out);
 		
 		return out.toByteArray();
 

@@ -20,10 +20,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.StringTokenizer;
 
+import javax.imageio.ImageIO;
+
 import uk.org.glendale.rpg.utils.Die;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
+//import com.sun.image.codec.jpeg.JPEGCodec;
+//import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
  * A wrapper around the Java image manipulation classes. Provides a simple
@@ -414,14 +416,16 @@ public class SimpleImage implements ImageObserver {
 		g.drawImage(image, 0, 0, null);
 
 		OutputStream out = new BufferedOutputStream(new FileOutputStream(path));
-		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-		encoder.encode(bimage);
+		//JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+		//encoder.encode(bimage);
+		ImageIO.write(bimage, "jpg", out);
 	}
 	
 	public void save(File path, BufferedImage bimage) throws IOException {
 		OutputStream out = new BufferedOutputStream(new FileOutputStream(path));
-		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-		encoder.encode(bimage);
+		//JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+		//encoder.encode(bimage);
+		ImageIO.write(bimage, "jpg", out);
 	}
 
 	public void save(File path) throws IOException {
@@ -429,16 +433,18 @@ public class SimpleImage implements ImageObserver {
 
 		// while (!ready) { }
 		OutputStream out = new BufferedOutputStream(new FileOutputStream(path));
-		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-		encoder.encode(bimage);
+		//JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+		//encoder.encode(bimage);
+		ImageIO.write(bimage, "jpg", out);
 	}
 	
 	public ByteArrayOutputStream save() throws IOException {
 		BufferedImage				bimage = getBufferedImage();
 		ByteArrayOutputStream		out = new ByteArrayOutputStream();
 		
-		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-		encoder.encode(bimage);
+		//JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+		//encoder.encode(bimage);
+		ImageIO.write(bimage, "jpg", out);
 		
 		return out;
 	}

@@ -1,42 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="/RPG Utils"/>
-	<classpathentry kind="lib" path="/usr/share/jdbc-mysql/lib/jdbc-mysql.jar"/>
-	<classpathentry kind="lib" path="/usr/share/ant-core/lib/ant.jar"/>
-	<classpathentry kind="lib" path="/usr/share/tomcat-servlet-api-2.5/lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="/usr/share/sun-java3d-bin/lib/j3dcore.jar">
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/opt/sun-java3d-bin/lib64"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/usr/share/sun-java3d-bin/lib/j3dutils.jar">
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/opt/sun-java3d-bin/lib64"/>
+			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/usr/share/sun-java3d-bin/lib/vecmath.jar"/>
-	<classpathentry kind="lib" path="support/catalina-ant.jar"/>
-	<classpathentry kind="lib" path="support/catalina.jar"/>
-	<classpathentry kind="lib" path="support/jax-ws-api.jar"/>
-	<classpathentry kind="lib" path="support/jax-ws.jar"/>
-	<classpathentry kind="lib" path="support/jaxb-api.jar"/>
-	<classpathentry kind="lib" path="support/jaxb-impl.jar"/>
-	<classpathentry kind="lib" path="support/jsr311-api.jar"/>
-	<classpathentry kind="lib" path="support/jersey-bundle-1.3.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/c3p0.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/antlr-2.7.6.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/commons-collections-3.1.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/hibernate3.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/javassist-3.9.0.GA.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/jstl-1.2.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/jta-1.1.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/slf4j-api-1.5.8.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/slf4j-simple-1.5.11.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/asm-3.1.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/hibernate-jpa-2.0-api-1.0.0.Final.jar"/>
-	<classpathentry kind="lib" path="/Mapcraft/support/libs/jsf-api.jar"/>
-	<classpathentry kind="output" path="build"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/RPG Utils/release/rpgutils.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

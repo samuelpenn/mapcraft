@@ -10,17 +10,17 @@
 
 	<target name="build">
 		<fail unless="rpg.lib.file" message="Cannot find location of RPG library, see the README for details."/>
-		<copy file="${rpg.lib.file}" todir="WEB-INF/lib"/>
+		<copy file="${rpg.lib.file}" todir="src/main/resources/WEB-INF/lib"/>
 		<!-- <javac srcdir="src" destdir="build"/> -->
 	</target>
 	
 	<target name="webapp" depends="build">
 		<fail unless="project.name" message="The project name has not been set, see the README for details."/>
 		<mkdir dir="release"/>
-		<war destfile="release/${project.name}.war" webxml="WEB-INF/web.xml">
+		<war destfile="release/${project.name}.war" webxml="src/main/resources/WEB-INF/web.xml">
 			<classes dir="build"/>
-			<fileset dir="webapp"/>
-			<webinf dir="WEB-INF">
+			<fileset dir="src/main/webapp"/>
+			<webinf dir="src/main/resources/WEB-INF">
 				<exclude name="**/web.xml"/>
 			</webinf>
 		</war>
