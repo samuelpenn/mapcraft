@@ -8,10 +8,17 @@
 		<link rel="stylesheet" href="/traveller/css/default.css"/> 
         <link rel="stylesheet" href="/traveller/css/system.css"/> 
 		<script type="text/javascript" src="/traveller/scripts/jquery.js"></script>
+        <!--  <script type="text/javascript" src="/traveller/scripts/jquery-ui.min.js"></script> -->
         <script type="text/javascript" src="/traveller/scripts/worldgen.js"></script>
         <script type="text/javascript" src="/traveller/scripts/star.js"></script>
         <script type="text/javascript" src="/traveller/scripts/planet.js"></script>
         <script type="text/javascript" src="/traveller/scripts/system.js"></script>
+        <script type="text/javascript" src="/traveller/scripts/samhaslers/requestanimationframe.polyfill.js"></script>
+        <script type="text/javascript" src="/traveller/scripts/samhaslers/sphere.js"></script>
+        <!--         
+        <script type="text/javascript" src="/traveller/scripts/sdrdis/sphere-hacked.js"></script>      
+        <script type="text/javascript" src="/traveller/scripts/sdrdis/jquery.earth-3d.js"></script>
+        -->      
 	    <script type="text/javascript">
 	       var  _system = null;
 	    
@@ -93,11 +100,18 @@
                var radiusLabel = "Radius";
                
                $(divId).append("<canvas class='globe' id='globe"+id+"' width='200px' height='200px'>Not supported</canvas>");
+               $(divId).append("<div id='locations"+id+"'></div>");
                var texture="/traveller/api/planet/" + planet.getId() + "/projection.jpg";
                // TODO: Need to cancel the previous animation. 
                if (planet.isMoon() == false) {
 	               if (!planet.isBelt()) {
 	            	    createSphere(document.getElementById("globe"+id), texture);
+	            	    
+	            	    //$('#globe'+id).earth3d({
+	            	    //	   texture: texture,
+	            	    //	   dragElement: $('#locations') 
+	            	    //});
+	            	    
 	            	    //var s = new Sphere(document.getElementById("globe"+id), texture);
 	            	    //s.draw();
 	               } else {
@@ -280,8 +294,6 @@
 	       });
 	    </script>
 	    
-	    <script type="text/javascript" src="/traveller/scripts/samhaslers/requestanimationframe.polyfill.js"></script>
-	    <script type="text/javascript" src="/traveller/scripts/samhaslers/sphere.js"></script>	    
 	</head>
 	
 	
