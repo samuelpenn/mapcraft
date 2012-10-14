@@ -128,6 +128,10 @@ public class PlanetDescription {
 	private int compare(String v1, String v2) {
 		return 0;
 	}
+	
+	private String enumToText(String value) {
+		return value.replaceAll("", " ");
+	}
 
 	/**
 	 * Parse a line of text which has flow control sections. Currently supported
@@ -146,6 +150,16 @@ public class PlanetDescription {
 
 		try {
 			// Replace any property variables.
+			while (line.indexOf("$$") >= 0) {
+				String		prop = line.substring(line.indexOf("$$")+2);
+				String		value = "";
+				
+				prop = prop.replaceAll("[^A-Za-z0-9].*", "");
+				//System.out.println(prop);
+				
+				value = enumToText(getProperty(prop));
+				line = line.replaceFirst("\\$\\$"+prop, value);
+			}
 			while (line.indexOf("$") >= 0) {
 				String		prop = line.substring(line.indexOf("$")+1);
 				String		value = "";

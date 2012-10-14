@@ -100,6 +100,11 @@ public class Arean extends BarrenWorld {
 		case Thin:
 			gases = 5 + Die.d6(2);
 			break;
+		case Standard:
+			gases = 20 + Die.d12(3);
+			break;
+		default:
+			gases = 0;
 		}
 		addResource("Inert Gases", gases);
 	}

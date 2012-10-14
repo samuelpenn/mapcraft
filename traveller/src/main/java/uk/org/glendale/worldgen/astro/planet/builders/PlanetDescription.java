@@ -175,9 +175,19 @@ public class PlanetDescription {
 		if (line == null)
 			return "";
 
-		StringBuffer buffer = new StringBuffer();
-
 		try {
+			// Replace any property variables, and change enums to lower case.
+			while (line.indexOf("$$") >= 0) {
+				String prop = line.substring(line.indexOf("$$") + 2);
+				String value = "";
+
+				prop = prop.replaceAll("[^A-Za-z0-9].*", "");
+				// System.out.println(prop);
+
+				value = getProperty(prop).replaceAll("([A-Z])", " $1").toLowerCase().trim();
+				line = line.replaceFirst("\\$\\$" + prop, value);
+			}
+
 			// Replace any property variables.
 			while (line.indexOf("$") >= 0) {
 				String prop = line.substring(line.indexOf("$") + 1);
@@ -408,7 +418,7 @@ public class PlanetDescription {
 		 * addText(buffer, key, 100); } else { key = "trade."+code; if
 		 * (phrases.getProperty(key) != null) { addText(buffer, key, 100); } } }
 		 */
-		return buffer.toString();
+		return buffer.toString().replaceAll(" +", " ");
 	}
 
 	/**
@@ -439,5 +449,9 @@ public class PlanetDescription {
 		b.setPlanet(new Planet());
 		PlanetDescription d = new PlanetDescription(b);
 		*/
+		
+		String text = "FooBar";
+		
+		System.out.println(text.replaceAll("([A-Z])", " $1").toLowerCase().trim());
 	}
 }
