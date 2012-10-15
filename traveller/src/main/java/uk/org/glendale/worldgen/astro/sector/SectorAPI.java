@@ -47,13 +47,13 @@ import uk.org.glendale.worldgen.server.AppManager;
 @Controller
 public class SectorAPI {
 	@Autowired
-	private SectorFactory	factory;
+	private SectorFactory		factory;
 	
 	@Autowired
-	private StarSystemFactory starSystemFactory;
+	private StarSystemFactory 	starSystemFactory;
 	
 	//@Autowired
-	private SectorGenerator	generator;
+	private SectorGenerator		generator;
 	
 	/**
 	 * Gets details on the specified sector. The sector can be defined by either
