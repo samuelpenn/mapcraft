@@ -27,6 +27,7 @@ public class StarSystemTO {
 	private int id;
 	private String name;
 	private String sector;
+	private int sectorId;
 	private int x;
 	private int y;
 	private String allegiance;
@@ -51,6 +52,7 @@ public class StarSystemTO {
 		this.id = system.getId();
 		this.name = system.getName();
 		this.sector = system.getSector().getName();
+		this.sectorId = system.getSector().getId();
 		this.x = system.getX();
 		this.y = system.getY();
 		this.allegiance = system.getAllegiance();
@@ -83,6 +85,10 @@ public class StarSystemTO {
 	
 	public String getSectorName() {
 		return sector;
+	}
+	
+	public int getSectorId() {
+		return sectorId;
 	}
 	
 	public int getX() {

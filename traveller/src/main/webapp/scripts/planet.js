@@ -234,6 +234,18 @@ Planet.prototype.getTradeIcons = function() {
 	   return html;
 };
 
+Planet.prototype.getTradeIcon = function (code) {
+	if (this.tradeArray == null) {
+		this.tradeArray = new Array();
+
+		var codes = this.getTradeCodes().split(" ");
+		for (var i=0; i < codes.length; i++) {
+			this.tradeArray[codes[i]] = "trade_" + code + ".png";
+		}
+	}
+	return this.tradeArray[code];
+};
+
 Planet.prototype.getDescription = function() {
 	return this.planet.description;
 };

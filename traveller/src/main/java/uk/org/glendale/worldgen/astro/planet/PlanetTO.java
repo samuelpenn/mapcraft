@@ -41,6 +41,7 @@ public class PlanetTO {
 	public final int techLevel;
 	public final LifeType lifeLevel;
 	public final GovernmentType government;
+	public final String governmentShort;
 	public final StarportType starport;
 	public final PlanetType type;
 	public final String description;
@@ -62,6 +63,11 @@ public class PlanetTO {
 		this.dayLength = planet.getDayLength();
 		this.dayLengthText = planet.getDayLengthAsString();
 		this.government = planet.getGovernment();
+		if (this.government != null) {
+			this.governmentShort = government.getAbbreviation();
+		} else {
+			this.governmentShort = "";
+		}
 		this.lawLevel = planet.getLawLevel();
 		this.techLevel = planet.getTechLevel();
 		this.lifeLevel = planet.getLifeType();

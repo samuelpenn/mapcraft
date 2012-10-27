@@ -193,9 +193,9 @@
                    var px = px = getX(x,y,scale) + scale * 0.9;
                    var py = getY(x,y,scale) - scale * 1.4;
                    var life = main.getLifeLevel();
-                   if (life == "ComplexOcean") {
+                   if (life == "Complex Ocean") {
                 	   life = "life_water.png";
-                   } else if (life == "SimpleLand" || life == "ComplexLand") {
+                   } else if (life == "Simple Land" || life == "Complex Land") {
                 	   life = "life_land.png";
                    } else if (life == "Extensive") {
                 	   life = "life_extensive.png";
@@ -203,14 +203,59 @@
                 	   life = null;
                    }
                    if (life != null) {
-	                   var image = new Image();
-	                   image.src = base + life;
-	                   image.onload = function () {
-	                        context.drawImage(image, px, py, 40, 40);
-	                   };
+                	   addImage(context, base + life, px, py, 40, 40);
                    }
+
+                   // Add trade codes
+                   var px = px = getX(x,y,scale) - scale * 0.1;
+                   var py = getY(x,y,scale) - scale * 1.4;
+                   var inc = 28;
+                   var w = 24;
+                   
+                   if (main.getTradeIcon("Ni") != null) {
+                	    addImage(context, base + "trade_ni.png", px, py, w, w);
+                	    py += inc;
+                   }
+                   if (main.getTradeIcon("Na") != null) {
+                       addImage(context, base + "trade_na.png", px, py, w, w);
+                       py += inc;
+                   }
+                   if (main.getTradeIcon("In") != null) {
+                       addImage(context, base + "trade_in.png", px, py, w, w);
+                       py += inc;
+                   }
+                   if (main.getTradeIcon("Ag") != null) {
+                       addImage(context, base + "trade_ag.png", px, py, w, w);
+                       py += inc;
+                   }
+                   /*
+                   if (main.getTradeIcon("Ri") != null) {
+                       addImage(context, base + "trade_ri.png", px, py, s, s);
+                       py += inc;
+                   }
+                   if (main.getTradeIcon("Po") != null) {
+                       addImage(context, base + "trade_po.png", px, py, s, s);
+                       py += inc;
+                   }
+                   if (main.getTradeIcon("Hi") != null) {
+                       addImage(context, base + "trade_hi.png", px, py, s, s);
+                       py += inc;
+                   }
+                   if (main.getTradeIcon("Lo") != null) {
+                       addImage(context, base + "trade_lo.png", px, py, s, s);
+                       py += inc;
+                   }
+                   */
                }
 	    	   
+	       }
+	       
+	       function addImage(context, path, x, y, width, height) {
+	    	   var image = new Image();
+	    	   image.src = path;
+	    	   image.onload = function() {
+	    		   context.drawImage(image, x, y, width, height);
+	    	   };
 	       }
 
 	       $(document).ready(function() {
