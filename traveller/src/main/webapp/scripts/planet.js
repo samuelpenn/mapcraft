@@ -67,7 +67,25 @@ Planet.prototype.isPopulated = function() {
 	return (this.planet.population > 0);
 }
    
-Planet.prototype.getPopulation = function() {
+Planet.prototype.getPopulation = function(short) {
+	if (short == true) {
+		var pop = parseInt(this.planet.population);
+		if (pop > 1000000000) {
+			// Billions.
+			pop = Math.floor(pop / 1000000000);
+			return pop + "b";
+		} else if (pop > 1000000) {
+			// Millions.
+			pop = Math.floor(pop / 1000000);
+			return pop + "m";
+			
+		} else if (pop > 1000) {
+			// Thousands.
+			pop = Math.floor(pop / 1000);
+			return pop + "k";
+		}
+		return pop;
+	}
     return WG.addCommas(this.planet.population);
 };
    
@@ -89,10 +107,13 @@ Planet.prototype.getHydrographics = function() {
 	return this.planet.hydrographics + "%";
 };
    
-Planet.prototype.getGovernment = function() {
+Planet.prototype.getGovernment = function(short) {
+	if (short == true) {
+		return this.planet.governmentShort;
+	}
 	return WG.formatEnum(this.planet.government);
 };
-   
+
 Planet.prototype.getAxialTilt = function() {
 	if (this.planet.tradeCodes.indexOf("As") != -1) {
         return "--";
@@ -107,43 +128,48 @@ Planet.prototype.getDayLength = function() {
 	return this.planet.dayLengthText;
 },
    
-Planet.prototype.getLawLevel = function() {
-    switch (this.planet.lawLevel) {
-    case 0: return "0 (Lawless)";
-    case 1: return "1 (Libertarian)";
-    case 2: return "2 (Liberal)";
-    case 3: return "3 (Typical)";
-    case 4: return "4 (Strict)";
-    case 5: return "5 (Restrictive)";
-    case 6: return "6 (Authoritarian)";
-    }
+Planet.prototype.getLawLevel = function(full) {
+	if (full == true) {
+	    switch (this.planet.lawLevel) {
+	    case 0: return "0 (Lawless)";
+	    case 1: return "1 (Libertarian)";
+	    case 2: return "2 (Liberal)";
+	    case 3: return "3 (Typical)";
+	    case 4: return "4 (Strict)";
+	    case 5: return "5 (Restrictive)";
+	    case 6: return "6 (Authoritarian)";
+	    }
+	}
 	return "" + this.planet.lawLevel;
 };
-   
-Planet.prototype.getTechLevel = function() {
-    switch (this.planet.techLevel) {
-    case  0: return "0 (Stone)";
-    case  1: return "1 (Bronze)";
-    case  2: return "2 (Iron)";
-    case  3: return "3 (Medieval)";
-    case  4: return "4 (Renaissance)";
-    case  5: return "5 (Steam)";
-    case  6: return "6 (Mechanical)";
-    case  7: return "7 (Atomic)";
-    case  8: return "8 (Digital)";
-    case  9: return "9 (Interplanetary)";
-    case 10: case 11: 
- 	    return this.planet.techLevel + " (Interstellar)";
-    case 12: case 13: case 14:
-        return this.planet.techLevel + " (Low Imperium)";
-    case 15: case 16: case 17:
-        return this.planet.techLevel + " (High Imperium)";
-    case 18: case 19: case 20:
-        return this.planet.techLevel + " (Advanced)";
-    default:
-        return this.planet.techLevel + " (Magic)";
-    }
-    return this.planet.techLevel;
+
+
+Planet.prototype.getTechLevel = function(full) {
+	if (full == true) {
+	    switch (this.planet.techLevel) {
+	    case  0: return "0 (Stone)";
+	    case  1: return "1 (Bronze)";
+	    case  2: return "2 (Iron)";
+	    case  3: return "3 (Medieval)";
+	    case  4: return "4 (Renaissance)";
+	    case  5: return "5 (Steam)";
+	    case  6: return "6 (Mechanical)";
+	    case  7: return "7 (Atomic)";
+	    case  8: return "8 (Digital)";
+	    case  9: return "9 (Interplanetary)";
+	    case 10: case 11: 
+	 	    return this.planet.techLevel + " (Interstellar)";
+	    case 12: case 13: case 14:
+	        return this.planet.techLevel + " (Low Imperium)";
+	    case 15: case 16: case 17:
+	        return this.planet.techLevel + " (High Imperium)";
+	    case 18: case 19: case 20:
+	        return this.planet.techLevel + " (Advanced)";
+	    default:
+	        return this.planet.techLevel + " (Magic)";
+	    }
+	}
+    return "" + this.planet.techLevel;
 };
    
 Planet.prototype.getLifeLevel = function() {

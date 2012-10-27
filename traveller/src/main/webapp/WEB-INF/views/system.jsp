@@ -26,7 +26,7 @@
 	    	   _system = system;
 	    	   WG.system = new StarSystem(system);
 	    	   
-               $("#title").html(WG.system.getFullName());
+               $("#title").html(WG.system.getFullName(true));
 	    	   
 	    	   /*
 	    	   $("#systemData").append("<b>Main world:</b> " + system.mainWorld.name + "<br/>");
@@ -139,8 +139,8 @@
                
                if (planet.isPopulated()) {
 	               var labels = [ "Population", "Tech Level", "Government", "Law Level" ];
-	               var data = [ planet.getPopulation(), planet.getTechLevel(), 
-	                            planet.getGovernment(), planet.getLawLevel() ];
+	               var data = [ planet.getPopulation(), planet.getTechLevel(true), 
+	                            planet.getGovernment(), planet.getLawLevel(true) ];
 	               
 	               para += mkTable(labels, data);
                }

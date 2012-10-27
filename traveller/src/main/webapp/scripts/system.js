@@ -20,8 +20,14 @@ function StarSystem (system) {
 }
 
 
-StarSystem.prototype.getFullName = function() {
-	return this.system.sectorName + " / " + this.system.name;
+StarSystem.prototype.getFullName = function(asLink) {
+	var label = this.system.sectorName + " / " + this.system.name;
+	if (asLink == true) {
+		var href = "/traveller/ui/sector/" + this.system.sectorId;
+		return "<a href='" + href + "'>" + this.system.sectorName + "</a> / " + this.system.name;
+	} else {
+		return label;
+	}
 };
 
 StarSystem.prototype.getSectorName = function() {
@@ -92,6 +98,14 @@ StarSystem.prototype.getPlanets = function(starId) {
 	}
 
 	return a;	
+};
+
+StarSystem.prototype.getMainWorld = function() {
+	if (this.system.mainWorld != null) {
+		return new Planet(this.system.mainWorld);
+	} else {
+		return null;
+	}
 };
 
 StarSystem.prototype.getPlanet = function(id) {

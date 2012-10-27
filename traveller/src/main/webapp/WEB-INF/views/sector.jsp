@@ -27,7 +27,7 @@
             	   var my = 1 + Math.floor(i / 4) * 10;
             	   
             	   //$("#data").append("<canvas id='map"+i+"' width='660px' height='940px'></canvas>");
-                   $("#data").append("<canvas id='map"+i+"' width='1320px' height='1880px'></canvas>");
+                   $("#data").append("<canvas id='map"+i+"' width='1584px' height='2256px'></canvas>");
             	   $("#data").append("<ul id='ss_" + i + "'></ul>");
             	   var si = "#ss_" + i;
             	   for (var s = 0; s < WG.sector.systems.length; s++) {
@@ -64,7 +64,7 @@
 	    	   var    left_x = x - (size * COS60);
 	    	   
 	    	   context.beginPath();
-	    	   context.lineWidth = 1;
+	    	   context.lineWidth = 3;
 	    	   context.moveTo(topLeft_x, top_y);
 	    	   context.lineTo(topRight_x, top_y);
 	    	   context.lineTo(right_x, middle_y);
@@ -91,7 +91,7 @@
                var canvas = document.getElementById("map");
                var context = canvas.getContext("2d");
                
-               context.strokeStyle = "#000000";
+               context.strokeStyle = "#909090";
                context.fillStyle = "#FFFFFF";
                               
                for (var y=0; y < 40; y++) {
@@ -121,10 +121,10 @@
                var mx = 1 + (i % 4) * 8;
                var my = 1 + Math.floor(i / 4) * 10;
 
-               var scale = 100;
+               var scale = 120;
                for (var y=0; y < 10; y++) {
                    for (var x=0; x < 8; x++) {
-                       context.strokeStyle = "#000000";
+                       context.strokeStyle = "#909090";
                        context.fillStyle = "#FFFFFF";
                        drawHex(context, getX(x,y,scale), getY(x,y,scale), scale);
                        
@@ -155,18 +155,60 @@
                    var x = sys.getX() - mx;
                    var y = sys.getY() - my;
                    context.beginPath();
-                   context.fillStyle = "#FF9900";
-                   context.arc(getX(x,y,scale) + scale/2, getY(x,y,scale) - scale/1.2, scale/5, 0, 2*Math.PI);
+                   context.fillStyle = "#000000";
+                   context.arc(getX(x,y,scale) + scale/2, getY(x,y,scale) - scale/1.2, scale/8, 0, 2*Math.PI);
                    context.closePath();
+                   context.stroke();
                    context.fill();
                    
                    // Display system name.
                    context.fillStyle = "#000000";
                    context.font = "20pt Arial";
                    var textWidth = context.measureText(sys.getName()).width;
-                   var px = getX(x,y,scale) + scale * 0.5 - textWidth/2;
-                   var py = getY(x,y,scale) - scale * 0.3;
+                   var px = getX(x,y,scale) + scale * 0.55 - textWidth/2;
+                   var py = getY(x,y,scale) - scale * 0.45;
                    context.fillText(sys.getName(), px, py);
+
+                   // Display starport and TL
+                   var main = sys.getMainWorld();
+                   var text = main.getStarPort() + " / " + main.getTechLevel();
+                   var textWidth = context.measureText(text).width;
+                   var px = getX(x,y,scale) + scale * 0.55 - textWidth/2;
+                   var py = getY(x,y,scale) - scale * 1.1;
+                   context.fillText(text, px, py);
+                   
+                   // Display social information.
+                   // Consists of Law Level, Government and Population.
+                   var text = main.getLawLevel() + "/";
+                   text += main.getGovernment(true) + "/";
+                   text += main.getPopulation(true);
+                   var textWidth = context.measureText(text).width;
+                   var px = getX(x,y,scale) + scale * 0.55 - textWidth/2;
+                   var py = getY(x,y,scale) - scale * 0.15;
+                   context.fillStyle = "#555555";
+                   context.fillText(text, px, py);
+                   
+                   // Now do the icons.
+                   var base = "/traveller/images/symbols/64x64/";
+                   var px = px = getX(x,y,scale) + scale * 0.9;
+                   var py = getY(x,y,scale) - scale * 1.4;
+                   var life = main.getLifeLevel();
+                   if (life == "ComplexOcean") {
+                	   life = "life_water.png";
+                   } else if (life == "SimpleLand" || life == "ComplexLand") {
+                	   life = "life_land.png";
+                   } else if (life == "Extensive") {
+                	   life = "life_extensive.png";
+                   } else {
+                	   life = null;
+                   }
+                   if (life != null) {
+	                   var image = new Image();
+	                   image.src = base + life;
+	                   image.onload = function () {
+	                        context.drawImage(image, px, py, 40, 40);
+	                   };
+                   }
                }
 	    	   
 	       }
