@@ -90,6 +90,26 @@
 	        </description>
 	    </commodity>
 
+        <commodity name="Natural oil">
+            <cost volume="1000000">300</cost>
+            <production tech="5" pr="5" cr="5">
+                <output mode="Drill" tech="5" efficiency="100">Petroleum</output>
+            </production>
+            <codes source="Mi">Fu</codes>
+            <description>
+                Oil deposits.
+            </description>
+        </commodity>
+
+        <commodity name="Petroleum">
+            <cost volume="1000000">1000</cost>
+            <production tech="5" pr="5" cr="5"/>
+            <codes source="Mi">Fu</codes>
+            <description>
+                Commercial grade oil.
+            </description>
+        </commodity>
+
 	    <commodity name="Cnidarians">
 	    	<cost volume="1000000">25</cost>
 	    	<production tech="1" law="6" pr="2" cr="3"/>
@@ -111,8 +131,8 @@
 	    <commodity name="Marine arthropods" parent="Food">
 	    	<cost volume="1000000">75</cost>
 	    	<production tech="1" law="6" pr="4" cr="4">
-	    	    <output mode="FiDs">Shellfish</output>
-                <output mode="Fi" efficiency="10">Shellfish</output>
+	    	    <output mode="Trawling">Shellfish</output>
+                <output mode="Fishing" efficiency="10">Shellfish</output>
 	    	</production>
 	    	<codes source="Ag">Pe</codes>
 	    	<description>
@@ -291,7 +311,7 @@
             </production>
             <codes source="Ag">Pe</codes>
             <description>
-                Any type of vertabrate animal that lives in both water and
+                Any type of vertebrate animal that lives in both water and
                 on land. Includes amphibians, but also creatures such as
                 crocodiles and otters.
             </description>
@@ -390,8 +410,44 @@
 
         <commodity name="Animal products">
             <cost volume="1000000">50</cost>
-            <production tech="0" law="6" pr="4" cr="7"/>
+            <production tech="0" law="6" pr="4" cr="7">
+                <output mode="" efficiency="100"></output>
+                <output mode="" efficiency="100"></output>
+                <output mode="" efficiency="100"></output>
+            </production>
             <codes source="Ag">Pe</codes>
+        </commodity>
+    </group>
+
+    <group name="Textiles">
+        <commodity name="Primitive textiles" parent="Textiles">
+            <cost volume="1000000">100</cost>
+            <production tech="0" law="6" pr="4" cr="4"/>
+            <codes source="Ag">Te</codes>
+        </commodity>
+
+        <commodity name="Simple textiles" parent="Textiles">
+            <cost volume="1000000">100</cost>
+            <production tech="2" law="6" pr="4" cr="4"/>
+            <codes source="Ag">Te</codes>
+        </commodity>
+
+        <commodity name="Fine textiles" parent="Textiles">
+            <cost volume="1000000">100</cost>
+            <production tech="2" law="6" pr="4" cr="4"/>
+            <codes source="Ag">Te</codes>
+        </commodity>
+
+        <commodity name="Hand textiles" parent="Textiles">
+            <cost volume="1000000">100</cost>
+            <production tech="4" law="6" pr="4" cr="4"/>
+            <codes source="Ag">Te</codes>
+        </commodity>
+
+        <commodity name="Machined textiles" parent="Textiles">
+            <cost volume="1000000">100</cost>
+            <production tech="5" law="6" pr="4" cr="4"/>
+            <codes source="Ag">Te</codes>
         </commodity>
     </group>
 </commodities>

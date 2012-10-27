@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<commodities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xmlns:w="http://glendale.org.uk/mapcraft/worldgen"
+			 xsi:schemaLocation="commodities.xsd">
+
+    <group name="Luxuries">
+        <commodity name="Mineral dyes">
+            <cost volume="1000">150</cost>
+            <production tech="1" law="6" pr="7" cr="8"/>
+            <codes source="Mi">Lu</codes>
+            <description>
+                Mineral based dyes.
+            </description>
+        </commodity>
+
+        <commodity name="Plant dyes">
+            <cost volume="1000">100</cost>
+            <production tech="1" law="6" pr="7" cr="8"/>
+            <codes source="Ag">Lu</codes>
+            <description>
+                Plant based dyes.
+            </description>
+        </commodity>
+
+        <commodity name="Exotic dyes">
+            <cost volume="1000">250</cost>
+            <production tech="1" law="6" pr="8" cr="9"/>
+            <codes source="Ag">Lu</codes>
+            <description>
+                Dyes based on exotic compounds.
+            </description>
+        </commodity>
+
+        <commodity name="Fine wines">
+            <cost volume="1000">250</cost>
+            <production tech="1" law="6" pr="10" cr="10"/>
+            <codes source="Ag">Lu</codes>
+            <description>
+                High quality wines.
+            </description>
+        </commodity>
+
+        <commodity name="Canvas paintings">
+            <cost volume="1000">500</cost>
+            <production tech="3" law="6" pr="11" cr="11"/>
+            <codes source="In">Lu</codes>
+            <description>
+                Paintings and similar artworks.
+            </description>
+        </commodity>
+
+        <commodity name="Artistic textiles">
+            <cost volume="1000000">1000</cost>
+            <production tech="3" law="6" pr="11" cr="11"/>
+            <codes source="In">Lu</codes>
+            <description>
+                Dyes based on exotic compounds.
+            </description>
+        </commodity>
+    </group>
+
+
+</commodities>

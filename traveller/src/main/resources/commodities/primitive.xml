@@ -172,6 +172,7 @@
                 Basic building materials.
             </description>
         </commodity>
+
     </group>
 
     <group name="Clothes" base="primitive">

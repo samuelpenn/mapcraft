@@ -127,8 +127,6 @@
             <map from="Animal products" to="Simple clothes" level="100"/>
         </facility>
 
-
-
         <facility name="agrarianColony" type="Residential">
             <title>Agrarian Colony</title>
             <codes>T3 T4 T5 T6 T7 P4 P5 P6 P7 P8</codes>
@@ -147,6 +145,25 @@
             <title>Simple Mining</title>
             <codes>T3 P3 P4 P5 P6 P7</codes>
             <operation level="100">Mine</operation>
+        </facility>
+
+        <facility name="coastalFishing" type="Agriculture">
+            <title>Coastal Fishing</title>
+            <codes>T3</codes>
+            <operation level="100">Fishing</operation>
+        </facility>
+
+        <facility name="simpleIndustry" type="Industry">
+            <title>Simple Industry</title>
+            <codes>T4 P3 P4 P5 P6 P7</codes>
+            <operation level="100">InFe1</operation>
+        </facility>
+
+        <facility name="warfare" type="Culture">
+            <title>Warfare</title>
+            <codes>T3</codes>
+            <require>WpnH</require>
+            <consume>BldL</consume>
         </facility>
 
         <facility name="metalWorks" type="Industry">
