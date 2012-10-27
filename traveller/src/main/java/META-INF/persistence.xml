@@ -1,9 +1,10 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+
     <persistence-unit name="worldgen">
         <properties>
             <property name="database" value="MYSQL"/>
             <property name="databasePlatform" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
-            <property name="hibernate.connection.drvier_class" value="com.mysql.jdbc.Driver"/>
+            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
             <property name="hibernate.connection.password" value="wgtest"/>
             <property name="hibernate.connection.username" value="wgtest"/>
             <property name="hibernate.connection.url" value="jdbc:mysql://appleseed/wgtest"/>
