@@ -228,6 +228,6 @@ public class Sandbox {
 		//sb.addManyToSandbox(1, 20);
 		
 		//sb.testSimulation(1098);
-		//sb.testSimulation();
+		sb.testSimulation();
 	}
 }

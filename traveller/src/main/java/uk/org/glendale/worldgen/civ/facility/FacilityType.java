@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Samuel Penn, sam@glendale.org.uk
+ * Copyright (C) 2009, 2012 Samuel Penn, sam@glendale.org.uk
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -42,5 +42,18 @@ public enum FacilityType {
 	/**
 	 * A resource which produces commodities.
 	 */
-	Resource;
+	Resource,
+	/**
+	 * Something which is happening. Generally consumes resources. May
+	 * be a war, civil unrest, etc. Events are dynamically added. May
+	 * overlap with Culture, may Events are temporary.
+	 */
+	Event,
+	/**
+	 * Some aspect of the culture which consumes/produces commodities.
+	 * Particularly powerful religious or academic pursuits, or warfare.
+	 * There may be an overlap between Events and Culture. Culture are
+	 * fixed.
+	 */
+	Culture;
 }

@@ -37,6 +37,8 @@ public class CivilisationAPI {
 	@Autowired
 	private Universe				universe;
 	
+	private static int			DAYS_IN_WEEK = 7;
+	
 	/**
 	 * Simulate a single planet.
 	 * 
@@ -63,6 +65,7 @@ public class CivilisationAPI {
 	public synchronized void simulate() {
 		long	lastRealTime = universe.getRealTime();
 		long	currentRealTime = System.currentTimeMillis();
+		long	processed = 0;
 		
 		if (currentRealTime > lastRealTime) {
 			long	realTimePassed = currentRealTime - lastRealTime;
@@ -73,20 +76,29 @@ public class CivilisationAPI {
 			
 			System.out.println("Days passed: " + daysPassed);
 			
-			List<Planet> planets = planetFactory.getPlanetsWithEvent(currentTime, 10);
+			List<Planet> planets = planetFactory.getPlanetsWithEvent(currentTime, 20);
 			for (Planet p : planets) {
 				simulate(p);
 				long nextTime = p.getNextEventTime() + secondsInDay * 6 + Die.die((int)secondsInDay, 2);
-				if (nextTime < currentTime) {
-					nextTime += (currentTime - nextTime) / 2;
+				if (nextTime < currentTime - secondsInDay * DAYS_IN_WEEK) {
+					// If a long time in the past (more than a week), set the next
+					// event to run sometime within the past week. This will mean
+					// we'll get an instant update again, before settling into the
+					// normal routine.
+					nextTime = currentTime - Die.die((int)secondsInDay * DAYS_IN_WEEK);
+				} else if (nextTime < currentTime) {
+					nextTime = currentTime + Die.die((int)(secondsInDay / 2) * DAYS_IN_WEEK);
 				}
 				p.setNextEventTime(nextTime);
 				planetFactory.persist(p);
+				processed++;
 			}
 			
 			// And finally...
 			universe.setCurrentTime(currentTime);
 			universe.setRealTime(currentRealTime);
+			
+			System.out.println("Processed " + processed + " planets.");
 		}
 	}
 }

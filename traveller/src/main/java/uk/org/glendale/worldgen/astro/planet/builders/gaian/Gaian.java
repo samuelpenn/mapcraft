@@ -233,6 +233,7 @@ public class Gaian extends GaianWorld {
 		addResource("Silicate Ore", 20 + Die.d10(3));
 		addResource("Ferric Ore", 10 + Die.d8(3));
 		addResource("Carbonic Ore", 10 + Die.d10(3));
+		addResource("Natural oil", 30 + Die.d10(3));
 		addEcologicalResources();
 	}
 	

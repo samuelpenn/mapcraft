@@ -56,6 +56,7 @@ public enum CommodityCode {
 	Ma("Machinary"),
 	El("Electronics"),
 	To("Tool"),
+	Fu("Fuel"),
 	// Quality
 	Hq("High quality"),
 	Lq("Low quality"),

@@ -21,15 +21,16 @@ import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
 import uk.org.glendale.worldgen.civ.facility.builders.FacilityBuilder;
 
 /**
- * Define facilities for a medieval culture. Medieval cultures are TL3, and
- * generally consist of multiple large kingdoms.
+ * Define facilities for a renaissance culture. Such cultures are TL4, and
+ * are on the verge of a scientific revolution. Culturally, they are still
+ * similar to medieval, though they are changing intellectually.
  * 
  * @author Samuel Penn
  */
-public class Medieval extends FacilityBuilder {
+public class Renaissance extends FacilityBuilder {
 
 	// Residential.
-	private static final String R_FEUDAL_KINGDOMS = "feudalKingdoms";
+	private static final String R_MERCHANT_KINGDOMS = "merchantKingdoms";
 	
 	// Agriculture.
 	private static final String A_SIMPLE_FARMING = "simpleFarming";
@@ -38,11 +39,14 @@ public class Medieval extends FacilityBuilder {
 	// Mining.
 	private static final String M_SIMPLE_MINING = "simpleMining";
 	
+	// Industry.
+	private static final String I_SIMPLE_INDUSTRY = "simpleIndustry";
+	
 	// Others.
-	private static final String WARFARE = "warfare";
-	private static final String RELIGION = "religion";
+	private static final String C_WARFARE = "warfare";
+	private static final String C_RELIGION = "religion";
 
-	public Medieval(FacilityFactory factory, Planet planet, PopulationSize population) {
+	public Renaissance(FacilityFactory factory, Planet planet, PopulationSize population) {
 		super(factory, planet, population);
 		
 		switch (population) {
@@ -58,7 +62,7 @@ public class Medieval extends FacilityBuilder {
 	public void generate() {
 		super.generate();
 		
-		String	 residentialName = R_FEUDAL_KINGDOMS;
+		String	 residentialName = R_MERCHANT_KINGDOMS;
 		int		 residentialSize = 93 + Die.d6(2);
 
 		// Main residential facility.
@@ -69,9 +73,10 @@ public class Medieval extends FacilityBuilder {
 		List<Installation>  list = new ArrayList<Installation>();
 		list.add(new Installation(factory.getFacility(A_SIMPLE_FARMING), 100));
 		list.add(new Installation(factory.getFacility(M_SIMPLE_MINING), 50));
+		list.add(new Installation(factory.getFacility(I_SIMPLE_INDUSTRY), 25));
 		if (planet.getHydrographics() > 50) {
 			list.add(new Installation(factory.getFacility(A_COASTAL_FISHING), 
-					planet.getHydrographics() / 3));
+					planet.getHydrographics() / 2));
 		}
 		addFacilities(list);
 		
