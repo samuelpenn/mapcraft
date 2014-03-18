@@ -23,7 +23,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.FilterDef;
@@ -48,37 +47,37 @@ public class StarSystem {
 	@Id
 	@GeneratedValue
 	@Column(name = "id")
-	private int id;
+	private int				id;
 
 	// Persisted fields.
 	@Column(name = "name")
-	private String name;
+	private String			name;
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sector_id", referencedColumnName = "id")
-	private Sector sector;
+	private Sector			sector;
 	@Column(name = "x")
-	private int x;
+	private int				x;
 	@Column(name = "y")
-	private int y;
+	private int				y;
 	@Column(name = "allegiance")
-	private String allegiance;
+	private String			allegiance;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "zone")
-	private Zone zone;
+	private Zone			zone;
 	@Column(name = "base")
-	private String base; // Isn't used.
+	private String			base;		// Isn't used.
 	@Column(name = "uwp")
-	private String uwp;
+	private String			uwp;
 	@Column(name = "selection")
-	private int selection;
+	private int				selection;
 
 	@OneToMany(mappedBy = "system", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@Where(clause = "moon=0")
-	private List<Planet> planets;
+	private List<Planet>	planets;
 
 	@OneToMany(mappedBy = "system", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private List<Star> stars;
+	private List<Star>		stars;
 
 	public StarSystem() {
 
@@ -153,13 +152,13 @@ public class StarSystem {
 	public int getY() {
 		return y;
 	}
-	
+
 	/**
-	 * Gets the coordinates of this system as a 4 digit string, in the
-	 * format XXYY. This is the standard way of displaying a system's
-	 * position in the sector.
+	 * Gets the coordinates of this system as a 4 digit string, in the format
+	 * XXYY. This is the standard way of displaying a system's position in the
+	 * sector.
 	 * 
-	 * @return	Coordinates of sector as 4 digit string.
+	 * @return Coordinates of sector as 4 digit string.
 	 */
 	public String getXY() {
 		return String.format("%02d%02d", x, y);
