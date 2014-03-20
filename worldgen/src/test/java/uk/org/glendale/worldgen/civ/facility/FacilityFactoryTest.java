@@ -12,8 +12,7 @@ import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -30,12 +29,14 @@ public class FacilityFactoryTest {
 	@Test
 	public void facilityFactoryTest() throws ParserConfigurationException,
 			SAXException, IOException {
+
 		Assert.assertNotNull(AppManager.getInstance());
 		Assert.assertEquals("test", AppManager.getUniverse());
 
 		FacilityFactory factory = new FacilityFactory();
 
-		Facility f = new Facility("test", "Test", FacilityType.Residential, "test");
+		Facility f = new Facility("test", "Test", FacilityType.Residential,
+				"test");
 		f.addCode(FacilityCode.H0);
 		f.addCode(FacilityCode.T0);
 		f.addOperation("Ag", 100);

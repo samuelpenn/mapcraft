@@ -84,6 +84,6 @@ public class Installation {
 	 * facility name plus the installation size.
 	 */
 	public String toString() {
-		return facility.getName() + "[" + size + "%]";
+		return facility.getTitle() + "[" + size + "%]";
 	}
 }
