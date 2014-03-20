@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -31,7 +30,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import uk.org.glendale.worldgen.XMLHelper;
-import uk.org.glendale.worldgen.server.AppManager;
 
 /**
  * Provides access to commodities.
@@ -112,9 +110,10 @@ public class CommodityFactory {
 			return new ArrayList<CommodityMap>();
 		}
 	}
-	
+
 	public void deleteMapping(Commodity commodity, String mode, Commodity output) {
-		Query q = em.createQuery("from CommodityMap where commodity = :c and output = :o and mode = :m");
+		Query q = em
+				.createQuery("from CommodityMap where commodity = :c and output = :o and mode = :m");
 		q.setParameter("c", commodity);
 		q.setParameter("o", output);
 		q.setParameter("m", mode);
@@ -149,7 +148,7 @@ public class CommodityFactory {
 		if (commodity == null) {
 			commodity = new Commodity();
 		}
-		System.out.println("    "+name);
+		System.out.println("    " + name);
 		String image = name.toLowerCase().replaceAll(" ", "_");
 		if (parent != null) {
 			if (getCommodity(parent) == null) {
@@ -169,7 +168,7 @@ public class CommodityFactory {
 			Node p = params.item(j);
 			if (p.getNodeType() == Node.ELEMENT_NODE) {
 				String pName = p.getNodeName();
-				String value = p.getTextContent().trim();
+				String value = XMLHelper.getText(p);
 
 				if (pName.equals("cost")) {
 					commodity.setCost(Integer.parseInt(value));
@@ -191,19 +190,19 @@ public class CommodityFactory {
 				}
 			}
 		}
-		System.out.println("Persist "+name);
+		System.out.println("Persist " + name);
 		persist(commodity);
 	}
-	
+
 	public void createCommodity(String name) {
 		Commodity c = new Commodity();
 		c.setName(name);
-		
+
 		persist(c);
-		
+
 		System.out.println(c.getId());
 	}
-	
+
 	@Transactional
 	public void persist(Commodity commodity) {
 		em.persist(commodity);
@@ -253,7 +252,7 @@ public class CommodityFactory {
 					for (int j = 0; j < outputs.getLength(); j++) {
 						Node o = outputs.item(j);
 						if (o.getNodeName().equals("output")) {
-							String value = o.getTextContent().trim();
+							String value = XMLHelper.getText(o);
 							if (getCommodity(value) == null) {
 								continue;
 							}
@@ -270,14 +269,14 @@ public class CommodityFactory {
 							if (techLevel < 0) {
 								techLevel = 0;
 							}
-							String    name = XMLHelper.getAttribute(node, "name");
+							String name = XMLHelper.getAttribute(node, "name");
 							Commodity input = getCommodity(name);
 							Commodity output = getCommodity(value);
-							
+
 							deleteMapping(input, mode, output);
-							
-							CommodityMap map = new CommodityMap(input, output, mode, 
-											efficiency, techLevel);
+
+							CommodityMap map = new CommodityMap(input, output,
+									mode, efficiency, techLevel);
 							em.persist(map);
 						}
 					}
@@ -304,15 +303,16 @@ public class CommodityFactory {
 	}
 
 	/**
-	 * Used to populate the database from the XML configuration files.
-	 * Either loads data from the specified file, or if a directory is
-	 * given, loads data from all "*.xml" files in that directory.
+	 * Used to populate the database from the XML configuration files. Either
+	 * loads data from the specified file, or if a directory is given, loads
+	 * data from all "*.xml" files in that directory.
 	 * 
-	 * Configuration is scanned twice, once to add all the commodities,
-	 * and second to generate the mappings. This allows mappings to refer
-	 * to commodities later in the configuration.
+	 * Configuration is scanned twice, once to add all the commodities, and
+	 * second to generate the mappings. This allows mappings to refer to
+	 * commodities later in the configuration.
 	 * 
-	 * @param base	Directory to find files in, or a single file.
+	 * @param base
+	 *            Directory to find files in, or a single file.
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException

@@ -24,7 +24,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import uk.org.glendale.worldgen.civ.commodity.CommodityCode;
 
@@ -49,11 +48,11 @@ public class Facility {
 	/** Unique internal name for this facility. */
 	@Column(name = "name")
 	private String				name;
-	
+
 	/** Descriptive title for this facility. */
 	@Column(name = "title")
 	private String				title;
-	
+
 	/** Type of facility. */
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type")
@@ -71,19 +70,21 @@ public class Facility {
 	@ElementCollection(fetch = FetchType.EAGER)
 	@JoinTable(name = "facility_ops", joinColumns = @JoinColumn(name = "facility_id"))
 	private List<Operation>		operations	= new ArrayList<Operation>();
-	
+
 	@ElementCollection(fetch = FetchType.EAGER)
 	@JoinTable(name = "facility_req", joinColumns = @JoinColumn(name = "facility_id"))
 	@Enumerated(EnumType.STRING)
 	@Column(name = "code")
-	private Set<CommodityCode>	required = EnumSet.noneOf(CommodityCode.class);
+	private Set<CommodityCode>	required	= EnumSet
+													.noneOf(CommodityCode.class);
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@JoinTable(name = "facility_consume", joinColumns = @JoinColumn(name = "facility_id"))
 	@Enumerated(EnumType.STRING)
 	@Column(name = "code")
-	private Set<CommodityCode>	consumed = EnumSet.noneOf(CommodityCode.class);
-	
+	private Set<CommodityCode>	consumed	= EnumSet
+													.noneOf(CommodityCode.class);
+
 	/*
 	 * @MapKey(name="facility_id") @JoinTable(name="facility_requirements",
 	 * joinColumns=@JoinColumn(name="facility_id"))
@@ -121,8 +122,8 @@ public class Facility {
 	}
 
 	/**
-	 * Gets the name of this type of facility. This is a short and unique
-	 * name that is used to identify the facility in some APIs.
+	 * Gets the name of this type of facility. This is a short and unique name
+	 * that is used to identify the facility in some APIs.
 	 * 
 	 * @return Unique name of the facility.
 	 */
@@ -139,7 +140,7 @@ public class Facility {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Gets the title of this type of facility. This is the name that will be
 	 * displayed to the users. It is unique.
@@ -149,7 +150,7 @@ public class Facility {
 	public String getTitle() {
 		return title;
 	}
-	
+
 	/**
 	 * Sets the facility title.
 	 * 
@@ -182,7 +183,7 @@ public class Facility {
 		}
 		this.type = type;
 	}
-	
+
 	public String getImagePath() {
 		return imagePath;
 	}
@@ -211,8 +212,9 @@ public class Facility {
 	 * Gets the efficiency of a named operation that this Facility performs.
 	 * Operations may be AgFa, MiSi etc.
 	 * 
-	 * @param name	Name of operation.
-	 * @return		Efficiency, on a scale of 1-100.
+	 * @param name
+	 *            Name of operation.
+	 * @return Efficiency, on a scale of 1-100.
 	 */
 	public int getOperation(String name) {
 		for (Operation o : operations) {
@@ -232,31 +234,30 @@ public class Facility {
 	public boolean hasCode(FacilityCode code) {
 		return codes.contains(code);
 	}
-	
+
 	/**
 	 * Gets the list of required goods for this facility. If the requirements
 	 * aren't met, then output can be greatly reduced. Requirements are by
-	 * commodity code, rather than by specific commodities, so may be met in
-	 * a variety of ways.
+	 * commodity code, rather than by specific commodities, so may be met in a
+	 * variety of ways.
 	 * 
-	 * @return	List of good types required by the facility.
+	 * @return List of good types required by the facility.
 	 */
 	public Set<CommodityCode> getRequiredGoods() {
 		return required;
 	}
-	
-	
+
 	public void addRequired(CommodityCode code) {
 		required.add(code);
 	}
-	
+
 	/**
 	 * Gets the list of goods which are consumed by this facility. Unlike
-	 * requirements, their absence does not affect output. However, the
-	 * price of such goods will rise if there is a short fall. They are
-	 * often luxury or consumer goods.
+	 * requirements, their absence does not affect output. However, the price of
+	 * such goods will rise if there is a short fall. They are often luxury or
+	 * consumer goods.
 	 * 
-	 * @return	List of good types consumed by this facility.
+	 * @return List of good types consumed by this facility.
 	 */
 	public Set<CommodityCode> getConsumedGoods() {
 		return consumed;

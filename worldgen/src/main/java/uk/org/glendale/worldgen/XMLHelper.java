@@ -49,4 +49,21 @@ public class XMLHelper {
 		return value;
 	}
 
+	/**
+	 * Gets the text content of the given XML node.
+	 * 
+	 * @param node
+	 *            Node to get text content for.
+	 * @return Trimmed node content, or null if node is null.
+	 */
+	public static String getText(Node node) {
+		if (node == null || node.getFirstChild() == null) {
+			return null;
+		} else if (node.getFirstChild().getNodeValue() == null) {
+			return "";
+		} else {
+			return node.getFirstChild().getNodeValue().trim();
+		}
+	}
+
 }

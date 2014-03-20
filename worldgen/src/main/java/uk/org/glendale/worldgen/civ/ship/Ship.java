@@ -8,8 +8,6 @@
  */
 package uk.org.glendale.worldgen.civ.ship;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 
@@ -18,23 +16,22 @@ import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
  * 
  * @author Samuel Penn
  */
-@XmlRootElement
 public class Ship {
-	private int id;
-	private String name;
-	private String type;
-	private long inServiceDate;
-	private int displacement;
-	private StarSystem system;
-	private Planet planet;
-	private ShipStatus status;
-	private long nextEvent;
-	private String flag;
+	private int			id;
+	private String		name;
+	private String		type;
+	private long		inServiceDate;
+	private int			displacement;
+	private StarSystem	system;
+	private Planet		planet;
+	private ShipStatus	status;
+	private long		nextEvent;
+	private String		flag;
 
-	private int jumpCapability;
-	private int acceleration;
-	private int cargoSpace;
-	private int cash;
+	private int			jumpCapability;
+	private int			acceleration;
+	private int			cargoSpace;
+	private int			cash;
 
 	Ship() {
 		status = ShipStatus.Virtual;
