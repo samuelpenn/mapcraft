@@ -5,14 +5,14 @@
 <html>
 	<head>
 		<title>${sectorName}</title>
-		<link rel="stylesheet" href="/traveller/css/default.css"/> 
-        <link rel="stylesheet" href="/traveller/css/sector.css"/> 
-		<script type="text/javascript" src="/traveller/scripts/jquery.js"></script>
-        <script type="text/javascript" src="/traveller/scripts/worldgen.js"></script>
-        <script type="text/javascript" src="/traveller/scripts/star.js"></script>
-        <script type="text/javascript" src="/traveller/scripts/planet.js"></script>
-        <script type="text/javascript" src="/traveller/scripts/system.js"></script>
-        <script type="text/javascript" src="/traveller/scripts/sector.js"></script>
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/default.css"/> 
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sector.css"/> 
+		<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/jquery.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/worldgen.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/star.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/planet.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/system.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/sector.js"></script>
 	    <script type="text/javascript">
 	       function displaySectorData(sectorData) {
 	    	   WG.sector = new Sector(sectorData);
@@ -38,7 +38,7 @@
             		   if (sys.getY() < my || sys.getY() > my + 9) {
             			   continue;
             		   }
-            		   var href = "/traveller/ui/system/" + sys.getId();
+            		   var href = "${pageContext.request.contextPath}/ui/system/" + sys.getId();
             		   $(si).append("<li>" + sys.getCoords() + " <a href='"+href+"'>" + sys.getName() + "</a></li>");
             	   }
                    drawSubSectorMap(i);
@@ -189,7 +189,7 @@
                    context.fillText(text, px, py);
                    
                    // Now do the icons.
-                   var base = "/traveller/images/symbols/64x64/";
+                   var base = "${pageContext.request.contextPath}/images/symbols/64x64/";
                    var px = px = getX(x,y,scale) + scale * 0.9;
                    var py = getY(x,y,scale) - scale * 1.4;
                    var life = main.getLifeLevel();
@@ -259,7 +259,7 @@
 	       }
 
 	       $(document).ready(function() {
-	    	   $.getJSON("/traveller/api/sector/${sectorId}/data", function(data) {
+	    	   $.getJSON("${pageContext.request.contextPath}/api/sector/${sectorId}/data", function(data) {
 	               displaySectorData(data);
 	    	   });
 	       });

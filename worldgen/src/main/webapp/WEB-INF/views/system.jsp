@@ -5,22 +5,23 @@
 <html>
 	<head>
 		<title>WorldGen</title>
-		<link rel="stylesheet" href="/traveller/css/default.css"/> 
-        <link rel="stylesheet" href="/traveller/css/system.css"/> 
-		<script type="text/javascript" src="/traveller/scripts/jquery.js"></script>
-        <!--  <script type="text/javascript" src="/traveller/scripts/jquery-ui.min.js"></script> -->
-        <script type="text/javascript" src="/traveller/scripts/worldgen.js"></script>
-        <script type="text/javascript" src="/traveller/scripts/star.js"></script>
-        <script type="text/javascript" src="/traveller/scripts/planet.js"></script>
-        <script type="text/javascript" src="/traveller/scripts/system.js"></script>
-        <script type="text/javascript" src="/traveller/scripts/samhaslers/requestanimationframe.polyfill.js"></script>
-        <script type="text/javascript" src="/traveller/scripts/samhaslers/sphere.js"></script>
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/default.css"/> 
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/system.css"/> 
+		<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/jquery.js"></script>
+        <!--  <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/jquery-ui.min.js"></script> -->
+        <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/worldgen.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/star.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/planet.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/system.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/samhaslers/requestanimationframe.polyfill.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/samhaslers/sphere.js"></script>
         <!--         
-        <script type="text/javascript" src="/traveller/scripts/sdrdis/sphere-hacked.js"></script>      
-        <script type="text/javascript" src="/traveller/scripts/sdrdis/jquery.earth-3d.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/sdrdis/sphere-hacked.js"></script>      
+        <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/sdrdis/jquery.earth-3d.js"></script>
         -->      
 	    <script type="text/javascript">
 	       var  _system = null;
+	       var  _ROOT = "${pageContext.request.contextPath}";
 	    
 	       function displaySystemData(system) {
 	    	   _system = system;
@@ -101,7 +102,7 @@
                
                $(divId).append("<canvas class='globe' id='globe"+id+"' width='200px' height='200px'>Not supported</canvas>");
                $(divId).append("<div id='locations"+id+"'></div>");
-               var texture="/traveller/api/planet/" + planet.getId() + "/projection.jpg";
+               var texture="${pageContext.request.contextPath}/api/planet/" + planet.getId() + "/projection.jpg";
                // TODO: Need to cancel the previous animation. 
                if (planet.isMoon() == false) {
 	               if (!planet.isBelt()) {
@@ -154,7 +155,7 @@
 
                $(divId).append("<div id='resources"+id+"'></div>");
                
-               $.getJSON("/traveller/api/planet/" + planet.getId() + "/resources", function(data) {
+               $.getJSON("${pageContext.request.contextPath}/api/planet/" + planet.getId() + "/resources", function(data) {
                    displayPlanetResources(id, data);
                });
                
@@ -175,7 +176,7 @@
                }
                
                var image = new Image();
-               image.src = "/traveller/api/planet/"+planet.getId()+"/orbit";
+               image.src = "${pageContext.request.contextPath}/api/planet/"+planet.getId()+"/orbit";
                image.onload = function () {
             	    context.drawImage(image, 5, 5, 190, 190);
                };
@@ -188,7 +189,7 @@
 	    	   $("#resources"+id).append("<ul id='r"+id+"' class='iconList'></ul>");
 	    	   for (var i=0; i < list.length; i++) {
 	    		   var c = list[i];
-	    		   var image = "/traveller/images/trade/" + c.imagePath + ".png";
+	    		   var image = "${pageContext.request.contextPath}/images/trade/" + c.imagePath + ".png";
 	    		   var name = c.name + " " + c.amount + "%";
 	    		   var html = "<img src='"+image+"' width='64' height='64' title='"+name+"'/>";
 	    		   html = html + c.amount + "%";
@@ -273,7 +274,7 @@
 
 	       $(document).ready(function() {
 	    	   
-	    	   $.getJSON("/traveller/api/system/${systemId}", function(data) {
+	    	   $.getJSON("${pageContext.request.contextPath}/api/system/${systemId}", function(data) {
 	               displaySystemData(data);
 	    	   });
 	    	   
@@ -288,8 +289,8 @@
                context.stroke();
                context.fill();
                */
-               //var texture="http://localhost:8080/traveller/api/planet/488/projection.jpg";
-               //var texture="http://localhost:8080/traveller/images/earth1024x1024.jpg";
+               //var texture="${pageContext.request.contextPath}/api/planet/488/projection.jpg";
+               //var texture="${pageContext.request.contextPath}/images/earth1024x1024.jpg";
                //createSphere(document.getElementById("globe"), texture);
 	       });
 	    </script>

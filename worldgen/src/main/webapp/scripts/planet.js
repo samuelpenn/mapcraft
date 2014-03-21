@@ -194,7 +194,7 @@ Planet.prototype.isBelt = function() {
 Planet.prototype.getTradeIcons = function() {
 	var codes = this.getTradeCodes().split(" ");
 	   
-	var base = "/traveller/images/symbols/64x64/";
+	var base = _ROOT+"/images/symbols/64x64/";
 	   
 	var list = { "ag": "Agricultural",
  		         "na": "Non-Agricultural",

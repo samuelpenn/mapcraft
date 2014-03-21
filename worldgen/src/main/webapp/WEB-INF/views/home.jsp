@@ -5,8 +5,8 @@
 <html>
 	<head>
 		<title>WorldGen</title>
-		<link rel="stylesheet" href="/traveller/css/default.css"/> 
-		<script type="text/javascript" src="/traveller/scripts/jquery.js"></script>
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/default.css"/> 
+		<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/jquery.js"></script>
 	    <script type="text/javascript">
 	       function drawSectorMap(sectors) {
 	    	   var    minX = 999, minY = 999;
@@ -19,7 +19,7 @@
 	    		   minY = Math.min(minY, sectors[i].y);
 	    		   maxY = Math.max(maxY, sectors[i].y);
 	    		   
-	    		   var href = "/traveller/ui/sector/" + sectors[i].id;
+	    		   var href = "${pageContext.request.contextPath}/ui/sector/" + sectors[i].id;
 	    		   $("#sectorList").append("<li><a href='" + href + "'>" + 
 	    				   sectors[i].name + "</a> (" + 
 	    				   sectors[i].x + "," + sectors[i].y + ")</li>");
@@ -38,8 +38,8 @@
 	    		   $("#sectorTable").append("<tr id='"+rowId+"'><th>"+y+"</th></tr>");
 		    	   for (var x = minX; x <= maxX; x++) {
 		    		   var sector = sectors[i++];
-	                   var href = "/traveller/ui/sector/" + sector.id;
-		    		   $("#"+rowId).append("<td><a href='" + href + "'><img src='/traveller/api/sector/"+sector.name+"/image' title='"+sector.name+"'/></a></td>");
+	                   var href = "${pageContext.request.contextPath}/ui/sector/" + sector.id;
+		    		   $("#"+rowId).append("<td><a href='" + href + "'><img src='${pageContext.request.contextPath}/api/sector/"+sector.name+"/image' title='"+sector.name+"'/></a></td>");
 		    	   }
 	    	   }
 	    	   
@@ -47,7 +47,7 @@
 	       }
 	       $(document).ready(function() {
 	    	   
-	    	   $.getJSON("/traveller/api/sector/", function(data) {
+	    	   $.getJSON("${pageContext.request.contextPath}/api/sector/", function(data) {
 	               drawSectorMap(data);
 
 	    	   });
@@ -81,7 +81,7 @@
             </div>
             			
 			<div id="sectorMap">
-			 Not loaded.
+			 Not loaded: ${pageContext.request.contextPath}
 			</div>
 			
 			<!-- 
