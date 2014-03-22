@@ -209,8 +209,8 @@
                    // Add trade codes
                    var px = px = getX(x,y,scale) - scale * 0.1;
                    var py = getY(x,y,scale) - scale * 1.4;
-                   var inc = 28;
-                   var w = 24;
+                   var inc = 36;
+                   var w = 32;
                    
                    if (main.getTradeIcon("Ni") != null) {
                 	    addImage(context, base + "trade_ni.png", px, py, w, w);

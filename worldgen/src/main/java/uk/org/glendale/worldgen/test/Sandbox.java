@@ -158,7 +158,7 @@ public class Sandbox {
 	public void addToSandbox() {
 		String sectorName = "Aquila";
 		int sectorId = Die.die(9);
-		Sector sandbox = sectorFactory.getSector(sectorId);
+		Sector sandbox = sectorFactory.getSector(sectorName);
 		if (sandbox == null) {
 			sandbox = sectorFactory.createSector(sectorName, 0, 0, "Un",
 					SectorCode.Fe);

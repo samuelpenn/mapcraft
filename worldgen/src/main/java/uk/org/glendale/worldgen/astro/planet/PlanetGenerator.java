@@ -13,21 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-
 import uk.org.glendale.rpg.utils.Die;
-import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
 import uk.org.glendale.worldgen.astro.planet.builders.PlanetDescription;
-import uk.org.glendale.worldgen.astro.planet.builders.arean.Arean;
 import uk.org.glendale.worldgen.astro.planet.builders.arean.EoArean;
 import uk.org.glendale.worldgen.astro.planet.builders.arean.MesoArean;
-import uk.org.glendale.worldgen.astro.planet.builders.barren.Ferrinian;
-import uk.org.glendale.worldgen.astro.planet.builders.barren.Hadean;
-import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
-import uk.org.glendale.worldgen.astro.planet.builders.gaian.Gaian;
-import uk.org.glendale.worldgen.astro.planet.builders.jovian.CryoJovian;
-import uk.org.glendale.worldgen.astro.planet.builders.jovian.EuJovian;
-import uk.org.glendale.worldgen.astro.planet.builders.jovian.SubJovian;
 import uk.org.glendale.worldgen.astro.planet.maps.WorldBuilder;
 import uk.org.glendale.worldgen.astro.sector.SectorCode;
 import uk.org.glendale.worldgen.astro.star.Star;
@@ -35,9 +24,7 @@ import uk.org.glendale.worldgen.astro.star.StarAPI;
 import uk.org.glendale.worldgen.astro.star.Temperature;
 import uk.org.glendale.worldgen.astro.starsystem.StarSystem;
 import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
-import uk.org.glendale.worldgen.civ.facility.FacilityGenerator;
 import uk.org.glendale.worldgen.civ.facility.builders.FacilityBuilder;
-import uk.org.glendale.worldgen.server.AppManager;
 
 /**
  * Generates a random planet. The type of planet is based on the star and the
@@ -53,8 +40,8 @@ public class PlanetGenerator {
 	private PlanetFactory	planetFactory;
 	private StarSystem		system;
 	private Star			star;
-	private Builder			builder	= null;
-	private WorldBuilder	lastBuilder = null;
+	private Builder			builder		= null;
+	private WorldBuilder	lastBuilder	= null;
 
 	/**
 	 * Create a new PlanetGenerator for a given star in a star system.
@@ -69,6 +56,7 @@ public class PlanetGenerator {
 		this.system = system;
 		this.star = star;
 	}
+
 	/**
 	 * Generate a specific single planet at the given distance with the
 	 * specified name. No checks are performed to see if the planet is being
@@ -112,25 +100,33 @@ public class PlanetGenerator {
 		builder.setStar(star);
 		builder.setCommodityFactory(planetFactory.getCommodityFactory());
 		builder.generate();
-		
+
 		Habitability h = Habitability.getHabitability(planet);
-		System.out.println(planet.getName() + ": " + planet.getType() + ", " + h);
-		PopulationSize		size = PopulationSize.None;
-		TechnologyLevel		level = TechnologyLevel.LowTech;
+		System.out.println(planet.getName() + ": " + planet.getType() + ", "
+				+ h);
+		PopulationSize size = PopulationSize.None;
+		TechnologyLevel level = TechnologyLevel.LowTech;
 		switch (h) {
 		case Ideal:
 			// Ideal worlds, tend to have very large populations.
 			switch (Die.d6(2)) {
-			case 2:	case 3:
+			case 2:
+			case 3:
 				size = PopulationSize.Medium;
 				break;
-			case 4: case 5:
+			case 4:
+			case 5:
 				size = PopulationSize.Large;
 				break;
-			case 6: case 7: case 8: case 9: case 10:
+			case 6:
+			case 7:
+			case 8:
+			case 9:
+			case 10:
 				size = PopulationSize.Huge;
 				break;
-			case 11: case 12:
+			case 11:
+			case 12:
 				size = PopulationSize.Gigantic;
 				break;
 			}
@@ -141,17 +137,47 @@ public class PlanetGenerator {
 			case 2:
 				size = PopulationSize.Small;
 				break;
-			case 3: case 4:
+			case 3:
+			case 4:
 				size = PopulationSize.Medium;
 				break;
-			case 5: case 6: case 7:
+			case 5:
+			case 6:
+			case 7:
 				size = PopulationSize.Large;
 				break;
-			case 8: case 9: case 10: case 11:
+			case 8:
+			case 9:
+			case 10:
+			case 11:
 				size = PopulationSize.Huge;
 				break;
 			case 12:
 				size = PopulationSize.Gigantic;
+				break;
+			}
+			break;
+		case Difficult:
+			// Difficult worlds, tend to have smaller populations.
+			switch (Die.d6(2)) {
+			case 2:
+			case 3:
+			case 4:
+				size = PopulationSize.Small;
+				break;
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+				size = PopulationSize.Medium;
+				break;
+			case 9:
+			case 10:
+				size = PopulationSize.Large;
+				break;
+			case 11:
+			case 12:
+				size = PopulationSize.Huge;
 				break;
 			}
 			break;
@@ -160,7 +186,7 @@ public class PlanetGenerator {
 			break;
 		}
 		FacilityBuilder facilityBuilder = null;
-		String 			culture = lastBuilder.getFacilityBuilderName(size, level);
+		String culture = lastBuilder.getFacilityBuilderName(size, level);
 		if (culture != null) {
 			System.out.println(culture);
 			facilityBuilder = getFacilityBuilder(culture, planet, size);
@@ -170,12 +196,13 @@ public class PlanetGenerator {
 				System.out.println("!! No builder for culture");
 			}
 		}
-		//planetFactory.getFacilityGenerator().generateFacilities(planet, size);
-		//System.out.println("TechLevel: "+planet.getTechLevel());
+		// planetFactory.getFacilityGenerator().generateFacilities(planet,
+		// size);
+		// System.out.println("TechLevel: "+planet.getTechLevel());
 
-		PlanetDescription  description = new PlanetDescription(builder);
+		PlanetDescription description = new PlanetDescription(builder);
 		String text = description.getFullDescription();
-		
+
 		if (facilityBuilder != null) {
 			text += " " + facilityBuilder.getDescriptionText();
 		}
@@ -183,28 +210,23 @@ public class PlanetGenerator {
 
 		return planet;
 	}
-	
-	private FacilityBuilder getFacilityBuilder(String className, Planet planet, PopulationSize size) {
+
+	private FacilityBuilder getFacilityBuilder(String className, Planet planet,
+			PopulationSize size) {
 		FacilityBuilder builder = null;
-		
+
 		try {
-			Constructor c = Class.forName(className).getConstructor(new Class[] {
-					FacilityFactory.class,
-					Planet.class,
-					PopulationSize.class
-			});
+			Constructor c = Class.forName(className).getConstructor(
+					new Class[] { FacilityFactory.class, Planet.class,
+							PopulationSize.class });
 			builder = (FacilityBuilder) c.newInstance(new Object[] {
-					planetFactory.getFacilityFactory(),
-					planet,
-					size
-			});
+					planetFactory.getFacilityFactory(), planet, size });
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return builder;
 	}
-
 
 	/**
 	 * Generate a single planet at the given distance with the specified name.
@@ -366,10 +388,12 @@ public class PlanetGenerator {
 				moon.setTemperature(orbitTemperature);
 				moonBuilder.setPlanet(moon);
 				moonBuilder.setStar(star);
-				moonBuilder.setCommodityFactory(planetFactory.getCommodityFactory());
+				moonBuilder.setCommodityFactory(planetFactory
+						.getCommodityFactory());
 				moonBuilder.generate();
-				
-				PlanetDescription  description = new PlanetDescription(moonBuilder);
+
+				PlanetDescription description = new PlanetDescription(
+						moonBuilder);
 				moon.setDescription(description.getFullDescription());
 
 				moons.add(moon);

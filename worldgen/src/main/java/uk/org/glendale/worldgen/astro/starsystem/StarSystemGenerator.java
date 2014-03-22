@@ -13,21 +13,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.org.glendale.rpg.traveller.systems.Zone;
-import uk.org.glendale.rpg.traveller.systems.codes.GovernmentType;
 import uk.org.glendale.rpg.utils.Die;
 import uk.org.glendale.worldgen.astro.planet.Planet;
 import uk.org.glendale.worldgen.astro.planet.PlanetFactory;
 import uk.org.glendale.worldgen.astro.planet.PlanetGenerator;
-import uk.org.glendale.worldgen.astro.planet.PlanetType;
-import uk.org.glendale.worldgen.astro.planet.builders.PlanetBuilder;
 import uk.org.glendale.worldgen.astro.planet.builders.arean.Arean;
 import uk.org.glendale.worldgen.astro.planet.builders.barren.Hermian;
 import uk.org.glendale.worldgen.astro.planet.builders.belt.AsteroidBelt;
@@ -45,7 +39,6 @@ import uk.org.glendale.worldgen.astro.star.StarFactory;
 import uk.org.glendale.worldgen.astro.star.StarForm;
 import uk.org.glendale.worldgen.astro.star.StarGenerator;
 import uk.org.glendale.worldgen.civ.facility.FacilityFactory;
-import uk.org.glendale.worldgen.server.AppManager;
 import uk.org.glendale.worldgen.text.Names;
 
 /**
@@ -57,19 +50,19 @@ import uk.org.glendale.worldgen.text.Names;
 public class StarSystemGenerator {
 
 	@Autowired
-	private StarSystemFactory factory;
+	private StarSystemFactory	factory;
 
 	@Autowired
-	private PlanetFactory planetFactory;
+	private PlanetFactory		planetFactory;
 
 	@Autowired
-	private StarFactory starFactory;
+	private StarFactory			starFactory;
 
 	@Autowired
-	private StarSystemAPI starSystemAPI;
+	private StarSystemAPI		starSystemAPI;
 
 	@Autowired
-	private FacilityFactory facilityFactory;
+	private FacilityFactory		facilityFactory;
 
 	public StarSystemGenerator() {
 	}
@@ -185,8 +178,8 @@ public class StarSystemGenerator {
 			system = generateSystemTemplate(sector, name, 0, 0);
 			if (system == null) {
 				// No more space.
-				throw new IllegalStateException("No more free locations in [" +
-						sector.getName() + "]");
+				throw new IllegalStateException("No more free locations in ["
+						+ sector.getName() + "]");
 			}
 		}
 		system.setAllegiance("Un");
@@ -237,7 +230,7 @@ public class StarSystemGenerator {
 
 		// Earth planet.
 		planetName = system.getName() + " " + getOrbitNumber(++position);
-		distance = 130 + Die.d20(2);
+		distance = 120 + Die.d20(3);
 		planet = generator.generatePlanet(planetName, position, distance,
 				new Gaian());
 		system.addPlanet(planet);
