@@ -83,7 +83,7 @@ WG = {
 	loadMoons: function(id, func) {
 		var	 p = this.system.getPlanet(id);
 		if (p.planet.gotMoons != true) {
-			$.getJSON("/traveller/api/planet/"+id+"/moons", function(data) {
+			$.getJSON(_ROOT+"/api/planet/"+id+"/moons", function(data) {
 				for (var i=0; i < data.length; i++) {
 					WG.system.system.planets.push(data[i]);
 				}
@@ -108,7 +108,7 @@ WG = {
 		var	p = this.system.getPlanet(id);
 		if (p.planet.gotInventory != true) {
 			p.planet.inventory = new Array();
-			$.getJSON("/traveller/api/planet/" + id + "/inventory", function (data) {
+			$.getJSON(_ROOT+"/api/planet/" + id + "/inventory", function (data) {
 				for (var i=0; i < data.length; i++) {
 					p.planet.inventory.push(data[i]);
 				}

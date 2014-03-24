@@ -164,9 +164,8 @@
                    displayPlanetFacilities(planet);
                }
 
-               $(divId).append("<div id='inventory"+id+"'></div>");
                WG.loadInventory(id, displayPlanetInventory);
-               
+               $(divId).append("<div id='inventory"+id+"'></div>");
 	       }
 
 	       function drawAsteroids(planet, canvas) {
@@ -212,10 +211,10 @@
 	       }
 	       
 	       function displayPlanetInventory(planet) {
-	    	   if (planet.planet.inventory == null ||
-	    			   planet.planet.inventory.length == 0) {
+	    	   if (planet.planet.inventory == null || planet.planet.inventory.length == 0) {
 	    		   return;
 	    	   }
+               console.log("displayPlanetInventory: " + planet.getId());
 	    	   
 	    	   $("#inventory"+planet.getId()).html("<h3>Inventory</h3>");
 	    	   
